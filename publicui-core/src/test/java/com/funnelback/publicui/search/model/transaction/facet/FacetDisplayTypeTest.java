@@ -16,10 +16,10 @@ public class FacetDisplayTypeTest {
 
     @Test
     public void testCheckBox() {
-        Assert.assertEquals(CHECKBOX_AND, getType(MULTIPLE, AND, FROM_SCOPED_QUERY));
-        Assert.assertEquals(CHECKBOX_OR, getType(MULTIPLE, OR, FROM_SCOPED_QUERY));
+        Assert.assertEquals(CHECKBOX, getType(MULTIPLE, AND, FROM_SCOPED_QUERY));
+        Assert.assertEquals(CHECKBOX, getType(MULTIPLE, OR, FROM_SCOPED_QUERY));
         StreamUtils.ofNullable(FacetValues.values())
-         .forEach(facetValue -> Assert.assertEquals(CHECKBOX_OR, getType(MULTIPLE, OR, facetValue)));
+         .forEach(facetValue -> Assert.assertEquals(CHECKBOX, getType(MULTIPLE, OR, facetValue)));
     }
     
     @Test
