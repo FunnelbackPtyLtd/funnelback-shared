@@ -8,8 +8,7 @@ public enum FacetDisplayType {
     SINGLE_DRILL_DOWN, // Don't make a distinction between SINGLE and DRILL down as URL 
                        // Fill would look like it sits under SINGLE but actually be under 
                        // DRILL down.
-    CHECKBOX_AND,
-    CHECKBOX_OR,
+    CHECKBOX,
     RADIO_BUTTON,
     TAB,
     UNKNOWN;
@@ -18,11 +17,7 @@ public enum FacetDisplayType {
                                         FacetConstraintJoin constraintJoin, 
                                         FacetValues values) {
         if(selectionType == FacetSelectionType.MULTIPLE) {
-            if(constraintJoin == FacetConstraintJoin.AND) {
-                return CHECKBOX_AND;
-            } else {
-                return CHECKBOX_OR;
-            }
+            return CHECKBOX;
         }
         if(selectionType == FacetSelectionType.SINGLE_AND_UNSELECT_OTHER_FACETS) {
             return TAB;
