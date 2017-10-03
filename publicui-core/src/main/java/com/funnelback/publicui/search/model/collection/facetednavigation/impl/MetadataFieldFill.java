@@ -14,7 +14,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
-import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetailts;
+import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetails;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -44,7 +44,7 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
         
        List<String> selectedValues = getMatchingFacetSelectedDetails(st.getQuestion())
             .stream()
-            .map(FacetSelectedDetailts::getValue)
+            .map(FacetSelectedDetails::getValue)
             .collect(Collectors.toList());
        
         

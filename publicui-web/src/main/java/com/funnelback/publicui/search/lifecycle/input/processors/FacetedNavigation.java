@@ -25,7 +25,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.CollectionFill;
-import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetailts;
+import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetails;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
@@ -66,9 +66,9 @@ public class FacetedNavigation extends AbstractInputProcessor {
                 SetMultimap<String, Set<String>> cliveConstraints = SetMultimapBuilder.hashKeys().hashSetValues().build();
                 
                 
-                List<FacetSelectedDetailts> facetParamaters = FacetedNavigationUtils.getFacetSelectedDetails(searchTransaction.getQuestion());
+                List<FacetSelectedDetails> facetParamaters = FacetedNavigationUtils.getFacetSelectedDetails(searchTransaction.getQuestion());
                 if (facetParamaters.size() > 0) {
-                    for (final FacetSelectedDetailts facetParameter : facetParamaters) {
+                    for (final FacetSelectedDetails facetParameter : facetParamaters) {
                         // Find corresponding facet in config
                         FacetDefinition f = facetConfigs.get(facetParameter.getFacetName());
                         

@@ -12,7 +12,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
-import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetailts;
+import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetails;
 import com.funnelback.publicui.search.model.padre.DateCount;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -47,7 +47,7 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
         
         List<String> selectedQueryStringValues = getMatchingFacetSelectedDetails(st.getQuestion())
                 .stream()
-                .map(FacetSelectedDetailts::getValue)
+                .map(FacetSelectedDetails::getValue)
                 .collect(Collectors.toList());
         
         // For each metadata count <rmc item="a:new south wales">42</rmc>

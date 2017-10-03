@@ -14,7 +14,7 @@ import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
-import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetailts;
+import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetails;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -59,7 +59,7 @@ public class CollectionFill extends CategoryDefinition {
         // FROM_UNSCOPED_ALL_QUERY is special in that made we always want to return a value
         // This mode is usually used in tabs so we want a consistent set values being returned.
         if(collectionsListed.isEmpty() && fdef.getFacetValues() != FROM_UNSCOPED_ALL_QUERY) {
-            Optional<FacetSelectedDetailts> selectedDetails = 
+            Optional<FacetSelectedDetails> selectedDetails = 
                getMatchingFacetSelectedDetails(st.getQuestion()).stream().findFirst();
             if(selectedDetails.isPresent()) {
                 return Arrays.asList(makeCategoryValue(0, true));

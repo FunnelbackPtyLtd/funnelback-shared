@@ -16,7 +16,7 @@ import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.facetednavigation.FacetParameter;
-import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetailts;
+import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetails;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -93,11 +93,11 @@ public class FacetedNavigationUtils {
         return result;
     }
     
-    public static List<FacetSelectedDetailts> getFacetSelectedDetails(SearchQuestion searchQuestion) {
+    public static List<FacetSelectedDetails> getFacetSelectedDetails(SearchQuestion searchQuestion) {
         return getFacetParameters(searchQuestion)
             .stream()
             .map(f -> StreamUtils.ofNullable(f.getValues())
-                    .map(v -> new FacetSelectedDetailts(f.getName(), f.getExtraParameter(), v)))
+                    .map(v -> new FacetSelectedDetails(f.getName(), f.getExtraParameter(), v)))
             .flatMap(i -> i)
             .filter(f -> !"".equals(f.getValue())) // Skip empty values.
             .collect(Collectors.toList());

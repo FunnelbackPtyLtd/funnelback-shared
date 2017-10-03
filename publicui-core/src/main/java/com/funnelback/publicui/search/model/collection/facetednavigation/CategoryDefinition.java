@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
-import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetailts;
+import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetails;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -183,14 +183,14 @@ public abstract class CategoryDefinition {
      * @param facetDef The facet definition that this category definition is in.
      * @return
      */
-    protected boolean matches(FacetSelectedDetailts facetSelectionDetails) {
+    protected boolean matches(FacetSelectedDetails facetSelectionDetails) {
         if(getFacetName().equals(facetSelectionDetails.getFacetName())) {
             return matches(facetSelectionDetails.getValue(), facetSelectionDetails.getExtraParameter());
         }
         return false;
     }
     
-    protected List<FacetSelectedDetailts> getMatchingFacetSelectedDetails(SearchQuestion question) {
+    protected List<FacetSelectedDetails> getMatchingFacetSelectedDetails(SearchQuestion question) {
         return FacetedNavigationUtils.getFacetSelectedDetails(question)
         .stream()
         .filter(facetParam -> matches(facetParam))
