@@ -363,6 +363,7 @@
     @param names A list of specific facets to display, optional.
 
     @provides The current facet being iterated as <code>${fb.facet}</code>.
+    @deprecated
 -->
 <#macro MultiFacet name="" names=[]>
     <#if response?exists && response.facets?exists>
@@ -404,6 +405,7 @@
     every categories of the given facet.</p>
 
     @param facet Facet to display categories for.
+    @deprecated
 -->
 <#macro MultiCategories facet>
     <#list facet.categories as category>
@@ -419,6 +421,7 @@
 
     @param category Category to display.
     @param facetSelected  Whether the parent facet of the category has been selected by the user or not.
+    @deprecated
 -->
 <#macro MultiCategory category facetSelected=false>
     <div class="category">
@@ -442,6 +445,7 @@
     @param values List of values to display.
     @param facetSelected Whether the parent facet of the category which this value belongs has been selected by the user or not.
     @param max Maximum number of values to display.
+    @deprecated
 -->
 <#macro MultiValues values facetSelected max=16>
     <#if values?exists && values?size &gt; 0>
