@@ -101,8 +101,8 @@
 <#list macros as macro>
     <dl>
         <dt>
-            
             ${macro.type}
+            
             <tt><a name="${macro.name}">${macro.name}</a></tt>
             <@signature macro />
             <br /><br />
