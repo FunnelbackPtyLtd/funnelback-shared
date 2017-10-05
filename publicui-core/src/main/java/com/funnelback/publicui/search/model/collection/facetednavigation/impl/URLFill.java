@@ -128,7 +128,11 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         // Find out what the selected items are, we will remove from this list as we find 
         // the items from the padre result packet. Anything left over will be faked with a 
         // zero count so the user can unselect it.
-        Set<String> selectedItems = new HashSet<>(getSelectedItems(currentConstraint, url));
+        Set<String> selectedItems = new HashSet<>(getSelectedItems(Optional.ofNullable(currentConstraints)
+                                                                    .orElse(Collections.emptyList())
+                                                                    .stream()
+                                                                    .findFirst(), 
+                                                                    url));
         
         // Fix URLs and lower case them as comparisons are case-insensitive.
         url = fixURL.apply(url).toLowerCase();
@@ -173,7 +177,12 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
      * @param url
      * @return
      */
-    public static List<String> getSelectedItems(String currentConstraint, String url) {
+    public static List<String> getSelectedItems(Optional<String> currentConstraintOpt, String url) {
+        if(!currentConstraintOpt.isPresent()) {
+            return new ArrayList<>();
+        }
+        String currentConstraint = currentConstraintOpt.get();
+        
         // The path of the url is in the constraint when selected we need to strip
         // that from the constraint
         String prefix = toUrlValue(fixURL.apply(url).toLowerCase());

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
@@ -125,7 +126,7 @@ public class URLFillTest {
    public void testGetSelectedItemsVVSUrls() throws Exception {
        String currentConstraint = "home/luke/Documents";
        String url = "\\\\win.win\\home\\/";
-       List<String> items = URLFill.getSelectedItems(currentConstraint, url);
+       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
        Assert.assertTrue(items.contains("smb://win.win/home/luke"));
        Assert.assertTrue(items.contains("smb://win.win/home/luke/Documents"));
        Assert.assertEquals(2, items.size());
@@ -135,7 +136,7 @@ public class URLFillTest {
    public void testGetSelectedItemsCaseIsIgnored() throws Exception {
        String currentConstraint = "home/luke/Documents";
        String url = "http://win.win/Home";
-       List<String> items = URLFill.getSelectedItems(currentConstraint, url);
+       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
        Assert.assertTrue(items.contains("win.win/Home/luke"));
        Assert.assertTrue(items.contains("win.win/Home/luke/Documents"));
        Assert.assertEquals(2, items.size());
@@ -145,7 +146,22 @@ public class URLFillTest {
    public void testGetSelectedItemsNothingSelected() throws Exception {
        String currentConstraint = "";
        String url = "\\\\win.win\\home\\/";
-       List<String> items = URLFill.getSelectedItems(currentConstraint, url);
+       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
+       Assert.assertEquals(0, items.size());
+   }
+   
+   @Test
+   public void testGetSelectedItemsHttps() throws Exception {
+       String currentConstraint = "bar";
+       String url = "https://www.funnelback.com/";
+       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
+       Assert.assertEquals(1, items.size());
+   }
+   
+   @Test
+   public void testGetSelectedItemsNoConstraint() throws Exception {
+       String url = "https://www.funnelback.com/";
+       List<String> items = URLFill.getSelectedItems(Optional.empty(), url);
        Assert.assertEquals(0, items.size());
    }
    
@@ -171,6 +187,20 @@ public class URLFillTest {
        Assert.assertTrue(labels.contains("Fruit"));
        Assert.assertTrue(labels.contains("Apples"));
        Assert.assertEquals(3, labels.size());
+   }
+   
+   @Test
+   public void testInjectSelectedValuesHttps() throws Exception {
+       URLFill urlFill = new URLFill("https://foo.com/");
+       SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+       st.getResponse().setResultPacket(new ResultPacket());
+       
+       // Nothing is selected.
+       
+       FacetDefinition facetDef = mock(FacetDefinition.class);
+       List<CategoryValueComputedDataHolder> result = urlFill.computeData(st, facetDef);
+       
+       Assert.assertEquals(0, result.size());
    }
     
 }
