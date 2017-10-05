@@ -1,7 +1,11 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
+import static org.mockito.Mockito.mock;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,12 +14,12 @@ import org.junit.Test;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.padre.DateCount;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.google.common.collect.Sets;
-import static org.mockito.Mockito.*;
 
 public class DateFieldFillTest {
 
@@ -66,6 +70,64 @@ public class DateFieldFillTest {
         Assert.assertEquals(0, values.get(0).getCount() + 0);
         Assert.assertEquals("We show the constraint as we don't know how to work out the padre label from the constraint.",
             "d<2017", values.get(0).getLabel());
+    }
+    
+    @Test
+    public void addsMissingSelectedValuesWithLabel() {
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        
+        DateFieldFill dateFill = new DateFieldFill("d");
+        dateFill.setFacetName("FacetName");
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getResponse().setResultPacket(new ResultPacket());
+        
+        // Test where the query constraint contains the label separator maybe
+        // this could happen.
+        String queryConstraint = "d<2017" + DateFieldFill.CONSTRAINT_AND_LABEL_SEPERATOR;
+        String cgiValue = dateFill.constructCGIValue(queryConstraint, "Hello");
+        
+        Assert.assertEquals(queryConstraint, dateFill.getQueryConstraint(cgiValue));
+        
+        st.getQuestion().getInputParameterMap().put(dateFill.getQueryStringParamName(), cgiValue);
+        List<CategoryValueComputedDataHolder> values = dateFill.computeData(st, facetDef);
+        Assert.assertEquals(1, values.size());
+        
+        Assert.assertTrue(values.get(0).isSelected());
+        Assert.assertEquals(0, values.get(0).getCount() + 0);
+        Assert.assertEquals("The label is in the CGI value so we should be able to extract it.",
+            "Hello", values.get(0).getLabel());
+    }
+    
+    @Test
+    public void testPadreReturnsDateCount() {
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        
+        DateFieldFill dateFill = new DateFieldFill("d");
+        dateFill.setFacetName("FacetName");
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getResponse().setResultPacket(new ResultPacket());
+        
+        String queryConstraint = "d<2017";
+        
+        Map<String, DateCount> dates = st.getResponse().getResultPacket().getDateCounts();
+        dates.put("d:Hello", new DateCount(queryConstraint, 1000));
+        
+        
+        String cgiValue = dateFill.constructCGIValue(queryConstraint, "Hello");
+        
+        Assert.assertEquals(queryConstraint, dateFill.getQueryConstraint(cgiValue));
+        
+        // Simulate the date as being selected.
+        st.getQuestion().getInputParameterMap().put(dateFill.getQueryStringParamName(), cgiValue);
+        st.getQuestion().getSelectedCategoryValues().put(dateFill.getQueryStringParamName(), Arrays.asList(cgiValue));
+        
+        List<CategoryValueComputedDataHolder> values = dateFill.computeData(st, facetDef);
+        Assert.assertEquals(1, values.size());
+        
+        Assert.assertTrue(values.get(0).isSelected());
+        Assert.assertEquals(1000, values.get(0).getCount() + 0);
+        Assert.assertEquals("The label is in the CGI value so we should be able to extract it.",
+            "Hello", values.get(0).getLabel());
     }
     
     

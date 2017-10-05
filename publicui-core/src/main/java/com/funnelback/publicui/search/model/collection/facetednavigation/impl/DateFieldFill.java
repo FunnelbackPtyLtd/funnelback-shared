@@ -1,9 +1,11 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
@@ -20,6 +22,10 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+
 /**
  * <p>{@link CategoryDefinition} based on a metadata class
  * containing date values.</p>
@@ -32,6 +38,21 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
 public class DateFieldFill extends CategoryDefinition implements MetadataBasedCategory {
 
     private final List<QueryProcessorOption<?>> qpOptions;
+    
+    /**
+     * This separates the query constraint e.g. d=2016 from the label e.g. "2016"
+     * 
+     * The separator must be one that does not appear in either query constraint
+     * or label.
+     * 
+     * We use ascii 29 which is "group separator" seems like an ok choice I doubt
+     * anything will be tripped up by it and it is unlikely it will be in the query
+     * constraint or label.
+     */
+    public static final String CONSTRAINT_AND_LABEL_SEPERATOR = new String(new byte[]{29, 29}, StandardCharsets.UTF_8);
+    
+    private static final Pattern CONSTRAINT_AND_LABEL_SEPERATOR_PATTERN = Pattern.compile(CONSTRAINT_AND_LABEL_SEPERATOR);
+    
     
     public DateFieldFill(String metaDataClass) {
         super(metaDataClass);
@@ -56,7 +77,8 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
             DateCount dc = entry.getValue();
             MetadataAndValue mdv = parseMetadata(item);
             if (this.data.equals(mdv.metadataClass)) {
-                String queryStringParamValue = dc.getQueryTerm();
+                String label = mdv.value;
+                String queryStringParamValue = constructCGIValue(dc.getQueryTerm(), label);
                 selectedQueryStringValues.remove(queryStringParamValue);
                 Integer count = facetData.getResponseForCounts().apply(this, mdv.value)
                         .map(SearchResponse::getResultPacket)
@@ -67,10 +89,10 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
                 
                 categories.add(new CategoryValueComputedDataHolder(
                         mdv.metadataClass, // Why is this metadata class?
-                        mdv.value,
+                        label,
                         count,
                         getMetadataClass(),
-                        FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), dc.getQueryTerm()),
+                        FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), queryStringParamValue),
                         getQueryStringParamName(),
                         queryStringParamValue));
             }
@@ -78,7 +100,7 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
         for(String selectQueryStringParamValue : selectedQueryStringValues) {
             categories.add(new CategoryValueComputedDataHolder(
                 this.data, // Why is this metadata class?
-                selectQueryStringParamValue, // This is the best we can do without reverse engineering padre.
+                constraintAndLabelFromCGIValue(selectQueryStringParamValue).getLabel(),
                 0,
                 getMetadataClass(),
                 true,
@@ -87,6 +109,8 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
         }
         return categories;
     }
+    
+    
 
     /** {@inheritDoc} */
     @Override
@@ -114,7 +138,35 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
      */
     @Override
     public String getQueryConstraint(String value) {
-        return value;
+        return constraintAndLabelFromCGIValue(value).getQueryConstraint();
+    }
+    
+    public ConstraintAndLabel constraintAndLabelFromCGIValue(String value) {
+        String[] parts = CONSTRAINT_AND_LABEL_SEPERATOR_PATTERN.split(value, 2);
+        if(parts.length == 2) {
+            return new ConstraintAndLabel(parts[1], parts[0]);
+        }
+        return new ConstraintAndLabel(value, value);
+    }
+    
+    /**
+     * Constructs the CGI query value from the query constraint e.g. d=2008 and the label e.g. 2008
+     * 
+     * @param queryConstraint
+     * @param label
+     * @return
+     */
+    public String constructCGIValue(String queryConstraint, String label) {
+        // It seems very unlikly we will have ascii 29 in the label shown
+        // to the user so put it first that way the query constraint could have
+        // ascii 29 and still work.
+        return label + CONSTRAINT_AND_LABEL_SEPERATOR + queryConstraint;
+    }
+    
+    @AllArgsConstructor
+    public static class ConstraintAndLabel {
+        @Getter @NonNull private final String queryConstraint;
+        @Getter @NonNull private final String label;
     }
     
     @Override
