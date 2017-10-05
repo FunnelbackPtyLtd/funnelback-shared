@@ -4,7 +4,9 @@ import static java.util.Arrays.asList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -13,6 +15,7 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.web.views.freemarker.GetFacetsMethod;
 
 import freemarker.template.SimpleScalar;
+import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateModelException;
 import junit.framework.Assert;
 public class GetFacetsMethodTest {
@@ -72,12 +75,21 @@ public class GetFacetsMethodTest {
         sr.getFacets().add(makeFacetWithName("planet"));
         sr.getFacets().add(makeFacetWithName("tab"));
         
-        List<Object> args = asList(sr, SimpleScalar.newInstanceOrNull("planet, country"));
+        
+        List<Object> args = asList(sr, simpleSequenceOf("planet", "country"));
         
         List<Facet> result = new TestableGetFacetsMethod().execMethod(args);
         Assert.assertEquals(2, result.size());
         Assert.assertEquals("planet", result.get(0).getName());
         Assert.assertEquals("country", result.get(1).getName());
+    }
+    
+    private SimpleSequence simpleSequenceOf(String ... strings) {
+        SimpleSequence simpleSequence = new SimpleSequence(Arrays.asList(strings)
+                .stream()
+                .map(SimpleScalar::newInstanceOrNull)
+                .collect(Collectors.toList()));
+        return simpleSequence;
     }
     
     private Facet makeFacetWithName(String name) {
