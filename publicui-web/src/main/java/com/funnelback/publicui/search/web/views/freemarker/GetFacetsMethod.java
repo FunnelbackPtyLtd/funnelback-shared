@@ -10,6 +10,7 @@ import com.funnelback.common.function.StreamUtils;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 
+import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
@@ -46,12 +47,26 @@ public class GetFacetsMethod extends AbstractTemplateMethod {
             return facets;
         }
         
-        String facetsWantedString = ((TemplateScalarModel) arguments.get(1)).getAsString();
-        if("".equals(facetsWantedString)) {
-            return facets;
+        List<String> rawFacetNames = new ArrayList<>();
+        if(arguments.get(1) instanceof TemplateScalarModel) {
+            String facetsWantedString = ((TemplateScalarModel) arguments.get(1)).getAsString();
+            if("".equals(facetsWantedString)) {
+                return facets;
+            }
+            StreamUtils.ofNullable(facetsWantedString.split(","))
+                .forEach(rawFacetNames::add);
+        } else if(arguments.get(1) instanceof SimpleSequence) {
+            SimpleSequence seq = (SimpleSequence) arguments.get(1);
+            for(int i = 0; i < seq.size(); i++) {
+                String facetsWanted = ((TemplateScalarModel) seq.get(i)).getAsString();
+                rawFacetNames.add(facetsWanted);
+            }
+        } else {
+            throw new IllegalArgumentException("Can not understand 2nd argument which is a: " 
+                                                    + arguments.get(1).getClass());
         }
         
-        List<String> wantedFacetNames = StreamUtils.ofNullable(facetsWantedString.split(","))
+        List<String> wantedFacetNames = rawFacetNames.stream()
                 .map(String::trim)
                 .filter(not(String::isEmpty))
                 .collect(Collectors.toList());
