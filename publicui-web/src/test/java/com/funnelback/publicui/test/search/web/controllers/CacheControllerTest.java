@@ -145,7 +145,6 @@ public class CacheControllerTest {
         Document doc = (Document) modelAndView.getModelMap().get(CacheController.MODEL_DOCUMENT);
         
         Assert.assertTrue("Expected to find: '" + SIMPLE_NON_ASCII_STRING +"' yet found: \r\n:" + doc.text(), (doc.text()).contains(SIMPLE_NON_ASCII_STRING));
-        
     }
     
     
