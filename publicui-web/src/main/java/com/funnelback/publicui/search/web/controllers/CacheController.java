@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.web.controllers;
 
-import groovy.lang.Script;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -21,10 +19,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +41,7 @@ import com.funnelback.common.io.store.Store;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.StringRecord;
 import com.funnelback.common.io.store.XmlRecord;
+import com.funnelback.common.io.store.record.ConvertRecordType;
 import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.common.views.StoreView;
 import com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner;
@@ -63,6 +58,11 @@ import com.funnelback.publicui.utils.web.MetricsConfiguration;
 import com.funnelback.springmvc.web.binder.RelativeFileOnlyEditor;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
+
+import groovy.lang.Script;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Deal with cached copies
@@ -185,11 +185,13 @@ public class CacheController {
             }
                 
             if (rmd != null && rmd.record != null) {
+                rmd = new ConvertRecordType().convertRecord(rmd);
                 HookScriptResult hookResult = runHookScript(question.getCollection(), Hook.pre_cache, rmd);
                 if (hookResult.authorized) {
                     if (hookResult.record != null && hookResult.metadata != null) {
                         rmd = new RecordAndMetadata<Record<?>>(hookResult.record, hookResult.metadata);
                     }
+                    
                     
                     if (rmd.record instanceof RawBytesRecord || rmd.record instanceof StringRecord) {
                         String charset = getCharset(rmd.metadata);
