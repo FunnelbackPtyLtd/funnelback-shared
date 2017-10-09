@@ -1,16 +1,22 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_SCOPED_QUERY;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_ALL_QUERY;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_QUERY;
 import static java.util.Arrays.asList;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.*;
-import static com.funnelback.common.facetednavigation.models.FacetValues.*;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.FacetSearchData;
 import com.funnelback.common.facetednavigation.models.FacetValues;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.FacetSearchData;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -93,7 +99,7 @@ public class CollectionFillTest {
         collFill.setFacetSearchData(facetSearchData);
         
         
-        List<CategoryValueComputedDataHolder> values = collFill.computeData(st, null);
+        List<CategoryValueComputedDataHolder> values = collFill.computeData(st, mock(FacetDefinition.class));
         Assert.assertEquals("We should see one value for the user to click on.", 1, values.size());
         
         CategoryValueComputedDataHolder value = values.get(0);
@@ -126,6 +132,35 @@ public class CollectionFillTest {
         
         Assert.assertEquals("See colls 0-2", value.getLabel());
         Assert.assertEquals(20, value.getCount() + 0);
+    }
+    
+    @Test
+    public void valuesFromUnscopedAllQurey() {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getResponse().setResultPacket(new ResultPacket());
+        st.getResponse().getResultPacket().getDocumentsPerCollection().put("col1", 1L);
+        
+        SearchResponse countSr = new SearchResponse();
+        countSr.setResultPacket(new ResultPacket());
+        Map<String, Long> docsPerColl = countSr.getResultPacket().getDocumentsPerCollection();
+        docsPerColl.put("col1", 100L);
+        docsPerColl.put("col2", 10L);
+        
+        
+        TestableCollectionFill collFill = spy(new TestableCollectionFill("See colls 0-2", asList("col0", "col1", "col2")));
+        
+        FacetSearchData facetSearchData = new FacetSearchData(st.getResponse(), (c, v) -> Optional.of(countSr), (c,s) -> 0);
+        doReturn(facetSearchData).when(collFill).getFacetSearchData(any(), any());
+        
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_ALL_QUERY);
+        List<CategoryValueComputedDataHolder> data = collFill.computeData(st, fdef);
+        
+        Assert.assertEquals(1, data.size());
+        
+        CategoryValueComputedDataHolder catData = data.get(0);
+        
+        Assert.assertEquals(110L, catData.getCount() + 0L);
     }
     
     @Test

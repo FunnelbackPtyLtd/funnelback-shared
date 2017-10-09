@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_ALL_QUERY;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -21,9 +23,9 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import lombok.Getter;
-import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_ALL_QUERY;
 public class CollectionFill extends CategoryDefinition {
     
     @Getter private List<String> collections;
@@ -68,6 +70,13 @@ public class CollectionFill extends CategoryDefinition {
             return Collections.emptyList();
         }
         
+        if(fdef.getFacetValues() == FROM_UNSCOPED_ALL_QUERY) {
+            // In this case the ALL query may not have run because this is a user defined facet
+            // this means the query supplying the values may not have all collections.
+            collectionsListed.removeIf(e -> true);
+            collectionsListed.addAll(collections);
+        }
+        
         Long count = null;
         
         Optional<SearchResponse> searchResponseForCounts = facetSearchData.getResponseForCounts().apply(this, value);
@@ -79,7 +88,7 @@ public class CollectionFill extends CategoryDefinition {
                     .map(SearchResponse::getResultPacket)
                     .map(ResultPacket::getDocumentsPerCollection)
                     .map(docsPerColl -> docsPerColl.get(collection))
-                    .orElse(null);
+                    .orElse(0L);
                 
                 count += countFromColl;
             }
