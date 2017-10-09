@@ -101,12 +101,16 @@
 <#list macros as macro>
     <dl>
         <dt>
-            ${macro.type} 
+            ${macro.type}
+            
             <tt><a name="${macro.name}">${macro.name}</a></tt>
             <@signature macro />
             <br /><br />
         </dt>
         <dd>
+            <#if macro.@deprecated??> 
+                <@printDeprecated/>
+            </#if>
             <#if macro.comment?has_content>
                 ${macro.comment}
             </#if>
@@ -154,6 +158,10 @@
         <dt><b>${label}</b></dt>
         <dd>${value}</dd>
     </#if>
+</#macro>
+
+<#macro printDeprecated>
+    <dt>⚠ Deprecated</dt>
 </#macro>
 
 <#macro signature macro>
