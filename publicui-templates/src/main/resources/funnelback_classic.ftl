@@ -432,7 +432,7 @@
     @param class CSS class to use on the DIV containing each facet, defaults to <code>facet</code>.
 
     @provides The facet as <code>${s.facet}</code>.
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro Facet name="" names=[] orderedNames=[] class="facet">
     <#if response?exists && response.facets?exists>
@@ -485,7 +485,7 @@
     @param separator Separator to use in the breadcrumb.
     @param summary Set to true if you want this tag to display the summary + breadcrumb, otherwise use <code>&lt;@s.FacetSummary /&gt;</code>.
     @param tag HTML tag to wrap the name and summary
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro FacetLabel class="facetLabel" separator="&rarr;" summary=true tag="div" link=question.collection.configuration.value("ui.modern.search_link")>
     <#local fn = facetedNavigationConfig(question.collection, question.profile) >
@@ -513,7 +513,7 @@
 
     @param separator Separator to use in the breadcrumb.
     @param alltext Text to use to completely remove the facet constraints. Defaults to &quot;all&quot;.
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro FacetSummary separator="&rarr;" alltext="all" link=question.collection.configuration.value("ui.modern.search_link")>
     <#-- We must test various combinations here as different browsers will encode
@@ -541,7 +541,7 @@
 
     @param title Whether to display the facet title only, or the category.
     @param class CSS class to apply to the container DIV, <code>shortFacetLabel</code> by default.
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro ShortFacetLabel title=false class="shortFacetLabel">
     <#if (title?is_boolean && title) || (title?is_string && title == "true")>
@@ -562,7 +562,7 @@
     @param categoryDefinitions List of sub categories (hierarchical).
     @param selectedCategoryValues List of selected values.
     @param separator Separator to use in the breadcrumb.
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro FacetBreadCrumb categoryDefinitions selectedCategoryValues separator>
     <#list categoryDefinitions as def>
@@ -639,7 +639,7 @@
 
 <#---
     Displays a link to show more or less categories for a facet.
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro MoreOrLessCategories>
     <span class="moreOrLessCategories"><a href="#" onclick="javascript:toggleCategories(this)" style="display: none;">more...</a></span>
@@ -651,7 +651,7 @@
     @param class Optional CSS class to use, defaults to <code>categoryName</code>.
     @param link Search link to use. Defaults to <code>ui.modern.search_link</code>.
     @param extraParams Optional extra URL parameters to append to the link. Will be appended as is. Consider using <code>?url</code> when passing a value.
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro CategoryName class="categoryName" link=question.collection.configuration.value("ui.modern.search_link") extraParams="">
     <#if s.categoryValue?exists>
@@ -676,7 +676,7 @@
     Displays the result count for a facet category value.
 
     @param class Optional CSS class.
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro CategoryCount class="categoryCount"><#compress>
     <#if s.categoryValue?exists><span class="${class}">${s.categoryValue.count}</span></#if>
@@ -793,7 +793,7 @@
     Displays a contextual navigation category <strong>or</strong> a 
     faceted navigation category.
     
-    <p> Note the use of this ⚠ Deprecated for faceted navigation</p>
+    <p> Note the use of this is ⚠ Deprecated for faceted navigation</p>
 
     <p>The presence of the <code>name</code> parameter determines the role.</p>
     <p>The <code>nbCategories</code> and <code>recursionCategories</code> parameters
