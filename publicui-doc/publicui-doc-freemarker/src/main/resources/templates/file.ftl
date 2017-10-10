@@ -108,8 +108,8 @@
             <br /><br />
         </dt>
         <dd>
-            <#if macro.@deprecated??> 
-                <@printDeprecated/>
+            <#if macro.@deprecated??>
+                <@printDeprecated macro.@deprecated/>
             </#if>
             <#if macro.comment?has_content>
                 ${macro.comment}
@@ -160,8 +160,9 @@
     </#if>
 </#macro>
 
-<#macro printDeprecated>
-    <dt>⚠ Deprecated</dt>
+<#macro printDeprecated reason>
+    <dt>⚠ Deprecated<#if reason?? && reason?trim?length != 0>: ${reason}</#if>
+    </dt><br />
 </#macro>
 
 <#macro signature macro>

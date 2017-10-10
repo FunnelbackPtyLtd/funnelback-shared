@@ -363,7 +363,7 @@
     @param names A list of specific facets to display, optional.
 
     @provides The current facet being iterated as <code>${fb.facet}</code>.
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags 
 -->
 <#macro MultiFacet name="" names=[]>
     <#if response?exists && response.facets?exists>
@@ -405,7 +405,7 @@
     every categories of the given facet.</p>
 
     @param facet Facet to display categories for.
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro MultiCategories facet>
     <#list facet.categories as category>
@@ -421,7 +421,7 @@
 
     @param category Category to display.
     @param facetSelected  Whether the parent facet of the category has been selected by the user or not.
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro MultiCategory category facetSelected=false>
     <div class="category">
@@ -445,7 +445,7 @@
     @param values List of values to display.
     @param facetSelected Whether the parent facet of the category which this value belongs has been selected by the user or not.
     @param max Maximum number of values to display.
-    @deprecated
+    @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro MultiValues values facetSelected max=16>
     <#if values?exists && values?size &gt; 0>
