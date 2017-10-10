@@ -33,6 +33,7 @@ import com.funnelback.publicui.streamedresults.ResultFields;
 import com.funnelback.publicui.streamedresults.TransactionToResults;
 import com.funnelback.publicui.streamedresults.converters.CSVDataConverter;
 import com.funnelback.publicui.streamedresults.converters.JSONDataConverter;
+import com.funnelback.publicui.streamedresults.converters.JSONPDataConverter;
 import com.funnelback.publicui.streamedresults.datafetcher.XJPathResultDataFetcher;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 
@@ -83,8 +84,11 @@ public class StreamResultsController {
      * @param ext
      * @return
      */
-    private DataConverter<Object> getDataConverterFromExtension(String ext) {
+    private DataConverter<Object> getDataConverterFromExtension(String ext, Optional<String> callback) {
         if(ext.equals("json")) {
+            if(callback.isPresent()) {
+                return (DataConverter) new JSONPDataConverter(callback.get(), this.JSONDataConverter);
+            }
             return (DataConverter) this.JSONDataConverter;
         }
         
@@ -144,9 +148,11 @@ public class StreamResultsController {
             @RequestParam(required=false) CommaSeparatedList fieldnames,
             @RequestParam(required=false, defaultValue="true") boolean optimisations,
             @Valid SearchQuestion question,
-            @ModelAttribute SearchUser user) throws Exception {
+            @ModelAttribute SearchUser user,
+            @RequestParam(required=false) String callback) throws Exception {
         
-        getAllResults(request, response, fields, fieldnames, optimisations, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS);
+        getAllResults(request, response, fields, fieldnames, optimisations, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS,
+            callback);
         
     }
     
@@ -158,7 +164,8 @@ public class StreamResultsController {
         boolean optimisations,
         @Valid SearchQuestion question,
         @ModelAttribute SearchUser user,
-        SearchQuestionType searchQuestionType) throws Exception {
+        SearchQuestionType searchQuestionType,
+        String callback) throws Exception {
         
         // Parse the fields and fieldnames, this ensures that the size of the resulting lists are the same.
         ResultFields resultFields = new ResultFields(Optional.ofNullable(fields).map(CommaSeparatedList::getList), 
@@ -169,7 +176,9 @@ public class StreamResultsController {
             SearchQuestionBinder.bind(executionContextHolder.getExecutionContext(), request, question, localeResolver, funnelbackVersion);
             
             // Find the data converter to use based on the extension.
-            DataConverter<Object> dataConverter = getDataConverterFromExtension(FilenameUtils.getExtension(request.getRequestURI()));
+            DataConverter<Object> dataConverter = getDataConverterFromExtension(
+                FilenameUtils.getExtension(request.getRequestURI()),
+                Optional.ofNullable(callback));
             
             // TODO I am not sure how an exception should be returned here. Do I try to make a message in the 
             // requested format e.g. csv/json or should I write nothing or should I just write some text back
