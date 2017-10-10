@@ -200,10 +200,6 @@ public class StreamResultsController {
                 return;
             }
             
-            if(callback != null) {
-                response.setContentType("application/javascript");
-            }
-            
             // Now execute our query using the Paged searcher which takes care of making smaller request
             // then pass the result of each search the TransactionToResults class which will convert
             // the SearchTransaction to the data type expected e.g. CSV.
