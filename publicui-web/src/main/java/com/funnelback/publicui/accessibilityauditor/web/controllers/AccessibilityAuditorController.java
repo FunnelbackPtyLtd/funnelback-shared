@@ -81,10 +81,11 @@ public class AccessibilityAuditorController {
         @RequestParam(required=false) CommaSeparatedList fieldnames,
         @RequestParam(required=false, defaultValue="true") boolean optimisations,
         @Valid SearchQuestion question,
-        @ModelAttribute SearchUser user) throws Exception {
+        @ModelAttribute SearchUser user,
+        @RequestParam(required=false) String callback) throws Exception {
         
         streamResultsController.getAllResults(request, response, fields, fieldnames, optimisations, question, user,
-            SearchQuestionType.ACCESSIBILITY_AUDITOR_GET_ALL_RESULTS);
+            SearchQuestionType.ACCESSIBILITY_AUDITOR_GET_ALL_RESULTS, callback);
     }
     
     public ModelAndView runQuery(
