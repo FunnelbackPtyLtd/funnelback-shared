@@ -73,7 +73,7 @@ public class CollectionFill extends CategoryDefinition {
         if(fdef.getFacetValues() == FROM_UNSCOPED_ALL_QUERY) {
             // In this case the ALL query may not have run because this is a user defined facet
             // this means the query supplying the values may not have all collections.
-            collectionsListed.removeIf(e -> true);
+            collectionsListed.clear();
             collectionsListed.addAll(collections);
         }
         
