@@ -59,6 +59,13 @@ public class SearchResponse {
     @Getter private final List<Facet> facets = new ArrayList<>();
     
     /**
+     * Information about facets that is not available from {@link SearchResponse#facets}
+     * 
+     * @since 15.12
+     */
+    @Getter private final FacetExtras facetExtras = new FacetExtras();
+    
+    /**
      * Custom data placeholder allowing any arbitrary data to be
      * stored by hook scripts.
      */

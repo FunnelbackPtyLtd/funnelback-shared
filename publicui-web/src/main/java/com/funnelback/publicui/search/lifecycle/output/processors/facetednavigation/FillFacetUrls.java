@@ -68,6 +68,12 @@ public class FillFacetUrls {
                 });
     }
     
+    public String unselectAllFacetsUrl(SearchTransaction st) {
+        Map<String, List<String>> urlQuestion = st.getQuestion().getQueryStringMapCopy();
+        unselectAllFacets(urlQuestion);
+        return QueryStringUtils.toString(urlQuestion, true);
+    }
+    
     public void unselectAllFacets(Map<String, List<String>> urlQuestion) {
         FacetedNavigationUtils.editQueryStringFacetValue(urlQuestion, 
             m -> {
