@@ -115,6 +115,10 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                     searchTransaction.getResponse().getFacets().add(facet);
                     
                 }
+                
+                searchTransaction.getResponse()
+                        .getFacetExtras()
+                        .setUnselectAllFacetsUrl(fillFacetUrls.unselectAllFacetsUrl(searchTransaction));
             }
         }
     }
