@@ -24,7 +24,7 @@ public class FacetExtras {
     @Getter @Setter private String unselectAllFacetsUrl;
     
     /**
-     * true if {@link SearchResponse#getFacets()} has facets
+     * true if {@link SearchResponse#getFacets()} has selected facets
      * which do not have a guessed display type of {@link FacetDisplayType#TAB}
      * 
      * @since 15.12
