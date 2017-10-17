@@ -157,7 +157,10 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals("f.By date on d,Z,O|d", c.getQueryStringParamName());
         // There's supposed to be 1 value in a real world scenario here because
         // the constraint from the previous click "d=24Jun2003" would have been applied
-        Assert.assertEquals(8, c.getValues().size());
+        // The tests now expect 1 value because data facets are upgraded to have
+        // FROM_SCOPED_QUERY_HIDE_UNSELECTED_PARENT_VALUES. In the real world
+        // we would never actually filter out any values.
+        Assert.assertEquals(1, c.getValues().size());
 
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("d", cv.getConstraint());

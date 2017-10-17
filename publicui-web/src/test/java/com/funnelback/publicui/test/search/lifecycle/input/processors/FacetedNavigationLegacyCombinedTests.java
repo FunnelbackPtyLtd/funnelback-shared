@@ -1,10 +1,12 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
@@ -33,6 +36,8 @@ public class FacetedNavigationLegacyCombinedTests {
         st = new SearchTransaction(question, null);
         
         processor = new BothFacetedNavigationInputProcessors();
+        
+        List<FacetDefinition> facets = new ArrayList<>();
     }
     
     @Test
@@ -48,16 +53,17 @@ public class FacetedNavigationLegacyCombinedTests {
         processor.processInput(st);
         
         Assert.assertNotNull(st.getQuestion().getFacetsGScopeConstraints());
-        // FIXME: FUN-4480 This should be 1,10|41+
         
-        Assert.assertTrue("We expect all three gscopes to be logical AND (note this is reverse polish)", 
-            st.getQuestion().getFacetsGScopeConstraints().endsWith("++"));
+        Assert.assertFalse("We expect all three gscopes to be logical AND (note this is reverse polish)", 
+            st.getQuestion().getFacetsGScopeConstraints().contains("|"));
+        
+        Assert.assertEquals("We expect all three gscopes to be logical AND (note this is reverse polish)",
+            2,
+            StringUtils.countMatches(st.getQuestion().getFacetsGScopeConstraints(), "+"));
         
         //We will check we set the correct constrains, by chopping of the end bit (++) and spliting by comma
         List<String> gscopesConstrains = Arrays.asList(
-            st.getQuestion().getFacetsGScopeConstraints().substring(0, 
-                                    st.getQuestion().getFacetsGScopeConstraints().length() - "++".length()
-                                    ).split(","));
+            st.getQuestion().getFacetsGScopeConstraints().split("[^\\d]"));
         Assert.assertTrue(gscopesConstrains.contains("1"));
         Assert.assertTrue(gscopesConstrains.contains("10"));
         Assert.assertTrue(gscopesConstrains.contains("41"));

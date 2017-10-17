@@ -144,6 +144,10 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                 c.getValues().removeIf(not(CategoryValue::isSelected));
             }
         }
+        // Remove any categories with no child categories and no values.
+        categories
+            .removeIf(c -> c.getCategories().isEmpty() && c.getValues().isEmpty());
+
         categories.stream().map(Category::getCategories).forEach(this::removeUnslectedValuesForDrillDownFacets);
     }
     
