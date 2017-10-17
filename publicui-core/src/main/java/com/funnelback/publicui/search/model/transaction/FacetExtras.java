@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.transaction;
 
+import com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,4 +22,12 @@ public class FacetExtras {
      * @since 15.12
      */
     @Getter @Setter private String unselectAllFacetsUrl;
+    
+    /**
+     * true if {@link SearchResponse#getFacets()} has facets
+     * which do not have a guessed display type of {@link FacetDisplayType#TAB}
+     * 
+     * @since 15.12
+     */
+    @Getter @Setter private boolean hasSelectedNonTabFacets = false;
 }
