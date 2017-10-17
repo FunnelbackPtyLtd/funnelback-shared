@@ -28,6 +28,7 @@ import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType;
 import com.funnelback.publicui.search.model.transaction.facet.order.ByFirstCategoryValueComparator;
 import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
@@ -73,14 +74,7 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                         if (c != null) {
                             facet.getCategories().add(c);
                             cats.add(c);
-                            if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(ct.getQueryStringParamName())
-                                && f.getConstraintJoin() == FacetConstraintJoin.LEGACY) {
-                                // This category has been selected. Stop calculating other
-                                // values for it (FUN-4462)
-                                // We only do this in legacy mode, it is not clear if we want to do this in new modes.
-                                // we only want to do this in the drill down case.
-                                // Note that this does not work for metadata and so this legacy code here makes gscopes
-                                // and metadata inconsitent.
+                            if(stopCalculatingFurtherValuesForLegacySupport(searchTransaction, f, ct)) {
                                 break;
                             }
                         }
@@ -116,11 +110,27 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                     
                 }
                 
-                searchTransaction.getResponse()
-                        .getFacetExtras()
-                        .setUnselectAllFacetsUrl(fillFacetUrls.unselectAllFacetsUrl(searchTransaction));
+                fillInFacetExtras(searchTransaction);
             }
         }
+    }
+    
+    public void fillInFacetExtras(SearchTransaction st) {
+        setUnselectAllFacetUrls(st);
+        setNonTabFacets(st);
+    }
+    
+    public void setUnselectAllFacetUrls(SearchTransaction st) {
+        st.getResponse()
+            .getFacetExtras()
+            .setUnselectAllFacetsUrl(fillFacetUrls.unselectAllFacetsUrl(st));
+    }
+    
+    public void setNonTabFacets(SearchTransaction st) {
+        st.getResponse().getFacetExtras()
+            .setHasSelectedNonTabFacets(st.getResponse().getFacets().stream()
+                    .filter(Facet::isSelected)
+                    .anyMatch(f -> f.getGuessedDisplayType() != FacetDisplayType.TAB));
     }
     
     public void removeUnslectedValuesForDrillDownFacets(Facet facet) {
@@ -134,6 +144,10 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                 c.getValues().removeIf(not(CategoryValue::isSelected));
             }
         }
+        // Remove any categories with no child categories and no values.
+        categories
+            .removeIf(c -> c.getCategories().isEmpty() && c.getValues().isEmpty());
+
         categories.stream().map(Category::getCategories).forEach(this::removeUnslectedValuesForDrillDownFacets);
     }
     
@@ -213,14 +227,7 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                 Facet.Category c = fillCategories(facetDefinition, subCategoryDef, searchTransaction, depth);
                 if (c != null) {
                     category.getCategories().add(c);
-                    if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(subCategoryDef.getQueryStringParamName())
-                            && facetDefinition.getConstraintJoin() == FacetConstraintJoin.LEGACY) {
-                        // This category has been selected. Stop calculating other
-                        // values for it (FUN-4462)
-                        // We only do this in legacy mode, it is not clear if we want to do this in new modes.
-                        // we only want to do this in the drill down case.
-                        // Note that this does not work for metadata and so this legacy code here makes gscopes
-                        // and metadata inconsitent.
+                    if(stopCalculatingFurtherValuesForLegacySupport(searchTransaction, facetDefinition, subCategoryDef)) {
                         break;
                     }
                 }
@@ -234,6 +241,26 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             // No need to return it.
             return null;
         }
+    }
+    
+    boolean stopCalculatingFurtherValuesForLegacySupport(SearchTransaction searchTransaction, 
+                                                            FacetDefinition facetDefinition, 
+                                                            CategoryDefinition categoryDefinition) {
+        
+        if (facetDefinition.getConstraintJoin() == FacetConstraintJoin.LEGACY
+            && facetDefinition.getFacetValues() == FacetValues.FROM_SCOPED_QUERY
+            && searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(categoryDefinition.getQueryStringParamName())) {
+            // This category has been selected. Stop calculating other
+            // values for it (FUN-4462)
+            // We only do this in legacy mode and when values are from scoped query.
+            // It only makes when values are from scoped query as that is the mode when we would try to hide
+            // unselected parents (basically this was an attempt to implement FROM_SCOPED_QUERY_HIDE_UNSELECTED_PARENT_VALUES
+            // we only want to do this in the drill down case.
+            // Note that this does not work for metadata and so this legacy code here makes gscopes
+            // and metadata inconsistent.
+            return true;
+        }
+        return false;
     }
 
 }

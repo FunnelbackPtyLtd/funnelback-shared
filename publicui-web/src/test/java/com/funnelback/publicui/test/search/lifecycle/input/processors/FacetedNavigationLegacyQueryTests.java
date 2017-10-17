@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
+import com.google.common.collect.ImmutableSet;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -89,9 +90,7 @@ public class FacetedNavigationLegacyQueryTests {
         processor.processInput(st);
         
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
-        // FIXME: FUN-4480 This should be 10,1| here because both values are part of the same facet
-        Assert.assertEquals("3,16+", st.getQuestion().getFacetsGScopeConstraints());
-        
+        Assert.assertTrue(ImmutableSet.of("3,16+", "16,3+").contains(st.getQuestion().getFacetsGScopeConstraints()));
     }
 
     
