@@ -10,6 +10,7 @@ import static com.funnelback.common.padre.QueryProcessorOptionKeys.DAAT_TIMEOUT;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.EXPLAIN;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.KMOD;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.NEARDUP;
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.PROMOTE_URLS;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.QL;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.SAME_COLLECTION_SUPPRESSION;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.SAME_META_SUPPRESSION;
@@ -58,7 +59,8 @@ public class PadreOptionsForSpeedTest {
             SAME_COLLECTION_SUPPRESSION,
             SAME_META_SUPPRESSION,
             BB,
-            QL
+            QL,
+            PROMOTE_URLS
             );
         
         List<String> leftOverOptions = padreOptsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs()
