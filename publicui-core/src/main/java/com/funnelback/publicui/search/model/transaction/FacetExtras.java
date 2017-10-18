@@ -30,4 +30,12 @@ public class FacetExtras {
      * @since 15.12
      */
     @Getter @Setter private boolean hasSelectedNonTabFacets = false;
+    
+    /**
+     * true if {@link SearchResponse#getFacets()} has facets
+     * which do not have a guessed display type of {@link FacetDisplayType#TAB}
+     * 
+     * @since 15.12
+     */
+    @Getter @Setter private boolean hasNonTabFacets = false;
 }
