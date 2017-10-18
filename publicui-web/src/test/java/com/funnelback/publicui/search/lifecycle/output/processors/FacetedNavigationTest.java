@@ -261,10 +261,10 @@ public class FacetedNavigationTest {
     }
     
     @Test
-    public void setNonTabFacetsTest() {
+    public void setSelectedNonTabFacetsTest() {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         
-        new FacetedNavigation().setNonTabFacets(st);
+        new FacetedNavigation().setSelectedNonTabFacets(st);
         Assert.assertFalse("We have no facets so none of them are non tabed", 
                 st.getResponse().getFacetExtras().isHasSelectedNonTabFacets());
         
@@ -272,11 +272,11 @@ public class FacetedNavigationTest {
         when(facetWithTab.getGuessedDisplayType()).thenReturn(FacetDisplayType.TAB);
         st.getResponse().getFacets().add(facetWithTab);
         
-        new FacetedNavigation().setNonTabFacets(st);
+        new FacetedNavigation().setSelectedNonTabFacets(st);
         Assert.assertFalse(st.getResponse().getFacetExtras().isHasSelectedNonTabFacets());
         when(facetWithTab.isSelected()).thenReturn(true);
         
-        new FacetedNavigation().setNonTabFacets(st);
+        new FacetedNavigation().setSelectedNonTabFacets(st);
         Assert.assertFalse("Selected tabs don't count",
             st.getResponse().getFacetExtras().isHasSelectedNonTabFacets());
         
@@ -284,15 +284,41 @@ public class FacetedNavigationTest {
         when(facetNonTab.getGuessedDisplayType()).thenReturn(FacetDisplayType.CHECKBOX);
         st.getResponse().getFacets().add(facetNonTab);
         
-        new FacetedNavigation().setNonTabFacets(st);
+        new FacetedNavigation().setSelectedNonTabFacets(st);
         Assert.assertFalse("Non tab is not selected",
             st.getResponse().getFacetExtras().isHasSelectedNonTabFacets());
         
         when(facetNonTab.isSelected()).thenReturn(true);
         
-        new FacetedNavigation().setNonTabFacets(st);
+        new FacetedNavigation().setSelectedNonTabFacets(st);
         Assert.assertTrue(st.getResponse().getFacetExtras().isHasSelectedNonTabFacets());
     }
+    
+    @Test
+    public void setNonTabFacetsTest() {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        
+        new FacetedNavigation().setNonTabFacets(st);
+        Assert.assertFalse("We have no facets so none of them are non tabed", 
+                st.getResponse().getFacetExtras().isHasNonTabFacets());
+        
+        Facet facetWithTab = mock(Facet.class);
+        when(facetWithTab.getGuessedDisplayType()).thenReturn(FacetDisplayType.TAB);
+        st.getResponse().getFacets().add(facetWithTab);
+        
+        new FacetedNavigation().setNonTabFacets(st);
+        Assert.assertFalse(st.getResponse().getFacetExtras().isHasNonTabFacets());
+        
+        
+        Facet facetNonTab = mock(Facet.class);
+        when(facetNonTab.getGuessedDisplayType()).thenReturn(FacetDisplayType.CHECKBOX);
+        st.getResponse().getFacets().add(facetNonTab);
+        
+        new FacetedNavigation().setNonTabFacets(st);
+        Assert.assertTrue(st.getResponse().getFacetExtras().isHasNonTabFacets());
+    }
+    
+    
     
     public CategoryValue categoryValue(String label, boolean selected) {
         CategoryValue value = mock(CategoryValue.class);

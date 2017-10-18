@@ -117,6 +117,7 @@ public class FacetedNavigation extends AbstractOutputProcessor {
     
     public void fillInFacetExtras(SearchTransaction st) {
         setUnselectAllFacetUrls(st);
+        setSelectedNonTabFacets(st);
         setNonTabFacets(st);
     }
     
@@ -126,10 +127,16 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             .setUnselectAllFacetsUrl(fillFacetUrls.unselectAllFacetsUrl(st));
     }
     
-    public void setNonTabFacets(SearchTransaction st) {
+    public void setSelectedNonTabFacets(SearchTransaction st) {
         st.getResponse().getFacetExtras()
             .setHasSelectedNonTabFacets(st.getResponse().getFacets().stream()
                     .filter(Facet::isSelected)
+                    .anyMatch(f -> f.getGuessedDisplayType() != FacetDisplayType.TAB));
+    }
+    
+    public void setNonTabFacets(SearchTransaction st) {
+        st.getResponse().getFacetExtras()
+            .setHasNonTabFacets(st.getResponse().getFacets().stream()
                     .anyMatch(f -> f.getGuessedDisplayType() != FacetDisplayType.TAB));
     }
     
