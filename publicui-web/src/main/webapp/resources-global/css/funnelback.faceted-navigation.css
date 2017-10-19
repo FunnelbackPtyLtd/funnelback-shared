@@ -17,3 +17,5 @@
 #search-facets-breadcrumb .facets-applied {background-color: #f0f0f0; border: 1px solid #eee; font-size: x-small; display: inline-block; padding: 2px 4px 2px 0px;}
 #search-facets-breadcrumb .facets-applied:not(:last-child) {margin-right: 5px; margin-bottom: 2px;}
 #search-facets-breadcrumb .facets-applied > li {padding: 0;}
+#search-facets-breadcrumb .btn-default {background-color: #ccc; color: #fefefe; border-color: #bbb;}
+#search-facets-breadcrumb .btn-default:hover {background-color: #bbb; border-color: #aaa;}
