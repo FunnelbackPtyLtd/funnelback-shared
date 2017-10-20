@@ -164,7 +164,7 @@ public class MultiFacetedNavigationTest {
         Facet andFacet = mock(Facet.class);
         when(andFacet.getName()).thenReturn("not bob");
         CategoryValue andCat = categoryValue("f.bar|ff", "a=b", "data 1");
-        when(andFacet.getUnselectedValues()).thenReturn(Arrays.asList(andCat));
+        when(andFacet.getAllValues()).thenReturn(Arrays.asList(andCat));
         
         
         Facet orFacet = mock(Facet.class);

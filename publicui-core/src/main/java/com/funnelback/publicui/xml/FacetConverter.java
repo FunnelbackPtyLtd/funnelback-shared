@@ -31,7 +31,6 @@ public class FacetConverter implements Converter {
         
         private List<CategoryValue> allValues;
         private List<CategoryValue> selectedValues;
-        private List<CategoryValue> unselectedValues;
         
         protected FacetWithFields(Facet facet) {
             super(facet.getName(), facet.getUnselectAllUrl(), facet.getSelectionType(), 
@@ -43,7 +42,6 @@ public class FacetConverter implements Converter {
             
             // Now add set the fields that we want serialised.
             this.selectedValues = facet.getSelectedValues();
-            this.unselectedValues = facet.getUnselectedValues();
             this.allValues = facet.getAllValues();
         }
         
