@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -26,13 +25,13 @@ import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.CollectionId;
-import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.ServiceId;
+import com.funnelback.common.function.SupplierWithCE;
 import com.funnelback.common.groovy.GroovyLoader;
 import com.funnelback.common.profile.ProfileId;
 import com.funnelback.common.profile.ProfileNotFoundException;
@@ -59,7 +58,6 @@ import com.funnelback.publicui.search.service.resource.impl.CuratorYamlConfigRes
 import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
 import com.funnelback.publicui.search.service.resource.impl.ParameterTransformResource;
 import com.funnelback.publicui.search.service.resource.impl.SimpleFileResource;
-import com.funnelback.publicui.search.service.resource.impl.UniqueLinesResource;
 import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.ResourceManager;
@@ -74,6 +72,7 @@ import com.funnelback.springmvc.service.resource.impl.config.ServiceConfigDataRe
 import groovy.lang.Script;
 import groovy.util.ResourceException;
 import groovy.util.ScriptException;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
@@ -226,8 +225,9 @@ public class DefaultConfigRepository implements ConfigRepository {
         
         // Force the use of the same groovy loader for all of our scripts. It is probably less suprising for users
         // that way.
-        GroovyLoader collectionGroovyLoader = resourceManager.load(
-            new GroovyCollectionLoaderResource(searchHome, new CollectionId(collectionId), groovyForceReloadSeconds));
+        
+        SupplyAndCache<GroovyLoader, IOException> collectionGroovyLoader = new SupplyAndCache<>(() -> resourceManager.load(
+            new GroovyCollectionLoaderResource(searchHome, new CollectionId(collectionId), groovyForceReloadSeconds)));
         
         for (Hook hook: Hook.values()) {
             File hookScriptFile = new File(collectionConfigFolder, Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX);
@@ -241,10 +241,24 @@ public class DefaultConfigRepository implements ConfigRepository {
         return c;
     }
     
-    private Optional<Class<Script>> loadScriptHandleExceptions(GroovyLoader groovyLoader, File hookScriptFile) {
+    @RequiredArgsConstructor
+    public class SupplyAndCache<T, X extends Exception> {
+        private final SupplierWithCE<T, X> objectCreator;
+        
+        private T cachedObject = null;
+        
+        public T get() throws X {
+            if(cachedObject == null) {
+                cachedObject = objectCreator.get();
+            }
+            return cachedObject;
+        }
+    }
+    
+    private Optional<Class<Script>> loadScriptHandleExceptions(SupplyAndCache<GroovyLoader, IOException> groovyLoader, File hookScriptFile) {
         if (hookScriptFile.exists()) {
             try {
-                return Optional.of(groovyLoader.loadScript(hookScriptFile));
+                return Optional.of(groovyLoader.get().loadScript(hookScriptFile));
                 
             } catch (CompilationFailedException cfe) {
                 log.error("Compilation of hook script '"+hookScriptFile+"' failed", cfe);
