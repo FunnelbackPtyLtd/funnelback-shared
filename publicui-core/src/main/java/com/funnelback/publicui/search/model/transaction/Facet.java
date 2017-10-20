@@ -3,7 +3,6 @@ import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_
 import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_ORDER;
 import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_SELECTION_TYPE;
 import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_VALUES;
-import static com.funnelback.common.function.Predicates.not;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -161,15 +160,6 @@ public class Facet {
      */
     public List<CategoryValue> getSelectedValues() {
         return getValuesAsStream().filter(CategoryValue::isSelected).collect(Collectors.toList());
-    }
-
-    /**
-     * 
-     * @return List of unselected values
-     * @Since 15.12
-     */
-    public List<CategoryValue> getUnselectedValues() {
-        return getValuesAsStream().filter(not(CategoryValue::isSelected)).collect(Collectors.toList());
     }
     
     /**
