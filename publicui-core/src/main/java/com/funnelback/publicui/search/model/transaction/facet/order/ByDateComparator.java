@@ -33,37 +33,43 @@ public class ByDateComparator implements Comparator<CategoryValue> {
     }
     
     private final DateSortMode sortMode;
+    
+    private final Comparator<Integer> comparator;
 
     public ByDateComparator(DateSortMode sortMode) {
         if (! DateSortMode.adate.equals(sortMode)
             && ! DateSortMode.ddate.equals(sortMode)) {
             throw new IllegalArgumentException("Unsupported sort mode " + sortMode);
         }
+        
+        Comparator<Integer> comparator = Comparator.naturalOrder();
+        if(!DateSortMode.adate.equals(sortMode)) {
+            comparator = comparator.reversed();
+        }
+        
+        this.comparator = Comparator.nullsLast(comparator);
+        
         this.sortMode = sortMode;
     }
     
     @Override
     public int compare(CategoryValue cv1, CategoryValue cv2) {
-        int value1 = 0;
-        int value2 = 0;
-        
-        if (DATE_LABELS_VALUES.containsKey(cv1.getLabel())) {
-            value1 = DATE_LABELS_VALUES.get(cv1.getLabel());
-        } else {
-            value1 = Integer.parseInt(cv1.getLabel());
-        }
-        
-        if (DATE_LABELS_VALUES.containsKey(cv2.getLabel())) {
-            value2 = DATE_LABELS_VALUES.get(cv2.getLabel());
-        } else {
-            value2 = Integer.parseInt(cv2.getLabel());
-        }
+        return this.comparator.compare(getIntegerFromCategory(cv1), getIntegerFromCategory(cv2));
+    }
     
-        if (DateSortMode.ddate.equals(sortMode)) {
-            return value2 - value1;
+    public Integer getIntegerFromCategory(CategoryValue catVal) {
+        if (DATE_LABELS_VALUES.containsKey(catVal.getLabel())) {
+            return DATE_LABELS_VALUES.get(catVal.getLabel());
         } else {
-            return value1 - value2;
+            return tryParseInt(catVal.getLabel());
         }
-        
+    }
+    
+    public Integer tryParseInt(String val) {
+        try {
+            return Integer.parseInt(val);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
