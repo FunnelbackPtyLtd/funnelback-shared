@@ -212,6 +212,7 @@ public class LocalDataRepository implements DataRepository {
         } catch (IOException ioe) {
             log.error("Couldn't access stored content on collection '"+collection.getId()+"' for URL '"+url+"'", ioe);
         } catch (UnsupportedOperationException uoe) {
+            uoe.printStackTrace();
             // Ignore, some collection types (local) are not supported
             log.debug("Unsupported operation on the store for collection '"+collection.getId()+"'", uoe);
         }
