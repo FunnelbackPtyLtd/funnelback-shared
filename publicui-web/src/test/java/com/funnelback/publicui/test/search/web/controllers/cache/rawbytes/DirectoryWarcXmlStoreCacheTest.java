@@ -20,7 +20,7 @@ public class DirectoryWarcXmlStoreCacheTest extends
             throws IOException {
         WarcFileStore store = new WarcFileStore(liveRoot);
         store.open();
-        store.add(rmd.record);
+        store.add(rmd.record, rmd.metadata);
         store.close();
 
     }
