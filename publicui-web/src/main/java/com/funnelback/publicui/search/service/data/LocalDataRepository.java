@@ -212,6 +212,7 @@ public class LocalDataRepository implements DataRepository {
         } catch (IOException ioe) {
             log.error("Couldn't access stored content on collection '"+collection.getId()+"' for URL '"+url+"'", ioe);
         } catch (UnsupportedOperationException uoe) {
+            uoe.printStackTrace();
             // Ignore, some collection types (local) are not supported
             log.debug("Unsupported operation on the store for collection '"+collection.getId()+"'", uoe);
         }
@@ -323,8 +324,6 @@ public class LocalDataRepository implements DataRepository {
     private String extractPrimaryKey(Collection collection, String url) {
         try {
             switch (collection.getType()) {
-            case directory:
-                return URLDecoder.decode(url.replaceFirst(".*[&?;]"+RECORD_ID+"=([^&]+).*", "$1"), "UTF-8");
             case custom:
             case trimpush:
                 return URLDecoder.decode(url, "UTF-8");
