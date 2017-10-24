@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import lombok.SneakyThrows;
-
+import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
-import com.funnelback.common.io.store.XmlRecord;
-import com.funnelback.common.io.store.xml.WarcXmlStore;
+import com.funnelback.common.io.store.bytes.WarcFileStore;
+
+import lombok.SneakyThrows;
 
 public class DirectoryWarcXmlStoreCacheTest extends
     AbstractRawBytesCacheControllerTest {
@@ -16,9 +16,9 @@ public class DirectoryWarcXmlStoreCacheTest extends
     private static final String COLLECTION_ID = "cache-directory-warcxmlstore";
     
     @Override
-    protected void storeContent(RecordAndMetadata<XmlRecord> rmd)
+    protected void storeContent(RecordAndMetadata<RawBytesRecord> rmd)
             throws IOException {
-        WarcXmlStore store = new WarcXmlStore(liveRoot);
+        WarcFileStore store = new WarcFileStore(liveRoot);
         store.open();
         store.add(rmd.record);
         store.close();
