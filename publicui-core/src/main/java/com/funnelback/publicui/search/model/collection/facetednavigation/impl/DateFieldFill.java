@@ -144,7 +144,7 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
     public ConstraintAndLabel constraintAndLabelFromCGIValue(String value) {
         String[] parts = CONSTRAINT_AND_LABEL_SEPERATOR_PATTERN.split(value, 2);
         if(parts.length == 2) {
-            return new ConstraintAndLabel(parts[1], parts[0]);
+            return new ConstraintAndLabel(parts[0], parts[1]);
         }
         return new ConstraintAndLabel(value, value);
     }
@@ -157,10 +157,7 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
      * @return
      */
     public String constructCGIValue(String queryConstraint, String label) {
-        // It seems very unlikly we will have ascii 29 in the label shown
-        // to the user so put it first that way the query constraint could have
-        // ascii 29 and still work.
-        return label + CONSTRAINT_AND_LABEL_SEPERATOR + queryConstraint;
+        return queryConstraint + CONSTRAINT_AND_LABEL_SEPERATOR + label;
     }
     
     @AllArgsConstructor
