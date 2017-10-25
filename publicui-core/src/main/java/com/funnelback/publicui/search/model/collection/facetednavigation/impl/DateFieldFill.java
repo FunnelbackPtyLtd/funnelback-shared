@@ -49,9 +49,9 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
      *
      * 
      */
-    public static final String CONSTRAINT_AND_LABEL_SEPERATOR = " :: ";
+    public static final String CONSTRAINT_AND_LABEL_SEPARATOR = " :: ";
     
-    private static final Pattern CONSTRAINT_AND_LABEL_SEPERATOR_PATTERN = Pattern.compile(CONSTRAINT_AND_LABEL_SEPERATOR);
+    private static final Pattern CONSTRAINT_AND_LABEL_SEPERATOR_PATTERN = Pattern.compile(CONSTRAINT_AND_LABEL_SEPARATOR);
     
     
     public DateFieldFill(String metaDataClass) {
@@ -157,7 +157,7 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
      * @return
      */
     public String constructCGIValue(String queryConstraint, String label) {
-        return queryConstraint + CONSTRAINT_AND_LABEL_SEPERATOR + label;
+        return queryConstraint + CONSTRAINT_AND_LABEL_SEPARATOR + label;
     }
     
     @AllArgsConstructor
