@@ -83,7 +83,7 @@ public class DateFieldFillTest {
         
         String queryConstraint = "d<2017";
         // We support the label having the constraint and label seperator
-        String cgiValue = dateFill.constructCGIValue(queryConstraint, DateFieldFill.CONSTRAINT_AND_LABEL_SEPERATOR + "Hello");
+        String cgiValue = dateFill.constructCGIValue(queryConstraint, DateFieldFill.CONSTRAINT_AND_LABEL_SEPARATOR + "Hello");
         
         Assert.assertEquals(queryConstraint, dateFill.getQueryConstraint(cgiValue));
         
@@ -94,7 +94,7 @@ public class DateFieldFillTest {
         Assert.assertTrue(values.get(0).isSelected());
         Assert.assertEquals(0, values.get(0).getCount() + 0);
         Assert.assertEquals("The label is in the CGI value so we should be able to extract it.",
-            DateFieldFill.CONSTRAINT_AND_LABEL_SEPERATOR + "Hello", values.get(0).getLabel());
+            DateFieldFill.CONSTRAINT_AND_LABEL_SEPARATOR + "Hello", values.get(0).getLabel());
     }
     
     @Test

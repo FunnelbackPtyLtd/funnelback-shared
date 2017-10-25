@@ -141,7 +141,7 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals(0, st.getResponse().getFacets().size());
         
         List<String> selected = new ArrayList<String>();
-        selected.add("d=24Jun2003" + DateFieldFill.CONSTRAINT_AND_LABEL_SEPERATOR + "Today");
+        selected.add("d=24Jun2003" + DateFieldFill.CONSTRAINT_AND_LABEL_SEPARATOR + "Today");
         st.getQuestion().getSelectedCategoryValues().put("f.By date on d,Z,O|d", selected);
         processor.processOutput(st);
         
