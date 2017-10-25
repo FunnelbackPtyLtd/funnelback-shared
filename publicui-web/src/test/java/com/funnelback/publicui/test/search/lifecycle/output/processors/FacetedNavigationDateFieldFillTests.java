@@ -109,7 +109,7 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals(8, cv.getCount() + 0);
         Assert.assertEquals("d", cv.getData());
         Assert.assertEquals("Today", cv.getLabel());
-        Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7Cd=Today%1D%1Dd%3D24Jun2003", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7Cd=d%3D24Jun2003+%3A%3A+Today", cv.getQueryStringParam());
         Assert.assertFalse(cv.isSelected());
         
         // No sub-categories should be returned since nothing
@@ -131,7 +131,7 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals(2137, cv.getCount() + 0);
         Assert.assertEquals("X", cv.getData());
         Assert.assertEquals("Past 6 months", cv.getLabel());
-        Assert.assertEquals("f.By+date+on+X%7CX=Past+6+months%1D%1Dd%3C25Jun2003%3E26Dec2002", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+date+on+X%7CX=d%3C25Jun2003%3E26Dec2002+%3A%3A+Past+6+months", cv.getQueryStringParam());
         Assert.assertFalse(cv.isSelected());
 
     }
@@ -141,7 +141,7 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals(0, st.getResponse().getFacets().size());
         
         List<String> selected = new ArrayList<String>();
-        selected.add("Today" + DateFieldFill.CONSTRAINT_AND_LABEL_SEPERATOR + "d=24Jun2003");
+        selected.add("d=24Jun2003" + DateFieldFill.CONSTRAINT_AND_LABEL_SEPERATOR + "Today");
         st.getQuestion().getSelectedCategoryValues().put("f.By date on d,Z,O|d", selected);
         processor.processOutput(st);
         
@@ -167,7 +167,7 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals(8, cv.getCount() + 0);
         Assert.assertEquals("d", cv.getData());
         Assert.assertEquals("Today", cv.getLabel());
-        Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7Cd=Today%1D%1Dd%3D24Jun2003", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7Cd=d%3D24Jun2003+%3A%3A+Today", cv.getQueryStringParam());
         Assert.assertTrue(cv.isSelected());
         
         // Nested category: Date on d + O
@@ -182,7 +182,7 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals(12, cv.getCount() + 0);
         Assert.assertEquals("O", cv.getData());
         Assert.assertEquals("2005", cv.getLabel());
-        Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7CO=2005%1D%1DO%3D2005", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7CO=O%3D2005+%3A%3A+2005", cv.getQueryStringParam());
         Assert.assertFalse(cv.isSelected());
     }
 }
