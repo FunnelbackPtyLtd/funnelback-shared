@@ -82,7 +82,7 @@ public class Facet {
      * @since 15.12
      */
     @NotNull @NonNull
-    @Getter private List<FacetValuesOrder> order;
+    @Getter @Setter private List<FacetValuesOrder> order;
     
     /**
      * @since 15.12
