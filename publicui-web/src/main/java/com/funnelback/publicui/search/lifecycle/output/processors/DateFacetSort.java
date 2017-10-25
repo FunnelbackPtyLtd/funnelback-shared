@@ -83,7 +83,7 @@ public class DateFacetSort extends AbstractOutputProcessor {
                                         for (Category cat: facet.getCategories()) {
                                             if (cat.getQueryStringParamName().equals(catDef.getQueryStringParamName())) {
                                                 log.debug("Sorting category by date '"+cat.getQueryStringParamName()
-                                                    +"' for facet '"+facet.getName()+"', ordering set on the facet will be disabled");
+                                                    +"' for facet '"+facet.getName()+"', ordering set on the facet will be ignored");
                                                 sortCategory(cat, comparator);
                                                 facet.setOrder(Arrays.asList(order));
                                             }
