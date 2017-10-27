@@ -21,6 +21,7 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.Collection.Type;
@@ -225,6 +226,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         
         // Force the use of the same groovy loader for all of our scripts. It is probably less suprising for users
         // that way.
+        
         
         SupplyAndCache<GroovyLoader, IOException> collectionGroovyLoader = new SupplyAndCache<>(() -> resourceManager.load(
             new GroovyCollectionLoaderResource(searchHome, new CollectionId(collectionId), groovyForceReloadSeconds)));

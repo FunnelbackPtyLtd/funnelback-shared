@@ -412,6 +412,16 @@ public class SearchQuestion {
     @Getter @Setter private Optional<Integer> maxPadrePacketSize = Optional.empty();
     
     /**
+     * <p>A optional timeout which when set overrides the value of collection.cfg option
+     * ui.modern.padre_fork_timeout_ms, which controls how long the main
+     * padre forking may take.</p>
+     * 
+     * @since 15.12
+     */
+    @XStreamOmitField
+    @Getter @Setter private Optional<Long> padreTimeout = Optional.empty();
+    
+    /**
      * Custom data placeholder allowing any arbitrary data to be
      * stored by hook scripts.
      * 

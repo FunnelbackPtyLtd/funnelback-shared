@@ -8,6 +8,7 @@
         <ref bean="passThroughParametersInputProcessor" />
         <ref bean="passThroughEnvironmentVariabesInputProcessor" />
         <ref bean="restrictToCurrentProfileConfig" />
+        <ref bean="increasePadreTimeOutForServiceUsers"/>
         <ref bean="localeOverrideInputProcessor" />
         <ref bean="contentAuditorInputProcessor" />
         <ref bean="geolocationInputProcessor" />

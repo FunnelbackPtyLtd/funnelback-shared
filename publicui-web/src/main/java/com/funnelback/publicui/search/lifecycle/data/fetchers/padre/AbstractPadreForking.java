@@ -25,6 +25,7 @@ import com.funnelback.publicui.search.lifecycle.data.AbstractDataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingOptionsHelper;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.WindowsNativePadreForker;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
@@ -125,12 +126,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
             }
     
-            long padreWaitTimeout = searchTransaction.getQuestion().getCollection().getConfiguration()
-                .valueAsLong(Keys.ModernUI.PADRE_FORK_TIMEOUT, DefaultValues.ModernUI.PADRE_FORK_TIMEOUT_MS);
-
-            int padreResponseSizeLimit = searchTransaction.getQuestion().getMaxPadrePacketSize()
-                .orElse(searchTransaction.getQuestion().getCollection().getConfiguration()
-                    .valueAsInt(Keys.ModernUI.PADRE_RESPONSE_SIZE_LIMIT, DefaultValues.ModernUI.PADRE_RESPONSE_SIZE_LIMIT));
+            long padreWaitTimeout = new PadreForkingOptionsHelper().getPadreForkingTimeout(searchTransaction);
+            int padreResponseSizeLimit = new PadreForkingOptionsHelper().getPadreMaxPacketSize(searchTransaction);
 
             ExecutionReturn padreOutput = null;
             
