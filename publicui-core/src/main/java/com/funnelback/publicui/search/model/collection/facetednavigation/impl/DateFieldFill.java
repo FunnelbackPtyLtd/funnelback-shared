@@ -86,30 +86,30 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
                         .map(dateCounts -> dateCounts.get(entry.getKey()))
                         .map(DateCount::getCount)
                         .orElse(facetData.getCountIfNotPresent().apply(this, mdv.value));
-                
-                categories.add(new CategoryValueComputedDataHolder(
-                        mdv.metadataClass, // Why is this metadata class?
-                        label,
-                        count,
-                        getMetadataClass(),
-                        FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), queryStringParamValue),
-                        getQueryStringParamName(),
-                        queryStringParamValue));
+                boolean selected = FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), queryStringParamValue);
+                categories.add(makeValue(label, count, selected, queryStringParamValue));
             }
         }
+        
         for(String selectQueryStringParamValue : selectedQueryStringValues) {
-            categories.add(new CategoryValueComputedDataHolder(
-                this.data, // Why is this metadata class?
-                constraintAndLabelFromCGIValue(selectQueryStringParamValue).getLabel(),
-                0,
-                getMetadataClass(),
-                true,
-                getQueryStringParamName(),
-                selectQueryStringParamValue));
+            String label = constraintAndLabelFromCGIValue(selectQueryStringParamValue).getLabel();
+            categories.add(makeValue(label, 0, true, selectQueryStringParamValue));
         }
+        
         return categories;
     }
     
+    
+    private CategoryValueComputedDataHolder makeValue(String label, Integer count, boolean selected, String queryStringParamValue) {
+        return new CategoryValueComputedDataHolder(
+            label, //
+            label,
+            count,
+            getMetadataClass(),
+            selected,
+            getQueryStringParamName(),
+            queryStringParamValue);
+    }
     
 
     /** {@inheritDoc} */
