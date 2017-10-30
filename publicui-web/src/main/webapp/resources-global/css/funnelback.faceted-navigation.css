@@ -1,17 +1,17 @@
-#search-facets .panel-heading, #search-facets .list-group-item {padding: 7px 10px;}
-#search-facets .panel-heading .btn-sm {padding: 0 5px; border: none;}
-#search-facets .panel-toggle {color: #333;}
-#search-facets .panel-toggle:before {content: '\e114'; font-family: 'Glyphicons Halflings';}
-#search-facets .panel-toggle.collapsed:before {content: '\e080';}
-#search-facets .list-group-item:not(.collapse-trigger):after {clear: both; content: ""; display: table;}
-#search-facets .list-group-item.disabled {background-color: #fff; color: #999;}
-#search-facets .list-group-item.selected-single_drill_down {color: #337ab7;}
-#search-facets .collapse-trigger {font-size: 90%;}
-#search-facets .collapse-trigger:after {content: ' Less';}
-#search-facets .collapse-trigger:before {content: '\2212'; font-family: 'Glyphicons Halflings';}
-#search-facets .collapse-trigger.collapsed:after {content: ' More'}
-#search-facets .collapse-trigger.collapsed:before {content: '\002b';}
-#search-facets .radio-unchecked {border: 2px #555 solid; border-radius: 50%; display: inline-block; width: 13px; height: 13px; -moz-osx-font-smoothing: grayscale;}
+.flb-panel .panel-heading, .flb-panel .list-group-item {padding: 7px 10px;}
+.flb-panel .panel-heading .btn-sm {padding: 0 5px; border: none;}
+.flb-panel .panel-toggle {color: #333;}
+.flb-panel .panel-toggle:before {content: '\e114'; font-family: 'Glyphicons Halflings';}
+.flb-panel .panel-toggle.collapsed:before {content: '\e080';}
+.flb-panel .list-group-item:not(.collapse-trigger):after {clear: both; content: ""; display: table;}
+.flb-panel .list-group-item.disabled {background-color: #fff; color: #999;}
+.flb-panel .list-group-item.selected-single_drill_down {color: #337ab7;}
+.flb-panel .collapse-trigger {font-size: 90%;}
+.flb-panel .collapse-trigger:after {content: ' Less';}
+.flb-panel .collapse-trigger:before {content: '\2212'; font-family: 'Glyphicons Halflings';}
+.flb-panel .collapse-trigger.collapsed:after {content: ' More'}
+.flb-panel .collapse-trigger.collapsed:before {content: '\002b';}
+.flb-panel .radio-unchecked {border: 2px #555 solid; border-radius: 50%; display: inline-block; width: 13px; height: 13px; -moz-osx-font-smoothing: grayscale;}
 #search-facets-breadcrumb {color: #777; font-size: 12px;}
 #search-facets-breadcrumb .facets-breadcrumb-label {margin-right: 5px;}
 #search-facets-breadcrumb .facets-applied {background-color: #f0f0f0; border: 1px solid #eee; font-size: x-small; display: inline-block; padding: 2px 4px 2px 0px;}
