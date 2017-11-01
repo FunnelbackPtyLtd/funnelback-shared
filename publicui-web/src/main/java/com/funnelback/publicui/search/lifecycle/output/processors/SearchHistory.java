@@ -72,7 +72,7 @@ public class SearchHistory extends AbstractOutputProcessor {
                 } catch (MalformedURLException e) {
                     log.warn("Couldn't parse search URL", e);
                 } catch (DataAccessException | TransactionException e) {
-                    log.error("Error while saving search history", e);
+                    log.error("Error while saving search history: {}", h,  e);
                 }
             }
         }
