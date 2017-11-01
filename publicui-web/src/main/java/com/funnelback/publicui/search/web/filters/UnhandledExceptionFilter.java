@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.security.access.AccessDeniedException;
 
 import freemarker.core.ParseException;
 import freemarker.template.TemplateException;
@@ -42,10 +43,18 @@ public class UnhandledExceptionFilter implements Filter {
         }
     }
 
-    public void sendUnhandledExceptionErrorResponse(ServletRequest request, ServletResponse response, Exception e) {
+    public void sendUnhandledExceptionErrorResponse(ServletRequest request, ServletResponse response, Exception e) throws ServletException {
         HttpServletResponse resp = (HttpServletResponse) response;
         resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
+        if (ExceptionUtils.getThrowableList(e)
+            .stream()
+            .anyMatch(t -> t instanceof AccessDeniedException)) {
+            throw new ServletException(e); // We want spring to handle this.
+            // It's probably already been wrapped by FrameworkServlet, so we don't care too much about
+            // wrapping it again
+        }
+        
         // Special case for FreeMarker exceptions as they're already logged elsewhere, but re-thrown.
         // Prevent them from being logged twice
         if (!ExceptionUtils.getThrowableList(e)
