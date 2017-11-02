@@ -441,11 +441,6 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security.extensions</groupId>
-            <artifactId>spring-security-saml2-core</artifactId>
-            <version>1.0.2.RELEASE</version>
-        </dependency>
-        <dependency>
             <groupId>com.funnelback</groupId>
             <artifactId>funnelback-springmvc-common</artifactId>
             <version>${project.version}</version>
