@@ -102,7 +102,9 @@ public class StaxStreamParser implements PadreXmlParser {
                     } else if (ResultPacket.Schema.QUERY_PROCESSOR_CODES.equals(xmlStreamReader.getLocalName())) {
                         packet.setQueryProcessorCodes(xmlStreamReader.getElementText());
                     } else if (ResultsSummary.Schema.RESULTS_SUMMARY.equals(xmlStreamReader.getLocalName())) {
-                        packet.setResultsSummary(ResultsSummaryFactory.fromXmlStreamReader(xmlStreamReader));
+                        ResultsSummaryFactory.fromXmlStreamReader(xmlStreamReader, packet.getResultsSummary());
+                    } else if (ResultPacket.Schema.RESULT_DIVERSIFICATION_APPLIED.equals(xmlStreamReader.getLocalName())) {
+                        packet.getResultsSummary().setResultDiversificationApplied(Boolean.parseBoolean(xmlStreamReader.getElementText()));
                     } else if (Spell.Schema.SPELL.equals(xmlStreamReader.getLocalName())) {
                         packet.setSpell(SpellFactory.fromXmlStreamReader(xmlStreamReader));
                     } else if (ResultPacket.Schema.BEST_BETS.equals(xmlStreamReader.getLocalName())) {

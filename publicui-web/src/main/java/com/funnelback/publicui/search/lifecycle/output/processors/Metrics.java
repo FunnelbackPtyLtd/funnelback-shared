@@ -9,6 +9,8 @@ import static com.funnelback.publicui.utils.web.MetricsConfiguration.QUERIES;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.TOTAL_MATCHING;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.UNKNOWN;
 
+import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -22,6 +24,9 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.padre.ResultsSummary;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
@@ -66,9 +71,14 @@ public class Metrics extends AbstractOutputProcessor {
             if (st.hasResponse()
                     && st.getResponse().hasResultPacket()) {
                 
-                if (st.getResponse().getResultPacket().getResultsSummary() != null) {
-                    allTotalMatchingHistogram.update(st.getResponse().getResultPacket()
-                        .getResultsSummary().getTotalMatching());
+                Optional<Integer> totalMatching = Optional.ofNullable(st)
+                                                        .map(SearchTransaction::getResponse)
+                                                        .map(SearchResponse::getResultPacket)
+                                                        .map(ResultPacket::getResultsSummary)
+                                                        .map(ResultsSummary::getTotalMatching);
+                
+                if (totalMatching.isPresent()) {
+                    allTotalMatchingHistogram.update(totalMatching.get());
                     
                     metrics.histogram(MetricRegistry.name(COLLECTION_NS , collectionAndProfile, TOTAL_MATCHING))
                         .update(st.getResponse().getResultPacket().getResultsSummary().getTotalMatching());
