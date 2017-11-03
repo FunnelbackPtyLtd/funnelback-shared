@@ -35,7 +35,9 @@ import com.funnelback.publicui.streamedresults.converters.CSVDataConverter;
 import com.funnelback.publicui.streamedresults.converters.JSONDataConverter;
 import com.funnelback.publicui.streamedresults.converters.JSONPDataConverter;
 import com.funnelback.publicui.streamedresults.datafetcher.XJPathResultDataFetcher;
+import com.funnelback.publicui.utils.JsonPCallbackParam;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
+import com.funnelback.springmvc.web.binder.GenericEditor;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -70,6 +72,7 @@ public class StreamResultsController {
     public void initBinder(DataBinder binder) {
         searchController.initBinder(binder);
         binder.registerCustomEditor(CommaSeparatedList.class, new CommaSeparatedListEditor());
+        binder.registerCustomEditor(JsonPCallbackParam.class, new GenericEditor(JsonPCallbackParam::new));
     }
     
     /**
@@ -84,7 +87,7 @@ public class StreamResultsController {
      * @param ext
      * @return
      */
-    private DataConverter<Object> getDataConverterFromExtension(String ext, Optional<String> callback) {
+    private DataConverter<Object> getDataConverterFromExtension(String ext, Optional<JsonPCallbackParam> callback) {
         if(ext.equals("json")) {
             if(callback.isPresent()) {
                 return (DataConverter) new JSONPDataConverter(callback.get(), this.JSONDataConverter);
@@ -149,7 +152,7 @@ public class StreamResultsController {
             @RequestParam(required=false, defaultValue="true") boolean optimisations,
             @Valid SearchQuestion question,
             @ModelAttribute SearchUser user,
-            @RequestParam(required=false) String callback) throws Exception {
+            @RequestParam(required=false) JsonPCallbackParam callback) throws Exception {
         
         getAllResults(request, response, fields, fieldnames, optimisations, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS,
             callback);
@@ -165,7 +168,7 @@ public class StreamResultsController {
         @Valid SearchQuestion question,
         @ModelAttribute SearchUser user,
         SearchQuestionType searchQuestionType,
-        String callback) throws Exception {
+        JsonPCallbackParam callback) throws Exception {
         
         // Parse the fields and fieldnames, this ensures that the size of the resulting lists are the same.
         ResultFields resultFields = new ResultFields(Optional.ofNullable(fields).map(CommaSeparatedList::getList), 
