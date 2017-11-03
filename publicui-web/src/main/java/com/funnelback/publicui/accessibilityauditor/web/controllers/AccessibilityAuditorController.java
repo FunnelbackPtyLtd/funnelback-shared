@@ -39,7 +39,7 @@ public class AccessibilityAuditorController {
      * In practice users cannot access AA on the non admin port (due to an interceptor)
      * so they will always use the admin port which requires authentication.
      */
-    private static final String PRE_AUTH = "hasAnyRole('sec.accessibility-auditor','ROLE_ANONYMOUS')"; 
+    private static final String PRE_AUTH = "hasAnyAuthority('sec.accessibility-auditor','ROLE_ANONYMOUS')"; 
     
     @Autowired
     private SearchController searchController;
