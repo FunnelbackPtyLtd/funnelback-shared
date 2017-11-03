@@ -60,6 +60,46 @@ public class StaxStreamParserTests {
     }
     
     @Test
+    public void testResultDiversificationApplied() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/result-diversification-on.xml").getAbsoluteFile()),StandardCharsets.UTF_8,
+            false);
+        
+        Assert.assertTrue(rp.getResultsSummary().isResultDiversificationApplied());
+    }
+    
+    @Test
+    public void testResultDiversificationDidNotApply() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/result-diversification-off.xml").getAbsoluteFile()),StandardCharsets.UTF_8,
+            false);
+        
+        Assert.assertFalse(rp.getResultsSummary().isResultDiversificationApplied());
+    }
+    
+    @Test
+    public void testAnyUrlsPromotedFalse() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/any-urls-promoted-false.xml").getAbsoluteFile()),StandardCharsets.UTF_8,
+            false);
+        
+        Assert.assertFalse(rp.getResultsSummary().isAnyUrlsPromoted());
+    }
+    
+    @Test
+    public void testAnyUrlsPromotedTrue() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/any-urls-promoted-true.xml").getAbsoluteFile()),StandardCharsets.UTF_8,
+            false);
+        
+        Assert.assertTrue(rp.getResultsSummary().isAnyUrlsPromoted());
+    }
+    
+    @Test
     public void testDocumentsPerCollection() throws Exception {
 //       Format is:
 //       <documents_per_collection>

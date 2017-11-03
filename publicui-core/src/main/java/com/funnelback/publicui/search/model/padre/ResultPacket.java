@@ -84,7 +84,7 @@ public class ResultPacket {
      * Summary counts and data about the results (How many documents
      * matched, which page is currently returned, etc.).
      */
-    @Getter @Setter private ResultsSummary resultsSummary;
+    @Getter @Setter private ResultsSummary resultsSummary = new ResultsSummary();
     
     /** Spelling suggestions. */
     @Getter @Setter private Spell spell;
@@ -440,6 +440,8 @@ public class ResultPacket {
         
         public static final String QHLRE = "qhlre";
         public static final String ORIGIN = "origin";
+        
+        public static final String RESULT_DIVERSIFICATION_APPLIED = "result_diversification_applied";
         
         public static final String PADRE_ELAPSED_TIME = "padre_elapsed_time";
         public static final String QUERY_PROCESSOR_CODES = "query_processor_codes";

@@ -105,6 +105,18 @@ public class ResultsSummary {
      * <p>Only set when Translucent DLS is enabled.</p>
      */
     @Getter @Setter private Integer totalSecurityObscuredUrls;
+    
+    /**
+     * Are any URLs promoted (includes URLs that may have been later removed or collapsed).
+     * @since 15.12
+     */
+    @Getter @Setter private boolean anyUrlsPromoted;
+    
+    /**
+     * Was any result afected by result diversification.
+     * @since 15.12
+     */
+    @Getter @Setter private boolean resultDiversificationApplied;
 
     /** Constants for the PADRE XML result packet tags. */
     public static final class Schema {
@@ -116,6 +128,7 @@ public class ResultsSummary {
         public static final String PARTIALLY_MATCHING = "partially_matching";
         public static final String TOTAL_MATCHING = "total_matching";
         public static final String ESTIMATED_COUNTS = "estimated_counts";
+        public static final String ANY_URLS_PROMOTED = "any_urls_promoted";
         public static final String CARRIED_OVER_FTD = "carried_over_ftd";
         public static final String TOTAL_DISTINCT_MATCHING_URLS = "total_distinct_matching_urls";
         public static final String NUM_RANKS = "num_ranks";
