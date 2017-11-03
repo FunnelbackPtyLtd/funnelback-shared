@@ -9,12 +9,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.funnelback.publicui.utils.JsonPCallbackParam;
 
 public class JSONPDataConverterTest {
 
     @Test
     public void test() throws IOException {
-        JSONPDataConverter jsonPDataConverter = new JSONPDataConverter("callback", new JSONDataConverter(new ObjectMapper()));
+        JSONPDataConverter jsonPDataConverter = new JSONPDataConverter(new JsonPCallbackParam("callback"), new JSONDataConverter(new ObjectMapper()));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         GeneratorAndStream writter = jsonPDataConverter.createWriter(bos);
         jsonPDataConverter.writeHead(null, writter);
