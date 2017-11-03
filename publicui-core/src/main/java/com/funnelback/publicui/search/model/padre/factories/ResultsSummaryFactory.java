@@ -72,8 +72,6 @@ public class ResultsSummaryFactory {
                 filler.onTag(tt.tag, tt.text);
             }
         }
-        
-        //return fromData(data, areCountsEstimated, anyUrlsPromoted);
     }
     
 }
