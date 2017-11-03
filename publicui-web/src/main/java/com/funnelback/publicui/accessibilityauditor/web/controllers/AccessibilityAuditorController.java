@@ -20,6 +20,8 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.search.web.controllers.StreamResultsController;
 import com.funnelback.publicui.streamedresults.CommaSeparatedList;
+import com.funnelback.publicui.utils.JsonPCallbackParam;
+import com.funnelback.springmvc.web.binder.GenericEditor;
 
 /**
  * Accessibility Auditor controller. Delegates the actual
@@ -50,6 +52,7 @@ public class AccessibilityAuditorController {
     @InitBinder
     public void initBinder(DataBinder binder) {
         searchController.initBinder(binder);
+        binder.registerCustomEditor(JsonPCallbackParam.class, new GenericEditor(JsonPCallbackParam::new));
     }
 
     @RequestMapping("/accessibility-auditor.json")
@@ -82,7 +85,7 @@ public class AccessibilityAuditorController {
         @RequestParam(required=false, defaultValue="true") boolean optimisations,
         @Valid SearchQuestion question,
         @ModelAttribute SearchUser user,
-        @RequestParam(required=false) String callback) throws Exception {
+        @RequestParam(required=false) JsonPCallbackParam callback) throws Exception {
         
         streamResultsController.getAllResults(request, response, fields, fieldnames, optimisations, question, user,
             SearchQuestionType.ACCESSIBILITY_AUDITOR_GET_ALL_RESULTS, callback);

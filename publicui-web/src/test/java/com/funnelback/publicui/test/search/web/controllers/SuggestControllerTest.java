@@ -30,6 +30,7 @@ import com.funnelback.publicui.search.model.transaction.ExecutionContext;
 import com.funnelback.publicui.search.service.Suggester;
 import com.funnelback.publicui.search.web.controllers.SuggestController;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
+import com.funnelback.publicui.utils.JsonPCallbackParam;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -67,7 +68,7 @@ public class SuggestControllerTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         suggestController.suggestJava(null,
                 new ProfileId(DefaultValues.DEFAULT_PROFILE),
-                "ab", 0, 0, "json", 0.5, "abc", "cb", null, new MockHttpServletRequest(), response);
+                "ab", 0, 0, "json", 0.5, "abc", new JsonPCallbackParam("cb"), null, new MockHttpServletRequest(), response);
         
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
     }
@@ -88,7 +89,7 @@ public class SuggestControllerTest {
         Assert.assertNull("No content type should be set by default (defaults to the one configured for the view)", response.getContentType());
         
         response = new MockHttpServletResponse();
-        suggestController.suggestJava(new Collection("test", config), new ProfileId("profile"), "query", 10, 0, "json", 0, null, "callback", null, request, response);
+        suggestController.suggestJava(new Collection("test", config), new ProfileId("profile"), "query", 10, 0, "json", 0, null, new JsonPCallbackParam("callback"), null, request, response);
         Assert.assertEquals("Content type should have been set as 'callback' was used (JSONP)", "application/javascript", response.getContentType());
 
     }

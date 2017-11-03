@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.Setter;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,12 +42,15 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
 import com.funnelback.publicui.search.service.Suggester;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.ProfileEditor;
+import com.funnelback.publicui.utils.JsonPCallbackParam;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
+import com.funnelback.springmvc.web.binder.GenericEditor;
 
 /**
  * Query completion / suggestion controller.
  */
 @Controller
+@Log4j2
 public class SuggestController extends AbstractRunPadreBinaryController {
 
     /** Template token for the query terms */
@@ -107,6 +112,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     public void initBinder(DataBinder binder) {
         binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
         binder.registerCustomEditor(ProfileId.class, new ProfileEditor(DefaultValues.DEFAULT_PROFILE));
+        binder.registerCustomEditor(JsonPCallbackParam.class, new GenericEditor(JsonPCallbackParam::new));
     }
 
     /**
@@ -145,7 +151,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             @RequestParam(value="fmt", defaultValue="json") String format,
             @RequestParam(defaultValue="0.5") double alpha,
             @RequestParam(required=false) String category,
-            String callback,
+            @RequestParam(required=false) JsonPCallbackParam callback,
             @ModelAttribute SearchUser user,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -159,7 +165,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             
             ModelAndView mav = new ModelAndView();
             mav.addObject("suggestions", suggestions);
-            mav.addObject("callback", callback);
+            mav.addObject("callback", Optional.ofNullable(callback).map(c -> c.getCallback()).orElse(null));
             
             switch(Format.fromValue(format)) {
             case Json:

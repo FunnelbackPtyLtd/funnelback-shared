@@ -14,9 +14,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
@@ -47,8 +44,13 @@ import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.ProfileEditor;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
+import com.funnelback.publicui.utils.JsonPCallbackParam;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
+import com.funnelback.springmvc.web.binder.GenericEditor;
+
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Click tracking controller
@@ -85,6 +87,7 @@ public class ClickController extends SessionController {
     public void initBinder(DataBinder binder) {
         binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
         binder.registerCustomEditor(ProfileId.class, new ProfileEditor(DefaultValues.DEFAULT_PROFILE));
+        binder.registerCustomEditor(JsonPCallbackParam.class, new GenericEditor(JsonPCallbackParam::new));
     }
     
     /**
@@ -104,7 +107,7 @@ public class ClickController extends SessionController {
             @RequestParam(required= true, value = RequestParameters.COLLECTION) Collection collection,
             @RequestParam(required = false, defaultValue = DefaultValues.DEFAULT_PROFILE) ProfileId profile,
             @RequestParam(required = true, value = RequestParameters.Click.TYPE) String logType,
-            @RequestParam(required = false) String callback,
+            @RequestParam(required = false) JsonPCallbackParam callback,
             @ModelAttribute SearchUser user) {
     
         if (collection != null) {
@@ -132,7 +135,7 @@ public class ClickController extends SessionController {
             response.setStatus(HttpServletResponse.SC_OK);
             if (callback != null) {
                 try {
-                    response.getWriter().append(callback + "()");
+                    response.getWriter().append(callback.getCallback() + "()");
                 } catch (IOException e) {
                     throw new RuntimeException("Exception writing jsonp callback output.", e);
                 }

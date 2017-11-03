@@ -7,13 +7,14 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
 import com.funnelback.publicui.streamedresults.DataConverter;
+import com.funnelback.publicui.utils.JsonPCallbackParam;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class JSONPDataConverter implements DataConverter<GeneratorAndStream>{
 
-    private final String callback;
+    private final JsonPCallbackParam callback;
     private final JSONDataConverter jsonDataConverter;
     
     
@@ -31,7 +32,7 @@ public class JSONPDataConverter implements DataConverter<GeneratorAndStream>{
 
     @Override
     public void writeHead(List<String> fieldNames, GeneratorAndStream writer) throws IOException {
-        writer.getOutputStream().write((callback + "(").getBytes(StandardCharsets.UTF_8));
+        writer.getOutputStream().write((callback.getCallback() + "(").getBytes(StandardCharsets.UTF_8));
         jsonDataConverter.writeHead(fieldNames, writer.getJsonGenerator());
     }
 
