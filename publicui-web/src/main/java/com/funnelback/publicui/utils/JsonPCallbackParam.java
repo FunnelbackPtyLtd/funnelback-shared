@@ -13,7 +13,6 @@ public class JsonPCallbackParam {
     @Getter private String callback;
     
     public JsonPCallbackParam(String callback) {
-        log.fatal("Called with: " + callback);
         if(!isValid(callback)) {
             throw new IllegalArgumentException("Invalid callback function name: " + callback);
         }

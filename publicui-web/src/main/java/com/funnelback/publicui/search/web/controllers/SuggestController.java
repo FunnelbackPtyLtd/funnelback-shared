@@ -157,7 +157,6 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             HttpServletResponse response) throws IOException {
         
         if (collection != null) {
-            log.fatal("Call back is: " + callback);
             // Get organic/CSV suggestions from PADRE
             List<Suggestion> suggestions = suggester.suggest(collection, profile.getId(), partialQuery, show, Sort.valueOf(sort), alpha, category);
 
@@ -166,9 +165,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             
             ModelAndView mav = new ModelAndView();
             mav.addObject("suggestions", suggestions);
-            mav.addObject("callback",
-                //   callback); 
-                Optional.ofNullable(callback).map(c -> c.getCallback()).orElse(null));
+            mav.addObject("callback", Optional.ofNullable(callback).map(c -> c.getCallback()).orElse(null));
             
             switch(Format.fromValue(format)) {
             case Json:
