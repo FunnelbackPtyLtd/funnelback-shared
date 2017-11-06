@@ -195,7 +195,8 @@ public class DefaultDocFromCache implements DocFromCache {
         
         CommandLine clIndexDocument =
             new CommandLine(
-                new File(searchHome, DefaultValues.FOLDER_BIN + File.separator + config.value(Keys.INDEXER)));
+                new File(searchHome, DefaultValues.FOLDER_BIN + File.separator + config.value(Keys.INDEXER)
+                    + ((System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) ? ".exe" : "")));
 
         String[] args = getArgsFromBldinfo(collectionId);
         ByteArrayOutputStream outstream = new ByteArrayOutputStream();
