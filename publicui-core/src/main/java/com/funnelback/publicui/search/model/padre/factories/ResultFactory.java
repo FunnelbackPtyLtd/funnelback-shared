@@ -45,6 +45,12 @@ public class ResultFactory {
         String exploreLink = data.get(Result.Schema.EXPLORE_LINK);
         
         boolean documentVisibleTouser = isDocumentVisibleToUser(data);
+        
+        // If the result is not explicitly marked promoted then it is not.
+        boolean promoted = getBoolean(data, Result.Schema.PROMOTED).orElse(false);
+        
+        // If the result is not explicitly marked as diversified then it is not.
+        boolean diversified = getBoolean(data, Result.Schema.DIVERSIFIED).orElse(false);
 
         String dateString = data.get(Result.Schema.DATE);
         Date date = null;
@@ -98,7 +104,9 @@ public class ResultFactory {
                 explain,
                 liveUrl,
                 gscopesSet,
-                documentVisibleTouser);
+                documentVisibleTouser,
+                promoted,
+                diversified);
 
         r.getMetaData().putAll(metadataMap);
         if (data.get(Result.Schema.TAGS) != null) {
@@ -109,13 +117,19 @@ public class ResultFactory {
     }
     
     static boolean isDocumentVisibleToUser(Map<String, String> data) {
-        boolean documentVisibleTouser = true;
-        if(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER) != null
-                && !Boolean.parseBoolean(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER))) {
-            documentVisibleTouser = false;
-        }
-        return documentVisibleTouser;
+        // By default documents are visible
+        return getBoolean(data, Result.Schema.DOCUMENT_VISIBLE_TO_USER).orElse(true);
     }
+    
+    
+    static Optional<Boolean> getBoolean(Map<String, String> data, String tag) {
+        if(data.get(tag) != null) {
+             return Optional.of(Boolean.parseBoolean(data.get(tag)));
+        }
+        return Optional.empty();
+    }
+    
+    
 
     /** Parses the <gscopes_set> field into a Set of Integers
      *  If it hits any failure it will return the set of as

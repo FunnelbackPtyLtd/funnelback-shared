@@ -80,6 +80,36 @@ public class StaxStreamParserTests {
     }
     
     @Test
+    public void testResultDiversification() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/result-diversification.xml").getAbsoluteFile()),StandardCharsets.UTF_8,
+            false);
+        
+        Assert.assertTrue(rp.getResultsSummary().isResultDiversificationApplied());
+        
+        Assert.assertTrue(rp.getResults().get(0).isDiversified());
+        Assert.assertFalse(rp.getResults().get(1).isDiversified());
+        Assert.assertFalse(rp.getResults().get(2).isDiversified());
+    }
+    
+    
+    
+    @Test
+    public void testResultPromoted() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/result-promoted.xml").getAbsoluteFile()),StandardCharsets.UTF_8,
+            false);
+        
+        Assert.assertTrue(rp.getResultsSummary().isAnyUrlsPromoted());
+        
+        Assert.assertTrue(rp.getResults().get(0).isPromoted());
+        Assert.assertFalse(rp.getResults().get(1).isPromoted());
+        Assert.assertFalse(rp.getResults().get(2).isPromoted());
+    }
+    
+    @Test
     public void testAnyUrlsPromotedFalse() throws Exception {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(

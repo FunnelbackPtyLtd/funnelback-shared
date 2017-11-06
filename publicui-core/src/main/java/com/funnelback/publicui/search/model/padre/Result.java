@@ -197,6 +197,22 @@ public class Result implements ResultType {
     
     @Getter @Setter private boolean documentVisibleToUser = true;
     
+    /**
+     * Set true if the URL was promoted using -promote_urls.
+     * 
+     * @since 15.12
+     */
+    @Getter @Setter private boolean promoted = false;
+    
+    /**
+     * Set true if the URL was down weighted by result diversification.
+     * 
+     * This might happen from same site suppression (SSS).
+     * 
+     * @since 15.12
+     */
+    @Getter @Setter private boolean diversified = false;
+    
     /** Constants for the PADRE XML result packet tags. */
     public static final class Schema {
         
@@ -231,6 +247,10 @@ public class Result implements ResultType {
         public static final String COLLAPSED_COUNT = "count";
         
         public static final String DOCUMENT_VISIBLE_TO_USER = "documentVisibleToUser";
+        
+        public static final String PROMOTED = "promoted";
+        public static final String DIVERSIFIED = "diversified";
+        
         // CHECKSTYLE:ON
     }
 }
