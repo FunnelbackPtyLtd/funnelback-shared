@@ -71,7 +71,7 @@ public class SearchTransactionUtilsTests {
         
         Assert.assertFalse(SearchTransactionUtils.hasResults(new SearchTransaction(null, sr)));
         
-        sr.getResultPacket().getResults().add(new Result(0, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, false));
+        sr.getResultPacket().getResults().add(new Result(0, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, false, false, false));
         
         Assert.assertTrue(SearchTransactionUtils.hasResults(new SearchTransaction(null, sr)));
     }
