@@ -24,9 +24,12 @@ public class JsonPCallbackParam {
 
     @Getter private String callback;
     
+    private static final String INVALID_CHARS = "<>/\\()' \t,;{}";
+    
     public JsonPCallbackParam(String callback) {
         if(!isValid(callback)) {
-            throw new IllegalArgumentException("Invalid callback function name: " + callback);
+            throw new IllegalArgumentException("Invalid callback function name: '" + callback + "'. It may not contain any of \"" 
+                        + INVALID_CHARS + "\" or ASCII control chars or any whitespace.");
         }
         this.callback = callback;
     }
@@ -34,7 +37,7 @@ public class JsonPCallbackParam {
     
     public static boolean isValid(String callback) {
         // Must not be important HTML or java script chars.
-        return !CharMatcher.anyOf("<>/\\()' \t,;{}").matchesAnyOf(callback)
+        return !CharMatcher.anyOf(INVALID_CHARS).matchesAnyOf(callback)
             // MUst not be tricky control chars.
             && !CharMatcher.inRange((char) 0, (char) 31).matchesAnyOf(callback)
             // Must not have white space (although this does mean a callback of foo["a b"] is made invalid
