@@ -17,6 +17,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindException;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -277,6 +278,13 @@ public class SearchController extends SessionController {
     public void templateException(TemplateException ex) {
         log.error("Error processing FreeMarker template", ex);
     }
+    
+    @ExceptionHandler(BindException.class)
+    public void exception(HttpServletResponse response, BindException ex) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        log.debug(ex);
+    }
+    
     
     @ExceptionHandler(Exception.class)
     public void exception(Exception ex) {
