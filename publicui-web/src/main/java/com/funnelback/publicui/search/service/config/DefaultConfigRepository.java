@@ -194,6 +194,10 @@ public class DefaultConfigRepository implements ConfigRepository {
             return null;
         }
         
+        if(!CollectionId.isValidname(collectionId)) {
+            return null;
+        }
+        
         Config config = resourceManager.load(new CollectionConfigResource(searchHome, new CollectionId(collectionId)));
         if (config == null) {
             return null;
