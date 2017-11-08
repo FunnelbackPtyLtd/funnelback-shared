@@ -24,24 +24,23 @@ public class JsonPCallbackParam {
 
     @Getter private String callback;
     
-    private static final String INVALID_CHARS = "<>/\\()' \t,;{}";
+    private static final String VALID_CHARS = "$._-[]\"";
     
     public JsonPCallbackParam(String callback) {
         if(!isValid(callback)) {
-            throw new IllegalArgumentException("Invalid callback function name: '" + callback + "'. It may not contain any of \"" 
-                        + INVALID_CHARS + "\" or ASCII control chars or any whitespace.");
+            throw new IllegalArgumentException("Invalid callback function name: '" + callback + "'. Callback may only contains ASCII digits or "
+                + " alphabetic characters or the chars in: " + VALID_CHARS);
         }
         this.callback = callback;
     }
     
     
     public static boolean isValid(String callback) {
-        // Must not be important HTML or java script chars.
-        return !CharMatcher.anyOf(INVALID_CHARS).matchesAnyOf(callback)
-            // MUst not be tricky control chars.
-            && !CharMatcher.inRange((char) 0, (char) 31).matchesAnyOf(callback)
-            // Must not have white space (although this does mean a callback of foo["a b"] is made invalid
-            && !CharMatcher.whitespace().matchesAnyOf(callback);
+        return CharMatcher.anyOf(VALID_CHARS)
+                .or(CharMatcher.inRange('0', '9'))
+                .or(CharMatcher.inRange('a', 'z'))
+                .or(CharMatcher.inRange('A', 'Z'))
+                .matchesAllOf(callback);
     }
     
     @Override
