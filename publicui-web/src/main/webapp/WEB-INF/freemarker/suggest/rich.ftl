@@ -1,13 +1,13 @@
 <#compress>
 <#if callback??>${callback}(</#if>[
 <#list suggestions as s>{
-  "key": "${s.key}",
-  "disp": <#if s.displayType.toString() != "J">"</#if>${s.display}<#if s.displayType.toString() != "J">"</#if>,
-  "disp_t": "${s.displayType}",
-  "wt": "${s.weight}",
-  "cat": "${s.category}",
-  "cat_t": "${s.categoryType}",
-  "action": "${s.action}",
-  "action_t": "${s.actionType}"
+  "key": "${s.key?json_string}",
+  "disp": <#if s.displayType.toString() != "J">"</#if>${s.display?json_string}<#if s.displayType.toString() != "J">"</#if>,
+  "disp_t": "${s.displayType?json_string}",
+  "wt": "${s.weight?json_string}",
+  "cat": "${s.category?json_string}",
+  "cat_t": "${s.categoryType?json_string}",
+  "action": "${s.action?json_string}",
+  "action_t": "${s.actionType?json_string}"
 }<#if s_has_next>,</#if>
 </#list>]<#if callback??>)</#if></#compress>
