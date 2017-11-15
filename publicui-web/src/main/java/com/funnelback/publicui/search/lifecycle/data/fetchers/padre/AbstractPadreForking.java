@@ -25,6 +25,7 @@ import com.funnelback.publicui.search.lifecycle.data.AbstractDataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingExceptionPacketSizeTooBig;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingOptionsHelper;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.WindowsNativePadreForker;
@@ -145,7 +146,9 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 updateTransaction(searchTransaction, padreOutput);
             } catch (PadreForkingException pfe) {
                 log.error("PADRE forking failed with command line {}", getExecutionDetails(commandLine, env), pfe);
-                throw new DataFetchException(i18n.tr("padre.forking.failed"), pfe);
+                if(pfe instanceof PadreForkingExceptionPacketSizeTooBig) {
+                    throw new DataFetchException(pfe.getMessage(), pfe);
+                }
             } catch (XmlParsingException pxpe) {
                 log.error("Unable to parse PADRE response with command line {} {}", getExecutionDetails(commandLine, env),
                     Optional.ofNullable(padreOutput)
