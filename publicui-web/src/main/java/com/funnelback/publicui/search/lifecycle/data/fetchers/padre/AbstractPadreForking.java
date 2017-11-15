@@ -149,6 +149,7 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 if(pfe instanceof PadreForkingExceptionPacketSizeTooBig) {
                     throw new DataFetchException(pfe.getMessage(), pfe);
                 }
+                throw new DataFetchException(i18n.tr("padre.forking.failed"), pfe);
             } catch (XmlParsingException pxpe) {
                 log.error("Unable to parse PADRE response with command line {} {}", getExecutionDetails(commandLine, env),
                     Optional.ofNullable(padreOutput)
