@@ -9,11 +9,16 @@ import org.jfree.util.Log;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Wither;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class CompressingByteArrayOutputStream extends SizeListeningOutputStream {
 
     private final int compressAfterSize;
     private boolean isCompressing = false;
+    private boolean triedCompressing = false;
+    
+    
     
     /**
      * We don't want to make public the constructor because if the user passes in the underlying stream
@@ -34,7 +39,10 @@ public class CompressingByteArrayOutputStream extends SizeListeningOutputStream 
         if(isCompressing) {
             return;
         }
-        if(sizeAfterProposedWrite > compressAfterSize) {
+        
+        if(sizeAfterProposedWrite > compressAfterSize && ! triedCompressing) {
+            triedCompressing = true;
+            log.fatal("Will attempt compressing the stream.");
             try {
                 InputSupplyingLZ4OuputStream compressedStream = new InputSupplyingLZ4OuputStream(new ByteArrayOutputStream());
                 this.getUnderlyingStream().close();
