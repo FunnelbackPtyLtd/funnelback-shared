@@ -39,7 +39,7 @@ public class CompressingByteArrayOutputStream extends SizeListeningOutputStream 
                 InputSupplyingLZ4OuputStream compressedStream = new InputSupplyingLZ4OuputStream(new ByteArrayOutputStream());
                 this.getUnderlyingStream().close();
                 try {
-                    IOUtils.copy(this.getUnderlyingStream().asInputStream(), compressedStream);
+                    IOUtils.copy(this.getUnderlyingStream().asInputStream().get(), compressedStream);
                 } catch (Throwable e) {
                     compressedStream.close();
                     throw e;

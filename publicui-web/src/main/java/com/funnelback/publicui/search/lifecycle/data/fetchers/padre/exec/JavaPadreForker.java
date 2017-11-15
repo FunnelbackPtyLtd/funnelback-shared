@@ -147,7 +147,7 @@ public class JavaPadreForker implements PadreForker {
     private String readPadreOutputForLogs(BoundedByteArrayOutputStream os) {
         // This has the potential to OOM here should we limit this?
         try {
-            return new String(IOUtils.toByteArray(os.asInputStream()), StandardCharsets.UTF_8);
+            return new String(IOUtils.toByteArray(os.asInputStream().get()), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

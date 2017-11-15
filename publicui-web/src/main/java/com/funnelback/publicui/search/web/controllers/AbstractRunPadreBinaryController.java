@@ -76,7 +76,7 @@ public abstract class AbstractRunPadreBinaryController extends SessionController
         try {
             ExecutionReturn out = new JavaPadreForker(i18n, DefaultValues.ModernUI.PADRE_FORK_TIMEOUT_MS).execute(commandLine, env, sizeLimit);
 
-            String output = new String(IOUtils.toByteArray(out.getOutBytes()), out.getCharset());
+            String output = new String(IOUtils.toByteArray(out.getOutBytes().get()), out.getCharset());
             if (detectHeaders) {
                 Matcher m = HEADER_CONTENT_PATTERN.matcher(output);
                 if (m.matches()) {

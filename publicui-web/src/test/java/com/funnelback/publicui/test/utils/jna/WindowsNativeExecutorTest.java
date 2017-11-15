@@ -44,7 +44,7 @@ public class WindowsNativeExecutorTest {
         ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"net.exe"}), null, 32, Integer.MAX_VALUE);
         
         Assert.assertEquals(1, er.getReturnCode());
-        Assert.assertTrue(new String(IOUtils.toByteArray(er.getOutBytes()), StandardCharsets.UTF_8).contains("The syntax of this command is"));
+        Assert.assertTrue(new String(IOUtils.toByteArray(er.getOutBytes().get()), StandardCharsets.UTF_8).contains("The syntax of this command is"));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class WindowsNativeExecutorTest {
         env.put("TEST_VAR", "test value");
         ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"src/test/resources/dummy-search_home/bin/getenv.exe", "TEST_VAR"}), env, 32, Integer.MAX_VALUE);
         
-        String out = new String(IOUtils.toByteArray(er.getOutBytes()), StandardCharsets.UTF_8).trim();
+        String out = new String(IOUtils.toByteArray(er.getOutBytes().get()), StandardCharsets.UTF_8).trim();
         Assert.assertEquals(out, 0, er.getReturnCode());
         Assert.assertEquals("test value", out);
     }

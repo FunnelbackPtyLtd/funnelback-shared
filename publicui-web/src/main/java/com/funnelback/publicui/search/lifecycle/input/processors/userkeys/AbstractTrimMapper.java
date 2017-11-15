@@ -93,7 +93,7 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                     
                     String outStr;
                     try {
-                        outStr = new String(IOUtils.toByteArray(er.getOutBytes()), er.getCharset());
+                        outStr = new String(IOUtils.toByteArray(er.getOutBytes().get()), er.getCharset());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

@@ -252,7 +252,7 @@ public class DefaultPadreForkingTests {
             
             Assert.assertNotNull(ts.getResponse());
             Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), 
-                new String(IOUtils.toByteArray(this.lastExecRet.getOutBytes())));
+                new String(IOUtils.toByteArray(this.lastExecRet.getOutBytes().get())));
             Assert.assertEquals(10, ts.getResponse().getResultPacket().getResults().size());
             Assert.assertEquals("Online visa applications", ts.getResponse().getResultPacket().getResults().get(0).getTitle());
         }

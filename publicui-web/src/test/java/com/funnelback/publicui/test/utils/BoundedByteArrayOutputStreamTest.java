@@ -19,7 +19,7 @@ public class BoundedByteArrayOutputStreamTest {
             os.write(testData);
             
             Assert.assertFalse("Expected output stream not to be truncated", os.isTruncated());
-            Assert.assertArrayEquals(IOUtils.toByteArray(os.asInputStream()), testData);
+            Assert.assertArrayEquals(IOUtils.toByteArray(os.asInputStream().get()), testData);
             Assert.assertEquals("Expected correct untruncated length", os.getUntruncatedSize(), testData.length);
         }
     }

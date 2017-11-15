@@ -13,7 +13,7 @@ public class CompressingByteArrayOutputStreamTest {
         CompressingByteArrayOutputStream outputStream = CompressingByteArrayOutputStream.compressAfter(1);
         outputStream.write("hello".getBytes());
         outputStream.close();
-        String s = new String(IOUtils.toByteArray(outputStream.asInputStream()));
+        String s = new String(IOUtils.toByteArray(outputStream.asInputStream().get()));
         Assert.assertEquals("hello", s);
     }
     

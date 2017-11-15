@@ -270,7 +270,7 @@ public class LocalDataRepository implements DataRepository {
             ExecutionReturn er = new WindowsNativeExecutor(i18n, GET_DOCUMENT_WAIT_TIMEOUT)
                 .execute(cmdLine, getDocumentEnvironment, 32, Integer.MAX_VALUE, getDocumentBinary.getParentFile());
             
-            Map<String, String> executionOutput = parseExecutionOutput(new String(IOUtils.toByteArray(er.getOutBytes()), er.getCharset()));
+            Map<String, String> executionOutput = parseExecutionOutput(new String(IOUtils.toByteArray(er.getOutBytes().get()), er.getCharset()));
             
             if (er.getReturnCode() != GET_DOCUMENT_SUCCESS) {
                 String error = executionOutput.get(ERROR_KEY);
@@ -280,7 +280,7 @@ public class LocalDataRepository implements DataRepository {
                     // Unknown error
                     log.error("Document fetcher returned a non-zero status ("
                         + er.getReturnCode()+") with command line '"
-                        + cmdLine + "'. Output was '"+ new String(IOUtils.toByteArray(er.getOutBytes()), er.getCharset()) + "'");
+                        + cmdLine + "'. Output was '"+ new String(IOUtils.toByteArray(er.getOutBytes().get()), er.getCharset()) + "'");
                     throw new TRIMException("Error while retrieving document: "
                         + error);
                 }

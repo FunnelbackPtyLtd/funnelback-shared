@@ -2,6 +2,7 @@ package com.funnelback.publicui.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.Supplier;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -55,7 +56,7 @@ public abstract class SizeListeningOutputStream implements InputSupplyingOuputSt
     }
     
     @Override
-    public InputStream asInputStream() {
+    public Supplier<InputStream> asInputStream() {
         return underlyingStream.asInputStream();
     }
 }

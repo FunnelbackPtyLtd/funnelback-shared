@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.apache.commons.io.IOUtils;
 
@@ -240,7 +241,7 @@ public class WindowsNativeExecutor {
         
         if (log.isTraceEnabled()) {
             try {
-                log.trace("Process result is: '" + new String(IOUtils.toByteArray(result.getOutput()), getCharset()) + "'");
+                log.trace("Process result is: '" + new String(IOUtils.toByteArray(result.getOutput().get()), getCharset()) + "'");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -312,7 +313,7 @@ public class WindowsNativeExecutor {
     @RequiredArgsConstructor
     private class PossiblyTruncatedBytes {
         @Getter
-        private final InputStream output;
+        private final Supplier<InputStream> output;
         
         @Getter
         private final int untruncatedSize;

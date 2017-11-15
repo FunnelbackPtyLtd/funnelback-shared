@@ -2,6 +2,7 @@ package com.funnelback.publicui.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.Supplier;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -81,7 +82,7 @@ public class BoundedByteArrayOutputStream extends SizeListeningOutputStream {
         }
 
         @Override
-        public InputStream asInputStream() {
+        public Supplier<InputStream> asInputStream() {
             return this.sizedOuputStream.asInputStream();
         }
         

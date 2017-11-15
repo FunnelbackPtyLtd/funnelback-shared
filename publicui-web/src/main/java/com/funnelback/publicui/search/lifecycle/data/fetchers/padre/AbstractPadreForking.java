@@ -9,10 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
-
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +34,9 @@ import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.PadreXmlParser;
 
-import cc.mallet.util.IoUtils;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Forks PADRE and communicate with it using stdin/out/err
@@ -142,7 +140,7 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                     try {
                         log.trace("Padre exit code is: " + padreOutput.getReturnCode() + "\n"
                             + "---- RAW result packet BEGIN ----:\n\n"
-                                +new String(IOUtils.toByteArray(padreOutput.getOutBytes()), padreOutput.getCharset())
+                                +new String(IOUtils.toByteArray(padreOutput.getOutBytes().get()), padreOutput.getCharset())
                                 +"\n---- RAW result packet END ----");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -164,7 +162,7 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 if (padreOutput != null && padreOutput.getOutBytes() != null && padreOutput.getUntruncatedOutputSize() > 0) {
                     try {
                         log.error("PADRE response was: {}\n",
-                                new String(IOUtils.toByteArray(padreOutput.getOutBytes()), padreOutput.getCharset()));
+                                new String(IOUtils.toByteArray(padreOutput.getOutBytes().get()), padreOutput.getCharset()));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
