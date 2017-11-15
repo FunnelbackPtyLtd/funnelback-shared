@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.function.Supplier;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +16,7 @@ public class InputSupplyingLZ4OuputStream extends LZ4FrameOutputStream implement
     private ByteArrayOutputStream bos;
     
     public InputSupplyingLZ4OuputStream(ByteArrayOutputStream bos) throws IOException {
-        super(bos, BLOCKSIZE.SIZE_256KB);
+        super(bos, BLOCKSIZE.SIZE_64KB);
         LZ4Factory.fastestJavaInstance().fastCompressor();
         this.bos = bos;
     }
