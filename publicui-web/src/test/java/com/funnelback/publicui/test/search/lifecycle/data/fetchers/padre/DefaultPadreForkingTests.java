@@ -127,33 +127,28 @@ public class DefaultPadreForkingTests {
     @Test
     public void test() throws DataFetchException, EnvironmentVariableException, IOException {
         
-        int iters = 10;
         
-        ArrayList<Pair<SearchTransaction, ExecutionReturn>> execRets = new ArrayList<>(iters);
-        for(int i = 0; i < iters; i++) {
-            List<String> qpOptions = new ArrayList<String>(Arrays.asList(
-                new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-ff.xml"}));
-            
-            SearchQuestion qs = new SearchQuestion();
-            qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
-            qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
-            qs.setQuery("test");
-            SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
-            
-            
-            forking.fetchData(st);
-            execRets.add(Pair.of(st, this.lastExecRet));
-            
-            Assert.assertNotNull(st.getResponse());
-            Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
-            Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
-        }
         
-        System.gc();
         
-        System.out.println("Ok done"); 
-        System.gc();
-        System.in.read();
+        
+        List<String> qpOptions = new ArrayList<String>(Arrays.asList(
+            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-ff.xml"}));
+        
+        SearchQuestion qs = new SearchQuestion();
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
+        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
+        qs.setQuery("test");
+        SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
+        
+        
+        forking.fetchData(st);
+        
+        Assert.assertNotNull(st.getResponse());
+        Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
+        Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
+    
+        
+        
     }
 
     @Test(expected=DataFetchException.class)
