@@ -2,11 +2,12 @@ package com.funnelback.publicui.test.utils;
 
 import java.io.IOException;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.publicui.utils.BoundedByteArrayOutputStream;
-import com.funnelback.publicui.utils.ChunkedByteArrayOutputStream;
+import com.funnelback.publicui.utils.InputSupplyingByteArrayOutputStream;
 
 public class BoundedByteArrayOutputStreamTest {
 
@@ -14,18 +15,18 @@ public class BoundedByteArrayOutputStreamTest {
     
     @Test
     public void testWithinCapacity() throws IOException {
-        try (BoundedByteArrayOutputStream os = new BoundedByteArrayOutputStream(new ChunkedByteArrayOutputStream(2), 20)) {
+        try (BoundedByteArrayOutputStream os = new BoundedByteArrayOutputStream(new InputSupplyingByteArrayOutputStream(), 20)){ 
             os.write(testData);
             
             Assert.assertFalse("Expected output stream not to be truncated", os.isTruncated());
-            Assert.assertArrayEquals(os.getUnderlyingStream().toByteArray(), testData);
+            Assert.assertArrayEquals(IOUtils.toByteArray(os.asInputStream()), testData);
             Assert.assertEquals("Expected correct untruncated length", os.getUntruncatedSize(), testData.length);
         }
     }
 
     @Test
     public void testExceedCapactiy() throws IOException {
-        try (BoundedByteArrayOutputStream os = new BoundedByteArrayOutputStream(new ChunkedByteArrayOutputStream(3), 20)) {
+        try (BoundedByteArrayOutputStream os = new BoundedByteArrayOutputStream(new InputSupplyingByteArrayOutputStream(), 20)){
             os.write(testData);
             os.write(testData);
             

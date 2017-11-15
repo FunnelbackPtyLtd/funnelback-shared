@@ -6,15 +6,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.io.IOUtils;
 
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.utils.BoundedByteArrayOutputStream;
-import com.funnelback.publicui.utils.ChunkedByteArrayOutputStream;
+import com.funnelback.publicui.utils.CompressingByteArrayOutputStream;
 import com.funnelback.publicui.utils.ExecutionReturn;
 
 import lombok.RequiredArgsConstructor;
@@ -47,11 +47,13 @@ public class JavaPadreForker implements PadreForker {
             }
             
             
-            BoundedByteArrayOutputStream padreOutput = new BoundedByteArrayOutputStream(new ChunkedByteArrayOutputStream(10*1024), sizeLimit);
+            BoundedByteArrayOutputStream padreOutput = new BoundedByteArrayOutputStream(
+                CompressingByteArrayOutputStream.builder().withInitialByteArraySize(AVG_PADRE_PACKET_SIZE).build(), 
+                sizeLimit);
             
-//            Reference<ChunkedByteArrayOutputStream> padreOutput= new Reference<>();
-            
-            BoundedByteArrayOutputStream padreError = new BoundedByteArrayOutputStream(new ChunkedByteArrayOutputStream(AVG_PADRE_ERR_SIZE), sizeLimit);
+            BoundedByteArrayOutputStream padreError = new BoundedByteArrayOutputStream(
+                CompressingByteArrayOutputStream.builder().withInitialByteArraySize(AVG_PADRE_ERR_SIZE).build(), 
+                sizeLimit);
             
             log.debug("Executing '" + padreCmdLine + "' with environment " + environment);
             
@@ -60,14 +62,16 @@ public class JavaPadreForker implements PadreForker {
             ExecuteWatchdog watchdog = new ExecuteWatchdog(padreWaitTimeout);
             executor.setWatchdog(watchdog);
     
-            PumpStreamHandler streamHandler = new PumpStreamHandler(padreOutput, padreError, null);
+            PumpStreamHandler streamHandler = new PumpStreamHandler(padreOutput.asOutputStream(), padreError.asOutputStream(), null);
             
             executor.setStreamHandler(streamHandler);
             
             try {
                 int rc = executor.execute(padreCmdLine, environment);
                 
-
+                padreOutput.close();
+                padreError.close();
+                
                 if (padreOutput.isTruncated()) {
                     throw new PadreForkingExceptionPacketSizeTooBig(i18n.tr("padre.forking.failed.sizelimit", padreCmdLine.toString()),
                         padreOutput.getUntruncatedSize());
@@ -80,8 +84,10 @@ public class JavaPadreForker implements PadreForker {
                     throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()));
                 }
                 
+                
+                
                 //Ideally padre should never be writting to STDERR unless something is wrong with the collection.
-                if(padreError.getUnderlyingStream().size() > 0) {
+                if(padreError.getUntruncatedSize() > 0) {
                     
                     String error = readPadreOutputForLogs(padreError).trim();
                     if(error.length() > 0) {
@@ -93,6 +99,7 @@ public class JavaPadreForker implements PadreForker {
                 //Log non zero exit codes. Sometimes non zero exit codes will be in a valid XML
                 //Which will have some error messages displayed to the user.
                 if(rc != 0 ) {
+                    //TODO
                     log.debug("Output for non zero exit code (code: {}) when running: {}\nSTDOUT:\n{}\nSTDERR\n{}",
                         rc,
                         getExecutionDetails(padreCmdLine, environment),
@@ -108,8 +115,8 @@ public class JavaPadreForker implements PadreForker {
                 }
                 
                 ExecutionReturn er = new ExecutionReturn(rc, 
-                    padreOutput.getUnderlyingStream().toInputStream(), 
-                    padreError.getUnderlyingStream().toInputStream(),
+                    padreOutput.asInputStream(), 
+                    padreError.asInputStream(),
                     (int) Math.min(padreOutput.getUntruncatedSize(), (long) Integer.MAX_VALUE),
                     StandardCharsets.UTF_8);
                 return er;
@@ -138,7 +145,12 @@ public class JavaPadreForker implements PadreForker {
      * @return
      */
     private String readPadreOutputForLogs(BoundedByteArrayOutputStream os) {
-        return new String(os.getUnderlyingStream().toByteArray(), StandardCharsets.UTF_8);
+        // This has the potential to OOM here should we limit this?
+        try {
+            return new String(IOUtils.toByteArray(os.asInputStream()), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     /**

@@ -2,16 +2,19 @@ package com.funnelback.publicui.utils.jna;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingExceptionPacketSizeTooBig;
 import com.funnelback.publicui.utils.BoundedByteArrayOutputStream;
-import com.funnelback.publicui.utils.ChunkedByteArrayOutputStream;
+import com.funnelback.publicui.utils.CompressingByteArrayOutputStream;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -236,9 +239,13 @@ public class WindowsNativeExecutor {
         }
         
         if (log.isTraceEnabled()) {
-            log.trace("Process result is: '" + new String(result.getOutput().toByteArray(), getCharset()) + "'");
+            try {
+                log.trace("Process result is: '" + new String(IOUtils.toByteArray(result.getOutput()), getCharset()) + "'");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        return new ExecutionReturn(returnCode, result.getOutput().toInputStream(), null, result.getUntruncatedSize(), getCharset());
+        return new ExecutionReturn(returnCode, result.getOutput(), null, result.getUntruncatedSize(), getCharset());
     }
 
     /**
@@ -256,7 +263,8 @@ public class WindowsNativeExecutor {
                 new Win32Exception(Kernel32.INSTANCE.GetLastError()));
         }
 
-        BoundedByteArrayOutputStream bos = new BoundedByteArrayOutputStream(new ChunkedByteArrayOutputStream(estimatedSize), sizeLimit);
+        BoundedByteArrayOutputStream bos = new BoundedByteArrayOutputStream(CompressingByteArrayOutputStream.builder()
+            .withInitialByteArraySize(estimatedSize).build(), sizeLimit);
         
         ByteBuffer buf = ByteBuffer.allocate(STDOUT_BUFFER_SIZE);
         IntByReference nbRead = new IntByReference();
@@ -298,13 +306,13 @@ public class WindowsNativeExecutor {
         }
         
         
-        return new PossiblyTruncatedBytes(bos.getUnderlyingStream(), (int) bos.getUntruncatedSize());
+        return new PossiblyTruncatedBytes(bos.asInputStream(), (int) bos.getUntruncatedSize());
     }
     
     @RequiredArgsConstructor
     private class PossiblyTruncatedBytes {
         @Getter
-        private final ChunkedByteArrayOutputStream output;
+        private final InputStream output;
         
         @Getter
         private final int untruncatedSize;

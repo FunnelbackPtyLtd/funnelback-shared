@@ -1,11 +1,9 @@
 package com.funnelback.publicui.xml.padre;
 
 import java.io.ByteArrayInputStream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
-import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +15,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import com.funnelback.common.utils.ArrayFindUtils;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.Details;
@@ -56,10 +53,13 @@ public class StaxStreamParser implements PadreXmlParser {
     /** Tag marking the start of the XML document */
     private static final String XML_HEADER_TAG = "<?xml";
     
+    public ResultPacket parse(byte[] padreStdOut, Charset charset, boolean allowContentInProlog) throws XmlParsingException {
+        return parse(new ByteArrayInputStream(padreStdOut), charset, allowContentInProlog);
+    }
+    
     @Override
     public ResultPacket parse(InputStream padreStdOut, Charset charset, boolean allowContentInProlog) throws XmlParsingException {
 
-        // TODO TEST
         if (allowContentInProlog) {
             byte[] expected = XML_HEADER_TAG.getBytes(charset);
             int matchedUpTo = 0;
