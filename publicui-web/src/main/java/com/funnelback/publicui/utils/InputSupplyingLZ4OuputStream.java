@@ -91,6 +91,11 @@ public class InputSupplyingLZ4OuputStream {
             return new UncompressingStreamSupplier(bytes);
         }
         
+        @Override
+        public OutputStream asOutputStream() {
+            return this;
+        }
+        
         @AllArgsConstructor
         private static class UncompressingStreamSupplier implements Supplier<InputStream> {
 
