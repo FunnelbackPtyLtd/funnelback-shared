@@ -4,16 +4,20 @@ package com.funnelback.publicui.search.web.controllers;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.pdfbox.encoding.StandardEncoding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
@@ -50,6 +54,7 @@ import com.funnelback.publicui.utils.web.MetricsConfiguration;
 import com.funnelback.springmvc.web.binder.GenericEditor;
 
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -65,7 +70,7 @@ public class ClickController extends SessionController {
         RequestParameters.Click.TYPE
     };
 
-    @Autowired
+    @Autowired @Setter
     private LogService logService;
    
     @Autowired
@@ -169,13 +174,19 @@ public class ClickController extends SessionController {
             @RequestParam(RequestParameters.COLLECTION) Collection collection,
             @RequestParam(required = false, defaultValue = "CLICK") ClickLog.Type type,
             @RequestParam(required = false, defaultValue = "0") Integer rank,
-            @RequestParam(required = false, defaultValue = DefaultValues.DEFAULT_PROFILE) ProfileId profile,
+            @RequestParam(required = false) ProfileId profile,
             @RequestParam(value = RequestParameters.Click.URL, required = true) URI redirectUrl,
             @RequestParam(value = RequestParameters.Click.INDEX_URL, required = true) URI indexUrl,
             @RequestParam(value = RequestParameters.Click.AUTH, required = true) String authtoken,
+            
             @RequestParam(value = RequestParameters.Click.NOATTACHMENT,
                            required = false, defaultValue = "false") boolean noAttachment,
-            @ModelAttribute SearchUser user) throws IOException {
+            @ModelAttribute SearchUser user,
+            @RequestParam(value = RequestParameters.QUERY, required = false) String query)
+                throws IOException {
+        
+        Optional<String> givenProfileId = Optional.ofNullable(profile).map(ProfileId::getId);
+        profile = new ProfileId(DefaultValues.DEFAULT_PROFILE);
 
         if (collection != null) {
             // Does the token match the target? Forbidden if not.
@@ -192,15 +203,22 @@ public class ClickController extends SessionController {
             
             try {    
                 // Get the user id
-                String requestId = LogUtils.getRequestIdentifier(request,
-                        DefaultValues.RequestId.valueOf(collection.getConfiguration()
-                                .value(Keys.REQUEST_ID_TO_LOG, 
-                                        DefaultValues.REQUEST_ID_TO_LOG.toString())),
-                        collection.getConfiguration()
-                                .value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
-                                        DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
+                String requestId = getRequestId(request, collection);
                 
-                URL referer = LogUtils.getReferrer(request);
+                Map<String, String> qs = QueryStringUtils.toSingleMap(Optional.ofNullable(LogUtils.getReferrer(request)).map(URL::toExternalForm).orElse(""));
+                
+                
+                if(!givenProfileId.isPresent()) {
+                    givenProfileId = Optional.ofNullable(qs.get(RequestParameters.PROFILE));
+                }
+                Optional<String> givenCollectionId = Optional.ofNullable(collection).map(Collection::getId);
+                if(!givenCollectionId.isPresent()) {
+                    givenCollectionId = Optional.ofNullable(qs.get(RequestParameters.COLLECTION));
+                }
+                Optional<String> givenQuery = Optional.ofNullable(query);
+                if(!givenQuery.isPresent()) {
+                    givenQuery = Optional.ofNullable(qs.get(RequestParameters.QUERY));
+                }
                 
                 if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
                     && user != null) {
@@ -212,12 +230,7 @@ public class ClickController extends SessionController {
                         h.setCollection(collection.getId());
                         h.setClickDate(new Date());
                         h.setUserId(user.getId());
-                        if (referer != null) {
-                            Map<String, String> qs = QueryStringUtils.toSingleMap(referer.getQuery());
-                            if (qs != null && qs.containsKey(RequestParameters.QUERY)) {
-                                h.setQuery(qs.get(RequestParameters.QUERY));
-                            }
-                        }
+                        givenQuery.ifPresent(h::setQuery);
                         
                         searchHistoryRepository.saveClick(h);
                     } else {
@@ -225,8 +238,12 @@ public class ClickController extends SessionController {
                     }
                 }
                 
+                String dummyReferer = "http://fake/?" + toCgiParam(RequestParameters.COLLECTION, givenCollectionId, false)
+                     + toCgiParam(RequestParameters.PROFILE, givenProfileId, false)
+                     + toCgiParam(RequestParameters.QUERY, givenQuery, true);
+                
                 logService.logClick(new ClickLog(new Date(), collection, collection
-                        .getProfiles().get(profile.getId()), requestId, referer, rank,
+                        .getProfiles().get(profile.getId()), requestId, new URL(dummyReferer), rank,
                         indexUrl, type, LogUtils.getUserId(user)));
                 
                 metrics.counter(MetricRegistry.name(
@@ -249,6 +266,30 @@ public class ClickController extends SessionController {
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
+    }
+    
+    protected String getRequestId(HttpServletRequest request, Collection collection) {
+        return LogUtils.getRequestIdentifier(request,
+            DefaultValues.RequestId.valueOf(collection.getConfiguration()
+                .value(Keys.REQUEST_ID_TO_LOG, 
+                        DefaultValues.REQUEST_ID_TO_LOG.toString())),
+        collection.getConfiguration()
+                .value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
+                        DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
+    }
+    
+    @SneakyThrows
+    private String toCgiParam(String paramName, Optional<String> param, boolean last) {
+        String addOn = "&";
+        if(last) {
+            addOn = "";
+        }
+        
+        if(param.isPresent()) {
+            return paramName + "=" + URLEncoder.encode(param.get(), StandardCharsets.UTF_8.toString()).replace("+", "%20") + addOn;
+        }
+        
+        return "";
     }
 
 }
