@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.function.Supplier;
 
+import lombok.AllArgsConstructor;
+
 /**
  * An interface for a InputStream which has the ability to re-fetched the written bytes 
  * in the form of a input stream.
@@ -58,6 +60,37 @@ public interface InputSupplyingOuputStream extends AutoCloseable {
                 underlyingStream.close();
             }
         };
+        
+    }
+    
+    /**
+     * Helper class to wrap a OuputStream to a InputSupplyingOuputStream
+     *
+     */
+    @AllArgsConstructor
+    public abstract class DelegateInputSupplyingOuputStream implements InputSupplyingOuputStream {
+        protected final OutputStream os;
+
+        public void write(int b) throws IOException {
+            os.write(b);
+        }
+
+        public void write(byte[] b) throws IOException {
+            os.write(b);
+        }
+
+        public void write(byte[] b, int off, int len) throws IOException {
+            os.write(b, off, len);
+        }
+
+        public void flush() throws IOException {
+            os.flush();
+        }
+
+        public void close() throws IOException {
+            os.close();
+        }
+
         
     }
 

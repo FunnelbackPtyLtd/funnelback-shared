@@ -52,7 +52,7 @@ public class CompressingByteArrayOutputStream extends SizeListeningOutputStream 
             triedCompressing = true;
             log.trace("Will attempt compressing the stream.");
             try {
-                InputSupplyingLZ4OuputStream compressedStream = new InputSupplyingLZ4OuputStream(new ByteArrayOutputStream());
+                InputSupplyingOuputStream compressedStream = InputSupplyingLZ4OuputStream.getCompressedStream(new ByteArrayOutputStream());
                 this.getUnderlyingStream().close();
                 try {
                     IOUtils.copy(this.getUnderlyingStream().asInputStream().get(), compressedStream.asOutputStream());
