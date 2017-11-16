@@ -106,33 +106,9 @@ public class DefaultPadreForkingTests {
     }
     
     @Test
-    public void makeBig() throws IOException {
-        File f = new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml");
-        
-        File big = new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-ff.xml");
-        
-        String[] parts = FileUtils.readFileToString(f).split("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
-        FileUtils.writeStringToFile(big, parts[0], false);
-        int syz = 40 * 1024 * 1024;
-        byte[] mmm = new byte[syz];
-        for(int i = 0; i < syz ; i++) {
-            mmm[i] = 'm';
-        }
-        
-        FileUtils.writeByteArrayToFile(big, mmm, true);
-        
-        FileUtils.writeStringToFile(big, parts[1], true);
-    }
-    
-    @Test
     public void test() throws DataFetchException, EnvironmentVariableException, IOException {
-        
-        
-        
-        
-        
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
-            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-ff.xml"}));
+            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
         SearchQuestion qs = new SearchQuestion();
         qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
@@ -146,9 +122,6 @@ public class DefaultPadreForkingTests {
         Assert.assertNotNull(st.getResponse());
         Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
         Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
-    
-        
-        
     }
 
     @Test(expected=DataFetchException.class)

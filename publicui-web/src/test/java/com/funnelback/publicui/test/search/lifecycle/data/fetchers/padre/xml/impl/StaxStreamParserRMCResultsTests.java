@@ -4,12 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class StaxStreamParserRMCResultsTests extends StaxStreamParserTests {
     public void before() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
         rp = parser.parse(
-            new FileInputStream(new File("src/test/resources/padre-xml/complex-rmc-results.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/complex-rmc-results.xml")),
             StandardCharsets.UTF_8,
             false);
         assertNotNull(rp);
