@@ -20,11 +20,11 @@ public class WindowsNativePadreForker implements PadreForker {
     private final int execTimeout;
     
     @Override
-    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment, int sizeLimit)
+    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment, PadreForkingOptions padreForkingOptions)
         throws PadreForkingException {
 
         try {
-            return new WindowsNativeExecutor(i18n, execTimeout).execute(commandLine, environment, AVG_PADRE_PACKET_SIZE, sizeLimit);
+            return new WindowsNativeExecutor(i18n, execTimeout).execute(commandLine, environment, AVG_PADRE_PACKET_SIZE, padreForkingOptions);
         } catch (ExecutionException ee) {
             throw new PadreForkingException(ee);
         }

@@ -16,6 +16,8 @@ import org.junit.Test;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
 import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.ManualPadreForkingOptions;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingOptions;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
@@ -23,6 +25,13 @@ import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionExceptio
 public class WindowsNativeExecutorTest {
 
     private I18n i18n;
+    
+    private final PadreForkingOptions padreOptions = ManualPadreForkingOptions.builder()
+            .padreForkingTimeout(Integer.MAX_VALUE)
+            .padreMaxPacketSize(Integer.MAX_VALUE)
+            .sizeAtWhichToCompressPackets(12)
+            .build();
+                                                        
     
     @BeforeClass
     public static void beforeClass() {
@@ -41,7 +50,7 @@ public class WindowsNativeExecutorTest {
     public void testNoEnvironment() throws ExecutionException, IOException {
         WindowsNativeExecutor executor = new WindowsNativeExecutor(i18n, 1000*30);
         
-        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"net.exe"}), null, 32, Integer.MAX_VALUE);
+        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"net.exe"}), null, 32, padreOptions);
         
         Assert.assertEquals(1, er.getReturnCode());
         Assert.assertTrue(new String(IOUtils.toByteArray(er.getOutBytes().get()), StandardCharsets.UTF_8).contains("The syntax of this command is"));
@@ -53,7 +62,7 @@ public class WindowsNativeExecutorTest {
         
         Map<String, String> env = new HashMap<String, String>();
         env.put("TEST_VAR", "test value");
-        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"src/test/resources/dummy-search_home/bin/getenv.exe", "TEST_VAR"}), env, 32, Integer.MAX_VALUE);
+        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"src/test/resources/dummy-search_home/bin/getenv.exe", "TEST_VAR"}), env, 32, padreOptions);
         
         String out = new String(IOUtils.toByteArray(er.getOutBytes().get()), StandardCharsets.UTF_8).trim();
         Assert.assertEquals(out, 0, er.getReturnCode());

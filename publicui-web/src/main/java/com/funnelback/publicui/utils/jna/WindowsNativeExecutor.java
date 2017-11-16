@@ -14,8 +14,9 @@ import org.apache.commons.io.IOUtils;
 
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingExceptionPacketSizeTooBig;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingOptions;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreOuputHelper;
 import com.funnelback.publicui.utils.BoundedByteArrayOutputStream;
-import com.funnelback.publicui.utils.CompressingByteArrayOutputStream;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -64,8 +65,8 @@ public class WindowsNativeExecutor {
      * @return Result of the execution
      * @throws ExecutionException if something goes wrong, with a nested cause
      */
-    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment, int estimatedSize, int sizeLimit) throws ExecutionException {
-        return execute(commandLine, environment, estimatedSize, sizeLimit, null);
+    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment, int estimatedSize, PadreForkingOptions padreForkingOptions) throws ExecutionException {
+        return execute(commandLine, environment, estimatedSize, padreForkingOptions, null);
     }
     
     /**
@@ -78,7 +79,7 @@ public class WindowsNativeExecutor {
      * @return Result of the execution
      * @throws ExecutionException if something goes wrong, with a nested cause
      */
-    public ExecutionReturn execute(List<String> commandLineList, Map<String, String> environment, int estimatedSize, int sizeLimit, File dir)
+    public ExecutionReturn execute(List<String> commandLineList, Map<String, String> environment, int estimatedSize, PadreForkingOptions padreForkingOptions, File dir)
         throws ExecutionException {
 
         if (log.isDebugEnabled()) {
@@ -191,7 +192,7 @@ public class WindowsNativeExecutor {
             log.trace("Created native process, pid is " + pi.dwProcessId + ", threadid is " + pi.dwThreadId);
             
             // Read stdout
-            result = readFullStdOut(hChildOutWrite.getValue(), hChildOutRead.getValue(), estimatedSize, sizeLimit);
+            result = readFullStdOut(hChildOutWrite.getValue(), hChildOutRead.getValue(), estimatedSize, padreForkingOptions);
             
             int state = Kernel32.INSTANCE.WaitForSingleObject(pi.hProcess, waitTimeout);
             if (state != WinBase.WAIT_OBJECT_0) {
@@ -258,14 +259,13 @@ public class WindowsNativeExecutor {
      * @return Content of STDOUT
      * @throws IOException 
      */
-    private PossiblyTruncatedBytes readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead, int estimatedSize, int sizeLimit) throws IOException {
+    private PossiblyTruncatedBytes readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead, int estimatedSize, PadreForkingOptions padreForkingOptions) throws IOException {
         if ( !Kernel32.INSTANCE.CloseHandle(hChildOutWrite)) {
             log.warn("Unable to close the stdout write pipe of child process",
                 new Win32Exception(Kernel32.INSTANCE.GetLastError()));
         }
 
-        BoundedByteArrayOutputStream bos = new BoundedByteArrayOutputStream(CompressingByteArrayOutputStream.builder()
-            .withInitialByteArraySize(estimatedSize).build(), sizeLimit);
+        BoundedByteArrayOutputStream bos = new PadreOuputHelper().getOupputStreamForPadre(estimatedSize, padreForkingOptions);
         
         ByteBuffer buf = ByteBuffer.allocate(STDOUT_BUFFER_SIZE);
         IntByReference nbRead = new IntByReference();

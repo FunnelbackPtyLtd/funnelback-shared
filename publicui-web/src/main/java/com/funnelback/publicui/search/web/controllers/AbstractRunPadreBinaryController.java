@@ -22,6 +22,7 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingOptions;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.web.CGIEnvironment;
@@ -59,7 +60,7 @@ public abstract class AbstractRunPadreBinaryController extends SessionController
             List<String> options,
             HttpServletRequest request, HttpServletResponse response,
             boolean detectHeaders,
-            int sizeLimit) throws IOException, PadreForkingException {
+            PadreForkingOptions padreForkingOptions) throws IOException, PadreForkingException {
         CGIEnvironment cgi = new CGIEnvironment(request);
 
         Map<String, String> env = cgi.getEnvironment();
@@ -74,7 +75,8 @@ public abstract class AbstractRunPadreBinaryController extends SessionController
         }
 
         try {
-            ExecutionReturn out = new JavaPadreForker(i18n, DefaultValues.ModernUI.PADRE_FORK_TIMEOUT_MS).execute(commandLine, env, sizeLimit);
+            ExecutionReturn out = new JavaPadreForker(i18n, padreForkingOptions.getPadreForkingTimeout())
+                                        .execute(commandLine, env, padreForkingOptions);
 
             String output = new String(IOUtils.toByteArray(out.getOutBytes().get()), out.getCharset());
             if (detectHeaders) {

@@ -16,12 +16,15 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.ManualPadreForkingOptions;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
+
+import static com.funnelback.publicui.utils.CompressingByteArrayOutputStream.DEFAULT_COMPRESS_AFTER_SIZE;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -89,7 +92,13 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                         + "' with command line '" + cmdLine + "'");
                     
                     ExecutionReturn er = new WindowsNativeExecutor(i18n, WAIT_TIMEOUT)
-                        .execute(cmdLine, env, 32, Integer.MAX_VALUE, getUserKeysBinary.getParentFile());
+                        .execute(cmdLine, env, 32, 
+                            ManualPadreForkingOptions.builder()
+                                .padreForkingTimeout(WAIT_TIMEOUT)
+                                .padreMaxPacketSize(Integer.MAX_VALUE)
+                                .sizeAtWhichToCompressPackets(DEFAULT_COMPRESS_AFTER_SIZE)
+                                .build(),
+                            getUserKeysBinary.getParentFile());
                     
                     String outStr;
                     try {

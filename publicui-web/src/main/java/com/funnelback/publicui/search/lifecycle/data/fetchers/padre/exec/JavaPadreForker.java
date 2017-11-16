@@ -14,7 +14,6 @@ import org.apache.commons.io.IOUtils;
 
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.utils.BoundedByteArrayOutputStream;
-import com.funnelback.publicui.utils.CompressingByteArrayOutputStream;
 import com.funnelback.publicui.utils.ExecutionReturn;
 
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,7 @@ public class JavaPadreForker implements PadreForker {
     protected final long padreWaitTimeout;
     
     @Override
-    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment, int sizeLimit) throws PadreForkingException {
+    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment, PadreForkingOptions padreForkingOptions) throws PadreForkingException {
         
         if (commandLine == null || commandLine.size() < 1) {
             throw new PadreForkingException(i18n.tr("padre.forking.java.failed", ""), new IllegalArgumentException("No commandLine specified"));
@@ -47,13 +46,8 @@ public class JavaPadreForker implements PadreForker {
             }
             
             
-            BoundedByteArrayOutputStream padreOutput = new BoundedByteArrayOutputStream(
-                CompressingByteArrayOutputStream.builder().withInitialByteArraySize(AVG_PADRE_PACKET_SIZE).build(), 
-                sizeLimit);
-            
-            BoundedByteArrayOutputStream padreError = new BoundedByteArrayOutputStream(
-                CompressingByteArrayOutputStream.builder().withInitialByteArraySize(AVG_PADRE_ERR_SIZE).build(), 
-                sizeLimit);
+            BoundedByteArrayOutputStream padreOutput = new PadreOuputHelper().getOupputStreamForPadre(AVG_PADRE_PACKET_SIZE, padreForkingOptions);
+            BoundedByteArrayOutputStream padreError = new PadreOuputHelper().getOupputStreamForPadre(AVG_PADRE_ERR_SIZE, padreForkingOptions);
             
             log.debug("Executing '" + padreCmdLine + "' with environment " + environment);
             

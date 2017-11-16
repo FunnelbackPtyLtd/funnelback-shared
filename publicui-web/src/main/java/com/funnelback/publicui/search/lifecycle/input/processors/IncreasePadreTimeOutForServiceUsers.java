@@ -3,17 +3,14 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 import java.security.Principal;
 import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.system.Security;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingOptionsHelper;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
-import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
-import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
  
 @Log4j2
@@ -21,9 +18,6 @@ import lombok.extern.log4j.Log4j2;
 public class IncreasePadreTimeOutForServiceUsers extends AbstractInputProcessor {
     
     private static final long SERVICE_USER_PADRE_TIMEOUT = 1200000; //20mins
-
-    @Setter
-    private PadreForkingOptionsHelper optionsHelper = new PadreForkingOptionsHelper();
     
     @Override
     public void processInput(SearchTransaction searchTransaction) {
@@ -38,7 +32,7 @@ public class IncreasePadreTimeOutForServiceUsers extends AbstractInputProcessor 
             return;
         }
         
-        long currentValue = optionsHelper.getPadreForkingTimeout(searchTransaction);
+        long currentValue = getPadreForkingOptionsHelper(searchTransaction).getPadreForkingTimeout();
         
         if(SERVICE_USER_PADRE_TIMEOUT > currentValue) {
             searchTransaction.getQuestion().setPadreTimeout(Optional.of(SERVICE_USER_PADRE_TIMEOUT));
@@ -52,6 +46,10 @@ public class IncreasePadreTimeOutForServiceUsers extends AbstractInputProcessor 
                 currentValue, 
                 SERVICE_USER_PADRE_TIMEOUT);
         }
+    }
+    
+    protected PadreForkingOptionsHelper getPadreForkingOptionsHelper(SearchTransaction st) {
+        return new PadreForkingOptionsHelper(st);
     }
 
     

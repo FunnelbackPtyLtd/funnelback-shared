@@ -14,6 +14,14 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class CompressingByteArrayOutputStream extends SizeListeningOutputStream {
 
+    /**
+     * Just under 8MB this is a good size because the underlying byte array output stream
+     * will want to grow to 16MB (creating 16MB and holding onto the 8MB existing buf)
+     * instead we switch to using the compressed stream which (if compressible) we will 
+     * use less memory.
+     */
+    public static final int DEFAULT_COMPRESS_AFTER_SIZE = 8 * 1024 * 1024 - 1;
+    
     private final int compressAfterSize;
     private boolean isCompressing = false;
     private boolean triedCompressing = false;
@@ -42,7 +50,7 @@ public class CompressingByteArrayOutputStream extends SizeListeningOutputStream 
         
         if(sizeAfterProposedWrite > compressAfterSize && ! triedCompressing) {
             triedCompressing = true;
-            log.fatal("Will attempt compressing the stream.");
+            log.trace("Will attempt compressing the stream.");
             try {
                 InputSupplyingLZ4OuputStream compressedStream = new InputSupplyingLZ4OuputStream(new ByteArrayOutputStream());
                 this.getUnderlyingStream().close();
@@ -73,10 +81,8 @@ public class CompressingByteArrayOutputStream extends SizeListeningOutputStream 
     @NoArgsConstructor
     public static class Builder {
         @Wither private int initialByteArraySize = 32;
-        @Wither private int compressAfterSize = 8 * 1024 * 1024 - 1; //Just under 8MB this is a good size because the underlying byte array output stream
-                                                                     // will want to grow to 16MB (creating 16MB and holding onto the 8MB existing buf)
-                                                                     // instead we switch to using the compressed stream which (if compressible) we will 
-                                                                     // use less memory.
+        @Wither private int compressAfterSize = DEFAULT_COMPRESS_AFTER_SIZE;
+        
         public CompressingByteArrayOutputStream build() {
             return new CompressingByteArrayOutputStream(new InputSupplyingByteArrayOutputStream(initialByteArraySize), compressAfterSize);
         }

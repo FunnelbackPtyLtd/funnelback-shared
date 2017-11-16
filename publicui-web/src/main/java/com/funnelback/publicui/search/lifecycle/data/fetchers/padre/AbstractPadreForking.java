@@ -128,13 +128,12 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
             }
     
-            long padreWaitTimeout = new PadreForkingOptionsHelper().getPadreForkingTimeout(searchTransaction);
-            int padreResponseSizeLimit = new PadreForkingOptionsHelper().getPadreMaxPacketSize(searchTransaction);
+            PadreForkingOptionsHelper padreForkingOptions = new PadreForkingOptionsHelper(searchTransaction);
 
             ExecutionReturn padreOutput = null;
             
             try {
-                padreOutput = runPadre(searchTransaction, padreWaitTimeout, commandLine, env, padreResponseSizeLimit);
+                padreOutput = runPadre(searchTransaction, commandLine, env, padreForkingOptions);
                 
                 if (log.isTraceEnabled()) {
                     try {
@@ -181,20 +180,22 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
         }
     }
     
-    ExecutionReturn runPadre(SearchTransaction searchTransaction, long padreWaitTimeout, 
+    ExecutionReturn runPadre(SearchTransaction searchTransaction, 
                                 List<String> commandLine,
                                 Map<String, String> env,
-                                int sizeLimit) throws DataFetchException, PadreForkingException {
+                                PadreForkingOptionsHelper padreForkingOptions) throws DataFetchException, PadreForkingException {
         try {
             queryReadLock.lock(searchTransaction.getQuestion().getCollection());
         } catch (FileLockException e) {
             throw new DataFetchException(i18n.tr("padre.forking.lock.error"), e);
         }
+        
+        int padreWaitTimeout = (int) padreForkingOptions.getPadreForkingTimeout();
         try {
             if (searchTransaction.getQuestion().isImpersonated()) {
-                return new WindowsNativePadreForker(i18n, (int) padreWaitTimeout).execute(commandLine, env, sizeLimit);
+                return new WindowsNativePadreForker(i18n, (int) padreWaitTimeout).execute(commandLine, env, padreForkingOptions);
             } else {
-                return new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env, sizeLimit);
+                return new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env, padreForkingOptions);
             }
         } finally {
             queryReadLock.release(searchTransaction.getQuestion().getCollection());
