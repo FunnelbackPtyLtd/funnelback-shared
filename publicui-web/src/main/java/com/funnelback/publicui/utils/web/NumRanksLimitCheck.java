@@ -32,6 +32,8 @@ public class NumRanksLimitCheck {
             return true;
         }
         
+        // numRanksParam at this point might be as long as NumRanks.MAX_SIZE and may
+        // exceed Integer.MAX_VALUE so we cast num ranks limit to long and compare as longs.
         if(Long.parseLong(numRanksParam) > (long) numRanksLimit.getValue()) {
             return true;
         }
