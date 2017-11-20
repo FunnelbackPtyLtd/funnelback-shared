@@ -5,10 +5,8 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.funnelback.common.config.Config;
 import com.funnelback.common.padre.NumRanks;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.data.service.ServiceConfigDataReadOnly;
 import com.funnelback.config.keys.Keys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
