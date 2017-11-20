@@ -19,6 +19,7 @@ import com.funnelback.config.validators.ConfigOptionValidationException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -26,7 +27,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 @Log4j2
 public class ServerConfigReadOnlyWhichAlsoHasAStringGetMethod implements ServiceConfigReadOnly {
-    private final ServiceConfigReadOnly underylingServiceConfigReadOnly;
+    @NonNull private final ServiceConfigReadOnly underylingServiceConfigReadOnly;
     
     @Override
     public <T> T get(ComponentConfigOptionDefinition<T> configOption) {

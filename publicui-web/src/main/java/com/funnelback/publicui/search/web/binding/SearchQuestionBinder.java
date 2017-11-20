@@ -75,6 +75,7 @@ public class SearchQuestionBinder {
             SearchQuestion question,
             LocaleResolver localeResolver,
             FunnelbackVersion funnelbackVersion) {
+        question.getCollection().getProfiles();
         question.setExecutionContext(executionContext);
         question.setFunnelbackVersion(funnelbackVersion);
         question.getRawInputParameters().putAll(request.getParameterMap());
