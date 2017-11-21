@@ -1,6 +1,7 @@
 package com.funnelback.publicui.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,7 +16,7 @@ import lombok.AllArgsConstructor;
  * <p>The interface seemed need to be able to compose classes</p>
  * 
  */
-public interface InputSupplyingOuputStream extends AutoCloseable {
+public interface InputSupplyingOuputStream extends Closeable {
 
     public abstract void write(int b) throws IOException;
     public void write(byte b[]) throws IOException;

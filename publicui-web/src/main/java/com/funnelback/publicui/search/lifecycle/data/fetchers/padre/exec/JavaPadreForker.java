@@ -48,80 +48,91 @@ public class JavaPadreForker implements PadreForker {
             
             BoundedByteArrayOutputStream padreOutput = new PadreOuputHelper().getOupputStreamForPadre(AVG_PADRE_PACKET_SIZE, padreForkingOptions);
             BoundedByteArrayOutputStream padreError = new PadreOuputHelper().getOupputStreamForPadre(AVG_PADRE_ERR_SIZE, padreForkingOptions);
-            
-            log.debug("Executing '" + padreCmdLine + "' with environment " + environment);
-            
-            PadreExecutor executor = new PadreExecutor();
-    
-            ExecuteWatchdog watchdog = new ExecuteWatchdog(padreWaitTimeout);
-            executor.setWatchdog(watchdog);
-    
-            PumpStreamHandler streamHandler = new PumpStreamHandler(padreOutput.asOutputStream(), padreError.asOutputStream(), null);
-            
-            executor.setStreamHandler(streamHandler);
-            
             try {
-                int rc = executor.execute(padreCmdLine, environment);
+                log.debug("Executing '" + padreCmdLine + "' with environment " + environment);
                 
-                padreOutput.close();
-                padreError.close();
+                PadreExecutor executor = new PadreExecutor();
+        
+                ExecuteWatchdog watchdog = new ExecuteWatchdog(padreWaitTimeout);
+                executor.setWatchdog(watchdog);
+        
+                PumpStreamHandler streamHandler = new PumpStreamHandler(padreOutput.asOutputStream(), padreError.asOutputStream(), null);
                 
-                if (padreOutput.isTruncated()) {
-                    throw new PadreForkingExceptionPacketSizeTooBig(i18n.tr("padre.forking.failed.sizelimit", padreCmdLine.toString()),
-                        padreOutput.getUntruncatedSize());
-                }
+                executor.setStreamHandler(streamHandler);
                 
-                
-                
-                // Check if the process was killed by us before we complain it has bad exit code.
-                if(watchdog.killedProcess()) {
-                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()));
-                }
-                
-                
-                
-                //Ideally padre should never be writting to STDERR unless something is wrong with the collection.
-                if(padreError.getUntruncatedSize() > 0) {
+                try {
+                    int rc = executor.execute(padreCmdLine, environment);
                     
-                    String error = readPadreOutputForLogs(padreError).trim();
-                    if(error.length() > 0) {
-                        log.debug("PADRE printed the following to STDERR: '" + 
-                            error + "' " + getExecutionDetails(padreCmdLine, environment));
+                    padreOutput.close();
+                    padreError.close();
+                    
+                    if (padreOutput.isTruncated()) {
+                        throw new PadreForkingExceptionPacketSizeTooBig(i18n.tr("padre.forking.failed.sizelimit", padreCmdLine.toString()),
+                            padreOutput.getUntruncatedSize());
+                    }
+                    
+                    
+                    
+                    // Check if the process was killed by us before we complain it has bad exit code.
+                    if(watchdog.killedProcess()) {
+                        throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()));
+                    }
+                    
+                    
+                    
+                    //Ideally padre should never be writting to STDERR unless something is wrong with the collection.
+                    if(padreError.getUntruncatedSize() > 0) {
+                        
+                        String error = readPadreOutputForLogs(padreError).trim();
+                        if(error.length() > 0) {
+                            log.debug("PADRE printed the following to STDERR: '" + 
+                                error + "' " + getExecutionDetails(padreCmdLine, environment));
+                        }
+                    }
+                    
+                    //Log non zero exit codes. Sometimes non zero exit codes will be in a valid XML
+                    //Which will have some error messages displayed to the user.
+                    if(rc != 0 ) {
+                        //TODO
+                        log.debug("Output for non zero exit code (code: {}) when running: {}\nSTDOUT:\n{}\nSTDERR\n{}",
+                            rc,
+                            getExecutionDetails(padreCmdLine, environment),
+                                readPadreOutputForLogs(padreOutput),
+                                readPadreOutputForLogs(padreError));    
+                    }
+                    
+                    if(rc == 139) {
+                        //Seg faults are common to avoid support spending too long wondering what exit code 139 is
+                        //just log it is a seg fault. If that is put into a Jira ticket any padre/c dev will pick it
+                        //up immediately.
+                        throw new PadreForkingException(i18n.tr("padre.forking.java.failed.seg.fault", padreCmdLine.toString(), rc));
+                    }
+                    
+                    ExecutionReturn er = new ExecutionReturn(rc, 
+                        padreOutput.asInputStream(), 
+                        padreError.asInputStream(),
+                        (int) Math.min(padreOutput.getUntruncatedSize(), (long) Integer.MAX_VALUE),
+                        StandardCharsets.UTF_8);
+                    return er;
+                } catch (ExecuteException ee) {
+                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
+                } catch (IOException ioe) {
+                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ioe);
+                } finally {
+                    if (watchdog.killedProcess()) {
+                        log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
+                            + getExecutionDetails(padreCmdLine, environment));
                     }
                 }
-                
-                //Log non zero exit codes. Sometimes non zero exit codes will be in a valid XML
-                //Which will have some error messages displayed to the user.
-                if(rc != 0 ) {
-                    //TODO
-                    log.debug("Output for non zero exit code (code: {}) when running: {}\nSTDOUT:\n{}\nSTDERR\n{}",
-                        rc,
-                        getExecutionDetails(padreCmdLine, environment),
-                            readPadreOutputForLogs(padreOutput),
-                            readPadreOutputForLogs(padreError));    
-                }
-                
-                if(rc == 139) {
-                    //Seg faults are common to avoid support spending too long wondering what exit code 139 is
-                    //just log it is a seg fault. If that is put into a Jira ticket any padre/c dev will pick it
-                    //up immediately.
-                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed.seg.fault", padreCmdLine.toString(), rc));
-                }
-                
-                ExecutionReturn er = new ExecutionReturn(rc, 
-                    padreOutput.asInputStream(), 
-                    padreError.asInputStream(),
-                    (int) Math.min(padreOutput.getUntruncatedSize(), (long) Integer.MAX_VALUE),
-                    StandardCharsets.UTF_8);
-                return er;
-            } catch (ExecuteException ee) {
-                throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
-            } catch (IOException ioe) {
-                throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ioe);
             } finally {
-                if (watchdog.killedProcess()) {
-                    log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
-                        + getExecutionDetails(padreCmdLine, environment));
+                try {
+                    try {
+                        padreOutput.close();
+                    } finally {
+                        padreError.close();
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
         } catch (OutOfMemoryError oome) {
