@@ -29,6 +29,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.config.keys.Keys;
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -40,8 +42,10 @@ import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
+import com.funnelback.publicui.search.web.exception.NumRanksExceededException;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
+import com.funnelback.publicui.utils.web.NumRanksLimitCheck;
 
 import freemarker.template.TemplateException;
 import lombok.extern.log4j.Log4j2;
@@ -114,6 +118,9 @@ public class SearchController extends SessionController {
     
     @Autowired
     private MetricRegistry metrics;
+    
+    @Autowired
+    protected I18n i18n;
 
     /**
      * <p>Configures the binder to:</p>
@@ -200,9 +207,13 @@ public class SearchController extends SessionController {
         SearchTransaction transaction = null;
         
         if (question.getCollection() != null) {
+            
             // This is were the magic happens. The TransactionProcessor
             // will take care of processing the search request.
             SearchQuestionBinder.bind(executionContextHolder.getExecutionContext(), request, question, localeResolver, funnelbackVersion);
+            
+            new NumRanksLimitCheck().verifyNumRanksLimitIsNotExceeded(request, question.getCurrentProfileConfig(), i18n);
+            
             transaction = processor.process(question, user);
         } else {
             // Collection is null = non existent
@@ -285,6 +296,12 @@ public class SearchController extends SessionController {
         log.debug(ex);
     }
     
+    @ExceptionHandler(NumRanksExceededException.class)
+    public void numRanksExceededException(HttpServletResponse response, NumRanksExceededException ex) 
+            throws IOException {
+        log.debug(ex);
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+    }
     
     @ExceptionHandler(Exception.class)
     public void exception(Exception ex) {

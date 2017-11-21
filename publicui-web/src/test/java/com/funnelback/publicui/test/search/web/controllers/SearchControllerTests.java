@@ -1,5 +1,7 @@
 package com.funnelback.publicui.test.search.web.controllers;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -17,15 +19,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.web.servlet.ModelAndView;
 
-import waffle.windows.auth.IWindowsAccount;
-import waffle.windows.auth.IWindowsIdentity;
-import waffle.windows.auth.IWindowsImpersonationContext;
-
+import com.funnelback.common.config.CollectionId;
+import com.funnelback.common.config.Config;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.profile.ProfileId;
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.common.profile.ProfileView;
+import com.funnelback.config.configtypes.service.DefaultServiceConfigReadOnly;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.config.data.file.server.FileServerConfigDataReadOnly;
+import com.funnelback.config.data.service.InMemoryServiceConfig;
+import com.funnelback.config.factory.ConfigFactory;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.transaction.SearchError;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -34,6 +43,10 @@ import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.test.mock.MockDataFetcher;
 import com.funnelback.publicui.test.mock.MockInputProcessor;
 import com.funnelback.publicui.test.mock.MockOutputProcessor;
+
+import waffle.windows.auth.IWindowsAccount;
+import waffle.windows.auth.IWindowsIdentity;
+import waffle.windows.auth.IWindowsImpersonationContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -53,6 +66,9 @@ public class SearchControllerTests {
 
     @Resource(name="outputFlow")
     private List<OutputProcessor> outputFlow;
+    
+    @Resource(name="searchHome")
+    private File searchHome;
     
     private MockHttpServletRequest request;
 
@@ -90,8 +106,8 @@ public class SearchControllerTests {
     }
     
     @Test
-    public void testNoQueryShouldReturnSearchTransactionWithResponse() {
-        Collection col = new Collection("test", new NoOptionsConfig("dummy"));
+    public void testNoQueryShouldReturnSearchTransactionWithResponse() throws Exception {
+        Collection col = collectionWithProfile("test", new NoOptionsConfig(searchHome, "dummy"));
         SearchQuestion q = new SearchQuestion();
         q.setCollection(col);
         ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), q, null);
@@ -105,8 +121,8 @@ public class SearchControllerTests {
     }
     
     @Test
-    public void testEmptyQueryShouldReturnSearchTransaction() {
-        Collection col = new Collection("test-collection", new NoOptionsConfig("dummy"));
+    public void testEmptyQueryShouldReturnSearchTransaction() throws Exception {
+        Collection col = collectionWithProfile("test-collection", new NoOptionsConfig(searchHome, "dummy"));
         SearchQuestion sq = new SearchQuestion();
         sq.setCollection(col);
         sq.setQuery("");
@@ -121,10 +137,10 @@ public class SearchControllerTests {
     }
 
     @Test
-    public void testInvalidCollectionShouldShowCollectionList() {
+    public void testInvalidCollectionShouldShowCollectionList() throws Exception {
         configRepository.removeAllCollections();
-        configRepository.addCollection(new Collection("test1", new NoOptionsConfig("dummy")));
-        configRepository.addCollection(new Collection("test2", new NoOptionsConfig("dummy")));
+        configRepository.addCollection(new Collection("test1", new NoOptionsConfig(searchHome, "dummy")));
+        configRepository.addCollection(new Collection("test2", new NoOptionsConfig(searchHome, "dummy")));
 
         SearchQuestion sq = new SearchQuestion();
         sq.setQuery("test");
@@ -142,7 +158,7 @@ public class SearchControllerTests {
     }
     
     @Test
-    public void testInvalidCollectionShouldNotReturnListForNonHtml() {
+    public void testInvalidCollectionShouldNotReturnListForNonHtml() throws Exception {
         SearchQuestion sq = new SearchQuestion();
         sq.setQuery("test");
         
@@ -158,13 +174,13 @@ public class SearchControllerTests {
     }
     
     @Test
-    public void testSearchShouldProcessFlow() {
+    public void testSearchShouldProcessFlow() throws Exception {
         ((MockInputProcessor)inputFlow.get(0)).setTraversed(false);
         ((MockDataFetcher) dataFetchers.get(0)).setTraversed(false);
         ((MockOutputProcessor) outputFlow.get(0)).setTraversed(false);
 
         SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(new Collection("test-collection", new NoOptionsConfig("dummy")));
+        sq.setCollection(collectionWithProfile("test-collection", new NoOptionsConfig(searchHome, "dummy")));
         sq.setQuery("test-query");
         ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
         
@@ -183,13 +199,13 @@ public class SearchControllerTests {
     }
     
     @Test
-    public void testInputProcessorErrorShouldGenerateSearchError() {
+    public void testInputProcessorErrorShouldGenerateSearchError() throws Exception {
         ((MockInputProcessor)inputFlow.get(0)).setThrowError(true);
         ((MockDataFetcher) dataFetchers.get(0)).setThrowError(false);
         ((MockOutputProcessor)outputFlow.get(0)).setThrowError(false);
 
         SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(new Collection("test-collection", new NoOptionsConfig("dummy")));
+        sq.setCollection(collectionWithProfile("test-collection", new NoOptionsConfig(searchHome, "dummy")));
         sq.setQuery("test-query");
         ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
 
@@ -203,13 +219,13 @@ public class SearchControllerTests {
     }
     
     @Test
-    public void testDataFetcherErrorShouldGenerateSearchError() {
+    public void testDataFetcherErrorShouldGenerateSearchError() throws Exception {
         ((MockInputProcessor)inputFlow.get(0)).setThrowError(false);
         ((MockDataFetcher) dataFetchers.get(0)).setThrowError(true);
         ((MockOutputProcessor)outputFlow.get(0)).setThrowError(false);
 
         SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(new Collection("test-collection", new NoOptionsConfig("dummy")));
+        sq.setCollection(collectionWithProfile("test-collection", new NoOptionsConfig(searchHome, "dummy")));
         sq.setQuery("test-query");
         ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
 
@@ -223,13 +239,13 @@ public class SearchControllerTests {
     }
     
     @Test
-    public void testOutputProcessorErrorShouldGenerateSearchError() {
+    public void testOutputProcessorErrorShouldGenerateSearchError() throws Exception {
         ((MockInputProcessor)inputFlow.get(0)).setThrowError(false);
         ((MockDataFetcher) dataFetchers.get(0)).setThrowError(false);
         ((MockOutputProcessor)outputFlow.get(0)).setThrowError(true);
 
         SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(new Collection("test-collection", new NoOptionsConfig("dummy")));
+        sq.setCollection(collectionWithProfile("test-collection", new NoOptionsConfig(searchHome, "dummy")));
         sq.setQuery("test-query");
         ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
 
@@ -277,6 +293,22 @@ public class SearchControllerTests {
             return false;
         }
         
+    }
+    
+    /**
+     * Note that like many tests in this class the collection name is different to collection for the config and the profile config.
+     * @param name
+     * @param config
+     * @return
+     * @throws ProfileNotFoundException
+     */
+    private Collection collectionWithProfile(String name, Config config) throws ProfileNotFoundException {
+        Collection collection = new Collection(name, config);
+        Profile p = new Profile("_default");
+        ServiceConfigReadOnly serviceConfigReadOnly = new ConfigFactory(searchHome).readOnly().serviceConfig(new CollectionId("dummy"), new ProfileId("_default"), ProfileView.live);
+        p.setServiceConfig(serviceConfigReadOnly);
+        collection.getProfiles().put("_default", p);
+        return collection;
     }
     
 }
