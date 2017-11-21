@@ -88,10 +88,8 @@ public class StaxStreamParser implements PadreXmlParser {
         ResultPacket packet = new ResultPacket();
         
         try {
-            XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance()
-                                    //.createXMLStreamReader(new ByteArrayInputStream(padreStdOut, xmlStartOffset, padreStdOut.length), 
-                                        .createXMLStreamReader(padreStdOut,
-                                            charset.displayName());
+            XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance() 
+                                        .createXMLStreamReader(padreStdOut, charset.displayName());
         
             
             while(xmlStreamReader.hasNext()) {
