@@ -1,14 +1,12 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.junit.Assert;
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,13 +18,13 @@ import com.funnelback.publicui.search.lifecycle.output.processors.FacetedNavigat
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet;
+import com.funnelback.publicui.search.model.transaction.Facet.Category;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.model.transaction.Facet.Category;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
-import com.funnelback.publicui.xml.padre.StaxStreamParser;
+import com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamTestHelper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -81,10 +79,7 @@ public class FacetedNavigationURLTests {
     @Test
     public void test() throws Exception {
         
-        st.getResponse().setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-urls.xml")),
-            StandardCharsets.UTF_8,
-            false));
+        st.getResponse().setResultPacket(StaxStreamTestHelper.parse(new File("src/test/resources/padre-xml/faceted-navigation-urls.xml")));
         
         Assert.assertEquals(0, st.getResponse().getFacets().size());
         processor.processOutput(st);
@@ -116,10 +111,7 @@ public class FacetedNavigationURLTests {
     
     @Test
     public void testCategorySelection() throws Exception {
-        st.getResponse().setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-urls-selected.xml")),
-            StandardCharsets.UTF_8,
-            false));
+        st.getResponse().setResultPacket(StaxStreamTestHelper.parse(new File("src/test/resources/padre-xml/faceted-navigation-urls-selected.xml")));
         
         Assert.assertEquals(0, st.getResponse().getFacets().size());
         

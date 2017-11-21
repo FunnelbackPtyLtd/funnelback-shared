@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,11 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
-
 import org.apache.commons.exec.OS;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,6 +34,10 @@ import com.funnelback.publicui.search.service.index.QueryReadLock;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.PadreXmlParser;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Forks PADRE and communicate with it using stdin/out/err
@@ -127,19 +129,22 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
             }
     
-            long padreWaitTimeout = new PadreForkingOptionsHelper().getPadreForkingTimeout(searchTransaction);
-            int padreResponseSizeLimit = new PadreForkingOptionsHelper().getPadreMaxPacketSize(searchTransaction);
+            PadreForkingOptionsHelper padreForkingOptions = new PadreForkingOptionsHelper(searchTransaction);
 
             ExecutionReturn padreOutput = null;
             
             try {
-                padreOutput = runPadre(searchTransaction, padreWaitTimeout, commandLine, env, padreResponseSizeLimit);
+                padreOutput = runPadre(searchTransaction, commandLine, env, padreForkingOptions);
                 
                 if (log.isTraceEnabled()) {
-                    log.trace("Padre exit code is: " + padreOutput.getReturnCode() + "\n"
-                        + "---- RAW result packet BEGIN ----:\n\n"
-                            +new String(padreOutput.getOutBytes(), padreOutput.getCharset())
-                            +"\n---- RAW result packet END ----");
+                    try {
+                        log.trace("Padre exit code is: " + padreOutput.getReturnCode() + "\n"
+                            + "---- RAW result packet BEGIN ----:\n\n"
+                                +new String(IOUtils.toByteArray(padreOutput.getOutBytes().get()), padreOutput.getCharset())
+                                +"\n---- RAW result packet END ----");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     
                 }
 
@@ -157,16 +162,20 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                             .map(rc -> "With exit code " + rc)
                             .orElse(""),
                     pxpe);
-                if (padreOutput != null && padreOutput.getOutBytes() != null && padreOutput.getOutBytes().length > 0) {
-                    log.error("PADRE response was: {}\n",
-                            new String(padreOutput.getOutBytes(), padreOutput.getCharset()));
+                if (padreOutput != null && padreOutput.getOutBytes() != null && padreOutput.getUntruncatedOutputSize() > 0) {
+                    try {
+                        log.error("PADRE response was: {}\n",
+                                new String(IOUtils.toByteArray(padreOutput.getOutBytes().get()), padreOutput.getCharset()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     //This works around this issue created by: 
                     //https://issues.apache.org/jira/browse/LOG4J2-1434
                     //By writing this message after a large padre result packet,
                     //we drop the size of the cache from the thread local.
                     //
                     //We only bother to do this if the padre packet was big at least 1MB.
-                    if(padreOutput.getOutBytes().length > 1024 * 1024) {
+                    if(padreOutput.getUntruncatedOutputSize() > 1024 * 1024) {
                         log.error("Ignore this message, work around for LOG4J2-1434");
                     }
                 }
@@ -175,20 +184,22 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
         }
     }
     
-    ExecutionReturn runPadre(SearchTransaction searchTransaction, long padreWaitTimeout, 
+    ExecutionReturn runPadre(SearchTransaction searchTransaction, 
                                 List<String> commandLine,
                                 Map<String, String> env,
-                                int sizeLimit) throws DataFetchException, PadreForkingException {
+                                PadreForkingOptionsHelper padreForkingOptions) throws DataFetchException, PadreForkingException {
         try {
             queryReadLock.lock(searchTransaction.getQuestion().getCollection());
         } catch (FileLockException e) {
             throw new DataFetchException(i18n.tr("padre.forking.lock.error"), e);
         }
+        
+        int padreWaitTimeout = (int) padreForkingOptions.getPadreForkingTimeout();
         try {
             if (searchTransaction.getQuestion().isImpersonated()) {
-                return new WindowsNativePadreForker(i18n, (int) padreWaitTimeout).execute(commandLine, env, sizeLimit);
+                return new WindowsNativePadreForker(i18n, (int) padreWaitTimeout).execute(commandLine, env, padreForkingOptions);
             } else {
-                return new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env, sizeLimit);
+                return new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env, padreForkingOptions);
             }
         } finally {
             queryReadLock.release(searchTransaction.getQuestion().getCollection());

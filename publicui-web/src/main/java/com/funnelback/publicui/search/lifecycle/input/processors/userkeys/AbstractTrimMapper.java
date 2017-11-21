@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors.userkeys;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,20 +9,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import lombok.extern.log4j.Log4j2;
-
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.ManualPadreForkingOptions;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
+
+import static com.funnelback.publicui.utils.CompressingByteArrayOutputStream.DEFAULT_COMPRESS_AFTER_SIZE;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Fetch the user keys from TRIM by running an external tool
@@ -87,9 +92,20 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                         + "' with command line '" + cmdLine + "'");
                     
                     ExecutionReturn er = new WindowsNativeExecutor(i18n, WAIT_TIMEOUT)
-                        .execute(cmdLine, env, 32, Integer.MAX_VALUE, getUserKeysBinary.getParentFile());
+                        .execute(cmdLine, env, 32, 
+                            ManualPadreForkingOptions.builder()
+                                .padreForkingTimeout(WAIT_TIMEOUT)
+                                .padreMaxPacketSize(Integer.MAX_VALUE)
+                                .sizeAtWhichToCompressPackets(DEFAULT_COMPRESS_AFTER_SIZE)
+                                .build(),
+                            getUserKeysBinary.getParentFile());
                     
-                    String outStr = new String(er.getOutBytes(), er.getCharset());
+                    String outStr;
+                    try {
+                        outStr = new String(IOUtils.toByteArray(er.getOutBytes().get()), er.getCharset());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     
                     if (er.getReturnCode() != GET_USER_KEYS_SUCCESS) {
                         //outStr is the exact string representation of the output.

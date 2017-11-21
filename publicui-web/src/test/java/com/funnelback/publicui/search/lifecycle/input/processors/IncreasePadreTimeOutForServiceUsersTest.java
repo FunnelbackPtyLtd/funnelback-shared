@@ -73,10 +73,18 @@ public class IncreasePadreTimeOutForServiceUsersTest {
     }
     
     private IncreasePadreTimeOutForServiceUsers processorWithDefaultTimeout(long configSetPadreTimeout) {
-        IncreasePadreTimeOutForServiceUsers processor = new IncreasePadreTimeOutForServiceUsers();
         PadreForkingOptionsHelper optionsHelper = mock(PadreForkingOptionsHelper.class);
-        processor.setOptionsHelper(optionsHelper);
-        when(optionsHelper.getPadreForkingTimeout(any())).thenReturn(configSetPadreTimeout);
+        when(optionsHelper.getPadreForkingTimeout()).thenReturn(configSetPadreTimeout);
+        
+        IncreasePadreTimeOutForServiceUsers processor = new IncreasePadreTimeOutForServiceUsers() {
+            @Override
+            protected PadreForkingOptionsHelper getPadreForkingOptionsHelper(SearchTransaction st) {
+                return optionsHelper;
+            }
+        };
+        
+        
+        
         return processor;
     }
     

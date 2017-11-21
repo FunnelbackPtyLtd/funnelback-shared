@@ -2,9 +2,7 @@ package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,8 +13,8 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamTestHelper;
 import com.funnelback.publicui.xml.XmlParsingException;
-import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 public class HTMLEncodeSummariesTests {
 
@@ -28,10 +26,7 @@ public class HTMLEncodeSummariesTests {
         processor = new HTMLEncodeSummaries();
         
         SearchResponse response = new SearchResponse();
-        response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/htmlencode-summaries.xml")),
-            StandardCharsets.UTF_8,
-            false));
+        response.setResultPacket(StaxStreamTestHelper.parse(new File("src/test/resources/padre-xml/htmlencode-summaries.xml")));
         
         st = new SearchTransaction(null, response);
     }

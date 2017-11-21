@@ -1,22 +1,21 @@
 package com.funnelback.publicui.utils.jna;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.IOUtils;
 
 import com.funnelback.publicui.i18n.I18n;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingExceptionPacketSizeTooBig;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingOptions;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreOuputHelper;
 import com.funnelback.publicui.utils.BoundedByteArrayOutputStream;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.sun.jna.platform.win32.Advapi32;
@@ -31,6 +30,10 @@ import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import com.sun.jna.ptr.IntByReference;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Executes a process using native Windows APIs
@@ -62,8 +65,8 @@ public class WindowsNativeExecutor {
      * @return Result of the execution
      * @throws ExecutionException if something goes wrong, with a nested cause
      */
-    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment, int estimatedSize, int sizeLimit) throws ExecutionException {
-        return execute(commandLine, environment, estimatedSize, sizeLimit, null);
+    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment, int estimatedSize, PadreForkingOptions padreForkingOptions) throws ExecutionException {
+        return execute(commandLine, environment, estimatedSize, padreForkingOptions, null);
     }
     
     /**
@@ -76,7 +79,7 @@ public class WindowsNativeExecutor {
      * @return Result of the execution
      * @throws ExecutionException if something goes wrong, with a nested cause
      */
-    public ExecutionReturn execute(List<String> commandLineList, Map<String, String> environment, int estimatedSize, int sizeLimit, File dir)
+    public ExecutionReturn execute(List<String> commandLineList, Map<String, String> environment, int estimatedSize, PadreForkingOptions padreForkingOptions, File dir)
         throws ExecutionException {
 
         if (log.isDebugEnabled()) {
@@ -189,7 +192,7 @@ public class WindowsNativeExecutor {
             log.trace("Created native process, pid is " + pi.dwProcessId + ", threadid is " + pi.dwThreadId);
             
             // Read stdout
-            result = readFullStdOut(hChildOutWrite.getValue(), hChildOutRead.getValue(), estimatedSize, sizeLimit);
+            result = readFullStdOut(hChildOutWrite.getValue(), hChildOutRead.getValue(), estimatedSize, padreForkingOptions);
             
             int state = Kernel32.INSTANCE.WaitForSingleObject(pi.hProcess, waitTimeout);
             if (state != WinBase.WAIT_OBJECT_0) {
@@ -238,7 +241,11 @@ public class WindowsNativeExecutor {
         }
         
         if (log.isTraceEnabled()) {
-            log.trace("Process result is: '" + new String(result.getOutput(), getCharset()) + "'");
+            try {
+                log.trace("Process result is: '" + new String(IOUtils.toByteArray(result.getOutput().get()), getCharset()) + "'");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         return new ExecutionReturn(returnCode, result.getOutput(), null, result.getUntruncatedSize(), getCharset());
     }
@@ -252,13 +259,14 @@ public class WindowsNativeExecutor {
      * @return Content of STDOUT
      * @throws IOException 
      */
-    private PossiblyTruncatedBytes readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead, int estimatedSize, int sizeLimit) throws IOException {
+    private PossiblyTruncatedBytes readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead, int estimatedSize, PadreForkingOptions padreForkingOptions) throws IOException {
         if ( !Kernel32.INSTANCE.CloseHandle(hChildOutWrite)) {
             log.warn("Unable to close the stdout write pipe of child process",
                 new Win32Exception(Kernel32.INSTANCE.GetLastError()));
         }
 
-        BoundedByteArrayOutputStream bos = new BoundedByteArrayOutputStream(estimatedSize, sizeLimit);
+        BoundedByteArrayOutputStream bos = new PadreOuputHelper().getOupputStreamForPadre(estimatedSize, padreForkingOptions);
+        
         ByteBuffer buf = ByteBuffer.allocate(STDOUT_BUFFER_SIZE);
         IntByReference nbRead = new IntByReference();
         while(true) {
@@ -299,13 +307,13 @@ public class WindowsNativeExecutor {
         }
         
         
-        return new PossiblyTruncatedBytes(bos.toByteArray(), (int) bos.getUntruncatedSize());
+        return new PossiblyTruncatedBytes(bos.asInputStream(), (int) bos.getUntruncatedSize());
     }
     
     @RequiredArgsConstructor
     private class PossiblyTruncatedBytes {
         @Getter
-        private final byte[] output;
+        private final Supplier<InputStream> output;
         
         @Getter
         private final int untruncatedSize;

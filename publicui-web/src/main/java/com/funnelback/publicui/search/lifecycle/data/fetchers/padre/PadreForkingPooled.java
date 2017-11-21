@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -48,7 +49,7 @@ public class PadreForkingPooled extends AbstractDataFetcher {
             //Note that this is not efficient with memory, it would be better to avoid creating a String.
             //As this is not used I wont optimise.
             searchTransaction.getResponse().setResultPacket(padreXmlParser.parse(
-                padreOutput.getBytes(StandardCharsets.UTF_8),
+                new ByteArrayInputStream(padreOutput.getBytes(StandardCharsets.UTF_8)),
                 StandardCharsets.UTF_8,
                 searchTransaction.getQuestion().getInputParameterMap().containsKey(RequestParameters.DEBUG)));
             searchTransaction.getResponse().setReturnCode(-1);

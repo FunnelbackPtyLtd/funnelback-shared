@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -227,7 +227,7 @@ public class RecommenderControllerTest {
         Map<String, Object> model = new HashMap<>();
         SearchResponse searchResponse = new SearchResponse();
         searchResponse.setResultPacket(new StaxStreamParser().parse(
-                FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/complex.xml")),
+            new FileInputStream(new File("src/test/resources/padre-xml/complex.xml")),
                 StandardCharsets.UTF_8,
                 false));
 

@@ -1,13 +1,13 @@
 package com.funnelback.publicui.test.search.web.views;
 
-import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchResponse;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.web.controllers.SearchController;
-import com.funnelback.publicui.search.web.views.XSLTXStreamView;
-import com.funnelback.publicui.xml.SearchXStreamMarshaller;
-import com.funnelback.publicui.xml.padre.StaxStreamParser;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,13 +18,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.web.controllers.SearchController;
+import com.funnelback.publicui.search.web.views.XSLTXStreamView;
+import com.funnelback.publicui.xml.SearchXStreamMarshaller;
+import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 public class XSLTXStreamViewTests {
 
@@ -46,7 +47,7 @@ public class XSLTXStreamViewTests {
         
         byte[] rawBytes = FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/complex.xml"));
         String oldXml = new String(rawBytes, StandardCharsets.UTF_8);
-        ResultPacket rp = new StaxStreamParser().parse(rawBytes, StandardCharsets.UTF_8, false);
+        ResultPacket rp = new StaxStreamParser().parse(new ByteArrayInputStream(rawBytes), StandardCharsets.UTF_8, false);
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         st.getQuestion().setQuery("dummy");

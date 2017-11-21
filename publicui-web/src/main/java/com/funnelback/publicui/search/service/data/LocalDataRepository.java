@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.service.data;
 
 import static com.funnelback.common.io.file.FileUtils.getFileExtensionLowerCase;
+import static com.funnelback.publicui.utils.CompressingByteArrayOutputStream.DEFAULT_COMPRESS_AFTER_SIZE;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,9 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileSystemOptions;
@@ -44,6 +44,7 @@ import com.funnelback.common.views.StoreView;
 import com.funnelback.common.views.View;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.ManualPadreForkingOptions;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.service.data.exception.TRIMException;
@@ -53,6 +54,7 @@ import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
 import com.google.common.collect.ArrayListMultimap;
 
+import lombok.extern.log4j.Log4j2;
 /**
  * {@link DataRepository} implementation against the 
  * local filesystem
@@ -267,9 +269,15 @@ public class LocalDataRepository implements DataRepository {
 
         try {
             ExecutionReturn er = new WindowsNativeExecutor(i18n, GET_DOCUMENT_WAIT_TIMEOUT)
-                .execute(cmdLine, getDocumentEnvironment, 32, Integer.MAX_VALUE, getDocumentBinary.getParentFile());
+                .execute(cmdLine, getDocumentEnvironment, 32,
+                    ManualPadreForkingOptions.builder()
+                        .padreForkingTimeout(GET_DOCUMENT_WAIT_TIMEOUT)
+                        .padreMaxPacketSize(Integer.MAX_VALUE)
+                        .sizeAtWhichToCompressPackets(DEFAULT_COMPRESS_AFTER_SIZE)
+                        .build(),
+                    getDocumentBinary.getParentFile());
             
-            Map<String, String> executionOutput = parseExecutionOutput(new String(er.getOutBytes(), er.getCharset()));
+            Map<String, String> executionOutput = parseExecutionOutput(new String(IOUtils.toByteArray(er.getOutBytes().get()), er.getCharset()));
             
             if (er.getReturnCode() != GET_DOCUMENT_SUCCESS) {
                 String error = executionOutput.get(ERROR_KEY);
@@ -279,7 +287,7 @@ public class LocalDataRepository implements DataRepository {
                     // Unknown error
                     log.error("Document fetcher returned a non-zero status ("
                         + er.getReturnCode()+") with command line '"
-                        + cmdLine + "'. Output was '"+ new String(er.getOutBytes(), er.getCharset()) + "'");
+                        + cmdLine + "'. Output was '"+ new String(IOUtils.toByteArray(er.getOutBytes().get()), er.getCharset()) + "'");
                     throw new TRIMException("Error while retrieving document: "
                         + error);
                 }

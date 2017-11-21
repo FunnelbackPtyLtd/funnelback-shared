@@ -24,6 +24,9 @@ public interface PadreForker {
      * @return Output of the command.
      * @throws PadreForkingException if something goes wrong
      */
-    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment, int sizeLimit) throws PadreForkingException;  
+    public ExecutionReturn execute(List<String> commandLine, 
+                                        Map<String, String> environment, 
+                                        PadreForkingOptions padreForkingOptions) 
+                                            throws PadreForkingException;  
     
 }

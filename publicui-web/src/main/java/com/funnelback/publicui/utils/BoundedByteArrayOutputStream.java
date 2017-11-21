@@ -1,10 +1,10 @@
 package com.funnelback.publicui.utils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Arrays;
+import java.io.InputStream;
+import java.util.function.Supplier;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -19,59 +19,73 @@ import lombok.Getter;
  * for the limit to be exceeded by the size of the largest
  * single call to a write method in the worst case.
  */
-public class BoundedByteArrayOutputStream extends OutputStream {
-
-    private final ByteArrayOutputStream underlyingStream;
-    private final int sizeLimit;
-    private boolean isTruncated = false;
-
-    /** The size the output would have been if it had not been truncated */
-    @Getter
-    private long untruncatedSize;
+public class BoundedByteArrayOutputStream extends SizeListeningOutputStream {
     
-    public BoundedByteArrayOutputStream(int initialSize, int sizeLimit) {
-        underlyingStream = new ByteArrayOutputStream(initialSize);
-        this.sizeLimit = sizeLimit;
-    }
-
-    @Override
-    public synchronized void write(int b) {
-        untruncatedSize += 1;
-        if (!isTruncated && sizeIsBelowLimit()) {
-            underlyingStream.write(b);
-        } else {
-            isTruncated = true;
-        }
-    }
-
-    @Override
-    public synchronized void write(byte b[], int off, int len) {
-        untruncatedSize += len;
-        if (!isTruncated && sizeIsBelowLimit()) {
-            underlyingStream.write(b, off, len);
-        } else {
-            isTruncated = true;
-        }
-    }
-
-    private boolean sizeIsBelowLimit() {
-        return underlyingStream.size() < sizeLimit;
-    }
-
-    public void reset() {
-        underlyingStream.reset();
-    }
-
-    public byte toByteArray()[] {
-        return underlyingStream.toByteArray();
-    }
-
+    private final int sizeLimit;
+    
     /**
      * Return whether there have been write operations in excess
      * of the sizeLimit, meaning that the result of toByteArray
      * will be truncated compared to the source.
      */
-    public boolean isTruncated() {
-        return isTruncated;
+    @Getter private boolean isTruncated = false;
+    
+    public BoundedByteArrayOutputStream(InputSupplyingOuputStream underlyingStream, int sizeLimit) {
+        super(underlyingStream);
+        this.sizeLimit = sizeLimit;
     }
+    
+    @Override
+    public void beforeWrite(long sizeAfterProposedWrite) {
+        if(isTruncated) {
+            return;
+        }
+        
+        if(sizeAfterProposedWrite > sizeLimit) {
+            this.setUnderlyingStream(new NoMoreWritesOutputStream(this.getUnderlyingStream()));
+            isTruncated = true;
+        }
+        
+    }
+    /** 
+     * The size the output would have been if it had not been truncated 
+     */
+    public long getUntruncatedSize() {
+        return super.getTotalBytesGiven();
+    }
+    
+    @AllArgsConstructor
+    private static class NoMoreWritesOutputStream implements InputSupplyingOuputStream {
+        
+        InputSupplyingOuputStream sizedOuputStream;
+
+        @Override
+        public void write(int b) throws IOException {
+        }
+
+        @Override
+        public void write(byte[] b) throws IOException {
+        }
+
+        @Override
+        public void write(byte[] b, int off, int len) throws IOException {
+        }
+
+        @Override
+        public void flush() throws IOException {
+            this.sizedOuputStream.flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            this.sizedOuputStream.close();
+        }
+
+        @Override
+        public Supplier<InputStream> asInputStream() {
+            return this.sizedOuputStream.asInputStream();
+        }
+        
+    }
+    
 }

@@ -1,22 +1,42 @@
 package com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.impl;
 
-import com.funnelback.publicui.search.model.padre.*;
-import com.funnelback.publicui.search.model.padre.QSup.Source;
-import com.funnelback.publicui.xml.XmlParsingException;
-import com.funnelback.publicui.xml.padre.StaxStreamParser;
-
-import org.junit.Assert;
-import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.funnelback.publicui.search.model.padre.BestBet;
+import com.funnelback.publicui.search.model.padre.Category;
+import com.funnelback.publicui.search.model.padre.Cluster;
+import com.funnelback.publicui.search.model.padre.ClusterNav;
+import com.funnelback.publicui.search.model.padre.ContextualNavigation;
+import com.funnelback.publicui.search.model.padre.CoolerWeighting;
+import com.funnelback.publicui.search.model.padre.DateCount;
+import com.funnelback.publicui.search.model.padre.Explain;
+import com.funnelback.publicui.search.model.padre.GeoBoundingBox;
+import com.funnelback.publicui.search.model.padre.QSup.Source;
+import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.padre.SumByGroup;
+import com.funnelback.publicui.search.model.padre.TierBar;
+import com.funnelback.publicui.search.model.padre.UniqueByGroup;
+import com.funnelback.publicui.xml.XmlParsingException;
+import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 public class StaxStreamParserTests {
 
@@ -217,6 +237,17 @@ public class StaxStreamParserTests {
             false);
         Assert.assertEquals(rp.getSumByGroups().size(), 0);
     }
+    
+    @Test
+    public void testContentInProlog() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/commentsBeforeXmlStart.xml")),StandardCharsets.UTF_8,
+            true);
+        Assert.assertEquals(rp.getSumByGroups().size(), 0);
+    }
+    
+    
     
     @Test
     public void testIndexedTermCounts() throws Exception {

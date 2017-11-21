@@ -1,6 +1,9 @@
 package com.funnelback.publicui.xml.padre;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.SequenceInputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +15,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import com.funnelback.common.utils.ArrayFindUtils;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.Details;
@@ -51,25 +53,43 @@ public class StaxStreamParser implements PadreXmlParser {
     /** Tag marking the start of the XML document */
     private static final String XML_HEADER_TAG = "<?xml";
     
-    @Override
     public ResultPacket parse(byte[] padreStdOut, Charset charset, boolean allowContentInProlog) throws XmlParsingException {
+        return parse(new ByteArrayInputStream(padreStdOut), charset, allowContentInProlog);
+    }
+    
+    @Override
+    public ResultPacket parse(InputStream padreStdOut, Charset charset, boolean allowContentInProlog) throws XmlParsingException {
 
-        int xmlStartOffset = 0;
         if (allowContentInProlog) {
-            xmlStartOffset = ArrayFindUtils.findArray(padreStdOut, XML_HEADER_TAG.getBytes(charset), 0);
+            byte[] expected = XML_HEADER_TAG.getBytes(charset);
+            int matchedUpTo = 0;
+            while(matchedUpTo < expected.length) {
+                int nextChar;
+                try {
+                    nextChar = padreStdOut.read();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                if(nextChar == -1) {
+                    throw new XmlParsingException("Unable to find start of xml, could not find: '<?xml'");
+                }
+                if(nextChar == expected[matchedUpTo]) {
+                    matchedUpTo++;
+                }
+            }
+            
+            padreStdOut = new SequenceInputStream(new ByteArrayInputStream(expected), padreStdOut);
+
         }
-        if(xmlStartOffset == -1) {
-            throw new XmlParsingException("Unable to find start of xml, could not find: '<?xml'");
-        }
+        
         
         
         
         ResultPacket packet = new ResultPacket();
         
         try {
-            XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance()
-                                    .createXMLStreamReader(new ByteArrayInputStream(padreStdOut, xmlStartOffset, padreStdOut.length), 
-                                            charset.displayName());
+            XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance() 
+                                        .createXMLStreamReader(padreStdOut, charset.displayName());
         
             
             while(xmlStreamReader.hasNext()) {
