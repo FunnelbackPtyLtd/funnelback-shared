@@ -7,7 +7,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-// TODO rename
 public class PadreForkingOptionsHelper implements PadreForkingOptions {
 
     private SearchTransaction searchTransaction;
