@@ -177,9 +177,14 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
         StringBuffer out = new StringBuffer()
         .append(question.getCurrentProfileConfig().get(FrontEndKeys.UI.Modern.CLICK_LINK).get())
         .append("?").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
-        .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(url, "UTF-8"))
-        .append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(indexUrl, "UTF-8"))
-        .append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(url,configRepository.getServerConfig().get(ServerKeys.SERVER_SECRET)), "UTF-8"));
+        .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(url, "UTF-8"));
+        
+        // Only include the index URL if it is different from the url
+        if(!indexUrl.equals(url)) {
+            out.append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(indexUrl, "UTF-8"));
+        }
+        
+        out.append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(url,configRepository.getServerConfig().get(ServerKeys.SERVER_SECRET)), "UTF-8"));
 
         if (question.getCurrentProfile() != null) {
             out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getCurrentProfile());
