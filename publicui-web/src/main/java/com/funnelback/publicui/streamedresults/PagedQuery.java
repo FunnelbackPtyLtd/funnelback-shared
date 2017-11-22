@@ -429,15 +429,15 @@ public class PagedQuery {
     }
     
     int getMaxResponseSizeBasedOnJVM(final long JVMmemory) {
-        final int inefficencyFactory = 3; // This is how inefficient we are with the padre packet we get:
-                                        // 3 from storing the padre output in a byte[] (note that worst case for this is 3
-                                        // because of ByteArrayoutputStream doubling of buf + creating the array). We get 2 from Java
-                                        // strings being twice the size of their UTF-8 counterparts + 1 for the array
-        final int minGarenteedConcurrentRequests = 4;
+        // We now compress padre packets so we guess the inefficiency is 2.4 this is based on
+        // strings in java being twice the size of its utf-8 version (for ascii chars) and 
+        // and extra 40% for some wiggle room.
+        final double inefficencyFactor = 2.4;
+        final double minGarenteedConcurrentRequests = 4;
         
-        final long memoryWeCanUseEstimate = (long) (JVMmemory * 0.9);
+        final double memoryWeCanUseEstimate = (long) (JVMmemory * 0.9);
         
-        long maxPadrePacketSize = memoryWeCanUseEstimate / (minGarenteedConcurrentRequests * inefficencyFactory);
+        long maxPadrePacketSize = (long) (memoryWeCanUseEstimate / (minGarenteedConcurrentRequests * inefficencyFactor));
         
         // Don't go under 5MB
         if(maxPadrePacketSize < 5 * 1024 * 1024) {

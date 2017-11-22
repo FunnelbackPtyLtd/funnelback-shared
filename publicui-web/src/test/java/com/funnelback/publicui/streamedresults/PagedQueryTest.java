@@ -230,16 +230,11 @@ public class PagedQueryTest {
         
         int maxResponseSize = pagedQuery.getMaxResponseSizeBasedOnJVM(512*1024*1024);
         
-        // About 40MB is the max size.
-        Assert.assertEquals(40*1024*1024, maxResponseSize, 5 * 1024 * 1024);
+        // About 50MB is the max size.
+        Assert.assertEquals(50*1024*1024, maxResponseSize, 5 * 1024 * 1024);
         
-        
-        Assert.assertTrue("For the default of 512MB of memory we want to be under 32MB of memory to avoid the "
-            + "ByteArrayOutputStream from creating a 64MB array.",
-            32*1024*1024 > pagedQuery.calculateTargetRersponseSize(maxResponseSize));
-        
-        // About 32MB
-        Assert.assertEquals(32*1024*1024, pagedQuery.calculateTargetRersponseSize(maxResponseSize), 2 * 1024 * 1024);
+        // About 40MB
+        Assert.assertEquals(40*1024*1024, pagedQuery.calculateTargetRersponseSize(maxResponseSize), 2 * 1024 * 1024);
     }
     
     @Test
