@@ -176,7 +176,7 @@ public class ClickController extends SessionController {
             @RequestParam(required = false, defaultValue = "0") Integer rank,
             @RequestParam(required = false) ProfileId profile,
             @RequestParam(value = RequestParameters.Click.URL, required = true) URI redirectUrl,
-            @RequestParam(value = RequestParameters.Click.INDEX_URL, required = true) URI indexUrl,
+            @RequestParam(value = RequestParameters.Click.INDEX_URL, required = false) URI indexUrl,
             @RequestParam(value = RequestParameters.Click.AUTH, required = true) String authtoken,
             
             @RequestParam(value = RequestParameters.Click.NOATTACHMENT,
@@ -187,6 +187,10 @@ public class ClickController extends SessionController {
         
         Optional<String> givenProfileId = Optional.ofNullable(profile).map(ProfileId::getId);
         profile = new ProfileId(DefaultValues.DEFAULT_PROFILE);
+        
+        if(indexUrl == null) {
+            indexUrl = redirectUrl;
+        }
 
         if (collection != null) {
             // Does the token match the target? Forbidden if not.

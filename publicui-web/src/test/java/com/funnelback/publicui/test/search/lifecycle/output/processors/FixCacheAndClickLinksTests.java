@@ -164,7 +164,7 @@ public class FixCacheAndClickLinksTests {
             Assert.assertEquals(Integer.toString(r.getRank()), qs.get("rank"));
             Assert.assertEquals(st.getQuestion().getCollection().getId(), qs.get("collection"));
             Assert.assertEquals(r.getLiveUrl(), qs.get("url"));
-            Assert.assertEquals(r.getLiveUrl(), qs.get("index_url"));
+            Assert.assertNull(qs.get("index_url"));
             Assert.assertTrue(qs.get("auth").matches(".*[a-zA-Z0-9+/]{22}.*"));
             Assert.assertEquals("livelinks & pumpkins", qs.get("query"));
             Assert.assertEquals(st.getQuestion().getCurrentProfile(), qs.get("profile"));
@@ -180,7 +180,7 @@ public class FixCacheAndClickLinksTests {
         
         Assert.assertEquals(st.getQuestion().getCollection().getId(), qs.get("collection"));
         Assert.assertEquals(bb.getLink(), qs.get("url"));
-        Assert.assertEquals(bb.getLink(), qs.get("index_url"));
+        Assert.assertNull(qs.get("index_url"));
         Assert.assertEquals("FP", qs.get("type"));
         Assert.assertEquals(st.getQuestion().getCurrentProfile(), qs.get("profile"));
 
@@ -199,7 +199,7 @@ public class FixCacheAndClickLinksTests {
         
         Assert.assertEquals(st.getQuestion().getCollection().getId(), qs.get("collection"));
         Assert.assertEquals(CURATOR_ADVERT_LINK, qs.get("url"));
-        Assert.assertEquals(CURATOR_ADVERT_LINK, qs.get("index_url"));
+        Assert.assertNull(qs.get("index_url"));
         Assert.assertEquals("FP", qs.get("type"));
         Assert.assertEquals(st.getQuestion().getCurrentProfile(), qs.get("profile"));
     }
