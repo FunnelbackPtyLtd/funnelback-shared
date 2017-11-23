@@ -10,11 +10,8 @@ import org.apache.commons.collections.Transformer;
 
 import com.funnelback.publicui.search.model.util.map.AutoConvertingMap;
 import com.funnelback.publicui.search.model.util.map.Converters;
-import com.funnelback.publicui.xml.AutoConvertingMapXStreamConverter;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
