@@ -22,4 +22,20 @@ public class Converters {
         }
         
     };
+    
+    @SuppressWarnings("unchecked")
+    public static <T> Converter<T> doNothingConverter() {
+        return (Converter<T>) DO_NOTHING;
+    }
+    public static final Converter<Object> DO_NOTHING = new Converter<Object>() {
+        @Override
+        public Optional<Object> convert(Object o) {
+            return Optional.empty();
+        }
+
+        @Override
+        public Class<Object> getKeyType() {
+            return Object.class;
+        }
+    };
 }

@@ -1,6 +1,10 @@
 package com.funnelback.publicui.xml;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.funnelback.publicui.search.model.util.map.AutoConvertingMap;
+import com.funnelback.publicui.search.model.util.map.Converters;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -25,7 +29,8 @@ public class AutoConvertingMapXStreamConverter implements Converter {
 
     @Override
     public Object unmarshal(HierarchicalStreamReader arg0, UnmarshallingContext arg1) {
-        return null;
+        Map map = (Map) arg1.convertAnother(arg0, HashMap.class);
+        return new AutoConvertingMap<>(Converters.DO_NOTHING, "", map);
     }
 
 
