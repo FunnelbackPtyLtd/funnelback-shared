@@ -219,7 +219,6 @@ public class ResultPacket {
      * or a hook script you must use the following syntax: <code>GScopeCounts</code>,
      * instead of <code>gScopeCounts</code> due to the Javabeans naming conventions.</p>
      */
-    @XStreamAlias(value="java.util.Map") // Note sure if this is correct but it drops the class attribute.
     @Getter private final Map<String, Integer> gScopeCounts = new AutoConvertingMap<>(Converters.INTEGER_TO_STRING, "gScopeCounts", new HashMap<>()); 
     
     /**
