@@ -8,8 +8,13 @@ import java.util.Map;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Transformer;
 
+import com.funnelback.publicui.search.model.util.map.AutoConvertingMap;
+import com.funnelback.publicui.search.model.util.map.Converters;
+import com.funnelback.publicui.xml.AutoConvertingMapXStreamConverter;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -214,7 +219,8 @@ public class ResultPacket {
      * or a hook script you must use the following syntax: <code>GScopeCounts</code>,
      * instead of <code>gScopeCounts</code> due to the Javabeans naming conventions.</p>
      */
-    @Getter private final Map<String, Integer> gScopeCounts = new HashMap<String, Integer>();
+    @XStreamAlias(value="java.util.Map") // Note sure if this is correct but it drops the class attribute.
+    @Getter private final Map<String, Integer> gScopeCounts = new AutoConvertingMap<>(Converters.INTEGER_TO_STRING, "gScopeCounts", new HashMap<>()); 
     
     /**
      * <p>Date counts (Used in faceted navigation)</p>
