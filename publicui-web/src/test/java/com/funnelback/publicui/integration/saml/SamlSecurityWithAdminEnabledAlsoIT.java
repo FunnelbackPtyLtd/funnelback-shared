@@ -23,7 +23,7 @@ public class SamlSecurityWithAdminEnabledAlsoIT extends SamlSecurityIT {
         File globalCfgDefault = new File(searchHome, "conf" + File.separator + "global.cfg.default");
         Files.append("\n", globalCfgDefault, StandardCharsets.UTF_8);
         Files.append("auth.admin.saml.enabled=true\n", globalCfgDefault, StandardCharsets.UTF_8);
-        Files.append("auth.admin.saml.identity-provider-metadata-url=http://localhost:8080/metadata\n", globalCfgDefault, StandardCharsets.UTF_8);
+        Files.append("auth.admin.saml.identity-provider-metadata-url=http://localhost:" + mujina.getPort() + "/metadata\n", globalCfgDefault, StandardCharsets.UTF_8);
         Files.append("auth.admin.saml.entity-id-prefix=com:funnelback:admin:sp\n", globalCfgDefault, StandardCharsets.UTF_8);
         Files.append("auth.admin.saml.keystore-path=" + new File("src/test/resources/saml/samlKeystore.jks").getAbsolutePath() + "\n", globalCfgDefault, StandardCharsets.UTF_8);
         Files.append("auth.admin.saml.keystore-password=nalle123\n", globalCfgDefault, StandardCharsets.UTF_8);

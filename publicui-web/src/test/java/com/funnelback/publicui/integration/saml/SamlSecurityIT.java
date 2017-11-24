@@ -56,7 +56,7 @@ public class SamlSecurityIT {
         SearchHomeConfigs searchHomeConfigs = SearchHomeConfigs.getWithDefaults();
         searchHomeConfigs.getGlobalCfgDefault().put("server_secret", "test");
         searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.enabled", "true");
-        searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.identity-provider-metadata-url", "http://localhost:8080/metadata");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.identity-provider-metadata-url", "http://localhost:" + mujina.getPort() + "/metadata");
         searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.entity-id-prefix", "com:funnelback:publicui:sp");
         searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.keystore-path", new File("src/test/resources/saml/samlKeystore.jks").getAbsolutePath());
         searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.keystore-password", "nalle123");
