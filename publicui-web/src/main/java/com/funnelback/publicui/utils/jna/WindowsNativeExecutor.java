@@ -266,44 +266,48 @@ public class WindowsNativeExecutor {
         }
 
         BoundedByteArrayOutputStream bos = new PadreOuputHelper().getOupputStreamForPadre(estimatedSize, padreForkingOptions);
+        try {
         
-        ByteBuffer buf = ByteBuffer.allocate(STDOUT_BUFFER_SIZE);
-        IntByReference nbRead = new IntByReference();
-        while(true) {
-            boolean success = Kernel32.INSTANCE.ReadFile(hChildOutRead, buf, buf.capacity(), nbRead, null);
-            if (! success) {
-                if (nbRead.getValue() == 0) {
-                    // EOF
-                    break;
-                } else {            
-                    // Actual error
-                    throw new IOException(new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-                }
-            } else {
-                byte[] b = new byte[nbRead.getValue()];
-                buf.get(b, 0, nbRead.getValue());
-
-                // FIXME FUN-5485 Padre sometimes output NUL characters
-                // in debug comments. Strip them off to ensure XML will be
-                // parsed correctly
-                for (int i=0; i<b.length; i++) {
-                    if (b[i] == '\0') {
-                        b[i] = '0';
+            ByteBuffer buf = ByteBuffer.allocate(STDOUT_BUFFER_SIZE);
+            IntByReference nbRead = new IntByReference();
+            while(true) {
+                boolean success = Kernel32.INSTANCE.ReadFile(hChildOutRead, buf, buf.capacity(), nbRead, null);
+                if (! success) {
+                    if (nbRead.getValue() == 0) {
+                        // EOF
+                        break;
+                    } else {            
+                        // Actual error
+                        throw new IOException(new Win32Exception(Kernel32.INSTANCE.GetLastError()));
                     }
+                } else {
+                    byte[] b = new byte[nbRead.getValue()];
+                    buf.get(b, 0, nbRead.getValue());
+    
+                    // FIXME FUN-5485 Padre sometimes output NUL characters
+                    // in debug comments. Strip them off to ensure XML will be
+                    // parsed correctly
+                    for (int i=0; i<b.length; i++) {
+                        if (b[i] == '\0') {
+                            b[i] = '0';
+                        }
+                    }
+                    
+                    bos.write(b);
+                    buf.clear();
                 }
-                
-                bos.write(b);
-                buf.clear();
             }
-        }
-        
-        if (bos.isTruncated()) {
-            throw new IOException(new PadreForkingExceptionPacketSizeTooBig(i18n.tr("padre.forking.failed.sizelimit"), bos.getUntruncatedSize()));
-        }
-        
-        if (! Kernel32.INSTANCE.CloseHandle(hChildOutRead)) {
-            log.warn("Unable to close stdout read pipe of child process",
-                new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+            
+            if (bos.isTruncated()) {
+                throw new IOException(new PadreForkingExceptionPacketSizeTooBig(i18n.tr("padre.forking.failed.sizelimit"), bos.getUntruncatedSize()));
+            }
+            
+            if (! Kernel32.INSTANCE.CloseHandle(hChildOutRead)) {
+                log.warn("Unable to close stdout read pipe of child process",
+                    new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+            }
+        } finally {
+            bos.close();
         }
         
         
