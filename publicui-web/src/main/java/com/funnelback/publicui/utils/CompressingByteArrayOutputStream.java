@@ -2,6 +2,8 @@ package com.funnelback.publicui.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.function.Supplier;
 
 import org.apache.commons.io.IOUtils;
 import org.jfree.util.Log;
@@ -26,7 +28,7 @@ public class CompressingByteArrayOutputStream extends SizeListeningOutputStream 
     private boolean isCompressing = false;
     private boolean triedCompressing = false;
     
-    
+    private boolean closed = false;
     
     /**
      * We don't want to make public the constructor because if the user passes in the underlying stream
@@ -40,6 +42,20 @@ public class CompressingByteArrayOutputStream extends SizeListeningOutputStream 
     private CompressingByteArrayOutputStream(InputSupplyingOuputStream underlyingStream, int compressAfterSize) {
         super(underlyingStream);
         this.compressAfterSize = compressAfterSize;
+    }
+    
+    @Override
+    public void close() throws IOException {
+        closed = true;
+        super.close();
+    }
+    
+    @Override
+    public Supplier<InputStream> asInputStream() {
+        if(!closed) {
+            throw new IllegalStateException("Stream attempt to be read before it was closed.");
+        }
+        return super.asInputStream();
     }
 
     @Override
