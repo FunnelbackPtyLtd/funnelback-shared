@@ -163,13 +163,13 @@ public class MultiFacetedNavigationTest {
         
         Facet andFacet = mock(Facet.class);
         when(andFacet.getName()).thenReturn("not bob");
-        CategoryValue andCat = categoryValue("f.bar|ff", "a=b", "data 1");
+        CategoryValue andCat = categoryValue("f.bar|ff", false, "a=b", "data 1");
         when(andFacet.getAllValues()).thenReturn(Arrays.asList(andCat));
         
         
         Facet orFacet = mock(Facet.class);
         when(orFacet.getName()).thenReturn("bob");
-        CategoryValue orCat = categoryValue("f.bar|ff", "fromor=bar", "data 2");
+        CategoryValue orCat = categoryValue("f.bar|ff", false, "fromor=bar", "data 2");
         when(orFacet.getAllValues()).thenReturn(Arrays.asList(orCat));
         
         
@@ -368,10 +368,11 @@ public class MultiFacetedNavigationTest {
         return facetDef;
     }
     
-    private CategoryValue categoryValue(String queryStringParamName, String selectUrl, String data) {
+    private CategoryValue categoryValue(String queryStringParamName, boolean selected, String toggleUrl, String data) {
         CategoryValue catval = mock(CategoryValue.class);
         when(catval.getQueryStringParamName()).thenReturn(queryStringParamName);
-        when(catval.getSelectUrl()).thenReturn(selectUrl);
+        when(catval.isSelected()).thenReturn(selected);
+        when(catval.getToggleUrl()).thenReturn(toggleUrl);
         when(catval.getData()).thenReturn(data);
         return catval;
     }

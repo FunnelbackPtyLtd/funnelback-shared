@@ -26,6 +26,7 @@ import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.FacetedNavigationQuestionFactory;
 import com.funnelback.publicui.search.lifecycle.inputoutput.ExtraSearchesExecutor;
+import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillCategoryValueUrls;
 import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillFacetUrls;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
@@ -324,9 +325,16 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                     extraQuestion.getRawInputParameters().keySet().stream().collect(Collectors.toList())
                         .forEach(extraQuestion.getRawInputParameters()::remove);
              
+                    Map<String, List<String>> selectURl = QueryStringUtils.toMap(value.getToggleUrl());
                     
-                    QueryStringUtils.toMap(value.getSelectUrl())
-                        .forEach((k, v) -> extraQuestion.getRawInputParameters().put(k, v.toArray(new String[0])));
+                    // If the value is selected then the toggle URL is the un-select URL which is not what we want.
+                    // I don't think this can ever happen, because the search transaction is typically made by un-selecting
+                    // the facet to get all of the values.
+                    if(value.isSelected()) {                    
+                        selectURl = new FillCategoryValueUrls().getSelectUrlMap(searchTransaction, facetDefinition, value, facet.getCategories());
+                    }
+                    
+                    selectURl.forEach((k, v) -> extraQuestion.getRawInputParameters().put(k, v.toArray(new String[0])));
                     
                     // For this query we are interested only in the total matching so lets
                     // not count rmcf or anything else, we need to speed these extra searches up

@@ -391,18 +391,6 @@ public class Facet {
          * @Since 15.12 
          */
         @Getter @Setter private String queryStringParamValue;
-
-        /** URL to use to select this facet, built from the current URL
-         *  
-         * @Since 15.12 
-         */
-        @Getter @Setter private String selectUrl;
-
-        /** URL to use to unselect this facet, built from the current URL
-         *  
-         * @Since 15.12 
-         */
-        @Getter @Setter private String unselectUrl;
         
         /** URL to use to toggle the select status of the facet value.
          *  
