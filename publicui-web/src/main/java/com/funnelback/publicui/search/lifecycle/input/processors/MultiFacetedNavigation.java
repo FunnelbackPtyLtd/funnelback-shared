@@ -327,7 +327,9 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
              
                     Map<String, List<String>> selectURl = QueryStringUtils.toMap(value.getToggleUrl());
                     
-                    // I don't think this can ever happen, but just in case
+                    // If the value is selected then the toggle URL is the un-select URL which is not what we want.
+                    // I don't think this can ever happen, because the search transaction is typically made by un-selecting
+                    // the facet to get all of the values.
                     if(value.isSelected()) {                    
                         selectURl = new FillCategoryValueUrls().getSelectUrlMap(searchTransaction, facetDefinition, value, facet.getCategories());
                     }
