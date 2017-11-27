@@ -26,6 +26,7 @@ import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.FacetedNavigationQuestionFactory;
 import com.funnelback.publicui.search.lifecycle.inputoutput.ExtraSearchesExecutor;
+import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillCategoryValueUrls;
 import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillFacetUrls;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
@@ -324,9 +325,14 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                     extraQuestion.getRawInputParameters().keySet().stream().collect(Collectors.toList())
                         .forEach(extraQuestion.getRawInputParameters()::remove);
              
+                    Map<String, List<String>> selectURl = QueryStringUtils.toMap(value.getToggleUrl());
                     
-                    QueryStringUtils.toMap(value.getSelectUrl())
-                        .forEach((k, v) -> extraQuestion.getRawInputParameters().put(k, v.toArray(new String[0])));
+                    // I don't think this can ever happen, but just in case
+                    if(value.isSelected()) {                    
+                        selectURl = new FillCategoryValueUrls().getSelectUrlMap(searchTransaction, facetDefinition, value, facet.getCategories());
+                    }
+                    
+                    selectURl.forEach((k, v) -> extraQuestion.getRawInputParameters().put(k, v.toArray(new String[0])));
                     
                     // For this query we are interested only in the total matching so lets
                     // not count rmcf or anything else, we need to speed these extra searches up

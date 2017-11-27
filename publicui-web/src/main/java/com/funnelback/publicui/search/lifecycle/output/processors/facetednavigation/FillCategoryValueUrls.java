@@ -39,15 +39,11 @@ public class FillCategoryValueUrls {
             List<Facet.Category> siblings,
             Facet.Category category) {
         for(CategoryValue categoryValue : category.getValues()) {
-            
-            String selectUrl = QueryStringUtils.toString(getSelectUrlMap(st, facetDef, categoryValue, siblings), true);
-            String unselectUrl = QueryStringUtils.toString(getUnselectUrlMap(st, facetDef, category, categoryValue), true);
-            
-            String toggleUrl = categoryValue.isSelected()? unselectUrl : selectUrl;
-            
-            categoryValue.setSelectUrl(selectUrl);
-            categoryValue.setUnselectUrl(unselectUrl);
-            categoryValue.setToggleUrl(toggleUrl);
+            if(categoryValue.isSelected()) {
+                categoryValue.setToggleUrl(QueryStringUtils.toString(getUnselectUrlMap(st, facetDef, category, categoryValue), true));
+            } else {
+                categoryValue.setToggleUrl(QueryStringUtils.toString(getSelectUrlMap(st, facetDef, categoryValue, siblings), true));
+            }
         }
     }
     
@@ -62,7 +58,7 @@ public class FillCategoryValueUrls {
      * @param categoryValue
      * @return
      */
-    Map<String, List<String>> getSelectUrlMap(SearchTransaction st, FacetDefinition facetDef, CategoryValue categoryValue,
+    public Map<String, List<String>> getSelectUrlMap(SearchTransaction st, FacetDefinition facetDef, CategoryValue categoryValue,
         List<Facet.Category> siblings) {
         // Will this work when selecting in the case of 
         Map<String, List<String>> selectUrlQs = st.getQuestion().getQueryStringMapCopy();

@@ -14,7 +14,6 @@ import org.codehaus.plexus.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.drew.metadata.Metadata;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
@@ -35,7 +34,7 @@ public class FillCategoryValueUrlsTest {
     public void testFillUrls() {
         FillCategoryValueUrls fillUrls = new FillCategoryValueUrls(){
             @Override
-            Map<String, List<String>> getSelectUrlMap(SearchTransaction st, FacetDefinition fd, CategoryValue categoryValue,
+            public Map<String, List<String>> getSelectUrlMap(SearchTransaction st, FacetDefinition fd, CategoryValue categoryValue,
                     List<Facet.Category> siblings) {
                 return ImmutableMap.of("s", asList("select"));
             }
@@ -59,12 +58,10 @@ public class FillCategoryValueUrlsTest {
         
         fillUrls.fillURLs(null, null, null, cat);
         
-        verify(categoryValueSelected, times(1)).setSelectUrl("?s=select");
-        verify(categoryValueSelected, times(1)).setUnselectUrl("?s=unselect");
+        
         verify(categoryValueSelected, times(1)).setToggleUrl(("?s=unselect"));
         
-        verify(categoryValueUnselected, times(1)).setSelectUrl("?s=select");
-        verify(categoryValueUnselected, times(1)).setUnselectUrl("?s=unselect");
+        
         verify(categoryValueUnselected, times(1)).setToggleUrl("?s=select");
     }
     
