@@ -38,14 +38,16 @@ public class ClickHistory extends SessionResult {
     
     /**
      * Metadata values for the result
+     * 
+     * at the time the result was first clicked by the user.
      */
     @Getter
     @ElementCollection
     @MapKeyColumn(name = "key")
     @CollectionTable(name="ClickHistoryMetadata", joinColumns = {
-        @JoinColumn(name="userId"),
-        @JoinColumn(name="collection"),
-        @JoinColumn(name="indexUrl")
+        @JoinColumn(name="userId", referencedColumnName="userId"),
+        @JoinColumn(name="collection", referencedColumnName="collection"),
+        @JoinColumn(name="indexUrl", referencedColumnName="indexUrl")
         })
     private final Map<String, String> metaData = new HashMap<>();
 
