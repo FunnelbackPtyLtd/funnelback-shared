@@ -5,7 +5,7 @@
   
     <changeSet author="lbutters" id="5">
         <comment>SUPPORT-2551: As the field names being used have been corrected we empty this table
-                 to ensure now rows are orphaned.</comment>
+                 to ensure new rows are NOT orphaned.</comment>
         <delete tableName="clickhistorymetadata"></delete>
     </changeSet>
   
