@@ -3,8 +3,6 @@ package com.funnelback.publicui.search.service.security;
 import java.io.File;
 import java.io.IOException;
 
-import lombok.NoArgsConstructor;
-
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +13,11 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.metamapcfg.MetaDataType;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgEntry;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgMarshaller;
-import com.funnelback.common.config.xmlcfg.XmlCfgEntry;
+import com.funnelback.common.config.xmlcfg.XmlCfgMetadataMapping;
 import com.funnelback.common.config.xmlcfg.XmlCfgMarshaller;
 import com.funnelback.publicui.search.model.collection.Collection;
+
+import lombok.NoArgsConstructor;
 
 
 @Component
@@ -92,7 +92,7 @@ public class DefaultDLSEnabledChecker implements DLSEnabledChecker {
         if(xmlCfg.exists()) {
             try {
                 byte[] b = FileUtils.readFileToByteArray(xmlCfg);
-                for(XmlCfgEntry entry : xmlCfgMarshaller.unMarshal(b).getEntries()) {
+                for(XmlCfgMetadataMapping entry : xmlCfgMarshaller.unMarshal(b).getMappedMetadata()) {
                     if(MetaDataType.SECURITY.equals(entry.getType())) {
                         return true;
                     }
