@@ -25,7 +25,7 @@ import com.funnelback.common.config.metamapcfg.MetaDataType;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgEntry;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgMarshaller;
 import com.funnelback.common.config.xmlcfg.XmlCfgConfig;
-import com.funnelback.common.config.xmlcfg.XmlCfgEntry;
+import com.funnelback.common.config.xmlcfg.XmlCfgMetadataMapping;
 import com.funnelback.common.config.xmlcfg.XmlCfgMarshaller;
 import com.funnelback.publicui.search.model.collection.Collection;
 
@@ -134,7 +134,7 @@ public class DefaultDLSEnabledCheckTest {
                 byte[] arg = (byte[]) invocation.getArguments()[0];
                 Assert.assertEquals("yep", new String(arg, "UTF-8").trim());
                 List<MetaMapCfgEntry> entries = new ArrayList<>();
-                entries.add(new MetaMapCfgEntry("d", metaDataType, "ss"));
+                entries.add(new MetaMapCfgEntry("d", metaDataType, "ss", new ArrayList<>()));
                 return entries;
             }
             
@@ -206,9 +206,10 @@ public class DefaultDLSEnabledCheckTest {
             public XmlCfgConfig answer(InvocationOnMock invocation) throws Throwable {
                 byte[] arg = (byte[]) invocation.getArguments()[0];
                 Assert.assertEquals("yep", new String(arg, "UTF-8").trim());
-                List<XmlCfgEntry> entries = new ArrayList<>();
-                entries.add(new XmlCfgEntry("d", metaDataType, "ss"));
-                return new XmlCfgConfig(entries);
+                List<XmlCfgMetadataMapping> entries = new ArrayList<>();
+                XmlCfgConfig xmlCfgConfig = new XmlCfgConfig();
+                xmlCfgConfig.getMappedMetadata().add(new XmlCfgMetadataMapping("d", metaDataType, "ss", new ArrayList<>()));
+                return xmlCfgConfig;
             }
             
         });
