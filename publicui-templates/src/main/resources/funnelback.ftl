@@ -262,7 +262,7 @@
                 &middot; <a href="?${changeParam(QueryString, 'profile', question.profile?replace("_preview", ""))?html}" title="View this search with the current live form">switch to live mode</a>
                 | <span title="This form file may be edited before publishing to external search users">preview mode</span> 
             </div>
-            <script type="text/javascript">
+            <script>
                 function loadPublishLink() {
                     jQuery(function() {
                         jQuery("#publish_link").load("${SearchPrefix}admin/ajax_publish_link.cgi?collection=${question.collection.id}&amp;dir=profile-folder-${question.profile}&amp;f=${question.form}.ftl&amp;mode=publish&amp;return_to=${returnTo?url}");
@@ -592,7 +592,7 @@
 <#macro PerformanceMetrics width=500 msLabel="ms" totalLabel="Total" jsOnly=false class="search-metrics" tdClass="" title="<h3>Performance</h3>">
     <#if response?? && response.performanceMetrics??>
         ${response.performanceMetrics.stop()}
-        <script type="text/javascript">
+        <script>
             try {
                 console.log("Query processing time: ${response.performanceMetrics.totalTimeMillis} ${msLabel}");
             } catch (ex) {
