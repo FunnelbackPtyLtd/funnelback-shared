@@ -1,9 +1,9 @@
 package com.funnelback.publicui.search.service.security;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,15 +18,15 @@ import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
-import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.metamapcfg.MetaDataType;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgEntry;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgMarshaller;
-import com.funnelback.common.config.xmlcfg.XmlCfgConfig;
-import com.funnelback.common.config.xmlcfg.XmlCfgMetadataMapping;
+import com.funnelback.common.config.xmlcfg.XmlCfg;
 import com.funnelback.common.config.xmlcfg.XmlCfgMarshaller;
+import com.funnelback.common.config.xmlcfg.XmlCfgMetadataMapping;
 import com.funnelback.publicui.search.model.collection.Collection;
 
 public class DefaultDLSEnabledCheckTest {
@@ -134,7 +134,7 @@ public class DefaultDLSEnabledCheckTest {
                 byte[] arg = (byte[]) invocation.getArguments()[0];
                 Assert.assertEquals("yep", new String(arg, "UTF-8").trim());
                 List<MetaMapCfgEntry> entries = new ArrayList<>();
-                entries.add(new MetaMapCfgEntry("d", metaDataType, "ss", new ArrayList<>()));
+                entries.add(new MetaMapCfgEntry("d", metaDataType, "ss"));
                 return entries;
             }
             
@@ -200,16 +200,16 @@ public class DefaultDLSEnabledCheckTest {
     
     public void securityDefinedInXmlCfgTest(MetaDataType metaDataType, boolean isSecured) throws Exception { 
         XmlCfgMarshaller mockMarshaller = mock(XmlCfgMarshaller.class);
-        when(mockMarshaller.unMarshal(Matchers.any())).thenAnswer(new Answer<XmlCfgConfig>() {
+        when(mockMarshaller.unMarshal(Matchers.any())).thenAnswer(new Answer<XmlCfg>() {
 
             @Override
-            public XmlCfgConfig answer(InvocationOnMock invocation) throws Throwable {
+            public XmlCfg answer(InvocationOnMock invocation) throws Throwable {
                 byte[] arg = (byte[]) invocation.getArguments()[0];
                 Assert.assertEquals("yep", new String(arg, "UTF-8").trim());
                 List<XmlCfgMetadataMapping> entries = new ArrayList<>();
-                XmlCfgConfig xmlCfgConfig = new XmlCfgConfig();
-                xmlCfgConfig.getMappedMetadata().add(new XmlCfgMetadataMapping("d", metaDataType, "ss", new ArrayList<>()));
-                return xmlCfgConfig;
+                XmlCfg xmlCfg = new XmlCfg();
+                xmlCfg.getMappedMetadata().add(new XmlCfgMetadataMapping("d", metaDataType, "ss"));
+                return xmlCfg;
             }
             
         });
@@ -234,10 +234,10 @@ public class DefaultDLSEnabledCheckTest {
     @Test
     public void securityDefinedInXmlCfgTestNoFile() throws Exception { 
         XmlCfgMarshaller mockMarshaller = mock(XmlCfgMarshaller.class);
-        when(mockMarshaller.unMarshal(Matchers.any())).thenAnswer(new Answer<XmlCfgConfig>() {
+        when(mockMarshaller.unMarshal(Matchers.any())).thenAnswer(new Answer<XmlCfg>() {
 
             @Override
-            public XmlCfgConfig answer(InvocationOnMock invocation) throws Throwable {
+            public XmlCfg answer(InvocationOnMock invocation) throws Throwable {
                 Assert.fail("Should not be called as xml.cfg does no exist.");
                 return null;
             }
