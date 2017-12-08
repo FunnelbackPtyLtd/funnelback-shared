@@ -7,8 +7,11 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.config.metadata.MetadataClassMappings;
+import com.funnelback.common.config.metadata.marshaller.MetadataMappingCollectionReader;
 import com.funnelback.common.config.metamapcfg.MetaDataType;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgEntry;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgMarshaller;
@@ -34,7 +37,8 @@ public class DefaultDLSEnabledChecker implements DLSEnabledChecker {
         
         return securityConfiguredInConfig(config)
             || securityDefinedInMetaMapCfg(config)
-            || securityDefinedInXmlCfg(config);
+            || securityDefinedInXmlCfg(config)
+            || securityDefinedInMetadataMapping(config);
     }
     
     boolean securityConfiguredInConfig(Config config ) {
@@ -51,6 +55,18 @@ public class DefaultDLSEnabledChecker implements DLSEnabledChecker {
         }
         
         return false;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    boolean securityDefinedInMetadataMapping(Config config) {
+        return new MetadataMappingCollectionReader().readMappingsForCollection(config.getSearchHomeDir(), config.getCollectionId())
+            .getClassMappings()
+            .stream()
+            .map(MetadataClassMappings::getType)
+            .anyMatch(MetaDataType.SECURITY::equals);
     }
     
     /**

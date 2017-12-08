@@ -1,5 +1,6 @@
 collection_root=$SEARCH_HOME/data/$COLLECTION_NAME
 collection-default-key=Collection default value
+collection=$COLLECTION_NAME
 crawler.secondary_store_root=$SEARCH_HOME/data/$COLLECTION_NAME/live/data
 crawler.checkpoint_to=$SEARCH_HOME/data/$COLLECTION_NAME/offline/checkpoint
 data_root=$SEARCH_HOME/data/$COLLECTION_NAME/offline/data

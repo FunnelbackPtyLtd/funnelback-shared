@@ -13,6 +13,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
@@ -30,6 +31,8 @@ public class DenyIfDlsIsOnInterceptorTests {
 
     private static final String COLLECTION_ID = "interceptor";
     
+    private static final File SEARCH_HOME = new File("src/test/resources/dummy-search_home");
+    
     @Autowired
     private MockConfigRepository configRepository;
     
@@ -44,7 +47,7 @@ public class DenyIfDlsIsOnInterceptorTests {
     @Before
     public void before() throws FileNotFoundException {
         configRepository.removeAllCollections();
-        testCollectionConfig = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), COLLECTION_ID);
+        testCollectionConfig = new NoOptionsConfig(SEARCH_HOME, COLLECTION_ID);
         testCollectionConfig.setValue(Keys.COLLECTION_TYPE, "meta");
         
         configRepository.addCollection(new Collection(COLLECTION_ID, testCollectionConfig));
@@ -75,6 +78,8 @@ public class DenyIfDlsIsOnInterceptorTests {
         when(config.value(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "")).thenReturn("");
         when(config.value(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE, "")).thenReturn("");
         when(config.getCollectionName()).thenReturn("sub");
+        when(config.getSearchHomeDir()).thenReturn(SEARCH_HOME);
+        when(config.getCollectionId()).thenReturn(new CollectionId("sub"));
         
         Collection sub = new Collection("sub", config);
         
