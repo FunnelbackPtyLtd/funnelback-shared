@@ -10,11 +10,13 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.config.metadata.MetadataClassMappings;
+import com.funnelback.common.config.metadata.marshaller.MetadataMappingCollectionReader;
 import com.funnelback.common.config.metamapcfg.MetaDataType;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgEntry;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgMarshaller;
-import com.funnelback.common.config.xmlcfg.XmlCfgMetadataMapping;
 import com.funnelback.common.config.xmlcfg.XmlCfgMarshaller;
+import com.funnelback.common.config.xmlcfg.XmlCfgMetadataMapping;
 import com.funnelback.publicui.search.model.collection.Collection;
 
 import lombok.NoArgsConstructor;
@@ -35,7 +37,8 @@ public class DefaultDLSEnabledChecker implements DLSEnabledChecker {
         
         return securityConfiguredInConfig(config)
             || securityDefinedInMetaMapCfg(config)
-            || securityDefinedInXmlCfg(config);
+            || securityDefinedInXmlCfg(config)
+            || securityDefinedInMetadataMapping(config);
     }
     
     boolean securityConfiguredInConfig(Config config ) {
@@ -56,14 +59,23 @@ public class DefaultDLSEnabledChecker implements DLSEnabledChecker {
     
     /**
      * 
+     * @return
+     */
+    boolean securityDefinedInMetadataMapping(Config config) {
+        return new MetadataMappingCollectionReader().readMappingsForCollection(config.getSearchHomeDir(), config.getCollectionId())
+            .getClassMappings()
+            .stream()
+            .map(MetadataClassMappings::getType)
+            .anyMatch(MetaDataType.SECURITY::equals);
+    }
+    
+    /**
+     * 
      * @param config
      * @return true if a security meta data type is configured in metamap.cfg
      */
     boolean securityDefinedInMetaMapCfg(Config config) {
-        File metaMapCfg = new File(config.getSearchHomeDir(), 
-            DefaultValues.FOLDER_CONF 
-            + File.separator + config.getCollectionName() 
-            + File.separator + Files.META_MAP_FILENAME);
+        File metaMapCfg = new File(Files.configDir(config.getSearchHomeDir(), config.getCollectionId()), Files.META_MAP_FILENAME);
         if(metaMapCfg.exists()) {
             try {
                 byte[] b = FileUtils.readFileToByteArray(metaMapCfg);
@@ -80,15 +92,13 @@ public class DefaultDLSEnabledChecker implements DLSEnabledChecker {
     }
     
     /**
+     * This is overprotective and still checks this file even if the newer metadata mappig file exists. 
      * 
      * @param config
-     * @return true if a security meta data type is configured in metamap.cfg
+     * @return true if a security meta data type is configured in xml.cfg
      */
     boolean securityDefinedInXmlCfg(Config config) {
-        File xmlCfg = new File(config.getSearchHomeDir(), 
-            DefaultValues.FOLDER_CONF 
-            + File.separator + config.getCollectionName() 
-            + File.separator + Files.XML_META_MAP_CONFIG_FILENAME);
+        File xmlCfg = new File(Files.configDir(config.getSearchHomeDir(), config.getCollectionId()), Files.XML_META_MAP_CONFIG_FILENAME);
         if(xmlCfg.exists()) {
             try {
                 byte[] b = FileUtils.readFileToByteArray(xmlCfg);

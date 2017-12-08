@@ -1,9 +1,9 @@
 package com.funnelback.publicui.search.service.security;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,15 +18,24 @@ import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.funnelback.common.config.Config;
-import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.Collection.Type;
+import com.funnelback.common.config.metadata.MetadataClass;
+import com.funnelback.common.config.metadata.MetadataMappings;
+import com.funnelback.common.config.metadata.MetadataMappings.ClassOverride;
+import com.funnelback.common.config.metadata.marshaller.MetadataMappingsMarshaller;
+import com.funnelback.common.config.CollectionId;
+import com.funnelback.common.config.Config;
+import com.funnelback.common.config.Files;
+import com.funnelback.common.config.Keys;
+import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.common.config.metamapcfg.MetaDataType;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgEntry;
 import com.funnelback.common.config.metamapcfg.MetaMapCfgMarshaller;
-import com.funnelback.common.config.xmlcfg.XmlCfgConfig;
-import com.funnelback.common.config.xmlcfg.XmlCfgMetadataMapping;
+import com.funnelback.common.config.xmlcfg.XmlCfg;
 import com.funnelback.common.config.xmlcfg.XmlCfgMarshaller;
+import com.funnelback.common.config.xmlcfg.XmlCfgMetadataMapping;
+import com.funnelback.common.testutils.CollectionProvider;
+import com.funnelback.common.testutils.SearchHomeProvider;
 import com.funnelback.publicui.search.model.collection.Collection;
 
 public class DefaultDLSEnabledCheckTest {
@@ -40,7 +49,7 @@ public class DefaultDLSEnabledCheckTest {
         Collection collection = mock(Collection.class);
         when(collection.getConfiguration()).thenReturn(config);
         Assert.assertTrue("Are we not checking securityConfiguredInConfig for security setup", 
-            spyDefaultDLSEnabledCheck(true, false, false).isDLSEnabled(collection));
+            spyDefaultDLSEnabledCheck(true, false, false, false).isDLSEnabled(collection));
     }
     
     @Test
@@ -50,7 +59,7 @@ public class DefaultDLSEnabledCheckTest {
         Collection collection = mock(Collection.class);
         when(collection.getConfiguration()).thenReturn(config);
         Assert.assertTrue("Are we not checking securityDefinedInMetaMapCfg for security setup", 
-            spyDefaultDLSEnabledCheck(false, true, false).isDLSEnabled(collection));
+            spyDefaultDLSEnabledCheck(false, true, false, false).isDLSEnabled(collection));
     }
     
     @Test
@@ -60,7 +69,7 @@ public class DefaultDLSEnabledCheckTest {
         Collection collection = mock(Collection.class);
         when(collection.getConfiguration()).thenReturn(config);
         Assert.assertTrue("Are we not checking securityDefinedInXmlCfg for security setup", 
-            spyDefaultDLSEnabledCheck(false, false, true).isDLSEnabled(collection));
+            spyDefaultDLSEnabledCheck(false, false, true, false).isDLSEnabled(collection));
     }
     
     
@@ -70,7 +79,16 @@ public class DefaultDLSEnabledCheckTest {
         when(config.getCollectionType()).thenReturn(Type.web);
         Collection collection = mock(Collection.class);
         when(collection.getConfiguration()).thenReturn(config);
-        Assert.assertFalse(spyDefaultDLSEnabledCheck(false, false, false).isDLSEnabled(collection));
+        Assert.assertFalse(spyDefaultDLSEnabledCheck(false, false, false, false).isDLSEnabled(collection));
+    }
+    
+    @Test
+    public void isDLSEnabledInMetadataMappingsTest() {
+        Config config = mock(Config.class);
+        when(config.getCollectionType()).thenReturn(Type.web);
+        Collection collection = mock(Collection.class);
+        when(collection.getConfiguration()).thenReturn(config);
+        Assert.assertTrue(spyDefaultDLSEnabledCheck(false, false, false, true).isDLSEnabled(collection));
     }
     
     @Test
@@ -134,7 +152,7 @@ public class DefaultDLSEnabledCheckTest {
                 byte[] arg = (byte[]) invocation.getArguments()[0];
                 Assert.assertEquals("yep", new String(arg, "UTF-8").trim());
                 List<MetaMapCfgEntry> entries = new ArrayList<>();
-                entries.add(new MetaMapCfgEntry("d", metaDataType, "ss", new ArrayList<>()));
+                entries.add(new MetaMapCfgEntry("d", metaDataType, "ss"));
                 return entries;
             }
             
@@ -147,6 +165,7 @@ public class DefaultDLSEnabledCheckTest {
         Config config = mock(Config.class);
         when(config.getSearchHomeDir()).thenReturn(workDir);
         when(config.getCollectionName()).thenReturn("coll");
+        when(config.getCollectionId()).thenReturn(new CollectionId("coll"));
         
         File metamapcfg = new File(workDir, "conf" + File.separator + "coll" + File.separator + "metamap.cfg");
         metamapcfg.getParentFile().mkdirs();
@@ -177,6 +196,7 @@ public class DefaultDLSEnabledCheckTest {
         Config config = mock(Config.class);
         when(config.getSearchHomeDir()).thenReturn(workDir);
         when(config.getCollectionName()).thenReturn("coll");
+        when(config.getCollectionId()).thenReturn(new CollectionId("coll"));
         
         File metamapcfg = new File(workDir, "conf" + File.separator + "coll" + File.separator + "metamap.cfg");
         metamapcfg.getParentFile().mkdirs();
@@ -198,18 +218,37 @@ public class DefaultDLSEnabledCheckTest {
         securityDefinedInXmlCfgTest(MetaDataType.GEOSPATIAL, false);
     }
     
+    @Test
+    public void securityDefinedInMetadataMappingTest() throws Exception {
+        File sh = SearchHomeProvider.getWritableSearchHome(getClass(), testName, null);
+        CollectionProvider.createCollection(sh, "coll", null);
+        Config config = new NoOptionsConfig(sh, "coll");
+        
+        MetadataMappings mappings = new MetadataMappings();
+        
+        File mappingsFile = new File(Files.configDir(sh, new CollectionId("coll")), Files.METADATA_MAPPING_CONFIG);
+        FileUtils.writeByteArrayToFile(mappingsFile, new MetadataMappingsMarshaller().marshal(mappings));
+        
+        Assert.assertFalse(new DefaultDLSEnabledChecker().securityDefinedInMetadataMapping(config));
+        
+        mappings.addMetadataClass(new MetadataClass("a"), MetaDataType.SECURITY, ClassOverride.METAMAP_CFG_COMPAT);
+        FileUtils.writeByteArrayToFile(mappingsFile, new MetadataMappingsMarshaller().marshal(mappings));
+        
+        Assert.assertTrue(new DefaultDLSEnabledChecker().securityDefinedInMetadataMapping(config));
+    }
+    
     public void securityDefinedInXmlCfgTest(MetaDataType metaDataType, boolean isSecured) throws Exception { 
         XmlCfgMarshaller mockMarshaller = mock(XmlCfgMarshaller.class);
-        when(mockMarshaller.unMarshal(Matchers.any())).thenAnswer(new Answer<XmlCfgConfig>() {
+        when(mockMarshaller.unMarshal(Matchers.any())).thenAnswer(new Answer<XmlCfg>() {
 
             @Override
-            public XmlCfgConfig answer(InvocationOnMock invocation) throws Throwable {
+            public XmlCfg answer(InvocationOnMock invocation) throws Throwable {
                 byte[] arg = (byte[]) invocation.getArguments()[0];
                 Assert.assertEquals("yep", new String(arg, "UTF-8").trim());
                 List<XmlCfgMetadataMapping> entries = new ArrayList<>();
-                XmlCfgConfig xmlCfgConfig = new XmlCfgConfig();
-                xmlCfgConfig.getMappedMetadata().add(new XmlCfgMetadataMapping("d", metaDataType, "ss", new ArrayList<>()));
-                return xmlCfgConfig;
+                XmlCfg xmlCfg = new XmlCfg();
+                xmlCfg.getMappedMetadata().add(new XmlCfgMetadataMapping("d", metaDataType, "ss"));
+                return xmlCfg;
             }
             
         });
@@ -221,6 +260,7 @@ public class DefaultDLSEnabledCheckTest {
         Config config = mock(Config.class);
         when(config.getSearchHomeDir()).thenReturn(workDir);
         when(config.getCollectionName()).thenReturn("coll");
+        when(config.getCollectionId()).thenReturn(new CollectionId("coll"));
         
         File Xmlcfg = new File(workDir, "conf" + File.separator + "coll" + File.separator + "xml.cfg");
         Xmlcfg.getParentFile().mkdirs();
@@ -234,10 +274,10 @@ public class DefaultDLSEnabledCheckTest {
     @Test
     public void securityDefinedInXmlCfgTestNoFile() throws Exception { 
         XmlCfgMarshaller mockMarshaller = mock(XmlCfgMarshaller.class);
-        when(mockMarshaller.unMarshal(Matchers.any())).thenAnswer(new Answer<XmlCfgConfig>() {
+        when(mockMarshaller.unMarshal(Matchers.any())).thenAnswer(new Answer<XmlCfg>() {
 
             @Override
-            public XmlCfgConfig answer(InvocationOnMock invocation) throws Throwable {
+            public XmlCfg answer(InvocationOnMock invocation) throws Throwable {
                 Assert.fail("Should not be called as xml.cfg does no exist.");
                 return null;
             }
@@ -251,6 +291,7 @@ public class DefaultDLSEnabledCheckTest {
         Config config = mock(Config.class);
         when(config.getSearchHomeDir()).thenReturn(workDir);
         when(config.getCollectionName()).thenReturn("coll");
+        when(config.getCollectionId()).thenReturn(new CollectionId("coll"));
         
         File Xmlcfg = new File(workDir, "conf" + File.separator + "coll" + File.separator + "xml.cfg");
         Xmlcfg.getParentFile().mkdirs();
@@ -261,12 +302,13 @@ public class DefaultDLSEnabledCheckTest {
         Assert.assertFalse(dlsEnabledCheck.securityDefinedInXmlCfg(config));
     }
     
-    private DefaultDLSEnabledChecker spyDefaultDLSEnabledCheck(boolean config, boolean metamap, boolean xmlcfg) {
+    private DefaultDLSEnabledChecker spyDefaultDLSEnabledCheck(boolean config, boolean metamap, boolean xmlcfg, boolean metamapping) {
         DefaultDLSEnabledChecker dlsEnabledCheck = spy(new DefaultDLSEnabledChecker());
         
         doReturn(config).when(dlsEnabledCheck).securityConfiguredInConfig(Matchers.any());
         doReturn(metamap).when(dlsEnabledCheck).securityDefinedInMetaMapCfg(Matchers.any());
         doReturn(xmlcfg).when(dlsEnabledCheck).securityDefinedInXmlCfg(Matchers.any());
+        doReturn(metamapping).when(dlsEnabledCheck).securityDefinedInMetadataMapping(Matchers.any());
         
         return dlsEnabledCheck;
     }
