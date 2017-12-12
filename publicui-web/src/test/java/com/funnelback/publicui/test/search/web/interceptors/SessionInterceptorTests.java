@@ -84,42 +84,6 @@ public class SessionInterceptorTests {
     }
     
     @Test
-    public void testSessionNewUser() throws Exception {
-        enableFeatures(true, false);
-        
-        interceptor.preHandle(req, resp, null);
-
-        assertFalse(req.getAttributeNames().hasMoreElements());
-        assertEquals(0, resp.getCookies().length);
-        
-        assertNotNull(req.getSession(false));
-        assertNotNull(req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
-        // Should be valid UUID
-        UUID.fromString((String) req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
-    }
-    
-    @Test
-    public void testSessionReturningUser() throws Exception {
-        enableFeatures(true, false);
-        
-        UUID uuid = UUID.randomUUID();
-        req.getSession(true).setAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE, uuid.toString());
-        
-        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
-        
-        interceptor.preHandle(req, resp, null);
-
-        assertFalse(req.getAttributeNames().hasMoreElements());
-        assertEquals(0, resp.getCookies().length);
-        
-        assertNotNull(req.getSession(false));
-        assertNotNull(req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
-        assertEquals(
-            uuid,
-            UUID.fromString((String) req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE)));
-    }
-    
-    @Test
     public void testCookieNewUser() throws Exception {
         enableFeatures(false, true);
         
@@ -162,9 +126,8 @@ public class SessionInterceptorTests {
         
         interceptor.preHandle(req, resp, null);
 
-        assertNotNull(req.getSession(false));
-        assertNotNull(req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
-        UUID uuidSession = UUID.fromString((String) req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
+        assertNotNull(req.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
+        UUID uuidSession = UUID.fromString((String) req.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
         
         assertEquals(1, resp.getCookies().length);
         assertEquals(SessionInterceptor.USER_ID_COOKIE_NAME, resp.getCookies()[0].getName());
@@ -177,7 +140,7 @@ public class SessionInterceptorTests {
     }
     
     @Test
-    public void testSessionAndCookieReturningUserFromCookie() throws Exception {
+    public void testCookieReturningUserFromCookie() throws Exception {
         enableFeatures(true, true);
 
         UUID uuid = UUID.randomUUID();
@@ -185,36 +148,10 @@ public class SessionInterceptorTests {
 
         interceptor.preHandle(req, resp, null);
 
-        assertNotNull(req.getSession(false));
-        assertNotNull(req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
-        assertEquals(
-            uuid,
-            UUID.fromString((String) req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE)));
-        
-        assertEquals(1, resp.getCookies().length);
-        assertEquals(SessionInterceptor.USER_ID_COOKIE_NAME, resp.getCookies()[0].getName());
-        assertEquals(
-            uuid,
-            UUID.fromString(resp.getCookies()[0].getValue()));
+        assertNotNull(req.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
         assertEquals(
             uuid,
             UUID.fromString((String) req.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE)));
-    }
-
-    @Test
-    public void testSessionAndCookieReturningUserFromSession() throws Exception {
-        enableFeatures(true, true);
-
-        UUID uuid = UUID.randomUUID();
-        req.getSession(true).setAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE, uuid.toString());
-
-        interceptor.preHandle(req, resp, null);
-
-        assertNotNull(req.getSession(false));
-        assertNotNull(req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
-        assertEquals(
-            uuid,
-            UUID.fromString((String) req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE)));
         
         assertEquals(1, resp.getCookies().length);
         assertEquals(SessionInterceptor.USER_ID_COOKIE_NAME, resp.getCookies()[0].getName());
@@ -251,53 +188,6 @@ public class SessionInterceptorTests {
             uuid,
             UUID.fromString((String) req.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE)));
     }
-
-    /**
-     * Session value should take precedence over cookie value
-     * @throws Exception
-     */
-    @Test
-    public void testSessionAndCookieReturningUserFromSessionAndCookieDifferentValues() throws Exception {
-        enableFeatures(true, true);
-
-        UUID uuidCookie = UUID.randomUUID();
-        req.setCookies(new Cookie(SessionInterceptor.USER_ID_COOKIE_NAME, uuidCookie.toString()));
-        UUID uuidSession = UUID.randomUUID();
-        req.getSession(true).setAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE, uuidSession.toString());
-
-        interceptor.preHandle(req, resp, null);
-
-        assertNotNull(req.getSession(false));
-        assertNotNull(req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
-        assertEquals(
-            uuidSession,
-            UUID.fromString((String) req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE)));
-        
-        assertEquals(1, resp.getCookies().length);
-        assertEquals(SessionInterceptor.USER_ID_COOKIE_NAME, resp.getCookies()[0].getName());
-        assertEquals(
-            uuidSession,
-            UUID.fromString(resp.getCookies()[0].getValue()));
-        assertEquals(
-            uuidSession,
-            UUID.fromString((String) req.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE)));
-    }
-    
-    @Test
-    public void testSessionPresentButNoAttribute() throws Exception {
-        enableFeatures(true, false);
-        req.getSession(true).setAttribute("test", "test");
-        
-        interceptor.preHandle(req, resp, null);
-
-        assertFalse(req.getAttributeNames().hasMoreElements());
-        assertEquals(0, resp.getCookies().length);
-        
-        assertNotNull(req.getSession(false));
-        assertNotNull(req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
-        // Should be valid UUID
-        UUID.fromString((String) req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));        
-    }
     
     @Test
     public void testSomeCookiePresent() throws Exception {
@@ -315,22 +205,6 @@ public class SessionInterceptorTests {
         assertEquals(
             UUID.fromString(resp.getCookies()[0].getValue()),
             UUID.fromString((String) req.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE)));
-    }
-
-    @Test
-    public void testInvalidSessionAttribute() throws Exception {
-        enableFeatures(true, false);
-        req.getSession(true).setAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE, "not a uuid");
-        
-        interceptor.preHandle(req, resp, null);
-
-        assertFalse(req.getAttributeNames().hasMoreElements());
-        assertEquals(0, resp.getCookies().length);
-        
-        assertNotNull(req.getSession(false));
-        assertNotNull(req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
-        // Should be valid UUID
-        UUID.fromString((String) req.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));        
     }
 
     @Test

@@ -5,10 +5,6 @@ import java.util.UUID;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,9 +17,14 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+
 /**
- * <p>Manage sessions and users, using the J2EE session and/or Cookies</p>
+ * <p>Manage sessions and users using Cookies</p>
  * 
+ * <p>Note that this is not only needed for modern UI cart (search/click history)
+ * it is also used to get the ID for click logs.</p> 
  * @since v13
  *
  */
@@ -56,16 +57,7 @@ public class SessionInterceptor implements HandlerInterceptor {
                     uuid = UUID.randomUUID();
                 }
                 
-                // Store user in the J2EE session
-                if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION,
-                    DefaultValues.ModernUI.SESSION)) {
-                    HttpSession session = request.getSession();
-                    session.setAttribute(SEARCH_USER_ID_ATTRIBUTE, uuid.toString());
-                    session.setMaxInactiveInterval(collection.getConfiguration()
-                        .valueAsInt(Keys.ModernUI.Session.TIMEOUT, DefaultValues.ModernUI.Session.TIMEOUT));
-                }
-                
-                // Set a simple cookie, re-using the Session User ID if it exists
+                // Set the user id in a cookie
                 if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.Session.SET_USERID_COOKIE,
                     DefaultValues.ModernUI.Session.SET_USERID_COOKIE)) {
                     Cookie c = new Cookie(USER_ID_COOKIE_NAME, uuid.toString());
@@ -83,25 +75,22 @@ public class SessionInterceptor implements HandlerInterceptor {
     }
     
     /**
-     * Get an existing user id either from the J2EE session or from a cookie. If not
+     * Get an existing user id from the cookie. If not
      * found, null is return
      * @param request HTTP request
      * @return The existing user ID, or null if not found.
      */
     public static UUID getExistingOrNewUserId(HttpServletRequest request) {
         try {
-            if (request.getSession(false) != null
-                && request.getSession().getAttribute(SEARCH_USER_ID_ATTRIBUTE) != null) {
-                return UUID.fromString((String) request.getSession().getAttribute(SEARCH_USER_ID_ATTRIBUTE));
-            } else {
-                if (request.getCookies() != null) {
-                    for (Cookie c: request.getCookies()) {
-                        if (c.getName().equals(USER_ID_COOKIE_NAME) && c.getValue() != null) {
-                            return UUID.fromString(c.getValue());
-                        }
+            
+            if (request.getCookies() != null) {
+                for (Cookie c: request.getCookies()) {
+                    if (c.getName().equals(USER_ID_COOKIE_NAME) && c.getValue() != null) {
+                        return UUID.fromString(c.getValue());
                     }
                 }
             }
+            
         } catch (IllegalArgumentException iae) {
             log.warn("Invalid UUID value for user identifer", iae);
         }

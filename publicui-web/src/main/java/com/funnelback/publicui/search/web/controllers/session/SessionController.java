@@ -21,8 +21,7 @@ public abstract class SessionController {
 
     /**
      * Retrieve the current search user from its ID stored in
-     * the J2EE session, or directly in a cookie, or in a HTTP request
-     * attribute.
+     * the cookie, or in a HTTP request attribute.
      * @param request HTTP request
      * @return The corresponding search user, or null if there's no user
      * for the ID
