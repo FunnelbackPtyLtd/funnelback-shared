@@ -58,8 +58,6 @@ public class DefaultUrlRenderer implements UrlRenderer {
      */
     @PostConstruct
     public void setupPhantomBinary() {
-        boolean is64Bit = Integer.parseInt(System.getProperty("sun.arch.data.model")) > 32;
-        
         if (OS.isFamilyMac()) {
             phantomBinary = new File(searchHome,
                 DefaultValues.FOLDER_MAC_BIN + File.separator
@@ -68,27 +66,13 @@ public class DefaultUrlRenderer implements UrlRenderer {
         } else if (OS.isFamilyWindows()) {
             phantomBinary = new File(searchHome,
                 DefaultValues.FOLDER_WINDOWS_BIN + File.separator
-                + PHANTOMJS + File.separator + PHANTOMJS + ".exe");
+                + PHANTOMJS + File.separator + DefaultValues.FOLDER_BIN + 
+                File.separator + PHANTOMJS + ".exe");
         } else {
-            
-            String bitDirectory = is64Bit ? "64" : "32";
-            
-            for (String directory : LINUX_DIRECTORIES_CANDIDATES) {
-                File phantomBinaryToTest = new File(searchHome,
-                    DefaultValues.FOLDER_LINUX_BIN + File.separator
-                    + PHANTOMJS + File.separator
-                    + directory + File.separator
-                    + bitDirectory + File.separator
-                    + DefaultValues.FOLDER_BIN + File.separator + PHANTOMJS);
-                
-                if (phantomBinaryToTest.exists() && doesPhantomBinaryWork(phantomBinaryToTest)) {
-                    phantomBinary = phantomBinaryToTest;
-                    log.info("Selected PhantomJS binary: " + phantomBinary.getAbsolutePath());
-                    return;
-                }
-            }
-            
-            log.error("Unable to locate a working PhantomJS binary. URL previews won't be available.");
+            phantomBinary = new File(searchHome,
+                DefaultValues.FOLDER_LINUX_BIN + File.separator
+                + PHANTOMJS + File.separator
+                + DefaultValues.FOLDER_BIN + File.separator + PHANTOMJS);
         }
     }
 
