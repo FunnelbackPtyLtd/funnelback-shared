@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import com.funnelback.common.facetednavigation.models.FacetValues;
+import com.funnelback.common.function.Predicates;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
@@ -50,12 +52,16 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
         
         List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
         
+        // Is the gscope present in the search response which supplies the values, 
+        // if so we need to show the category value. 
+        // For the case of FROM_UNSCOPED_ALL_QUERY, we want to always show this
+        // category value.
         boolean hasValue = Optional.ofNullable(facetData.getResponseForValues())
             .map(SearchResponse::getResultPacket)
             .map(ResultPacket::getGScopeCounts)
-            .map(m -> m.get(userSetGScope))
-            .map(count -> count > 0)
-            .orElse(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY);
+            .map(m -> m.containsKey(userSetGScope))
+            .orElse(false) 
+            || facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY;
         if (hasValue) {
             
             Integer count = facetData.getResponseForCounts().apply(this, userSetGScope)
