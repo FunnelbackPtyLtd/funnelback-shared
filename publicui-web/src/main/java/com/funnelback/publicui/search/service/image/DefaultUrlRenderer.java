@@ -76,43 +76,6 @@ public class DefaultUrlRenderer implements UrlRenderer {
         }
     }
 
-    private static boolean doesPhantomBinaryWork(File phantomBinaryToTest) {
-        int result = -1;
-        try {
-            CommandLine cmdLine = new CommandLine(phantomBinaryToTest.getAbsolutePath());
-            cmdLine.addArgument("--version");
-            
-            DefaultExecutor executor = new DefaultExecutor();
-            executor.setExitValues(null); // executor should not check exit codes itself
-
-            // capture the command's output
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
-            executor.setStreamHandler(streamHandler);
-
-            // We need to force the phantomBinary to check the right lib path on linux
-            Map<String, String> environment = new HashMap<String, String>(System.getenv());
-            File libraryDirectory = new File(phantomBinaryToTest.getParentFile().getParentFile(), "lib");
-            environment.put("LD_LIBRARY_PATH", libraryDirectory.getAbsolutePath());
-            
-            try {
-                result = executor.execute(cmdLine, environment);
-            } catch (Exception e) {
-                result = -2;
-            }
-            
-            log.debug(cmdLine.toString() + " exited with code " + result);
-            log.debug(cmdLine.toString() + " output " + outputStream.toString());
-
-        } catch (Exception e) {
-            log.error(phantomBinaryToTest + " does not work", e);
-            // Assume any exception means it does not work
-            return false;
-        }
-
-        return result == 0;
-    }
-
     @Override
     public byte[] renderUrl(String url, int width, int height)
         throws IOException {
