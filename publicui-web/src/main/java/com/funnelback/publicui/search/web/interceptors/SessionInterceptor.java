@@ -23,8 +23,8 @@ import lombok.extern.log4j.Log4j2;
 /**
  * <p>Manage sessions and users using Cookies</p>
  * 
- * <p>Note that this is not only needed for modern UI cart (search/click history)
- * it is also used to get the ID for click logs.</p> 
+ * <p>Note that this is only needed for modern UI cart (search/click history)</p>
+ *  
  * @since v13
  *
  */
@@ -58,8 +58,7 @@ public class SessionInterceptor implements HandlerInterceptor {
                 }
                 
                 // Set the user id in a cookie
-                if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.Session.SET_USERID_COOKIE,
-                    DefaultValues.ModernUI.Session.SET_USERID_COOKIE)) {
+                if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)) {
                     Cookie c = new Cookie(USER_ID_COOKIE_NAME, uuid.toString());
                     c.setMaxAge(Integer.MAX_VALUE);
                     response.addCookie(c);
