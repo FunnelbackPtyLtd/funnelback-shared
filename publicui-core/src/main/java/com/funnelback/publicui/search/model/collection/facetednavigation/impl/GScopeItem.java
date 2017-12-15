@@ -52,12 +52,16 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
         
         List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
         
+        // Is the gscope present in the search response which supplies the values, 
+        // if so we need to show the category value. 
+        // For the case of FROM_UNSCOPED_ALL_QUERY, we want to always show this
+        // category value.
         boolean hasValue = Optional.ofNullable(facetData.getResponseForValues())
             .map(SearchResponse::getResultPacket)
             .map(ResultPacket::getGScopeCounts)
             .map(m -> m.containsKey(userSetGScope))
-            //.map(count -> count > 0)
-            .orElse(false) || facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY;
+            .orElse(false) 
+            || facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY;
         if (hasValue) {
             
             Integer count = facetData.getResponseForCounts().apply(this, userSetGScope)
