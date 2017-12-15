@@ -45,7 +45,7 @@ public class SessionInterceptorTests {
         
         resp = new MockHttpServletResponse();
         
-        enableFeatures(false,  false);
+        enableFeatures(false);
     }
     
     @Test
@@ -85,7 +85,7 @@ public class SessionInterceptorTests {
     
     @Test
     public void testCookieNewUser() throws Exception {
-        enableFeatures(false, true);
+        enableFeatures(true);
         
         interceptor.preHandle(req, resp, null);
 
@@ -102,7 +102,7 @@ public class SessionInterceptorTests {
 
     @Test
     public void testCookieReturningUser() throws Exception {
-        enableFeatures(false, true);
+        enableFeatures(true);
         
         UUID uuid = UUID.randomUUID();
         req.setCookies(new Cookie(SessionInterceptor.USER_ID_COOKIE_NAME, uuid.toString()));
@@ -122,7 +122,7 @@ public class SessionInterceptorTests {
     
     @Test
     public void testSessionAndCookieNewUser() throws Exception {
-        enableFeatures(true, true);
+        enableFeatures(true);
         
         interceptor.preHandle(req, resp, null);
 
@@ -141,7 +141,7 @@ public class SessionInterceptorTests {
     
     @Test
     public void testCookieReturningUserFromCookie() throws Exception {
-        enableFeatures(true, true);
+        enableFeatures(true);
 
         UUID uuid = UUID.randomUUID();
         req.setCookies(new Cookie(SessionInterceptor.USER_ID_COOKIE_NAME, uuid.toString()));
@@ -165,7 +165,7 @@ public class SessionInterceptorTests {
 
     @Test
     public void testSessionAndCookieReturningUserFromSessionAndCookie() throws Exception {
-        enableFeatures(true, true);
+        enableFeatures(true);
 
         UUID uuid = UUID.randomUUID();
         req.setCookies(new Cookie(SessionInterceptor.USER_ID_COOKIE_NAME, uuid.toString()));
@@ -191,7 +191,7 @@ public class SessionInterceptorTests {
     
     @Test
     public void testSomeCookiePresent() throws Exception {
-        enableFeatures(false, true);
+        enableFeatures(true);
         req.setCookies(new Cookie("a-cookie", "not a uuid"), new Cookie("another-one", "still not a uuid"));
         
         interceptor.preHandle(req, resp, null);
@@ -209,7 +209,7 @@ public class SessionInterceptorTests {
 
     @Test
     public void testInvalidCookieAttribute() throws Exception {
-        enableFeatures(false, true);
+        enableFeatures(true);
         req.setCookies(new Cookie(SessionInterceptor.USER_ID_COOKIE_NAME, "not a uuid"));
         
         interceptor.preHandle(req, resp, null);
@@ -225,14 +225,10 @@ public class SessionInterceptorTests {
             UUID.fromString((String) req.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE)));
     }
 
-    private void enableFeatures(boolean session, boolean cookie) {
+    private void enableFeatures(boolean session) {
         collection.getConfiguration().setValue(
             Keys.ModernUI.SESSION,
             Boolean.toString(session));
-        
-        collection.getConfiguration().setValue(
-            Keys.ModernUI.Session.SET_USERID_COOKIE,
-            Boolean.toString(cookie));
     }
     
 }
