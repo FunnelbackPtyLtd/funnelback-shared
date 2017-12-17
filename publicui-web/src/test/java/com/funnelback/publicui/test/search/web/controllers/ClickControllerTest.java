@@ -122,7 +122,7 @@ public class ClickControllerTest {
         ClickController controller = clickController(logService);
         
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("referer", "http://foo.com/?collection=test&profile=myprofile&query=da%2B%20%26query");
+        request.addHeader("referer", "http://foo.com/?query=da%2B%20%26query&collection=test&profile=myprofile");
         controller.redirect(request, 
             new MockHttpServletResponse(), 
             new Collection("test", Mockito.mock(Config.class)), 
