@@ -209,7 +209,7 @@ public class ClickController extends SessionController {
                 // Get the user id
                 String requestId = getRequestId(request, collection);
                 
-                Map<String, String> qs = QueryStringUtils.toSingleMap(Optional.ofNullable(LogUtils.getReferrer(request)).map(URL::toExternalForm).orElse(""));
+                Map<String, String> qs = QueryStringUtils.toSingleMap(Optional.ofNullable(LogUtils.getReferrer(request)).map(URL::getQuery).orElse(""));
                 
                 
                 if(!givenProfileId.isPresent()) {
