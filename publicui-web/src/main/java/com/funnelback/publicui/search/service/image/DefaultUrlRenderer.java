@@ -58,8 +58,6 @@ public class DefaultUrlRenderer implements UrlRenderer {
      */
     @PostConstruct
     public void setupPhantomBinary() {
-        boolean is64Bit = Integer.parseInt(System.getProperty("sun.arch.data.model")) > 32;
-        
         if (OS.isFamilyMac()) {
             phantomBinary = new File(searchHome,
                 DefaultValues.FOLDER_MAC_BIN + File.separator
@@ -68,65 +66,14 @@ public class DefaultUrlRenderer implements UrlRenderer {
         } else if (OS.isFamilyWindows()) {
             phantomBinary = new File(searchHome,
                 DefaultValues.FOLDER_WINDOWS_BIN + File.separator
-                + PHANTOMJS + File.separator + PHANTOMJS + ".exe");
+                + PHANTOMJS + File.separator + DefaultValues.FOLDER_BIN + 
+                File.separator + PHANTOMJS + ".exe");
         } else {
-            
-            String bitDirectory = is64Bit ? "64" : "32";
-            
-            for (String directory : LINUX_DIRECTORIES_CANDIDATES) {
-                File phantomBinaryToTest = new File(searchHome,
-                    DefaultValues.FOLDER_LINUX_BIN + File.separator
-                    + PHANTOMJS + File.separator
-                    + directory + File.separator
-                    + bitDirectory + File.separator
-                    + DefaultValues.FOLDER_BIN + File.separator + PHANTOMJS);
-                
-                if (phantomBinaryToTest.exists() && doesPhantomBinaryWork(phantomBinaryToTest)) {
-                    phantomBinary = phantomBinaryToTest;
-                    log.info("Selected PhantomJS binary: " + phantomBinary.getAbsolutePath());
-                    return;
-                }
-            }
-            
-            log.error("Unable to locate a working PhantomJS binary. URL previews won't be available.");
+            phantomBinary = new File(searchHome,
+                DefaultValues.FOLDER_LINUX_BIN + File.separator
+                + PHANTOMJS + File.separator
+                + DefaultValues.FOLDER_BIN + File.separator + PHANTOMJS);
         }
-    }
-
-    private static boolean doesPhantomBinaryWork(File phantomBinaryToTest) {
-        int result = -1;
-        try {
-            CommandLine cmdLine = new CommandLine(phantomBinaryToTest.getAbsolutePath());
-            cmdLine.addArgument("--version");
-            
-            DefaultExecutor executor = new DefaultExecutor();
-            executor.setExitValues(null); // executor should not check exit codes itself
-
-            // capture the command's output
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
-            executor.setStreamHandler(streamHandler);
-
-            // We need to force the phantomBinary to check the right lib path on linux
-            Map<String, String> environment = new HashMap<String, String>(System.getenv());
-            File libraryDirectory = new File(phantomBinaryToTest.getParentFile().getParentFile(), "lib");
-            environment.put("LD_LIBRARY_PATH", libraryDirectory.getAbsolutePath());
-            
-            try {
-                result = executor.execute(cmdLine, environment);
-            } catch (Exception e) {
-                result = -2;
-            }
-            
-            log.debug(cmdLine.toString() + " exited with code " + result);
-            log.debug(cmdLine.toString() + " output " + outputStream.toString());
-
-        } catch (Exception e) {
-            log.error(phantomBinaryToTest + " does not work", e);
-            // Assume any exception means it does not work
-            return false;
-        }
-
-        return result == 0;
     }
 
     @Override
