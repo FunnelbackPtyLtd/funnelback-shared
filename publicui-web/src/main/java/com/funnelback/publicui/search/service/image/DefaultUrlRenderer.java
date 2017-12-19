@@ -38,9 +38,6 @@ public class DefaultUrlRenderer implements UrlRenderer {
     
     /** Name of the directory containing the PhantomJS binary */
     private static final String PHANTOMJS = "phantomjs";
-    
-    /** Possible folders where a PhantomJS binary could be found */
-    private static final String[] LINUX_DIRECTORIES_CANDIDATES = new String[] {"centos6", "centos5", "local"};
 
     @Autowired
     private CacheManager appCacheManager;
@@ -104,6 +101,7 @@ public class DefaultUrlRenderer implements UrlRenderer {
                     tempFile = File.createTempFile("phantom_preview", ".png");
                     
                     CommandLine cmdLine = new CommandLine(phantomBinary.getAbsolutePath());
+                    cmdLine.addArgument("--ignore-ssl-errors=true");
                     cmdLine.addArgument(phantomPreview.getAbsolutePath());
                     cmdLine.addArgument(url);
                     cmdLine.addArgument(Integer.toString(width));
