@@ -44,16 +44,6 @@ public class SessionControllerTest {
         s.setAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE, "not a uuid");
         assertNull(controller.getSearchUser(request));
     }
-
-    @Test
-    public void testSession() {
-        HttpSession s = request.getSession(true);
-        s.setAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE, uuid.toString());
-        
-        SearchUser user = controller.getSearchUser(request);
-        assertNotNull(user);
-        assertEquals(uuid.toString(), user.getId());
-    }
     
     @Test
     public void testNullOrInvalidCookie() {
