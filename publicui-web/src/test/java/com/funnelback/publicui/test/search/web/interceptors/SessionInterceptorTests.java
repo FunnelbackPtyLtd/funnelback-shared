@@ -87,6 +87,8 @@ public class SessionInterceptorTests {
     public void testCookieNewUser() throws Exception {
         enableFeatures(true);
         
+        collection.getConfiguration().setValue("ui.modern.session.timeout", "123");
+        
         interceptor.preHandle(req, resp, null);
 
         assertNull(req.getSession(false));
@@ -98,6 +100,9 @@ public class SessionInterceptorTests {
         assertEquals(
             UUID.fromString(resp.getCookies()[0].getValue()),
             UUID.fromString((String) req.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE)));
+        
+        int maxAge = resp.getCookies()[0].getMaxAge();
+        assertEquals("Ensure the cookie max age is set to the ui.modern.session.timeout", 123, maxAge);
     }
 
     @Test

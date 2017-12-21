@@ -60,7 +60,7 @@ public class SessionInterceptor implements HandlerInterceptor {
                 // Set the user id in a cookie
                 if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)) {
                     Cookie c = new Cookie(USER_ID_COOKIE_NAME, uuid.toString());
-                    c.setMaxAge(Integer.MAX_VALUE);
+                    c.setMaxAge(collection.getConfiguration().valueAsInt(Keys.ModernUI.Session.TIMEOUT, DefaultValues.ModernUI.Session.TIMEOUT));
                     response.addCookie(c);
                     
                     // Also set it as a request attribute so that it can be accessed
