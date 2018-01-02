@@ -15,7 +15,7 @@ import com.funnelback.common.config.Config;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
+import com.funnelback.springmvc.service.security.DLSEnabledChecker;
 
 /**
  * Checks if early or late binding DLS is enabled, 
@@ -48,7 +48,7 @@ public class DenyIfDlsIsOnInterceptor implements HandlerInterceptor {
                 return true;
             }
             
-            if(dLSEnabledChecker.isDLSEnabled(collection)) {
+            if(dLSEnabledChecker.isDLSEnabled(collection.getConfiguration())) {
                 log.warn("Blocked access - DLS is enabled on " + collection.getConfiguration().getCollectionName());
                 return false;
             }
@@ -57,7 +57,7 @@ public class DenyIfDlsIsOnInterceptor implements HandlerInterceptor {
             if(Type.meta.equals(config.getCollectionType())) {
                 for(String component : collection.getMetaComponents()) {
                     collection = configRepository.getCollection(component);
-                    if(collection != null && dLSEnabledChecker.isDLSEnabled(collection)) {
+                    if(collection != null && dLSEnabledChecker.isDLSEnabled(collection.getConfiguration())) {
                         log.warn("Blocked access - DLS is enabled on " + collection.getConfiguration().getCollectionName());
                         return false;
                     }
