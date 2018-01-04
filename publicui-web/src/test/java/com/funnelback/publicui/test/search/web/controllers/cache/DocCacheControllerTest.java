@@ -5,8 +5,6 @@ import java.io.IOException;
 
 import javax.annotation.Resource;
 
-import com.funnelback.common.utils.XMLUtils;
-
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
@@ -25,12 +23,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
-import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
 import com.funnelback.publicui.search.web.controllers.CacheController;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
+import com.funnelback.springmvc.service.security.DLSEnabledChecker;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

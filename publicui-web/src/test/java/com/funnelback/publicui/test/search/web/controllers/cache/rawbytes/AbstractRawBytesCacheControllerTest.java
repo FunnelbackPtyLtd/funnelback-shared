@@ -34,9 +34,9 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
-import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
 import com.funnelback.publicui.search.web.controllers.CacheController;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
+import com.funnelback.springmvc.service.security.DLSEnabledChecker;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 

@@ -30,9 +30,9 @@ import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
-import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
 import com.funnelback.publicui.search.web.controllers.CacheController;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
+import com.funnelback.springmvc.service.security.DLSEnabledChecker;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
