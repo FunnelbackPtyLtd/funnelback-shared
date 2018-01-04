@@ -89,6 +89,7 @@
                     </sourceFileExcludes>
                     <docfilessubdirs>true</docfilessubdirs>
                     <failOnError>false</failOnError>
+                    <additionalparam>--allow-script-in-comments</additionalparam>
                 </configuration>
                 <executions>
                     <execution>
