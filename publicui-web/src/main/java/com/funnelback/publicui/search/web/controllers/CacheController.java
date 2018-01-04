@@ -51,10 +51,10 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
-import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
+import com.funnelback.springmvc.service.security.DLSEnabledChecker;
 import com.funnelback.springmvc.web.binder.RelativeFileOnlyEditor;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
@@ -149,7 +149,7 @@ public class CacheController {
     public ModelAndView cache(HttpServletRequest request,
             HttpServletResponse response,
             @Valid CacheQuestion question) throws Exception {
-        if(this.dLSEnabledChecker.isDLSEnabled(question.getCollection())) {
+        if(this.dLSEnabledChecker.isDLSEnabled(question.getCollection().getConfiguration())) {
             log.trace("Cache copies not available as DLS is enabled for the collection");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
