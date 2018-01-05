@@ -55,6 +55,7 @@ public class SearchMethod extends AbstractTemplateMethod {
         sq.setOriginalQuery(query);
         sq.setQuery(query);
         sq.setProfile(q.getProfile());
+        sq.setCurrentProfile(q.getProfile());
 
         if (arguments.size() == 4) {
             sq.getRawInputParameters().putAll(convertSimpleHashToParmeterMap((TemplateHashModelEx) arguments.get(3)));
