@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.funnelback.publicui.doc</groupId>
         <artifactId>publicui-doc-parent</artifactId>
-        <version>15.13.1752-SNAPSHOT</version>
+        <version>15.13.1800-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
