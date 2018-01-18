@@ -296,7 +296,17 @@ public class PadreQueryStringBuilderTest {
                 "a=1&collection=dummy&gscope1=6&profile=_default&query=chocolate",
                 new PadreQueryStringBuilder(q, true).buildQueryString());        
     }
-    
+
+    @Test
+    public void testNamedFacetGScopeConstraints() {
+        q.setFacetsGScopeConstraints("FUNfoo");
+        q.getAdditionalParameters().put("gscope1", new String[] {"FUNbar"});
+        
+        Assert.assertEquals(
+                "a=1&collection=dummy&gscope1=FUNfoo%2CFUNbar%2B&profile=_default&query=chocolate",
+                new PadreQueryStringBuilder(q, true).buildQueryString());
+    }
+
     @Test
     public void testMultiValues() {
         q.setQuery("multi");

@@ -279,7 +279,7 @@ public class PadreQueryStringBuilder {
                 // Combine them
                 return question.getFacetsGScopeConstraints()
                     // Only the [0] value is relevant
-                    + (CharUtils.isAsciiNumeric(facetGscopeConstraints.charAt(facetGscopeConstraints.length()-1))
+                    + (CharUtils.isAsciiAlphanumeric(facetGscopeConstraints.charAt(facetGscopeConstraints.length()-1))
                             ? ","
                             : "")
                     + MapUtils.getFirstString(question.getAdditionalParameters(), RequestParameters.GSCOPE1, null)
