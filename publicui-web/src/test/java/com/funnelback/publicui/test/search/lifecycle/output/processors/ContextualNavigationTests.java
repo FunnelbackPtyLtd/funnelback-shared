@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,7 +21,10 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamTestHelper;
+import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.xml.XmlParsingException;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 
 public class ContextualNavigationTests {
 
@@ -103,6 +109,54 @@ public class ContextualNavigationTests {
             }
         }
 
+    }
+    
+    @Test
+    public void testQueryCleaning() {
+        Map<String, List<String>> userQueryStringMapCopy = ImmutableMap.of(
+            "collection", Lists.newArrayList("coll-name"),
+            "query", Lists.newArrayList("search"));
+        
+        Assert.assertEquals(
+            "Expected type_max_clusters to be preserved through",
+            QueryStringUtils.toMap("?type_max_clusters=40&query=search&collection=coll-name"), 
+            QueryStringUtils.toMap(
+                ContextualNavigation.cleanContextualNavigationLink(userQueryStringMapCopy,
+                    "/search/padre-sw.cgi?type_max_clusters=40&query=search&collection=coll-name")
+                )
+            );
+
+        Assert.assertEquals(
+            "Expected search to be updated",
+            QueryStringUtils.toMap("?type_max_clusters=40&query=%60search%60&collection=coll-name"), 
+            QueryStringUtils.toMap(
+                ContextualNavigation.cleanContextualNavigationLink(userQueryStringMapCopy,
+                    "?type_max_clusters=40&query=%60search%60&collection=coll-name")
+                )
+            );
+
+        Assert.assertEquals(
+            "Expected gscope1 and origin to be removed",
+            QueryStringUtils.toMap("?type_max_clusters=40&query=search&collection=coll-name"), 
+            QueryStringUtils.toMap(
+                ContextualNavigation.cleanContextualNavigationLink(userQueryStringMapCopy,
+                    "/search/padre-sw.cgi?type_max_clusters=40&gscope1=foo&origin=bar&query=search&collection=coll-name")
+                )
+            );
+
+        Assert.assertTrue(
+            "Expected path to be stripped, '? to be preserved",
+                ContextualNavigation.cleanContextualNavigationLink(userQueryStringMapCopy,
+                    "/search/padre-sw.cgi?type_max_clusters=40&gscope1=foo&origin=bar&query=search&collection=coll-name")
+                .startsWith("?")
+        );
+
+        Assert.assertFalse(
+            "Expected no leading ? if none was provided",
+                ContextualNavigation.cleanContextualNavigationLink(userQueryStringMapCopy,
+                    "type_max_clusters=40&gscope1=foo&origin=bar&query=search&collection=coll-name")
+                .startsWith("?")
+        );
     }
 
 }
