@@ -1,6 +1,5 @@
 package com.funnelback.filter.api.documents;
 
-import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.util.Optional;
 
@@ -8,9 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.funnelback.filter.api.DocumentType;
-import com.funnelback.filter.documents.DefaultBytesDocument;
 import com.funnelback.filter.documents.DefaultStringDocument;
-import com.funnelback.common.text.TextUtils;
+import com.funnelback.filter.documents.DocumentHelper;
 import com.google.common.collect.ListMultimap;
 
 /**
@@ -68,12 +66,10 @@ public interface StringDocument extends FilterableDocument {
         }
         
         try {
-            byte[] content = (filterableDocument instanceof DefaultBytesDocument) ?
-                ((DefaultBytesDocument) filterableDocument).getContent() : filterableDocument.getCopyOfContents();
+            byte[] content = new DocumentHelper().getContent(filterableDocument);
             
             
-             Charset charset = filterableDocument.getCharset()
-                .orElseGet(() -> Charset.forName(TextUtils.getCharSet(new ByteArrayInputStream(content))));
+             Charset charset = new DocumentHelper().getOrGuessCharset(filterableDocument, () -> content);
             
              String stringContent = new String(content, charset);
             
@@ -87,7 +83,16 @@ public interface StringDocument extends FilterableDocument {
         }
         
         return Optional.empty();
-        
+    }
+    
+    /**
+     * Gets the charset of the filterableDocument, if the charset is unknown this guesses the charset by looking at the raw bytes.
+     * 
+     * @param filterableDocument
+     * @return
+     */
+    public static Charset getOrGuessCharset(FilterableDocument filterableDocument) {
+        return new DocumentHelper().getOrGuessCharset(filterableDocument, () -> new DocumentHelper().getContent(filterableDocument));
     }
     
     /**
