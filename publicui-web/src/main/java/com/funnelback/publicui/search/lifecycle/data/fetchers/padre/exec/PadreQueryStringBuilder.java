@@ -16,6 +16,7 @@ import org.apache.commons.lang3.CharUtils;
 
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.function.StreamUtils;
+import com.funnelback.common.gscope.GscopeName;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -279,7 +280,7 @@ public class PadreQueryStringBuilder {
                 // Combine them
                 return question.getFacetsGScopeConstraints()
                     // Only the [0] value is relevant
-                    + (CharUtils.isAsciiAlphanumeric(facetGscopeConstraints.charAt(facetGscopeConstraints.length()-1))
+                    + (GscopeName.isValidGscope(((Character) facetGscopeConstraints.charAt(facetGscopeConstraints.length()-1)).toString())
                             ? ","
                             : "")
                     + MapUtils.getFirstString(question.getAdditionalParameters(), RequestParameters.GSCOPE1, null)
