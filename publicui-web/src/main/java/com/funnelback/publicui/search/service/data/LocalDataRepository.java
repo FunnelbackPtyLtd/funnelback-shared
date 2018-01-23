@@ -332,7 +332,6 @@ public class LocalDataRepository implements DataRepository {
     private String extractPrimaryKey(Collection collection, String url) {
         try {
             switch (collection.getType()) {
-            case custom:
             case trimpush:
                 return URLDecoder.decode(url, "UTF-8");
             case meta:
