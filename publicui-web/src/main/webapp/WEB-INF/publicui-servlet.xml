@@ -2,10 +2,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-
-                http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+                http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+                http://www.springframework.org/schema/aop 
+                http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
     <import resource="/spring/freemarker.xml"/>
     <import resource="/spring/search-lifecycle.xml"/>
@@ -81,7 +83,22 @@
           </mvc:interceptor>
     </mvc:interceptors>
 
-    <bean id="xmlMarshaller" class="com.funnelback.publicui.xml.SearchXStreamMarshaller">
+    <bean id="timeLimitedSerialiserScope" class="com.funnelback.publicui.search.web.setup.TimeLimitedScope">
+        <constructor-arg value="#{ appProperties['metaspace.seconds-between-recreating-type-caching-objects'] ?: 600 }"/>
+    </bean>
+ 
+    <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+        <property name="scopes">
+            <map>
+                <entry key="timeLimitedSerialiser">
+                    <ref bean="timeLimitedSerialiserScope" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="xmlMarshaller" class="com.funnelback.publicui.xml.SearchXStreamMarshaller" scope="timeLimitedSerialiser">
+        <aop:scoped-proxy/>
         <property name="encoding" value="UTF-8" />
         <property name="autodetectAnnotations" value="true" />
         <property name="mode" value="#{T(com.thoughtworks.xstream.XStream).NO_REFERENCES}" />
@@ -145,26 +162,11 @@
         </property>
     </bean>
 
-    <bean id="jackson2ObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+    <bean id="jackson2ObjectMapper" class="com.funnelback.publicui.search.web.setup.ObjectMapperFactoryBean" scope="timeLimitedSerialiser">
+        <aop:scoped-proxy/>
+        <property name="jsonInclusion"><value type="com.fasterxml.jackson.annotation.JsonInclude.Include">#{ appProperties['json.inclusion'] }</value></property>
+    </bean>
 
-    <bean
-        class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="targetObject" ref="jackson2ObjectMapper" />
-        <property name="targetMethod" value="disable" />
-        <property name="arguments" value="FAIL_ON_EMPTY_BEANS" />
-    </bean>    
-
-    <bean
-        class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="targetObject" ref="jackson2ObjectMapper" />
-        <property name="targetMethod" value="setSerializationInclusion" />
-        <property name="arguments">
-            <list>
-                <value type="com.fasterxml.jackson.annotation.JsonInclude.Include">#{ appProperties['json.inclusion'] }</value>
-            </list>
-        </property>
-    </bean>    
-    
     <bean class="com.funnelback.publicui.xml.padre.StaxStreamParser" />    
             
     <mvc:resources mapping="/content-optimiser/**" location="file:#{globalFunnelbackConfig.value('dev.resources.content-optimiser')}, /content-optimiser/" />
