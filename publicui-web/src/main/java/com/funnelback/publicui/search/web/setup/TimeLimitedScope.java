@@ -28,8 +28,7 @@ public class TimeLimitedScope implements Scope {
     public Object get(String name, ObjectFactory<?> objectFactory) {
         try {
             return cache.get(name, () -> {
-                System.out.println("Building a new " + name + " bean!");
-                log.trace("Building a new " + name + " bean!");
+                log.trace("Building a new " + name + " bean");
                 return objectFactory.getObject();
             });
         } catch (ExecutionException e) {
