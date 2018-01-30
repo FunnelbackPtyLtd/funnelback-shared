@@ -474,10 +474,10 @@
 
     <repositories>
         <repository>
-            <!-- For mujina - a SAML mock IdP -->
-            <id>openconext-releases</id>
-            <name>OpenConext public releases repository</name>
-            <url>https://build.openconext.org/repository/public/releases</url>
+            <!-- For mujina - a SAML mock IdP (proxying https://build.openconext.org/repository/public/releases/) -->
+            <id>openconext-proxy</id>
+            <name>OpenConext Proxy</name>
+            <url>http://maven-repo.cbr.au.funnelback.com:8081/nexus/content/repositories/openconext-proxy/</url>
         </repository>
     </repositories>
 </project>
