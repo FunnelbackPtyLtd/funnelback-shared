@@ -39,9 +39,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>freemarker</groupId>
+                <groupId>com.kstruct</groupId>
                 <artifactId>ftldoc-maven-plugin</artifactId>
-                <version>0.0.2-SNAPSHOT</version>
+                <version>0.0.2</version>
                 <executions>
                     <execution>
                         <id>generate-documentation</id>
