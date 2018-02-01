@@ -99,7 +99,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
      * @param serviceConfig Frontend configuration.
      * @param response Response object to add custom headers to.
      */
-    private void setCustomHeaders(String customHeaderKeyPrefix, ServiceConfigReadOnly serviceConfig, HttpServletResponse response) {
+    void setCustomHeaders(String customHeaderKeyPrefix, ServiceConfigReadOnly serviceConfig, HttpServletResponse response) {
         List<String> customHeaderKeys = serviceConfig.getRawKeys().stream()
             .filter((k) -> k.startsWith(customHeaderKeyPrefix)).collect(Collectors.toList());
         
