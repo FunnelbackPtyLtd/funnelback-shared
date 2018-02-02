@@ -61,42 +61,15 @@ public class PublicUIHeadersIT {
         PublicUIHeadersIT.server.start();
     }
 
-    public static void commonPublicUISearchHomeSetup(File searchHome) throws IOException {
-        File modernUiProperties = new File(searchHome, "web/conf/modernui/modernui.properties");
-        modernUiProperties.getParentFile().mkdirs();
-        FileUtils.write(modernUiProperties, "");
-
-        File versionFile = new File(searchHome, "VERSION/funnelback-release");
-        versionFile.getParentFile().mkdirs();
-        FileUtils.write(versionFile, "Funnelback 9.9.9\n");
-
-        File noCollectionFile = new File(searchHome, "web/templates/modernui/no-collection.ftl");
-        noCollectionFile.getParentFile().mkdirs();
-        FileUtils.write(noCollectionFile, "Access granted!\n");
-    }
-
     private static File createSearchHome() throws Exception, IOException {
         SearchHomeConfigs searchHomeConfigs = SearchHomeConfigs.getWithDefaults();
         searchHomeConfigs.getGlobalCfgDefault().put("server_secret", PublicUIHeadersIT.SERVER_SECRET);
 
         File searchHome = SearchHomeProvider.getNamedWritableSearchHomeForTestClass(PublicUIHeadersIT.class, searchHomeConfigs,
-            "Normal-Admin-Server");
+            "Normal-Public-Server");
 
         DefaultSecurityConfiguredJettyServer.basicSearchHomeSetupForServer(searchHome);
-        PublicUIHeadersIT.commonPublicUISearchHomeSetup(searchHome);
-
-        // Add a service user for testing
-        File realmProperties = new File(searchHome, "conf/realm.properties");
-        String pw_hash = BCrypt.hashpw(
-            Security.generateSystemPassword(com.funnelback.common.system.Security.System.ADMIN_API, PublicUIHeadersIT.SERVER_SECRET),
-            BCrypt.gensalt());
-        FileUtils.write(realmProperties, Security.getServiceAccountName(com.funnelback.common.system.Security.System.ADMIN_API)
-            + ": BCRYPT:" + pw_hash + ",_svc_admin_api,admin\n", true);
-
-        File adminUserIni = new File(searchHome, "admin/users/admin.ini");
-        File sampleSuperUserIni = new File(searchHome, "share/sample-super-user.ini.dist");
-        sampleSuperUserIni.getParentFile().mkdirs();
-        FileUtils.copyFile(adminUserIni, sampleSuperUserIni);
+        DefaultAdminSecurityIT.commonPublicUISearchHomeSetup(searchHome);
 
         return searchHome;
     }
