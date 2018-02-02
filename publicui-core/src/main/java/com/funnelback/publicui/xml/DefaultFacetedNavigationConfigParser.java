@@ -1,5 +1,6 @@
 package com.funnelback.publicui.xml;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -50,10 +51,10 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
     public Facets parseFacetedNavigationConfiguration(byte[] configuration, FacetLocation facetLocation) throws FacetedNavigationConfigParseException {
         //We have no Idea what the incoming data is lets work it out.
         
-        Optional<List<Facet>> optionalFacets = facetMarshallerJson.unMarshal(configuration);
+        Optional<List<Facet>> optionalFacets = facetMarshallerJson.unMarshal(configuration, ZonedDateTime::now);
         
         if(!optionalFacets.isPresent()) {
-            optionalFacets = facetMarshallerXml.unmarshall(configuration, facetLocation);
+            optionalFacets = facetMarshallerXml.unmarshall(configuration, facetLocation, ZonedDateTime::now);
         }
         
         
