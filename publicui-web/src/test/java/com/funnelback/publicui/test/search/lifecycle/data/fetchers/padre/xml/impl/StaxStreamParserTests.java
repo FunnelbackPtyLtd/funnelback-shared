@@ -242,7 +242,7 @@ public class StaxStreamParserTests {
     public void testContentInProlog() throws Exception {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/commentsBeforeXmlStart.xml")),StandardCharsets.UTF_8,
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/commentsBeforeXmlStart.txt")),StandardCharsets.UTF_8,
             true);
         Assert.assertEquals(rp.getSumByGroups().size(), 0);
     }
