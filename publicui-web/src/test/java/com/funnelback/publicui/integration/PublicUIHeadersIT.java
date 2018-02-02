@@ -61,8 +61,8 @@ public class PublicUIHeadersIT {
          * back to the old behavior if needed.
          * 
          * In the past, "Strict-Transport-Security" got added and started sending things
-         * to https that should not have been, and when "X-Frame-Options" it caused trouble
-         * for some implementations (See FUN-11249).
+         * to https that should not have been, and when "X-Frame-Options"  was added it
+         * caused trouble for some implementation upgrades (See FUN-11249).
          * 
          * At a minimum, a new type of header being produced by default probably warrants
          * something in the release notes!
