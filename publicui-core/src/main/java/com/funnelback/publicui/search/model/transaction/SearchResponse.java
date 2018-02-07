@@ -59,6 +59,18 @@ public class SearchResponse {
     @Getter private final List<Facet> facets = new ArrayList<>();
     
     /**
+     * Returns the first facet with the given name
+     * 
+     * @since 15.14
+     * @param name The name of the facet that is wanted.
+     * @return the facet with the given name if not found null is returned.
+     */
+    @JsonIgnoreProperties
+    public Facet getFacetByName(String name) {
+        return facets.stream().filter(f -> f.getName().equals(name)).findFirst().orElse(null);
+    }
+    
+    /**
      * Information about facets that is not available from {@link SearchResponse#facets}
      * 
      * @since 15.12
