@@ -20,6 +20,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
+import com.funnelback.publicui.utils.web.ProfilePicker;
 
 import waffle.servlet.WindowsPrincipal;
 
@@ -154,11 +155,7 @@ public class SearchQuestionBinder {
         question.setPrincipal(request.getUserPrincipal());
         
         // Set currentProfile, based on profile, but ensuring it exists on disk for the given collection
-        String currentProfile = question.getProfile();
-        if (!question.getCollection().getProfiles().containsKey(currentProfile)) {
-            currentProfile = DefaultValues.DEFAULT_PROFILE;
-        }
-        question.setCurrentProfile(currentProfile);
+        question.setCurrentProfile(new ProfilePicker().existingProfileForCollection(question.getCollection(), question.getProfile()));
     }
 
     /**

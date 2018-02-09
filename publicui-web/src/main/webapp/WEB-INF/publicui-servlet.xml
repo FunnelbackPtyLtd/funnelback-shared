@@ -58,6 +58,10 @@
             <bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
         </mvc:interceptor>
         <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.funnelback.publicui.search.web.interceptors.RestrictAccessToPreviewProfile" />
+        </mvc:interceptor>
+        <mvc:interceptor>
              <mvc:mapping path="/cache" />
             <mvc:mapping path="/cache.*" />
             <mvc:mapping path="/anchors.*" />
