@@ -31,6 +31,11 @@ import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * This is used to prevent access to the preview view of profiles if it is
+ * configured to do so on the (live) profile.  
+ *
+ */
 @Log4j2
 public class RestrictAccessToPreviewProfile implements HandlerInterceptor {
 
