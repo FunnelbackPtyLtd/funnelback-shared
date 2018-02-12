@@ -66,7 +66,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
                         url.lastIndexOf(DefaultConfigRepository.FTL_SUFFIX));
 
                 ServiceConfigReadOnly serviceConfig = q.getCurrentProfileConfig();
-                manipulateHeaders(serviceConfig, response, name);
+                manipulateHeaders(serviceConfig, response, name, FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm(name));
                 
             }
         } else if (model.containsKey(RequestParameters.COLLECTION) && model.containsKey(RequestParameters.PROFILE)
@@ -85,12 +85,14 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
             }
             ServiceConfigReadOnly serviceConfig = collection.getProfiles().get(profile).getServiceConfig();
 
-            manipulateHeaders(serviceConfig, response, name);
+            manipulateHeaders(serviceConfig, response, name, FrontEndKeys.UI.Modern.Cache.getCustomContentTypeOptionForForm(name));
         }
     }
     
-    private void manipulateHeaders(ServiceConfigReadOnly serviceConfig, HttpServletResponse response, String formName) {
-        ProfileAndCollectionConfigOption<Optional<String>> contentTypeConfigOption = FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm(formName);
+    private void manipulateHeaders(ServiceConfigReadOnly serviceConfig, 
+                                    HttpServletResponse response, 
+                                    String formName, 
+                                    ProfileAndCollectionConfigOption<Optional<String>> contentTypeConfigOption) {
 
         setCustomContentType(contentTypeConfigOption, serviceConfig, response);
         setCustomHeaders("ui.modern.form." + formName + ".headers.", serviceConfig, response);
