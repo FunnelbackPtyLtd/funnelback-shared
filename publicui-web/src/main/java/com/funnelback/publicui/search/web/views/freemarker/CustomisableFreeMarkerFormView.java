@@ -90,7 +90,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
     void manipulateHeaderForSearchForm(ServiceConfigReadOnly serviceConfig, 
                                     HttpServletResponse response, 
                                     String formName) {
-        manipulateHeaders(serviceConfig, response, formName, 
+        manipulateHeaders(serviceConfig, response, 
             FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm(formName),
             "ui.modern.form." + formName + ".headers.",
             FrontEndKeys.UI.Modern.getRemoveHeaderForForm(formName));
@@ -99,7 +99,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
     void manipulateHeaderForCacheForm(ServiceConfigReadOnly serviceConfig, 
                                     HttpServletResponse response, 
                                     String formName) {
-        manipulateHeaders(serviceConfig, response, formName, 
+        manipulateHeaders(serviceConfig, response, 
             FrontEndKeys.UI.Modern.Cache.getCustomContentTypeOptionForForm(formName),
             "ui.modern.cache.form." + formName + ".headers.",
             FrontEndKeys.UI.Modern.Cache.getRemoveHeaderForForm(formName));
@@ -107,7 +107,6 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
     
     private void manipulateHeaders(ServiceConfigReadOnly serviceConfig, 
                                     HttpServletResponse response, 
-                                    String formName, 
                                     ProfileAndCollectionConfigOption<Optional<String>> contentTypeConfigOption,
                                     String customHeadersPrefix,
                                     ServiceConfigOptionDefinition<List<String>> headerToRemoveKey) {
