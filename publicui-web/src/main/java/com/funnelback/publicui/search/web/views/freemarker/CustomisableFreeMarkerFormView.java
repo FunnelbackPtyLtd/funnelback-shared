@@ -87,6 +87,13 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
         }
     }
     
+    /**
+     * manupulates header for search forms.
+     * 
+     * @param serviceConfig
+     * @param response
+     * @param formName
+     */
     void manipulateHeaderForSearchForm(ServiceConfigReadOnly serviceConfig, 
                                     HttpServletResponse response, 
                                     String formName) {
@@ -96,6 +103,13 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
             FrontEndKeys.UI.Modern.getRemoveHeaderForForm(formName));
     }
     
+    /**
+     * manipulates headers for cache copy forms.
+     * 
+     * @param serviceConfig
+     * @param response
+     * @param formName
+     */
     void manipulateHeaderForCacheForm(ServiceConfigReadOnly serviceConfig, 
                                     HttpServletResponse response, 
                                     String formName) {
