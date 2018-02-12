@@ -12,6 +12,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.config.marshallers.Marshallers;
@@ -65,10 +66,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
                         url.lastIndexOf(DefaultConfigRepository.FTL_SUFFIX));
 
                 ServiceConfigReadOnly serviceConfig = q.getCurrentProfileConfig();
-                ProfileAndCollectionConfigOption<Optional<String>> contentTypeConfigOption = FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm(name);
-
-                setCustomContentType(contentTypeConfigOption, serviceConfig, response);
-                setCustomHeaders("ui.modern.form." + name + ".headers.", serviceConfig, response);
+                manipulateHeaderForSearchForm(serviceConfig, response, name);
             }
         } else if (model.containsKey(RequestParameters.COLLECTION) && model.containsKey(RequestParameters.PROFILE)
                 && model.get(RequestParameters.COLLECTION) instanceof Collection) {
@@ -85,12 +83,51 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
                 profile = DefaultValues.DEFAULT_PROFILE;
             }
             ServiceConfigReadOnly serviceConfig = collection.getProfiles().get(profile).getServiceConfig();
-
-            ProfileAndCollectionConfigOption<Optional<String>> contentTypeConfigOption = FrontEndKeys.UI.Modern.Cache.getCustomContentTypeOptionForForm(name);
-
-            setCustomContentType(contentTypeConfigOption, serviceConfig, response);
-            setCustomHeaders("ui.modern.cache.form." + name + ".headers.", serviceConfig, response);
+            manipulateHeaderForCacheForm(serviceConfig, response, name);
         }
+    }
+    
+    /**
+     * manupulates header for search forms.
+     * 
+     * @param serviceConfig
+     * @param response
+     * @param formName
+     */
+    void manipulateHeaderForSearchForm(ServiceConfigReadOnly serviceConfig, 
+                                    HttpServletResponse response, 
+                                    String formName) {
+        manipulateHeaders(serviceConfig, response, 
+            FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm(formName),
+            "ui.modern.form." + formName + ".headers.",
+            FrontEndKeys.UI.Modern.getRemoveHeaderForForm(formName));
+    }
+    
+    /**
+     * manipulates headers for cache copy forms.
+     * 
+     * @param serviceConfig
+     * @param response
+     * @param formName
+     */
+    void manipulateHeaderForCacheForm(ServiceConfigReadOnly serviceConfig, 
+                                    HttpServletResponse response, 
+                                    String formName) {
+        manipulateHeaders(serviceConfig, response, 
+            FrontEndKeys.UI.Modern.Cache.getCustomContentTypeOptionForForm(formName),
+            "ui.modern.cache.form." + formName + ".headers.",
+            FrontEndKeys.UI.Modern.Cache.getRemoveHeaderForForm(formName));
+    }
+    
+    private void manipulateHeaders(ServiceConfigReadOnly serviceConfig, 
+                                    HttpServletResponse response, 
+                                    ProfileAndCollectionConfigOption<Optional<String>> contentTypeConfigOption,
+                                    String customHeadersPrefix,
+                                    ServiceConfigOptionDefinition<List<String>> headerToRemoveKey) {
+
+        setCustomContentType(contentTypeConfigOption, serviceConfig, response);
+        setCustomHeaders(customHeadersPrefix, serviceConfig, response);
+        removeHeaders(serviceConfig, response, headerToRemoveKey);
     }
     
     /**
@@ -100,13 +137,9 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
      * @param response Response object to add custom headers to.
      */
     void setCustomHeaders(String customHeaderKeyPrefix, ServiceConfigReadOnly serviceConfig, HttpServletResponse response) {
-        List<String> customHeaderKeys = serviceConfig.getRawKeys().stream()
-            .filter((k) -> k.startsWith(customHeaderKeyPrefix)).collect(Collectors.toList());
-        
         int sentCount = 0;
-        for (String customHeaderKey : customHeaderKeys) {
-            String header = serviceConfig.get(new ProfileAndCollectionConfigOption<String>(customHeaderKey,
-                Marshallers.STRING_MARSHALLER, Validators.acceptAll(), ""));
+        for (ServiceConfigOptionDefinition<String> customHeaderKey : keysStartingWith(customHeaderKeyPrefix, serviceConfig)) {
+            String header = serviceConfig.get(customHeaderKey);
             if (header != null && header.contains(":")) {
                 response.setHeader(header.substring(0, header.indexOf(':')).trim(),
                     header.substring(header.indexOf(':')+1).trim());
@@ -114,6 +147,39 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
             }
             log.debug("Added " + sentCount + " custom headers for " + customHeaderKeyPrefix);
         }
+    }
+    
+    /**
+     * Removes headers from the response as configured in the front-ends configurations.
+     * 
+     * @param formName The form that is being returned.
+     * @param serviceConfig
+     * @param response
+     */
+    void removeHeaders(ServiceConfigReadOnly serviceConfig, 
+        HttpServletResponse response, 
+        ServiceConfigOptionDefinition<List<String>> headerToRemoveKey) {
+        for (String headerName : serviceConfig.get(headerToRemoveKey)) {
+            // This should remove the header, the java doc doesn't seem to say it will
+            // however jetty, tomcat and glassfish all do.
+            // https://github.com/eclipse/jetty.project/issues/1116#issuecomment-326084030
+            response.setHeader(headerName, null);
+            log.debug("Removed header: " + headerName);
+        }
+    }
+    
+    /**
+     * Gets all keys starting with a prefix as a String type key.
+     * 
+     * @param keyprefix
+     * @param serviceConfig
+     * @return
+     */
+    private List<ServiceConfigOptionDefinition<String>> keysStartingWith(String keyprefix, ServiceConfigReadOnly serviceConfig) {
+        return serviceConfig.getRawKeys().stream()
+            .filter((k) -> k.startsWith(keyprefix))
+            .map(k -> new ProfileAndCollectionConfigOption<String>(k, Marshallers.STRING_MARSHALLER, Validators.acceptAll(), ""))
+            .collect(Collectors.toList());
     }
     
     /**
