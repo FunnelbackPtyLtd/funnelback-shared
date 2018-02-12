@@ -66,8 +66,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
                         url.lastIndexOf(DefaultConfigRepository.FTL_SUFFIX));
 
                 ServiceConfigReadOnly serviceConfig = q.getCurrentProfileConfig();
-                manipulateHeaders(serviceConfig, response, name, FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm(name));
-                
+                manipulateHeaderForSearchForm(serviceConfig, response, name);
             }
         } else if (model.containsKey(RequestParameters.COLLECTION) && model.containsKey(RequestParameters.PROFILE)
                 && model.get(RequestParameters.COLLECTION) instanceof Collection) {
@@ -84,19 +83,38 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
                 profile = DefaultValues.DEFAULT_PROFILE;
             }
             ServiceConfigReadOnly serviceConfig = collection.getProfiles().get(profile).getServiceConfig();
-
-            manipulateHeaders(serviceConfig, response, name, FrontEndKeys.UI.Modern.Cache.getCustomContentTypeOptionForForm(name));
+            manipulateHeaderForCacheForm(serviceConfig, response, name);
         }
+    }
+    
+    void manipulateHeaderForSearchForm(ServiceConfigReadOnly serviceConfig, 
+                                    HttpServletResponse response, 
+                                    String formName) {
+        manipulateHeaders(serviceConfig, response, formName, 
+            FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm(formName),
+            "ui.modern.form." + formName + ".headers.",
+            FrontEndKeys.UI.Modern.getRemoveHeaderForForm(formName));
+    }
+    
+    void manipulateHeaderForCacheForm(ServiceConfigReadOnly serviceConfig, 
+                                    HttpServletResponse response, 
+                                    String formName) {
+        manipulateHeaders(serviceConfig, response, formName, 
+            FrontEndKeys.UI.Modern.Cache.getCustomContentTypeOptionForForm(formName),
+            "ui.modern.cache.form." + formName + ".headers.",
+            FrontEndKeys.UI.Modern.Cache.getRemoveHeaderForForm(formName));
     }
     
     private void manipulateHeaders(ServiceConfigReadOnly serviceConfig, 
                                     HttpServletResponse response, 
                                     String formName, 
-                                    ProfileAndCollectionConfigOption<Optional<String>> contentTypeConfigOption) {
+                                    ProfileAndCollectionConfigOption<Optional<String>> contentTypeConfigOption,
+                                    String customHeadersPrefix,
+                                    ServiceConfigOptionDefinition<List<String>> headerToRemoveKey) {
 
         setCustomContentType(contentTypeConfigOption, serviceConfig, response);
-        setCustomHeaders("ui.modern.form." + formName + ".headers.", serviceConfig, response);
-        removeHeaders(formName, serviceConfig, response);
+        setCustomHeaders(customHeadersPrefix, serviceConfig, response);
+        removeHeaders(serviceConfig, response, headerToRemoveKey);
     }
     
     /**
@@ -125,8 +143,10 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
      * @param serviceConfig
      * @param response
      */
-    void removeHeaders(String formName, ServiceConfigReadOnly serviceConfig, HttpServletResponse response) {
-        for (String headerName : serviceConfig.get(FrontEndKeys.UI.Modern.getRemoveHeaderForForm(formName))) {
+    void removeHeaders(ServiceConfigReadOnly serviceConfig, 
+        HttpServletResponse response, 
+        ServiceConfigOptionDefinition<List<String>> headerToRemoveKey) {
+        for (String headerName : serviceConfig.get(headerToRemoveKey)) {
             // This should remove the header, the java doc doesn't seem to say it will
             // however jetty, tomcat and glassfish all do.
             // https://github.com/eclipse/jetty.project/issues/1116#issuecomment-326084030

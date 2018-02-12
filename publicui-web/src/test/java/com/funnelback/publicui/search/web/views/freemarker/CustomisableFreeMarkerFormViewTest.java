@@ -26,16 +26,28 @@ public class CustomisableFreeMarkerFormViewTest {
     }
     
     @Test
-    public void testRemoveHeader() {
+    public void testRemoveHeaderFromSearchForm() {
         ServiceConfig serviceConfig = new InMemoryServiceConfig(
             ImmutableMap.of("ui.modern.form.foo.remove-headers", "X-Bar, X-Foo , plop"));
         
         HttpServletResponse response = mock(HttpServletResponse.class);
         
-        new CustomisableFreeMarkerFormView().removeHeaders("foo", serviceConfig, response);
+        new CustomisableFreeMarkerFormView().manipulateHeaderForSearchForm(serviceConfig, response, "foo");
         
         verify(response, times(1)).setHeader("X-Bar", null);
         verify(response, times(1)).setHeader("X-Foo", null);
         verify(response, times(1)).setHeader("plop", null);
+    }
+    
+    @Test
+    public void testRemoveHeaderFromCacheForm() {
+        ServiceConfig serviceConfig = new InMemoryServiceConfig(
+            ImmutableMap.of("ui.modern.cache.form.foo.remove-headers", "X-Bar"));
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        new CustomisableFreeMarkerFormView().manipulateHeaderForCacheForm(serviceConfig, response, "foo");
+        
+        verify(response, times(1)).setHeader("X-Bar", null);
     }
 }
