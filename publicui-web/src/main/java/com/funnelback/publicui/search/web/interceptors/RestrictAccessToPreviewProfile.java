@@ -124,9 +124,6 @@ public class RestrictAccessToPreviewProfile implements HandlerInterceptor {
             if(hasAccessToColl) {
                 
                 String profileId = profileName.substring(0, profileName.length() - DefaultValues.PREVIEW_SUFFIX.length());
-                if(!profileName.equals(profileId + DefaultValues.PREVIEW_SUFFIX)) {
-                    throw new RuntimeException("Could not correctly strip _preview suffix from " + profileId);
-                }
                 
                 boolean hasAccessToProfile = user.getUserInfoDetails().getProfileRestriction().isPermitted(new ProfileId(profileId));
                 if(hasAccessToProfile) {
