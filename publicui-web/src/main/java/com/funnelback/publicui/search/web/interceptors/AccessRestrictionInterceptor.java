@@ -43,6 +43,8 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.exception.InvalidCollectionException;
+import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
+import com.funnelback.publicui.utils.web.ProfilePicker;
 
 /**
  * Checks access restriction at a collection level and either grant access,
@@ -60,6 +62,8 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     
     @Autowired
     private File searchHome;
+    
+    private IntercepterHelper intercepterHelper = new IntercepterHelper();
 
     /**
      * Pattern to match collection id in the query string
@@ -86,40 +90,37 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView mav)
         throws Exception { }
 
+    
+    
+    
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (request.getParameter(RequestParameters.COLLECTION) != null
-                && request.getParameter(RequestParameters.COLLECTION).matches(Collection.COLLECTION_ID_PATTERN)) {
+        if (intercepterHelper.requestHasValidCollectionId(request)) {
 
-            String collectionId = request.getParameter(RequestParameters.COLLECTION);
-            String profileId = request.getParameter(RequestParameters.PROFILE);
+            String collectionId = intercepterHelper.getCollectionFromRequest(request);
             
-            if (profileId == null || profileId.trim().isEmpty()) {
-                profileId = DefaultValues.DEFAULT_PROFILE;
+            if(collectionId == null) {
+                log.trace("Access restriction allowing access when no collection is set.");
+                return true;
             }
+            
+            Collection collection = configRepository.getCollection(collectionId);
+            if (collection == null) {
+                // You asked for a collection which doesn't exist, so no access restriction applies.
+                // (otherwise no one could ever get to the collection listing page)
+                log.trace("Access restriction allowing access to nonexistent collection" + collectionId);
+                return true;
+            }
+            
+            String profileId = new ProfilePicker().existingProfileForCollection(collection, intercepterHelper.getProfileFromRequestOrDefaultProfile(request));
             
             ServiceConfigReadOnly serviceConfig;
             try {
                 serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
             } catch (ProfileNotFoundException e) {
-                // Ok - You asked for a profile which doesn't exist, but we can fall back to _default
-                
-                try {
-                    serviceConfig = configRepository.getServiceConfig(collectionId, DefaultValues.DEFAULT_PROFILE);
-                } catch (ProfileNotFoundException e2) {
-                    // At this point either the collection doesn't exist (so you have access)
-                    // or the collection is invalid (missing _default) so we error out to avoid
-                    // accidentally exposing stuff which might need to be secured
-                    
-                    if (configRepository.getCollection(collectionId) == null) {
-                        // You asked for a collection which doesn't exist, so no access restriction applies.
-                        // (otherwise no one could ever get to the collection listing page)
-                        log.trace("Access restriction allowing access to nonexistent collection" + collectionId);
-                        return true;
-                    } else {
-                        throw new InvalidCollectionException(collectionId + " appears to exist, but lacks a " + DefaultValues.DEFAULT_PROFILE + " profile.");
-                    }
-                }
+                // profile picker always returns a profile that it thinks exists or one that is supposed to exist e.g. defailt_profile.
+                throw new InvalidCollectionException(collectionId + " appears to exist but is invalid as it is missing the '" 
+                                                        + profileId + "' profile which is expected to exist.");
             }
             
             if (serviceConfig.get(FrontEndKeys.ACCESS_RESTRICTION).isPresent()) {

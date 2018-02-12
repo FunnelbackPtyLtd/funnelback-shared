@@ -1,11 +1,8 @@
 package com.funnelback.publicui.test.search.web.interceptors;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -25,12 +23,8 @@ import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.service.DefaultServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.config.data.InMemoryConfigData;
-import com.funnelback.config.data.OptionAndValue;
-import com.funnelback.config.data.environment.ConfigEnvironment;
 import com.funnelback.config.data.environment.NoConfigEnvironment;
-import com.funnelback.config.data.service.ServiceConfigData;
 import com.funnelback.config.keys.Keys.FrontEndKeys;
-import com.funnelback.config.option.ConfigOptionDefinition;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -63,6 +57,11 @@ public class AccessRestrictionInterceptorTests {
 
         testServiceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
         configRepository.setServiceConfig(testServiceConfig);
+        
+        Collection collection = mock(Collection.class);
+        when(collection.getProfiles()).thenReturn(new HashMap<>());
+        when(collection.getId()).thenReturn(COLLECTION_ID);
+        configRepository.addCollection(collection);
 
         request = new MockHttpServletRequest();
         request.setParameter(RequestParameters.COLLECTION, COLLECTION_ID);
@@ -119,7 +118,10 @@ public class AccessRestrictionInterceptorTests {
         
         request.setParameter("profile", "doesntexist");
 
-        Mockito.when(configRepository.getServiceConfig(COLLECTION_ID, "doesntexist")).thenThrow(ProfileNotFoundException.class);
+        Collection collection = mock(Collection.class);
+        when(collection.getProfiles()).thenReturn(new HashMap<>());
+        when(configRepository.getCollection(anyString())).thenReturn(collection);
+        
         Mockito.when(configRepository.getServiceConfig(COLLECTION_ID, "_default")).thenReturn(testServiceConfig);
         
         testServiceConfig.set(FrontEndKeys.ACCESS_RESTRICTION, Optional.of(DefaultValues.NO_ACCESS));
