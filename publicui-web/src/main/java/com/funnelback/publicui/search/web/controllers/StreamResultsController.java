@@ -213,7 +213,7 @@ public class StreamResultsController {
                                                                                             resultFields.getFieldNames(), 
                                                                                             response, 
                                                                                             RESULT_DATA_FETCHER)) {
-                    pageSearcher.runOnEachPage((q) -> processor.process(q, user), transactionToResults::onEachTransaction);
+                    pageSearcher.runOnEachPage((q) -> processor.process(q, user, Optional.empty()), transactionToResults::onEachTransaction);
                 }
             } catch (Exception e) {
                 response.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());

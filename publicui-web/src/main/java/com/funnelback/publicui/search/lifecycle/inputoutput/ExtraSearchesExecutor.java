@@ -92,7 +92,10 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
             return;
         }
         
-        extraSearchQuestion.setQuestionType(SearchQuestionType.EXTRA_SEARCH);
+        if(!extraSearchQuestion.getQuestionType().isExtraSearch()) {
+            // The search type must be set to one that can be an extra search.
+            extraSearchQuestion.setQuestionType(SearchQuestionType.EXTRA_SEARCH);
+        }
         
         Callable<SearchTransaction> callable = makeCallable(searchTransaction, 
                 extraSearchName, 
@@ -121,7 +124,7 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
                     StopWatch sw = new StopWatch();
                     try {
                         sw.start();
-                        return transactionProcessor.process(extraSearchQuestion, user);
+                        return transactionProcessor.process(extraSearchQuestion, user, Optional.of(extraSearchName));
                     } finally {
                         sw.stop();
                         // We know exactly how much time was spent.

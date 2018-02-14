@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
@@ -145,7 +146,7 @@ public class ExtraSearchesExecutorTest {
         SearchTransactionProcessor transactionProcessor = new SearchTransactionProcessor() {
             
             @Override
-            public SearchTransaction process(SearchQuestion q, SearchUser user) {
+            public SearchTransaction process(SearchQuestion q, SearchUser user, Optional<String> extraSearchName) {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {

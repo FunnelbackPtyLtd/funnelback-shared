@@ -3,16 +3,19 @@ package com.funnelback.publicui.search.model.transaction;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 /**
@@ -42,6 +45,15 @@ public class SearchTransaction {
          */
         CONTENT_OPTIMISER_SELECT_DOCUMENT;
     }
+    
+    /**
+     * Holds the extra search name
+     * 
+     * <p>For logging only</p>
+     * 
+     */
+    @XStreamOmitField @JsonIgnore
+    @Getter @Setter @NonNull private Optional<String> extraSearchName = Optional.empty();
     
     /** The question containing the input parameters. */
     @Getter private SearchQuestion question;

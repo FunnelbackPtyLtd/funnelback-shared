@@ -1,6 +1,9 @@
 package com.funnelback.publicui.test.search.lifecycle;
 
 import groovy.lang.GroovyClassLoader;
+
+import java.util.Optional;
+
 import org.junit.Assert;
 
 import org.junit.Before;
@@ -12,6 +15,7 @@ import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -136,9 +140,45 @@ public class GenericHookScriptRunnerTests {
         processor.fetchData(st);
         Assert.assertEquals("Test query", st.getQuestion().getQuery());
         Assert.assertNotNull(st.getQuestion());
+        st.getQuestion().setQuestionType(SearchQuestionType.ACCESSIBILITY_AUDITOR);
 
         processor.processOutput(st);        
         Assert.assertNull(st.getQuestion());
+    }
+    
+    // Just checks to see no error is recorded does not test what is logged
+    @Test
+    public void testQuestionCanBeNulledAndInError() throws Exception {
+        st.getQuestion().getCollection()
+        .getHookScriptsClasses().put(Hook.post_process, new GroovyClassLoader().parseClass("transaction.question = null\ntransaction.foobarfoobar()"));
+        
+        GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.post_process, Phase.Output);
+        
+        processor.processInput(st);
+        processor.fetchData(st);
+        Assert.assertEquals("Test query", st.getQuestion().getQuery());
+        Assert.assertNotNull(st.getQuestion());
+        st.getQuestion().setQuestionType(SearchQuestionType.ACCESSIBILITY_AUDITOR);
+
+        processor.processOutput(st);
+        Assert.assertNull(st.getQuestion());
+    }
+    
+    // Just checks to see no error is thrown does not test what is logged
+    @Test
+    public void testInErrorOnFacetExtraSearch() throws Exception {
+        st.getQuestion().getCollection()
+        .getHookScriptsClasses().put(Hook.post_process, new GroovyClassLoader().parseClass("transaction.foobarfoobar()"));
+        
+        GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.post_process, Phase.Output);
+        
+        processor.processInput(st);
+        processor.fetchData(st);
+        Assert.assertEquals("Test query", st.getQuestion().getQuery());
+        Assert.assertNotNull(st.getQuestion());
+        st.getQuestion().setQuestionType(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH);
+        st.setExtraSearchName(Optional.of("foo"));
+        processor.processOutput(st);
     }
     
     @Test

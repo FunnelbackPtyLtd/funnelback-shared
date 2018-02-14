@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StopWatch;
 
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.DefaultSearchTransactionProcessor;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
@@ -21,11 +27,15 @@ import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchError.Reason;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockDataFetcher;
 import com.funnelback.publicui.test.mock.MockInputProcessor;
 import com.funnelback.publicui.test.mock.MockOutputProcessor;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class DefaultSearchTransactionProcessorTest {
 
     private SearchQuestion q;
@@ -33,6 +43,9 @@ public class DefaultSearchTransactionProcessorTest {
     private List<InputProcessor> input;
     private List<DataFetcher> data;
     private List<OutputProcessor> output;
+    
+    @Autowired
+    private I18n i18n;
     
     @Before
     public void before() {
@@ -44,10 +57,16 @@ public class DefaultSearchTransactionProcessorTest {
         processor.setInputFlow(input);
         processor.setOutputFlow(output);
         processor.setDataFetchers(data);
+        processor.setI18n(i18n);
+        
         
         q = new SearchQuestion();
         q.setCollection(new Collection("a-test", null));
         q.setProfile("a-profile");
+        
+        System.out.println(i18n.tr("outputprocessor.padrereturncode.log.failed"));
+        System.out.println("DONE");
+        
 
     }
     
@@ -57,7 +76,7 @@ public class DefaultSearchTransactionProcessorTest {
         output.add(new MockOutputProcessor());
         data.add(new MockDataFetcher());
         
-        SearchTransaction st = processor.process(q, null);
+        SearchTransaction st = processor.process(q, null, Optional.empty());
         
         Assert.assertNotNull(st);
         Assert.assertNotNull(st.getResponse());
@@ -98,13 +117,27 @@ public class DefaultSearchTransactionProcessorTest {
             input.clear();
             input.add(inputProcessor);
             
-            SearchTransaction st = processor.process(q, null);
+            SearchTransaction st = processor.process(q, null, Optional.empty());
             
             Assert.assertNotNull(clazz.getSimpleName() + " error should have been handled", st.getError());
             Assert.assertEquals("Invalid reason given for " + clazz.getSimpleName(), errorReasons.get(clazz), st.getError().getReason());
             Assert.assertEquals("Invalid error additional data stored", clazz, st.getError().getAdditionalData().getClass());
             
         }
+    }
+    
+    @Test
+    public void testRecordException() {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        // test non extra search
+        this.processor.recordException(st, new Exception(""), Reason.DataFetchError, Optional.empty());
+        
+        // Test extra search case
+        this.processor.recordException(st, new Exception(""), Reason.DataFetchError, Optional.of("foo"));
+        
+        // Test faceted nav extra search case
+        st.getQuestion().setQuestionType(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH);
+        this.processor.recordException(st, new Exception(""), Reason.DataFetchError, Optional.of("foo"));
     }
     
     private static class ObscureException extends RuntimeException {

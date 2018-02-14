@@ -3,11 +3,13 @@ package com.funnelback.publicui.search.web.views.freemarker;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -32,6 +34,9 @@ public class SearchMethod extends AbstractTemplateMethod {
     
     @Autowired
     private SearchTransactionProcessor searchTransactionProcessor;
+    
+    @Autowired
+    private I18n i18n;
     
     public SearchMethod() {
         super(3, 1, false);
@@ -61,7 +66,9 @@ public class SearchMethod extends AbstractTemplateMethod {
             sq.getRawInputParameters().putAll(convertSimpleHashToParmeterMap((TemplateHashModelEx) arguments.get(3)));
         }
 
-        return searchTransactionProcessor.process(sq, null);
+        return searchTransactionProcessor.process(sq, 
+            null, 
+            Optional.of(i18n.tr("freemarker.extra-search-name", query)));
     }
     
     
