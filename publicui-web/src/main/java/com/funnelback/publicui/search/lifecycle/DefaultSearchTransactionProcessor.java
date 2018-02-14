@@ -126,7 +126,7 @@ public class DefaultSearchTransactionProcessor implements SearchTransactionProce
         String questionTypeAsString = Optional.ofNullable(questionType).map(t -> t.toString()).orElse("UNKNOWN");
         if(extraSearchName.isPresent()) {
             if(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH == questionType) {
-                log.error(i18n.tr("transaction-lifecycle.extra-search.internal-facet.error", 
+                log.error(i18n.tr("transaction-lifecycle.extra-search.internal.error", 
                                         extraSearchName.get(), 
                                         questionTypeAsString, 
                                         ModernUI.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey()), 
