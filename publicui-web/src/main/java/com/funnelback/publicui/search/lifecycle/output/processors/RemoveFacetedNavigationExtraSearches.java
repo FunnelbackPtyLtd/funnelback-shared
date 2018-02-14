@@ -32,7 +32,7 @@ public class RemoveFacetedNavigationExtraSearches extends AbstractOutputProcesso
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
         if (SearchTransactionUtils.hasQuestion(searchTransaction) && 
             searchTransaction.getQuestion().getQuestionType() == SearchQuestionType.SEARCH) {
-            if(searchTransaction.getQuestion().getCurrentProfileConfig().get(ModernUI.REMOVE_INTERNAL_FACET_EXTRA_SEARCHES)) {
+            if(searchTransaction.getQuestion().getCurrentProfileConfig().get(ModernUI.REMOVE_INTERNAL_EXTRA_SEARCHES)) {
                 searchTransaction.getExtraSearches().keySet()
                 .stream()
                 .filter(facetExtraSearchNames::isFacetExtraSearch)

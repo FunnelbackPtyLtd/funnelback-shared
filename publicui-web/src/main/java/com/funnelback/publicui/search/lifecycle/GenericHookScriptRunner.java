@@ -111,7 +111,7 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
                         msg += " in extra search '" + searchTransaction.getExtraSearchName().get() + "'";
                         if(searchQuestionType == SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH) {
                             msg += " to see this extra search disable config option: '" 
-                                    + FrontEndKeys.ModernUI.REMOVE_INTERNAL_FACET_EXTRA_SEARCHES.getKey()
+                                    + FrontEndKeys.ModernUI.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey()
                                     + "'";
                         }
                     }

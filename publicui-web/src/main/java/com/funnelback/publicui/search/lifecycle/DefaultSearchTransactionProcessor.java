@@ -129,7 +129,7 @@ public class DefaultSearchTransactionProcessor implements SearchTransactionProce
                 log.error(i18n.tr("transaction-lifecycle.extra-search.internal-facet.error", 
                                         extraSearchName.get(), 
                                         questionTypeAsString, 
-                                        ModernUI.REMOVE_INTERNAL_FACET_EXTRA_SEARCHES.getKey()), 
+                                        ModernUI.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey()), 
                            exception);
             } else {
                 log.error(i18n.tr("transaction-lifecycle.extra-search.error", extraSearchName.get(), questionTypeAsString), exception);
