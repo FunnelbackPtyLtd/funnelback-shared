@@ -95,7 +95,7 @@ public class MultiFacetedNavigationTest {
     public void testExtraSearch() throws InputProcessorException {
         st.getQuestion().getCollection().getConfiguration()
             .setValue(Keys.ModernUI.FULL_FACETS_LIST, "true");
-        st.getQuestion().setQuestionType(SearchQuestionType.EXTRA_SEARCH);
+        st.getQuestion().setQuestionType(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH);
     
         processor.processInput(st);
         

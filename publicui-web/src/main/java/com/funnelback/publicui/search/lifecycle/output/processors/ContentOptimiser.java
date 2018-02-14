@@ -38,7 +38,7 @@ public class ContentOptimiser extends AbstractOutputProcessor {
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
         if (searchTransaction.hasResponse() && searchTransaction.hasQuestion()
                 && searchTransaction.getQuestion().getRawInputParameters().containsKey(RequestParameters.EXPLAIN)
-                && !searchTransaction.getQuestion().getQuestionType().equals(SearchQuestion.SearchQuestionType.EXTRA_SEARCH)) {
+                && !searchTransaction.getQuestion().getQuestionType().isExtraSearch()) {
             ContentOptimiserModel comparison = new ContentOptimiserModel();
             log.debug("Process output content optimiser has all data");
             filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);

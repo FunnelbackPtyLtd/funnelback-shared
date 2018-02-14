@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.lifecycle;
 
+import java.util.Optional;
+
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
@@ -19,6 +21,6 @@ public interface SearchTransactionProcessor {
      * @param user Current user performing the search, might be null
      * @return The processed {@link SearchTransaction}
      */
-    public SearchTransaction process(SearchQuestion q, SearchUser user);
+    public SearchTransaction process(SearchQuestion q, SearchUser user, Optional<String> extraSearchName);
     
 }

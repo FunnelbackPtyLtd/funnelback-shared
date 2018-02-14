@@ -707,15 +707,16 @@ public class SearchQuestion {
     }
     
     /** Enum for identifying special types of search requests requiring special processing */
+    @AllArgsConstructor
     public enum SearchQuestionType {
-        SEARCH,
-        SEARCH_GET_ALL_RESULTS,
-        EXTRA_SEARCH, 
-        CONTENT_AUDITOR, 
-        CONTENT_AUDITOR_DUPLICATES, 
-        ACCESSIBILITY_AUDITOR,
-        ACCESSIBILITY_AUDITOR_ACKNOWLEDGEMENT_COUNTS,
-        ACCESSIBILITY_AUDITOR_GET_ALL_RESULTS,
+        SEARCH(false),
+        SEARCH_GET_ALL_RESULTS(false),
+        EXTRA_SEARCH(true), 
+        CONTENT_AUDITOR(false), 
+        CONTENT_AUDITOR_DUPLICATES(false), 
+        ACCESSIBILITY_AUDITOR(false),
+        ACCESSIBILITY_AUDITOR_ACKNOWLEDGEMENT_COUNTS(false),
+        ACCESSIBILITY_AUDITOR_GET_ALL_RESULTS(false),
         /**
          * These extra searches are created for use in faceted navigation.
          * 
@@ -724,8 +725,13 @@ public class SearchQuestion {
          * avoid setting options which manipulate other query settings as it
          * may reduce performance.</p>
          */
-        FACETED_NAVIGATION_EXTRA_SEARCH,
+        FACETED_NAVIGATION_EXTRA_SEARCH(true),
         ;
+        
+        /**
+         * Is the search type an extra search one
+         */
+        @Getter private boolean extraSearch;
     }
     
 }

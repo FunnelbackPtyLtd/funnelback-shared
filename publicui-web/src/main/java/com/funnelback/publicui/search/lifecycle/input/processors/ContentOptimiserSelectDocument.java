@@ -28,7 +28,7 @@ public class ContentOptimiserSelectDocument extends AbstractInputProcessor {
                 && searchTransaction.hasQuestion()
                 && searchTransaction.getQuestion().getRawInputParameters().containsKey(RequestParameters.EXPLAIN)
                 && searchTransaction.getQuestion().getRawInputParameters().containsKey(RequestParameters.CONTENT_OPTIMISER_URL)
-                && ! searchTransaction.getQuestion().getQuestionType().equals(SearchQuestion.SearchQuestionType.EXTRA_SEARCH)) {
+                && ! searchTransaction.getQuestion().getQuestionType().isExtraSearch()) {
             String url = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(), RequestParameters.CONTENT_OPTIMISER_URL, null );
             Map<String,String> m = new HashMap<String,String>();
             log.info("Beginning extra search for content optimiser: " + url);

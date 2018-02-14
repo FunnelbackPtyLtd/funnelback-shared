@@ -1,12 +1,16 @@
 package com.funnelback.publicui.search.lifecycle;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
 import org.apache.logging.log4j.ThreadContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 
+import com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI;
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
@@ -17,6 +21,7 @@ import com.funnelback.publicui.search.model.transaction.SearchError;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.springmvc.utils.web.RequestParameterValueUtils;
@@ -50,9 +55,14 @@ public class DefaultSearchTransactionProcessor implements SearchTransactionProce
     @Resource(name="outputFlow")
     @Setter private List<OutputProcessor> outputFlow;
     // ----
+    
+    @Autowired @Setter
+    private I18n i18n;
 
-    public SearchTransaction process(SearchQuestion question, SearchUser user) {
+    public SearchTransaction process(SearchQuestion question, SearchUser user, Optional<String> extraSearchName) {
         SearchTransaction transaction = new SearchTransaction(question, new SearchResponse());
+        transaction.setExtraSearchName(extraSearchName);
+        
         if (user != null) {
             transaction.setSession(new SearchSession(user));
         }
@@ -95,20 +105,39 @@ public class DefaultSearchTransactionProcessor implements SearchTransactionProce
             
             
         } catch (InputProcessorException ipe) {
-            log.catching(ipe);
-            transaction.setError(new SearchError(SearchError.Reason.InputProcessorError, ipe));
+            recordException(transaction, ipe, SearchError.Reason.InputProcessorError, extraSearchName);
         } catch (DataFetchException dfe) {
-            log.catching(dfe);
+            recordException(transaction, dfe, SearchError.Reason.DataFetchError, extraSearchName);
             transaction.setError(new SearchError(SearchError.Reason.DataFetchError, dfe));
         } catch (OutputProcessorException ope) {
-            log.catching(ope);
+            recordException(transaction, ope, SearchError.Reason.OutputProcessorError, extraSearchName);
             transaction.setError(new SearchError(SearchError.Reason.OutputProcessorError, ope));
         } catch (Exception e) {
-            log.catching(e);
-            transaction.setError(new SearchError(SearchError.Reason.Unknown, e));
+            recordException(transaction, e, SearchError.Reason.Unknown, extraSearchName);
         }
         
         return transaction;
+    }
+    
+    public void recordException(SearchTransaction transaction, Exception exception, SearchError.Reason reason, Optional<String> extraSearchName) {
+        transaction.setError(new SearchError(reason, exception));
+        SearchQuestionType questionType = Optional.ofNullable(transaction).map(SearchTransaction::getQuestion).map(SearchQuestion::getQuestionType)
+            .orElse(null);
+        String questionTypeAsString = Optional.ofNullable(questionType).map(t -> t.toString()).orElse("UNKNOWN");
+        if(extraSearchName.isPresent()) {
+            if(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH == questionType) {
+                log.error(i18n.tr("transaction-lifecycle.extra-search.internal-facet.error", 
+                                        extraSearchName.get(), 
+                                        questionTypeAsString, 
+                                        ModernUI.REMOVE_INTERNAL_FACET_EXTRA_SEARCHES.getKey()), 
+                           exception);
+            } else {
+                log.error(i18n.tr("transaction-lifecycle.extra-search.error", extraSearchName.get(), questionTypeAsString), exception);
+            }
+        } else {
+            log.error(i18n.tr("transaction-lifecycle.main-search.error", questionTypeAsString), exception);
+        }
+        
     }
     
 }

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.config.keys.Keys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -214,7 +214,7 @@ public class SearchController extends SessionController {
             
             new NumRanksLimitCheck().verifyNumRanksLimitIsNotExceeded(request, question.getCurrentProfileConfig(), i18n);
             
-            transaction = processor.process(question, user);
+            transaction = processor.process(question, user, Optional.empty());
         } else {
             // Collection is null = non existent
             if (request.getParameter(SearchQuestion.RequestParameters.COLLECTION) != null) {
