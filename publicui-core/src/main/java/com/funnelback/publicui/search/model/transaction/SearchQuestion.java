@@ -715,7 +715,16 @@ public class SearchQuestion {
         CONTENT_AUDITOR_DUPLICATES, 
         ACCESSIBILITY_AUDITOR,
         ACCESSIBILITY_AUDITOR_ACKNOWLEDGEMENT_COUNTS,
-        ACCESSIBILITY_AUDITOR_GET_ALL_RESULTS,;
+        ACCESSIBILITY_AUDITOR_GET_ALL_RESULTS,
+        /**
+         * These extra searches are created for use in faceted navigation.
+         * 
+         * <p>Hooks should ensure that these searches are updated with any
+         * changes that will manipulate the scope of the search. Hooks should 
+         * avoid setting options which manipulate other query settings as it
+         * may reduce performance.</p>
+         */
+        FACETED_NAVIGATION_EXTRA_SEARCH,
         ;
     }
     
