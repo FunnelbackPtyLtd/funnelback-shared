@@ -40,7 +40,7 @@ public class RemoveFacetedNavigationExtraSearchesTest {
     public void testKeepingFacetExtraSearches() throws Exception {
         SearchQuestion searchQuestion = spy(new SearchQuestion());
         
-        ServiceConfig serviceConfig = new InMemoryServiceConfig(ImmutableMap.of("ui.modern.remove-internal-facet-extra-searches", "false"));
+        ServiceConfig serviceConfig = new InMemoryServiceConfig(ImmutableMap.of("ui.modern.remove-internal-extra-searches", "false"));
         
         doReturn(serviceConfig).when(searchQuestion).getCurrentProfileConfig();
         
