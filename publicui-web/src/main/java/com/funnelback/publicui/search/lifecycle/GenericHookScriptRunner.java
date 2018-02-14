@@ -108,7 +108,7 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
                     SearchQuestionType searchQuestionType = Optional.ofNullable(searchTransaction).map(s -> s.getQuestion()).map(q -> q.getQuestionType()).orElse(null);
                     
                     if(searchQuestionType != null) {
-                        msg += " in a search of type '" + searchQuestionType + "'";
+                        msg += " on a search of type '" + searchQuestionType + "'";
                     }
                     if(searchTransaction.getExtraSearchName().isPresent()) {
                         msg += " in extra search '" + searchTransaction.getExtraSearchName().get() + "'.";
