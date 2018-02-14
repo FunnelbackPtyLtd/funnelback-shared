@@ -104,21 +104,21 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
                     
                     fixMapsWithArrayLists(searchTransaction);
                 } catch (Throwable t) {
-                    String msg = "Error while running " + hookScriptToRun.toString() + " hook for collection '" + collection.getId() + "'";
+                    String msg = "Error while running '" + hookScriptToRun.toString() + "' hook for collection '" + collection.getId() + "'";
                     SearchQuestionType searchQuestionType = Optional.ofNullable(searchTransaction).map(s -> s.getQuestion()).map(q -> q.getQuestionType()).orElse(null);
                     
+                    if(searchQuestionType != null) {
+                        msg += " in a search of type '" + searchQuestionType + "'";
+                    }
                     if(searchTransaction.getExtraSearchName().isPresent()) {
-                        msg += " in extra search '" + searchTransaction.getExtraSearchName().get() + "'";
+                        msg += " in extra search '" + searchTransaction.getExtraSearchName().get() + "'.";
                         if(searchQuestionType == SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH) {
-                            msg += " to see this extra search disable config option: '" 
-                                    + FrontEndKeys.ModernUI.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey()
-                                    + "'";
+                            msg +=  " To see this extra search in the JSON/XML output disable the config option: '" 
+                                + FrontEndKeys.ModernUI.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey() + "'";
                         }
                     }
                     
-                    if(searchQuestionType != null) {
-                        msg += " for search of type: '" + searchQuestionType + "'";
-                    }
+                    
                     
                     log.error(msg, t);
                 }
