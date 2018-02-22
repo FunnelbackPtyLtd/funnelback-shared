@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.model.transaction;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -221,7 +220,7 @@ public class SearchQuestion {
      * (In addition to other clive constraints).
      * @since 15.12
      */
-    @Getter @Setter @NonNull private Optional<List<String>> facetCollectionConstraints = Optional.of(Arrays.asList("foo", "bar"));
+    @Getter @Setter @NonNull private Optional<List<String>> facetCollectionConstraints = Optional.empty();
     
     /**
      * GScope constraints to apply for faceted navigation
