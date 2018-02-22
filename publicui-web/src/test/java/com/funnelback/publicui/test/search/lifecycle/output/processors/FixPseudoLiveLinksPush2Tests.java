@@ -3,15 +3,16 @@ package com.funnelback.publicui.test.search.lifecycle.output.processors;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -60,7 +61,7 @@ public class FixPseudoLiveLinksPush2Tests {
         
         SearchQuestion question = new SearchQuestion();
         question.setQuery("livelinks");
-        question.setCollection(new Collection("meta-livelinks", new NoOptionsConfig("meta-livelinks")));
+        question.setCollection(new Collection("meta-livelinks", new NoOptionsConfig(searchHome, "meta-livelinks")));
         
         SearchResponse response = new SearchResponse();
         response.setResultPacket(StaxStreamTestHelper.parse(new File("src/test/resources/padre-xml/fix-pseudo-live-links-push.xml")));
@@ -68,7 +69,7 @@ public class FixPseudoLiveLinksPush2Tests {
         st = new SearchTransaction(question, response);
         
         configRepository.addCollection(new Collection("collection-push",
-                new NoOptionsConfig("collection-push")
+                new NoOptionsConfig(searchHome, "collection-push")
                     .setValue(Keys.COLLECTION_TYPE, Type.push2.toString())
                     .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "document")));
     }
@@ -141,16 +142,18 @@ public class FixPseudoLiveLinksPush2Tests {
 
     @Test
     public void test() throws UnsupportedEncodingException, OutputProcessorException {
+        ResultPacket rp = st.getResponse().getResultPacket();
+        rp.getResults().get(0).setCacheUrl("http://cache-link-1");
+        rp.getResults().get(1).setCacheUrl("http://cache-link-2");
+        
         processor.processOutput(st);
         
-        ResultPacket rp = st.getResponse().getResultPacket();
-        
         Assert.assertEquals(
-                "/search/serve-db-document.tcgi?collection=collection-db&record_id=1234/",
+                "http://cache-link-1",
                 rp.getResults().get(0).getLiveUrl());
         
         Assert.assertEquals(
-                "/search/serve-connector-document.tcgi?collection=collection-connector&primaryAttribute=1234",
+                "http://cache-link-2",
                 rp.getResults().get(1).getLiveUrl());
 
         Assert.assertEquals(

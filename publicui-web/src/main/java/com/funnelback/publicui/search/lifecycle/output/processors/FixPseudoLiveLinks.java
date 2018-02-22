@@ -1,10 +1,20 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.utils.ResultUtils;
-import com.funnelback.common.padre.utils.ResultUtils.UndeterminedCollectionTypeException;
 import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -14,19 +24,10 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
+import com.google.common.collect.ImmutableSet;
 
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Fixes some "magic" URLs like "local://serve-...-document.cgi"
@@ -47,12 +48,9 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
     private String searchUrlPrefix;
     
     /** Collection type supported by this input processor */
-    public static final Type[] SUPPORTED_TYPES = {
-        Type.trim, Type.connector, Type.filecopy, Type.database, Type.directory, Type.push, Type.push2
-    };
+    public static final Set<Type> SUPPORTED_TYPES = ImmutableSet.of(
+        Type.connector, Type.trim, Type.filecopy, Type.database, Type.directory, Type.push, Type.push2);
     
-    /** Local scheme as used in DB or Connector collection */
-    private static final String LOCAL_SCHEME = "local://";
     
     /** CGI suffix for Classic UI links */
     private static final String CGI_SUFFIX = ".cgi";
@@ -86,7 +84,7 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
                 }
                 
                 // Only process some specific collection types
-                if (! ArrayUtils.contains(SUPPORTED_TYPES, resultCollection.getType())) {
+                if (! SUPPORTED_TYPES.contains(resultCollection.getType())) {
                     continue;
                 }
                 
@@ -117,11 +115,7 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
         Type type = resultCollection.getType();
         if (Type.push.equals(type)
             || Type.push2.equals(type)) {
-            try {
-                return ResultUtils.getCollectionTypeFromURL(r.getLiveUrl());
-            } catch (UndeterminedCollectionTypeException e){
-                return Type.unknown;
-            }
+            return ResultUtils.getCollectionTypeFromURL(r.getLiveUrl());
         } else {
             return type;
         }
@@ -143,15 +137,21 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
         switch (resultCollectionType) {
         
         case database:
-        case connector:
-        case directory:
-            // Simply strip off "local://"
-            if (result.getLiveUrl().startsWith(LOCAL_SCHEME)) {
-                // TODO use a proper regexp ?
-                transformedLiveUrl = searchUrlPrefix + result.getLiveUrl().substring(LOCAL_SCHEME.length());
+            if(result.getLiveUrl().startsWith(ResultUtils.DATABASE_URL) && result.getCacheUrl() != null) {
+                return result.getCacheUrl();
             }
             break;
         
+        case directory:
+            if(result.getLiveUrl().startsWith(ResultUtils.DIRECTORY_URL) && result.getCacheUrl() != null) {
+                return result.getCacheUrl();
+            }
+            break;
+        case connector:
+            if(result.getLiveUrl().startsWith(ResultUtils.CONNECTOR_URL) && result.getCacheUrl() != null) {
+                return result.getCacheUrl();
+            }
+            break;
         case trim:
         case trimpush:
             // Replace pseudo URLs trim://45/312 with serve-trim-(document|reference).cgi

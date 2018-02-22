@@ -1,8 +1,5 @@
 package com.funnelback.publicui.search.lifecycle;
 
-import groovy.lang.Binding;
-import groovy.lang.Script;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -27,6 +22,10 @@ import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+
+import groovy.lang.Binding;
+import groovy.lang.Script;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Generic hook script runner that can be used as an {@link InputProcessor},
