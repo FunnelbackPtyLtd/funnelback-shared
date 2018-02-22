@@ -108,12 +108,12 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
                     SearchQuestionType searchQuestionType = Optional.ofNullable(searchTransaction).map(s -> s.getQuestion()).map(q -> q.getQuestionType()).orElse(null);
                     
                     if(searchQuestionType != null) {
-                        msg += " on a search of type '" + searchQuestionType + "'";
+                        msg += "\n\tSearch of type: '" + searchQuestionType + "'";
                     }
                     if(searchTransaction.getExtraSearchName().isPresent()) {
-                        msg += " in extra search '" + searchTransaction.getExtraSearchName().get() + "'.";
+                        msg += "\n\tExtra search name: '" + searchTransaction.getExtraSearchName().get() + "'.";
                         if(searchQuestionType == SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH) {
-                            msg +=  " To see this extra search in the JSON/XML output disable the config option: '" 
+                            msg +=  "\n\tNotes: To see this extra search in the JSON/XML output disable the config option: '" 
                                 + FrontEndKeys.ModernUI.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey() + "'";
                         }
                     }
