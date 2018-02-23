@@ -1,6 +1,5 @@
 package com.funnelback.publicui.search.model.transaction;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +10,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import java.security.Principal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -216,6 +217,8 @@ public class SearchQuestion {
     
     /**
      * The collections to restrict search to for faceted navigation.
+     * (In addition to other clive constraints).
+     * @since 15.12
      */
     @Getter @Setter @NonNull private Optional<List<String>> facetCollectionConstraints = Optional.empty();
     
@@ -419,6 +422,7 @@ public class SearchQuestion {
      * @since 15.12
      */
     @XStreamOmitField
+    @JsonIgnoreProperties
     @Getter @Setter private Optional<Long> padreTimeout = Optional.empty();
     
     /**

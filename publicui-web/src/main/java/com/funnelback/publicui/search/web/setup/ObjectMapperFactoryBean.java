@@ -5,6 +5,7 @@ import org.springframework.beans.factory.FactoryBean;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 /**
  * This factory bean configures our object-mapper as intended for
@@ -34,6 +35,7 @@ public class ObjectMapperFactoryBean implements FactoryBean<ObjectMapper>{
         ObjectMapper result = new ObjectMapper();
         result.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         result.setSerializationInclusion(jsonInclusion);
+        result.registerModule(new Jdk8Module());
         return result;
     }
  }
