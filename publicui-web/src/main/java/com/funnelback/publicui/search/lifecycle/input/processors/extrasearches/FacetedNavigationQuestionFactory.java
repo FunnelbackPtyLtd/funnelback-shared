@@ -39,6 +39,7 @@ public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFact
     public SearchQuestion buildBasicExtraFacetSearch(SearchQuestion originalQuestion) {
         SearchQuestion out = new SearchQuestion();
         SearchQuestionBinder.bind(originalQuestion, out);
+        out.setQuestionType(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH);
         
         return out;
     }
