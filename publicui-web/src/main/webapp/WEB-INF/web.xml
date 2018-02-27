@@ -22,6 +22,16 @@
         <param-value>file://${sys:funnelback.installdir}/web/conf/modernui/log4j2.xml</param-value>
     </context-param>
 
+    <!-- A context-param to tell public-ui whether it's deployed as the
+         'public' or 'admin' version. For most cases, you should be looking
+         at the ExecutionContextHolder bean instead, but we need to pass this
+         info in a way that a ConditionContext can get to it (see
+         com.funnelback.springmvc.api.config.security.saml.IsPublicUISamlEnabledCondition) -->
+    <context-param>
+        <param-name>ExecutionContext-ContextParam</param-name>
+        <param-value>public</param-value>
+    </context-param>
+
     <listener>
         <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
     </listener>
