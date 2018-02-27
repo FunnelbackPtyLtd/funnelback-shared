@@ -116,4 +116,15 @@ public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration 
         });
     }
 
+    @Override
+    public String getEntityBaseURL() {
+        if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
+            return config.get(ServerKeys.Urls.ADMIN_PROTOCOL) + "://" + config.get(ServerKeys.Urls.ADMIN_HOSTNAME) + ":"
+                + config.get(ServerKeys.Urls.ADMIN_PORT) + servletContext.getContextPath();
+        } else {
+            return config.get(ServerKeys.Urls.SEARCH_PROTOCOL) + "://" + config.get(ServerKeys.Urls.SEARCH_HOSTNAME) + ":"
+                + config.get(ServerKeys.Urls.SEARCH_PORT) + servletContext.getContextPath();
+        }
+    }
+
 }

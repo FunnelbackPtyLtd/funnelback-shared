@@ -2,6 +2,7 @@ package com.funnelback.publicui.integration.saml;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.springframework.util.SocketUtils;
 
 import com.funnelback.common.testutils.SearchHomeConfigs;
 import com.funnelback.common.testutils.SearchHomeProvider;
@@ -35,6 +37,7 @@ import com.funnelback.publicui.integration.DefaultAdminSecurityIT;
 import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
 import com.funnelback.springmvc.utils.saml.TokenUtils;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
+import com.google.common.io.Files;
 
 public class SamlSecurityIT {
     protected static DefaultSecurityConfiguredJettyServer server;
@@ -46,13 +49,18 @@ public class SamlSecurityIT {
         SamlSecurityIT.mujina = new MujinaIdentityProviderServer();
         SamlSecurityIT.mujina.start();
 
-        searchHome = createSearchHome();
+        Integer port = SocketUtils.findAvailableTcpPort();
+        searchHome = createSearchHome(port);
 
-        SamlSecurityIT.server = new DefaultSecurityConfiguredJettyServer(searchHome, "/s");
+        SamlSecurityIT.server = new DefaultSecurityConfiguredJettyServer(searchHome, "/s", port);
         SamlSecurityIT.server.start();
     }
 
     public static File createSearchHome() throws Exception, IOException {
+        return createSearchHome(0);
+    }
+    
+    public static File createSearchHome(Integer port) throws Exception, IOException {
         SearchHomeConfigs searchHomeConfigs = SearchHomeConfigs.getWithDefaults();
         searchHomeConfigs.getGlobalCfgDefault().put("server_secret", "test");
         searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.enabled", "true");
@@ -62,6 +70,7 @@ public class SamlSecurityIT {
         searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.keystore-password", "nalle123");
         searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.key-alias", "apollo");
         searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.key-password", "nalle123");
+        searchHomeConfigs.getGlobalCfgDefault().put("urls.search_port", port.toString());
 
         File searchHome = SearchHomeProvider.getNamedWritableSearchHomeForTestClass(SamlSecurityIT.class, searchHomeConfigs, "SAML-Server");
         
