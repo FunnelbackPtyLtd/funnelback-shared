@@ -49,7 +49,8 @@ public class DefaultAdminSecurityIT {
     public static void startServers() throws Exception {
         searchHome = createSearchHome();
 
-        // Pretend as if we set up saml just on the public port - This should be ignored by the deployment
+        // Pretend as if we set up saml just on the public port - This is here to test that these values are ignored by the deployment.
+        // It is expected that the tests will fail if these values are not ignored.
         File globalCfgDefault = new File(searchHome, "conf" + File.separator + "global.cfg.default");
         Files.append("\n", globalCfgDefault, StandardCharsets.UTF_8);
         Files.append("auth.publicui.saml.enabled=true\n", globalCfgDefault, StandardCharsets.UTF_8);
