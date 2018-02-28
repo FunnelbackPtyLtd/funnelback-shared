@@ -52,7 +52,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Override  
     protected void configure(HttpSecurity http) throws Exception {
         boolean requireX509Authentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.REQUIRE_X509, false);
-        boolean enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.SAML.ENABLED, false);
+        boolean enableSamlAuthentication = isSamlEnabledForTheCurrentExecutionContext();
         
         if (requireX509Authentication) {
             log.info("Configuring publicui security with x.509 client certificate requirement");
@@ -109,6 +109,16 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         http.headers().httpStrictTransportSecurity().disable();
     }
 
+    private boolean isSamlEnabledForTheCurrentExecutionContext() {
+        boolean enableSamlAuthentication;
+        if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
+            enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.Admin.SAML.ENABLED, false);
+        } else {
+            enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.SAML.ENABLED, false);
+        }
+        return enableSamlAuthentication;
+    }
+
     @Autowired
     FunnelbackAdminAuthenticationProvider funnelbackAdminAuthenticationProvider;
 
@@ -122,12 +132,12 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         super.configureGlobal(auth, funnelbackAdminAuthenticationProvider);
 
-        boolean enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.SAML.ENABLED, false);
+        boolean enableSamlAuthentication = isSamlEnabledForTheCurrentExecutionContext();
 
         if (enableSamlAuthentication) {
             auth.authenticationProvider(samlAuthenticationProvider);
         }
-    } 
+    }
     
     /* 
      * SAML Related Beans - see SamlConfig and SamlBoilerplateConfig

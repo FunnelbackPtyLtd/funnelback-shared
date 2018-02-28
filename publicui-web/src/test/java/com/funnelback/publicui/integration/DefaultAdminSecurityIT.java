@@ -2,9 +2,11 @@ package com.funnelback.publicui.integration;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -36,6 +38,7 @@ import com.funnelback.common.testutils.SearchHomeProvider;
 import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
 import com.funnelback.springmvc.utils.saml.TokenUtils;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
+import com.google.common.io.Files;
 
 public class DefaultAdminSecurityIT {
     private static final String SERVER_SECRET = "autotest-server-secret";
@@ -46,8 +49,32 @@ public class DefaultAdminSecurityIT {
     public static void startServers() throws Exception {
         searchHome = createSearchHome();
 
+        // Pretend as if we set up saml just on the public port - This is here to test that these values are ignored by the deployment.
+        // It is expected that the tests will fail if these values are not ignored.
+        File globalCfgDefault = new File(searchHome, "conf" + File.separator + "global.cfg.default");
+        Files.append("\n", globalCfgDefault, StandardCharsets.UTF_8);
+        Files.append("auth.publicui.saml.enabled=true\n", globalCfgDefault, StandardCharsets.UTF_8);
+        Files.append("auth.publicui.saml.identity-provider-metadata-url=http://not-a-real-place.com/\n", globalCfgDefault, StandardCharsets.UTF_8);
+        Files.append("auth.publicui.saml.entity-id-prefix=com:funnelback:admin:sp\n", globalCfgDefault, StandardCharsets.UTF_8);
+        Files.append("auth.publicui.saml.keystore-path=does-not-exist\n", globalCfgDefault, StandardCharsets.UTF_8);
+        Files.append("auth.publicui.saml.keystore-password=foo\n", globalCfgDefault, StandardCharsets.UTF_8);
+        Files.append("auth.publicui.saml.key-alias=bar\n", globalCfgDefault, StandardCharsets.UTF_8);
+        Files.append("auth.publicui.saml.key-password=bar\n", globalCfgDefault, StandardCharsets.UTF_8);
+        
         DefaultAdminSecurityIT.server = new DefaultSecurityConfiguredJettyServer(searchHome, "/s");
         DefaultAdminSecurityIT.server.getExtraContextAttributes().put("ExecutionContext", "Admin");
+        
+        File adminOverrideWebXml = new File(searchHome, "web/conf/admin-override-web.xml");
+        adminOverrideWebXml.getParentFile().mkdirs();
+        FileUtils.write(adminOverrideWebXml, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + 
+            "<web-app>\n" + 
+            "    <context-param>\n" + 
+            "        <param-name>ExecutionContext-ContextParam</param-name>\n" + 
+            "        <param-value>admin</param-value>\n" + 
+            "    </context-param>\n" + 
+            "</web-app>");
+        DefaultAdminSecurityIT.server.setOverrideDescriptor(Optional.of(adminOverrideWebXml));
+        
         DefaultAdminSecurityIT.server.start();
     }
 
