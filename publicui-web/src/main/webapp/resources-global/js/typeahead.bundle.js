@@ -2,8 +2,9 @@
  * typeahead.js 0.11.1
  * https://github.com/twitter/typeahead.js
  * Copyright 2013-2015 Twitter, Inc. and other contributors; Licensed MIT
+ *
+ * !! Important: To support grouping suggestion into categories JS script was slightly altered, check lines: 1081, 1673, 1765, 1770-1772. 
  */
-
 (function(root, factory) {
     if (typeof define === "function" && define.amd) {
         define("bloodhound", [ "jquery" ], function(a0) {
