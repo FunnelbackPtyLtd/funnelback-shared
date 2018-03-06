@@ -134,17 +134,17 @@ public class Result implements ResultType {
     @Getter @Setter private String exploreLink;
     
     /**
-     * Distance in kilometres of this search result
+     * Distance in kilometers of this search result
      * from the origin set when the query is run.
      */
     @Getter @Setter private Float kmFromOrigin;
     
     /**
-     * <p>Map containing the metadata fields of the results.</p>
+     * <p>Map containing the metadata fields for the result.</p>
      * 
-     * <p>The key is the letter the metadata is mapped on.</p>
+     * <p>The key is the metadata class name as defined in the metadata mappings.</p>
      * 
-     * @see <code>metamap.cfg</code>, <code>xml.cfg</code>
+     * @see <code>Metadata classes</code>
      */
     @Getter private final Map<String, String> metaData = new HashMap<String, String>();
     
