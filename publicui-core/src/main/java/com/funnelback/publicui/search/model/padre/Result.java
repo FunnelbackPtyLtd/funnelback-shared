@@ -134,7 +134,7 @@ public class Result implements ResultType {
     @Getter @Setter private String exploreLink;
     
     /**
-     * Distance in kilometers of this search result
+     * Distance in kilometres of this search result
      * from the origin set when the query is run.
      */
     @Getter @Setter private Float kmFromOrigin;
