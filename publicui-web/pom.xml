@@ -119,36 +119,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>groovy-maven-plugin</artifactId>
-                <version>2.0</version>
-                <executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <source>
-                                // Ensure we always ship a versionned version of the jQuery completion
-                                // file for release version (even numbers)
-                                
-                                def version = project.version.replace("-SNAPSHOT", "")
-                                def parts = version.split(java.util.regex.Pattern.quote("."))
-                                
-                                if(parts[1].toInteger() % 2 == 0) {
-                                    // The jquery completion file name
-                                    def jQuery = java.nio.file.Paths.get(project.build.sourceDirectory, "..", "webapp", "resources-global", "js", "jquery.funnelback-completion-" + version + ".js").toFile() 
-                                    if (!jQuery.exists()) {
-                                        fail("Missing versionned jQuery completion file: ${jQuery}")
-                                    }
-                                }
-                            </source>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>xml-maven-plugin</artifactId>
                 <configuration>
