@@ -1,9 +1,21 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Arrays;
+import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin.AND;
+import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin.OR;
+import static com.funnelback.common.facetednavigation.models.FacetSelectionType.MULTIPLE;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_SCOPED_QUERY;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_ALL_QUERY;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_QUERY;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_ALL_VALUES;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
 import static java.util.Arrays.asList;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,10 +23,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.publicui.search.model.transaction.Facet;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
@@ -26,17 +39,13 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
+import com.funnelback.publicui.search.model.transaction.Facet;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
-
-import static org.mockito.Mockito.*;
-import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin.*;
-import static com.funnelback.common.facetednavigation.models.FacetValues.*;
-import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.*;
-import static com.funnelback.common.facetednavigation.models.FacetSelectionType.MULTIPLE;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
 public class MultiFacetedNavigationTest {
 
     private MultiFacetedNavigation processor;
@@ -339,8 +348,8 @@ public class MultiFacetedNavigationTest {
         st.getQuestion().getInputParameterMap().put("facetScope", "f.foobar%7Cblah%3Dblah");
         processor.addScopedSearchWithFacetUnselected(st, facet);
         Assert.assertEquals("Missing extra search", 1, st.getExtraSearchesQuestions().size());
-        Assert.assertNotNull(st.getExtraSearchesQuestions().get("INTERNAL_FACETED_NAV_SEARCH_FACET_DISABLEDZm9vYmFy"));
-        SearchQuestion searchQuestion = st.getExtraSearchesQuestions().get("INTERNAL_FACETED_NAV_SEARCH_FACET_DISABLEDZm9vYmFy");
+        Assert.assertNotNull(st.getExtraSearchesQuestions().get("INTERNAL_FACETED_NAV_SEARCH_FACET_DISABLED-Zm9vYmFy"));
+        SearchQuestion searchQuestion = st.getExtraSearchesQuestions().get("INTERNAL_FACETED_NAV_SEARCH_FACET_DISABLED-Zm9vYmFy");
         Assert.assertEquals("query should stay enabled","query", searchQuestion.getQuery());
         Assert.assertFalse("Counting options should not have been disabled",
             searchQuestion.getPriorityQueryProcessorOptions().getOptions().containsKey("rmcf"));
