@@ -23,6 +23,7 @@ import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.funnelback.common.config.Keys;
+import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.model.transaction.ExecutionContext;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
@@ -68,6 +69,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
             // Note: we still allow HttpBasic and Token auth alongside SAML
             // but HttpBasic must be proactive (we'll never return 401).
             http.rememberMe()
+                .key(getServerConfig().get(ServerKeys.SERVER_SECRET))
                 .rememberMeServices(tokenBasedRememberMeServices());
 
             // This causes us to have httpBasic enabled, but if it fails
