@@ -422,7 +422,7 @@ public class SearchQuestion {
      * @since 15.12
      */
     @XStreamOmitField
-    @JsonIgnoreProperties
+    @JsonIgnore
     @Getter @Setter private Optional<Long> padreTimeout = Optional.empty();
     
     /**
