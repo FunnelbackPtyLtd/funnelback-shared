@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.lifecycle.input.processors.extrasearches;
 
 import java.util.Map;
 
-import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
@@ -14,10 +13,8 @@ public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFact
     private static final String NUM_RANKS_OPT = "-num_ranks=1";
     
     @Override
-    public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration)
-        throws InputProcessorException {
+    public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration) {
         SearchQuestion out = buildBasicExtraFacetSearch(originalQuestion);
-        out.setQuestionType(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH);
         
         // Remove faceted navigation parameters
         MapKeyFilter filter = new MapKeyFilter(originalQuestion.getRawInputParameters());
@@ -40,6 +37,7 @@ public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFact
         SearchQuestion out = new SearchQuestion();
         SearchQuestionBinder.bind(originalQuestion, out);
         out.setQuestionType(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH);
+        out.setLogQuery(false);
         
         return out;
     }

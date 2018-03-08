@@ -2,8 +2,8 @@ package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -100,6 +101,16 @@ public class SearchHistoryTests extends SessionDaoTest {
     public void testSessionDisabled() throws OutputProcessorException {
         collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "false");
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
+        processor.processOutput(st);
+        assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
+    }
+    
+    
+    @Test
+    public void testLogQuerySetFalse() throws OutputProcessorException {
+        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
+        st.getQuestion().setLogQuery(false);
         processor.processOutput(st);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
     }

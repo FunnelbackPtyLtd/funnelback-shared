@@ -243,6 +243,23 @@ public class SearchQuestion {
     @Getter @Setter private String requestId = Log.REQUEST_ID_NOTHING;
     
     /**
+     * Defines if the query should be logged or not.
+     * 
+     * If false this will prevent the query from being recorded in
+     * query logs as well as session history.
+     * 
+     * This will typically be set false for system generated searches or
+     * for extra searches. This may be set from groovy scripts.
+     * 
+     * This can be set to false with cgi parameters on the admin side
+     * if the request is authenticated. To do this set &log=false in
+     * the URL.
+     * 
+     * @since 15.14
+     */
+    @Getter @Setter private boolean logQuery = true;
+    
+    /**
      * <p>Raw input parameters</p>
      * 
      * <p>Contains all the input parameters (query string / request parameters).</p>
