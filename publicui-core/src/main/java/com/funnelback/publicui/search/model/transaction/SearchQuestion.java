@@ -251,8 +251,9 @@ public class SearchQuestion {
      * This will typically be set false for system generated searches or
      * for extra searches. This may be set from groovy scripts.
      * 
-     * This can be set with cgi parameters by authenticated user on the
-     * admin side only.
+     * This can be set to false with cgi parameters on the admin side
+     * if the request is authenticated. To do this set &log=false in
+     * the URL.
      * 
      * @since 15.14
      */
