@@ -1,11 +1,10 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import java.util.Date;
+import java.util.Optional;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -24,6 +23,9 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
 
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Saves the current search in the user search history.
  * 
@@ -39,6 +41,12 @@ public class SearchHistory extends AbstractOutputProcessor {
     @Override
     public void processOutput(SearchTransaction st)
         throws OutputProcessorException {
+        
+        
+        if(!Optional.ofNullable(st).map(SearchTransaction::getQuestion).map(SearchQuestion::isLogQuery).orElse(true)) {
+            log.trace("Search question has logQuery set to false so search history will not be saved.");
+            return;
+        }
 
         if (SearchTransactionUtils.hasQuestion(st)
                 && SearchTransactionUtils.hasResponse(st)

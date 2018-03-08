@@ -1,5 +1,8 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_SCOPED_QUERY_WITH_FACET_UNSELECTED;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_ALL_QUERY;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_QUERY;
 import static com.funnelback.common.function.Predicates.not;
 import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_ALL_VALUES;
 import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
@@ -19,7 +22,6 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.facetednavigation.models.FacetValues;
-import static com.funnelback.common.facetednavigation.models.FacetValues.*;
 import com.funnelback.common.function.Flattener;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
@@ -353,7 +355,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
     }
     
     public void addFacetExtraSearchSpecificPadreOptions(SearchQuestion searchQuestion, List<OptionAndValue> optionsAndValues) {
-        searchQuestion.getPriorityQueryProcessorOptions().addOption(QueryProcessorOptionKeys.LOG, "false");
+        searchQuestion.setLogQuery(false);
         searchQuestion.getPriorityQueryProcessorOptions().addOption(QueryProcessorOptionKeys.NUM_RANKS, "0");
         optionsAndValues
             .stream()

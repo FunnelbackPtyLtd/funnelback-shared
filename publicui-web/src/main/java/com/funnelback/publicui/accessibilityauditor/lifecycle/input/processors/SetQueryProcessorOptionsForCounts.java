@@ -3,16 +3,15 @@ package com.funnelback.publicui.accessibilityauditor.lifecycle.input.processors;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.filter.accessibility.Metadata;
-import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.PadreOptionsForSpeed;
 import com.google.common.collect.ImmutableList;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Sets the relevant query processor options needed to generate
@@ -32,7 +31,6 @@ public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAudi
     public SetQueryProcessorOptionsForCounts() {
         options = ImmutableList.<String>builder()
             .addAll(getOptionsForSpeed()) //add options to speed things up.
-            .add(getLogOption())
             .add(getIndexedTermsOptions())
             .build();
         
@@ -43,20 +41,11 @@ public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAudi
     protected void processAccessibilityAuditorTransaction(SearchTransaction st) throws InputProcessorException {
         
         st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
+        st.getQuestion().setLogQuery(false);
         
         //Add daat limit from collection config
         new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion().getCollection().getConfiguration())
             .ifPresent(option -> st.getQuestion().getDynamicQueryProcessorOptions().add(option));
-    }
-    
-    /**
-     * Disable logging to avoid
-     * polluting analytics with AA requests
-     * 
-     * @return PADRE <code>log</code> option
-     */
-    private String getLogOption() {
-        return "-" + QueryProcessorOptionKeys.LOG + "=off";
     }
     
     /**

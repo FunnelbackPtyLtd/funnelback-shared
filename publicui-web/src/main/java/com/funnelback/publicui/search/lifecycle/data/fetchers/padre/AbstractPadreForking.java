@@ -1,13 +1,14 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.IOUtils;
@@ -18,6 +19,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.execute.ExecutablePicker;
 import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
+import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.AbstractDataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
@@ -97,6 +99,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
             }
 
             commandLine.addAll(searchTransaction.getQuestion().getDynamicQueryProcessorOptions());
+            
+            commandLine.add("-" + QueryProcessorOptionKeys.LOG + "=" + searchTransaction.getQuestion().isLogQuery());
 
             if (searchTransaction.getQuestion().getUserKeys().size() > 0) {
                 if (OS.isFamilyWindows()) {

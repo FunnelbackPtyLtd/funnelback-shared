@@ -14,15 +14,11 @@ import com.funnelback.common.accessibility.FailureConfidence;
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
 import com.funnelback.common.function.StreamUtils;
-import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.wcag.checker.AccessibilityChecker;
 import com.funnelback.wcag.checker.AccessibilityChecker.Level;
-import com.funnelback.wcag.checker.CheckerClasses;
-import com.funnelback.wcag.checker.FailureType;
 import com.funnelback.wcag.model.WCAG20Principle;
 import com.funnelback.wcag.model.WCAG20Technique;
 
@@ -44,7 +40,6 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     private final List<String> options = new ArrayList<>();
 
     public SetQueryProcessorOptions() {
-        options.add(getLogOption());
         options.add(getSMOption());
         options.add(getSFOption());
         options.add(getMBLOption());
@@ -64,22 +59,12 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         if (SearchTransactionUtils.hasQuestion(st)
             && SearchQuestionType.ACCESSIBILITY_AUDITOR.equals(st.getQuestion().getQuestionType())) {
 
+            st.getQuestion().setLogQuery(false);
             st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
 
             new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion().getCollection().getConfiguration())
                 .ifPresent(option -> st.getQuestion().getDynamicQueryProcessorOptions().add(option));
         }
-    }
-
-    
-    /**
-     * Disable logging to avoid
-     * polluting analytics with AA requests
-     * 
-     * @return PADRE <code>log</code> option
-     */
-    private String getLogOption() {
-        return "-" + QueryProcessorOptionKeys.LOG + "=off";
     }
 
     /**
