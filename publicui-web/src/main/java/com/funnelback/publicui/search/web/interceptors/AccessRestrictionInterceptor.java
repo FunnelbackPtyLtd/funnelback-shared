@@ -1,42 +1,26 @@
 package com.funnelback.publicui.search.web.interceptors;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.funnelback.common.config.CollectionId;
-import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.net.NetUtils;
-import com.funnelback.common.profile.ProfileAndView;
-import com.funnelback.common.profile.ProfileId;
 import com.funnelback.common.profile.ProfileNotFoundException;
-import com.funnelback.common.profile.ProfileView;
-import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
-import com.funnelback.config.configtypes.service.DefaultServiceConfig;
-import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.data.environment.NoConfigEnvironment;
-import com.funnelback.config.data.file.profile.FileProfileConfigData;
 import com.funnelback.config.keys.Keys.FrontEndKeys;
-import com.funnelback.config.marshallers.Marshallers;
-import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -45,6 +29,10 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.exception.InvalidCollectionException;
 import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
 import com.funnelback.publicui.utils.web.ProfilePicker;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Checks access restriction at a collection level and either grant access,
@@ -146,8 +134,9 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
                         }else if (OLD_IP_PATTERN.matcher(range).matches()) {
                             //Catch IPs that don't have a slash, ie someone has entered a IP range  in the old 
                             //unsupported format
-                            denyAccess(request, response, serviceConfig, collectionId + ":" + profileId, Keys.ACCESS_RESTRICTION + 
-                                    " in " + collectionId + ":" + profileId + " is misconfigured, IP ranges must be in CIDR format");
+                            log.warn("Access will be denied because: '" + Keys.ACCESS_RESTRICTION + 
+                                "' in " + collectionId + ":" + profileId + " is misconfigured, IP ranges must be in CIDR format.");
+                            denyAccess(request, response, serviceConfig, collectionId + ":" + profileId);
                             return false;
                         } else {
                             // It's a hostname
@@ -172,11 +161,14 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
      * Denies access by either returning a 403, or redirecting to an alternate collection.
      * @param request
      * @param response
-     * @param collection
+     * @param collectionAndProfile
      * @param message Message to be displayed.
      * @throws IOException
      */
-    private void denyAccess(HttpServletRequest request, HttpServletResponse response, ServiceConfigReadOnly serviceConfig, String profileLogContent, String message) throws IOException {
+    private void denyAccess(HttpServletRequest request, 
+                                HttpServletResponse response, 
+                                ServiceConfigReadOnly serviceConfig, 
+                                String collectionAndProfile) throws IOException {
         Optional<String> accessAlternate = serviceConfig.get(FrontEndKeys.ACCESS_ALTERNATE);
         if (accessAlternate.isPresent() && !accessAlternate.get().trim().isEmpty()) {
             StringBuffer out = new StringBuffer(request.getContextPath()).append(request.getPathInfo());
@@ -193,18 +185,14 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
                 throw new IllegalStateException(i18n.tr("parameter.missing", RequestParameters.COLLECTION));
             }
             
-            log.debug("Applying access alternate setting for '" + profileLogContent + "'. Redirecting to '" + out.toString() + "'");
+            log.debug("Applying access alternate setting for '" + collectionAndProfile + "'. Redirecting to '" + out.toString() + "'");
             response.sendRedirect(out.toString());
         } else {
             // No access_alternate. Simply deny access
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("text/plain");
-            response.getWriter().write(i18n.tr("access.profile.denied", profileLogContent, message));
+            response.getWriter().write(i18n.tr("access.profile.denied", collectionAndProfile));
         }
-    }
-    
-    private void denyAccess(HttpServletRequest request, HttpServletResponse response, ServiceConfigReadOnly serviceConfig, String profileLogContent) throws IOException {
-        denyAccess(request, response, serviceConfig, profileLogContent, "");
     }
     
     public String getConnectingIp(HttpServletRequest request, ServiceConfigReadOnly serviceConfig) {
