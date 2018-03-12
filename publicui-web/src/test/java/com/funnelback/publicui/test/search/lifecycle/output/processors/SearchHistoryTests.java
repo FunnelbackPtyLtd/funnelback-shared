@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -110,9 +111,27 @@ public class SearchHistoryTests extends SessionDaoTest {
     public void testLogQuerySetFalse() throws OutputProcessorException {
         collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
-        st.getQuestion().setLogQuery(false);
+        st.getQuestion().setLogQuery(Optional.of(false));
         processor.processOutput(st);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
+    }
+    
+    @Test
+    public void testLogQuerySetTrue() throws OutputProcessorException {
+        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
+        st.getQuestion().setLogQuery(Optional.of(true));
+        processor.processOutput(st);
+        assertEquals(1, repository.getSearchHistory(user, collection, 10).size());
+    }
+    
+    @Test
+    public void testLogQuerySetEmpty() throws OutputProcessorException {
+        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
+        st.getQuestion().setLogQuery(Optional.empty());
+        processor.processOutput(st);
+        assertEquals(1, repository.getSearchHistory(user, collection, 10).size());
     }
     
     @Test

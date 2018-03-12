@@ -3,6 +3,7 @@ package com.funnelback.publicui.accessibilityauditor.lifecycle.input.processors;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         if (SearchTransactionUtils.hasQuestion(st)
             && SearchQuestionType.ACCESSIBILITY_AUDITOR.equals(st.getQuestion().getQuestionType())) {
 
-            st.getQuestion().setLogQuery(false);
+            st.getQuestion().setLogQuery(Optional.ofNullable(false));
             st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
 
             new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion().getCollection().getConfiguration())

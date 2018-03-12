@@ -1,6 +1,7 @@
 package com.funnelback.publicui.accessibilityauditor.lifecycle.input.processors;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -41,7 +42,7 @@ public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAudi
     protected void processAccessibilityAuditorTransaction(SearchTransaction st) throws InputProcessorException {
         
         st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
-        st.getQuestion().setLogQuery(false);
+        st.getQuestion().setLogQuery(Optional.ofNullable(false));
         
         //Add daat limit from collection config
         new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion().getCollection().getConfiguration())

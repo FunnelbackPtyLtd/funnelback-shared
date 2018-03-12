@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.util.Date;
-import java.util.Optional;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,14 +41,16 @@ public class SearchHistory extends AbstractOutputProcessor {
     public void processOutput(SearchTransaction st)
         throws OutputProcessorException {
         
+        if (!SearchTransactionUtils.hasQuestion(st)) {
+            return;
+        }
         
-        if(!Optional.ofNullable(st).map(SearchTransaction::getQuestion).map(SearchQuestion::isLogQuery).orElse(true)) {
+        if(!st.getQuestion().getLogQuery().orElse(true)) {
             log.trace("Search question has logQuery set to false so search history will not be saved.");
             return;
         }
 
-        if (SearchTransactionUtils.hasQuestion(st)
-                && SearchTransactionUtils.hasResponse(st)
+        if (SearchTransactionUtils.hasResponse(st)
                 && SearchTransactionUtils.hasSession(st)
                 && st.getQuestion().getCollection()
                     .getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
