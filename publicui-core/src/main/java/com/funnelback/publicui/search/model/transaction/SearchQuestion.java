@@ -243,10 +243,14 @@ public class SearchQuestion {
     @Getter @Setter private String requestId = Log.REQUEST_ID_NOTHING;
     
     /**
-     * Defines if the query should be logged or not.
+     * Defines if the query should be logged or not, or if it should fall back to default.
      * 
      * If false this will prevent the query from being recorded in
-     * query logs as well as session history.
+     * query logs as well as session history. 
+     * 
+     * If not set this will result in the defaults being used. For padre the default 
+     * is to follow what is in collection.cfg, profile.cfg or padre_opts.cfg, otherwise
+     * if the log option is not set in any of those files padre will log the query.
      * 
      * This will typically be set false for system generated searches or
      * for extra searches. This may be set from groovy scripts.
@@ -257,7 +261,7 @@ public class SearchQuestion {
      * 
      * @since 15.14
      */
-    @Getter @Setter private boolean logQuery = true;
+    @Getter @Setter private Optional<Boolean> logQuery = Optional.empty();
     
     /**
      * <p>Raw input parameters</p>

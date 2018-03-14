@@ -100,7 +100,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
 
             commandLine.addAll(searchTransaction.getQuestion().getDynamicQueryProcessorOptions());
             
-            commandLine.add("-" + QueryProcessorOptionKeys.LOG + "=" + searchTransaction.getQuestion().isLogQuery());
+            searchTransaction.getQuestion().getLogQuery().ifPresent(v -> commandLine.add("-" + QueryProcessorOptionKeys.LOG + "=" + v));
+            
 
             if (searchTransaction.getQuestion().getUserKeys().size() > 0) {
                 if (OS.isFamilyWindows()) {

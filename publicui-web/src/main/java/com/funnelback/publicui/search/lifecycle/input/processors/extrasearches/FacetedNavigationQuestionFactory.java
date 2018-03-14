@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors.extrasearches;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -37,7 +38,7 @@ public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFact
         SearchQuestion out = new SearchQuestion();
         SearchQuestionBinder.bind(originalQuestion, out);
         out.setQuestionType(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH);
-        out.setLogQuery(false);
+        out.setLogQuery(Optional.ofNullable(false));
         
         return out;
     }

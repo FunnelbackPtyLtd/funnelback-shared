@@ -30,7 +30,7 @@ public class DisableLoggingFromCgiParams extends AbstractInputProcessor {
         if(principle.isPresent()) {
             String logValue = searchTransaction.getQuestion().getInputParameterMap().get("log");
             if(logValue != null && VALUES_FOR_OFF.contains(logValue.toLowerCase())) {
-                searchTransaction.getQuestion().setLogQuery(false);
+                searchTransaction.getQuestion().setLogQuery(Optional.ofNullable(false));
             }
         } else {
             log.trace("no authenticated user logging can not be disabled");

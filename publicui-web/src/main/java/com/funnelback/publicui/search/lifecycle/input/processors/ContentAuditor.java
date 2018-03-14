@@ -142,7 +142,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.DAAT_TIMEOUT + "=" + ContentAuditor.DAAT_TIMEOUT_MAX_VALUE);
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.RMC_MAXPERFIELD + "=" + config.value(Keys.ModernUI.ContentAuditor.MAX_METADATA_FACET_CATEGORIES));
         // FUN-7978 Do not pollute analytics
-        question.setLogQuery(false);
+        question.setLogQuery(Optional.ofNullable(false));
 
         if (question.getRawInputParameters().get(RequestParameters.NUM_RANKS) == null) {
             // Set a default from collection.cfg
@@ -380,7 +380,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SORT + "=" + "collapse_count");
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SERVICE_VOLUME + "=" /* Intentionally empty */);
         // FUN-7978 Do not pollute analytics
-        question.setLogQuery(false);
+        question.setLogQuery(Optional.ofNullable(false));
         
         // We want the facet definitions so query constraints are created, but we don't want the expensive QP options
         // the produce output we would ignore anyway.
