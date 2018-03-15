@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
 
@@ -18,6 +18,12 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
+import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
+import com.funnelback.config.marshallers.Marshallers;
+import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
 import com.funnelback.publicui.contentauditor.MapUtil;
 import com.funnelback.publicui.contentauditor.MissingMetadataFill;
@@ -125,7 +131,7 @@ public class ContentAuditor extends AbstractInputProcessor {
                 searchTransaction.addExtraSearch(ContentAuditor.DUPLICATES_EXTRA_SEARCH_KEY, createExtraQuestion(question));
                 
                 // Add some custom display metadata labels to the data model
-                searchTransaction.getResponse().getCustomData().put(ContentAuditor.DISPLAY_METADATA_KEY, readMetadataInfo(question, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA));
+                searchTransaction.getResponse().getCustomData().put(ContentAuditor.DISPLAY_METADATA_KEY, readMetadataInfo(question, FrontEndKeys.ModernUI.ContentAuditor.DISPLAY_METADATA_PREFIX));
             }
         }
     }
@@ -223,7 +229,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         
         facetDefinitions.add(createMissingMetadataFacetDefinition(i18n.tr("label.missingMetadataFacet")));
 
-        for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.FACET_METADATA).entrySet()) {
+        for (Map.Entry<String, String> entry : readMetadataInfo(question, FrontEndKeys.ModernUI.ContentAuditor.FACET_METADATA_PREFIX).entrySet()) {
             facetDefinitions.add(createMetadataFacetDefinition(entry.getValue(), entry.getKey()));
         }
 
@@ -266,21 +272,32 @@ public class ContentAuditor extends AbstractInputProcessor {
      * and will be returned as a hash of className to label
      */
     private Map<String, String> readMetadataInfo(SearchQuestion question, String keyPrefix) {
-        // Read in the configured metadata classes, sort by keys
         Map<String, String> metadataClassToLabel = new HashMap<>();
+        ServiceConfigReadOnly serviceConfig = question.getCurrentProfileConfig();
 
-        Config config = question.getCollection().getConfiguration();
-        for (String key : question.getCollection().getConfiguration().valueKeys()) {
-            if (key.startsWith(keyPrefix)) {
-                String className = key.substring(keyPrefix.length() + 1 /* Skip the '.' */);
-                String label = config.value(key);
-                
-                if (label.length() > 0) {
-                    metadataClassToLabel.put(className, label);
-                }
+        for (ServiceConfigOptionDefinition<String> key : keysStartingWith(keyPrefix, serviceConfig)) {
+            String metadata = key.getKey().substring(keyPrefix.length() + 1);
+            String label = serviceConfig.get(key);
+
+            if (label.length() > 0) {
+                metadataClassToLabel.put(metadata, label);
             }
         }
         return MapUtil.sortByValue(metadataClassToLabel);
+    }
+
+    /**
+     * Gets all keys starting with a prefix as a String type key.
+     *
+     * @param keyPrefix
+     * @param serviceConfig
+     * @return
+     */
+    public List<ServiceConfigOptionDefinition<String>> keysStartingWith(String keyPrefix, ServiceConfigReadOnly serviceConfig) {
+        return serviceConfig.getRawKeys().stream()
+            .filter((k) -> k.startsWith(keyPrefix))
+            .map(k -> new ProfileAndCollectionConfigOption<String>(k, Marshallers.STRING_MARSHALLER, Validators.acceptAll(), ""))
+            .collect(Collectors.toList());
     }
 
     /**
