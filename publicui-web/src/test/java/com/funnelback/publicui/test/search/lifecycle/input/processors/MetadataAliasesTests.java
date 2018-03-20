@@ -1,11 +1,12 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
-import java.io.FileNotFoundException;
 import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.FileNotFoundException;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.system.EnvironmentVariableException;
@@ -48,6 +49,14 @@ public class MetadataAliasesTests {
         st.getQuestion().setQuery("abc site:http://www.funnelback.com def site:file:///file.txt site :me");
         processor.processInput(st);
         Assert.assertEquals("abc u:http://www.funnelback.com def u:file:///file.txt site :me", st.getQuestion().getQuery());
+    }
+    
+    @Test
+    public void testIsolatedColon() throws InputProcessorException {
+        st = getTestSearchTransaction("f");
+        st.getQuestion().setQuery("foo : :bar foo: bar");
+        processor.processInput(st);
+        Assert.assertEquals("foo : :bar foo: bar", st.getQuestion().getQuery());
     }
     
     @Test
