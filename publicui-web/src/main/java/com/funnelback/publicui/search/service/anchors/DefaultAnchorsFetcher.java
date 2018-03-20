@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.service.anchors;
 import com.funnelback.common.views.View;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
+import com.funnelback.common.execute.ExecutablePicker;
 import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.padre.SdinfoFile;
 import com.funnelback.common.padre.SdinfoFile.SdinfoEntry;
@@ -189,7 +190,8 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
     
     private String getUrlFromDocnum(AnchorModel model, String formattedDocnum,File indexStem) {
         Executor getUrl = new DefaultExecutor();
-        File getUrlBinary = new File(searchHome, DefaultValues.FOLDER_BIN + File.separator + "get_url_from_docnum");
+        File getUrlBinary = new ExecutablePicker().pickAnExecutable(new File(searchHome,
+            DefaultValues.FOLDER_BIN + File.separator + "get_url_from_docnum"));
         CommandLine clAnchors = new CommandLine(getUrlBinary);
         
         clAnchors.addArgument(indexStem.toString());        
