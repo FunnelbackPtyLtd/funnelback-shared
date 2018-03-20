@@ -56,7 +56,7 @@ public class MetadataAliasesTests {
         st = getTestSearchTransaction("f");
         st.getQuestion().setQuery("foo : :bar foo: bar");
         processor.processInput(st);
-        //Assert.assertEquals("abc u:http://www.funnelback.com def u:file:///file.txt site :me", st.getQuestion().getQuery());
+        Assert.assertEquals("foo : :bar foo: bar", st.getQuestion().getQuery());
     }
     
     @Test
