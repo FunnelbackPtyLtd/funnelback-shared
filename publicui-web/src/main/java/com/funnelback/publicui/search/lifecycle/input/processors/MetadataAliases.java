@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import lombok.extern.log4j.Log4j2;
-
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +11,8 @@ import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Maps config metadata aliases to corresponding metadata class.
@@ -35,7 +35,8 @@ public class MetadataAliases extends AbstractInputProcessor {
             //Look for query terms that have a SEPARATOR, then see if we have a metadata
             //alias defined in Config, if so replace the aliase with the real metadata name.
             for (int i=0; i < terms.length; i++) {
-                if (terms[i].contains(SEPARATOR)) {
+                // The seperator can not be the first character
+                if (terms[i].indexOf(SEPARATOR) > 0) {
                     String alias = terms[i].split(SEPARATOR)[0];
                     if (alias.trim().isEmpty()) continue;
 
