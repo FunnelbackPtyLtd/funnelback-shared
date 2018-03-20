@@ -189,7 +189,8 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
     
     private String getUrlFromDocnum(AnchorModel model, String formattedDocnum,File indexStem) {
         Executor getUrl = new DefaultExecutor();
-        File getUrlBinary = new File(searchHome, DefaultValues.FOLDER_BIN + File.separator + "get_url_from_docnum");
+        File getUrlBinary = new File(searchHome,
+            DefaultValues.FOLDER_BIN + File.separator + "get_url_from_docnum" + ((OS.isFamilyWindows()) ? ".exe" : ""));
         CommandLine clAnchors = new CommandLine(getUrlBinary);
         
         clAnchors.addArgument(indexStem.toString());        
