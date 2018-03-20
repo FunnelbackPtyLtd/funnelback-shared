@@ -1,7 +1,6 @@
 package com.funnelback.publicui.test.utils;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 import com.funnelback.publicui.utils.URLSignature;
@@ -63,6 +62,12 @@ public class URLSignatureTest {
         Assert.assertEquals(
             URLSignature.computeQueryStringSignature("param1=value1&param2=value2&param3="),
             URLSignature.computeQueryStringSignature("param3=&param1=value1&param2=value2"));        
+    }
+    
+    @Test
+    public void testStringMadeForHashing() {
+        String s = URLSignature.canonicaliseQueryStringToBeHashed("p=foo%2525%25");
+        Assert.assertEquals("pfoo%25%", s);
     }
     
     @Test(expected=NullPointerException.class)
