@@ -1,18 +1,17 @@
 package com.funnelback.publicui.utils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import lombok.SneakyThrows;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.funnelback.publicui.utils.QueryStringUtils;
+import lombok.SneakyThrows;
 
 /**
  * Utilities to compute a signature for a given URL
@@ -36,8 +35,21 @@ public class URLSignature {
      * @param queryString Query string to compute parameters for
      * @return The signature for the query string
      */
-    @SneakyThrows(UnsupportedEncodingException.class)
+    
     public static int computeQueryStringSignature(String queryString) {
+        return canonicaliseQueryStringToBeHashed(queryString).hashCode();
+    }
+    
+    /**
+     * <p>Converts a query string into a canonical form that can be used for hashing.</p>
+     * 
+     * <p>Known bug: this does suffer some issues like p=2&v=22 would be considered the
+     * same as p=22&v=2.<p> 
+     * @param queryString
+     * @return
+     */
+    @SneakyThrows(UnsupportedEncodingException.class)
+    public static String canonicaliseQueryStringToBeHashed(String queryString) {
         List<String> keyList = new ArrayList<String>();
         List<String> valueList = new ArrayList<String>();
         
@@ -48,12 +60,12 @@ public class URLSignature {
             String[] values = params.get(key);
             if (values != null) {
                 for (String value: values) {
-                    valueList.add(URLDecoder.decode(value, "UTF-8"));
+                    valueList.add(value);
                 }
             }
         }
         
-        return (StringUtils.join(keyList, "") + StringUtils.join(valueList, "")).hashCode();
+        return (StringUtils.join(keyList, "") + StringUtils.join(valueList, ""));
     }
     
 }
