@@ -21,7 +21,7 @@ import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
 import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
+import com.funnelback.config.keys.Keys.ContentAuditorKeys;
 import com.funnelback.config.marshallers.Marshallers;
 import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
@@ -131,7 +131,7 @@ public class ContentAuditor extends AbstractInputProcessor {
                 searchTransaction.addExtraSearch(ContentAuditor.DUPLICATES_EXTRA_SEARCH_KEY, createExtraQuestion(question));
                 
                 // Add some custom display metadata labels to the data model
-                searchTransaction.getResponse().getCustomData().put(ContentAuditor.DISPLAY_METADATA_KEY, readMetadataInfo(question, FrontEndKeys.ModernUI.ContentAuditor.DISPLAY_METADATA_PREFIX));
+                searchTransaction.getResponse().getCustomData().put(ContentAuditor.DISPLAY_METADATA_KEY, readMetadataInfo(question, ContentAuditorKeys.DISPLAY_METADATA_PREFIX));
             }
         }
     }
@@ -229,7 +229,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         
         facetDefinitions.add(createMissingMetadataFacetDefinition(i18n.tr("label.missingMetadataFacet")));
 
-        for (Map.Entry<String, String> entry : readMetadataInfo(question, FrontEndKeys.ModernUI.ContentAuditor.FACET_METADATA_PREFIX).entrySet()) {
+        for (Map.Entry<String, String> entry : readMetadataInfo(question, ContentAuditorKeys.FACET_METADATA_PREFIX).entrySet()) {
             facetDefinitions.add(createMetadataFacetDefinition(entry.getValue(), entry.getKey()));
         }
 
