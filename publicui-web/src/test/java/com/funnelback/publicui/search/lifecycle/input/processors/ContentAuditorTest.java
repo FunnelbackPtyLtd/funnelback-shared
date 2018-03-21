@@ -24,7 +24,7 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
 public class ContentAuditorTest {
 
     @Test
-    public void checkCollectionIsNotModifiedWithCAFacetConfig() {
+    public void checkCollectionIsNotModifiedWithCAFacetConfig() throws Exception {
         SearchQuestion question = new SearchQuestion();
         FacetedNavigationConfig sharedConfig = mock(FacetedNavigationConfig.class);
         
@@ -61,7 +61,7 @@ public class ContentAuditorTest {
     }
     
     @Test
-    public void testCAOverridesProfileConfig() {
+    public void testCAOverridesProfileConfig() throws Exception {
         SearchQuestion question = new SearchQuestion();
         question.setProfile("_default");
         //Collection is a shared cached object ensure it is not changed.
