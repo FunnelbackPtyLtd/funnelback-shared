@@ -1,6 +1,5 @@
 package com.funnelback.publicui.test.mock;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,17 +8,20 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.junit.Assume;
 
+import java.io.File;
+
+import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.GlobalOnlyConfig;
+import com.funnelback.config.configtypes.index.IndexConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
-import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class MockConfigRepository implements ConfigRepository {
 
@@ -34,6 +36,8 @@ public class MockConfigRepository implements ConfigRepository {
     @Getter @Setter private ServerConfigReadOnly serverConfig;
 
     @Getter @Setter private ServiceConfigReadOnly serviceConfig;
+    
+    @Getter @Setter private IndexConfigReadOnly indexConfig;
 
     @Override
     public Collection getCollection(String collectionId) {
@@ -131,6 +135,11 @@ public class MockConfigRepository implements ConfigRepository {
     @Override
     public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) {
         return serviceConfig;
+    }
+
+    @Override
+    public IndexConfigReadOnly getIndexConfig(String collectionId) throws CollectionNotFoundException {
+        return indexConfig;
     }
     
 }
