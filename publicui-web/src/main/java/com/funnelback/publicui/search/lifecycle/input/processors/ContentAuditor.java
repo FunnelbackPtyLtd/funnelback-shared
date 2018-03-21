@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -143,7 +144,7 @@ public class ContentAuditor extends AbstractInputProcessor {
                     // Add some custom display metadata labels to the data model
                     searchTransaction.getResponse().getCustomData().put(ContentAuditor.DISPLAY_METADATA_KEY, readMetadataInfo(question, IndexKeys.ContentAuditor.DISPLAY_METADATA_PREFIX));
                 } catch (CollectionNotFoundException e) {
-                    log.error("Error while processing Conent Auditor for collection {}", question.getCollection(), e);
+                    throw new InputProcessorException("Error while processing Conent Auditor for collection", e);
                 }
             }
         }
