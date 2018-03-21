@@ -276,7 +276,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         ServiceConfigReadOnly serviceConfig = question.getCurrentProfileConfig();
 
         for (ServiceConfigOptionDefinition<String> key : keysStartingWith(keyPrefix, serviceConfig)) {
-            String metadata = key.getKey().substring(keyPrefix.length() + 1);
+            String metadata = key.getKey().substring(keyPrefix.length());
             String label = serviceConfig.get(key);
 
             if (label.length() > 0) {
