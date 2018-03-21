@@ -13,15 +13,16 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
-import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
-import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
-import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.keys.Keys.ContentAuditorKeys;
+import com.funnelback.config.configtypes.index.IndexConfigOption;
+import com.funnelback.config.configtypes.index.IndexConfigOptionDefinition;
+import com.funnelback.config.configtypes.index.IndexConfigReadOnly;
+import com.funnelback.config.keys.Keys.IndexKeys;
 import com.funnelback.config.marshallers.Marshallers;
 import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
@@ -44,6 +45,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
@@ -51,6 +53,7 @@ import com.funnelback.springmvc.service.resource.ResourceManager;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This input processor customises the current request to suit content auditor (if content_auditor is being used).
@@ -67,6 +70,7 @@ import lombok.Setter;
  * </ul>
  */
 @Component("contentAuditorInputProcessor")
+@Log4j2
 public class ContentAuditor extends AbstractInputProcessor {
 
     /** Maximum DAAT timeout value - 1 hour */
@@ -99,6 +103,11 @@ public class ContentAuditor extends AbstractInputProcessor {
     /** The class in which the edit URL is returned */
     private static final String EDIT_URL_META_CLASS = "FunEditLink";
 
+    /** Collection / search service configuration */
+    @Autowired
+    @Setter
+    private ConfigRepository configRepository;
+
     /** Resource manger for reading (and caching) config files */
     @Autowired
     @Setter
@@ -125,20 +134,23 @@ public class ContentAuditor extends AbstractInputProcessor {
             
             if (questionType.equals(SearchQuestion.SearchQuestionType.CONTENT_AUDITOR)) {
                 SearchQuestion question = searchTransaction.getQuestion();
-                customiseMainQuestion(question);
+                try {
+                    customiseMainQuestion(question);
 
-                // We run an extra search with a large num_ranks value to find duplicates
-                searchTransaction.addExtraSearch(ContentAuditor.DUPLICATES_EXTRA_SEARCH_KEY, createExtraQuestion(question));
-                
-                // Add some custom display metadata labels to the data model
-                searchTransaction.getResponse().getCustomData().put(ContentAuditor.DISPLAY_METADATA_KEY, readMetadataInfo(question, ContentAuditorKeys.DISPLAY_METADATA_PREFIX));
+                    // We run an extra search with a large num_ranks value to find duplicates
+                    searchTransaction.addExtraSearch(ContentAuditor.DUPLICATES_EXTRA_SEARCH_KEY, createExtraQuestion(question));
+
+                    // Add some custom display metadata labels to the data model
+                    searchTransaction.getResponse().getCustomData().put(ContentAuditor.DISPLAY_METADATA_KEY, readMetadataInfo(question, IndexKeys.ContentAuditor.DISPLAY_METADATA_PREFIX));
+                } catch (CollectionNotFoundException e) {
+                    log.error("Error while processing Conent Auditor for collection {}", question.getCollection(), e);
+                }
             }
         }
     }
 
-    /** Modify the given question to suit content auditor's needs 
-     * @param request */
-    private void customiseMainQuestion(SearchQuestion question) {
+    /** Modify the given question to suit content auditor's needs */
+    private void customiseMainQuestion(SearchQuestion question) throws CollectionNotFoundException {
         Config config = question.getCollection().getConfiguration();
         // Manipulate the request to suit content auditor
         question.getAdditionalParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
@@ -192,7 +204,7 @@ public class ContentAuditor extends AbstractInputProcessor {
 
     }
     
-    void updateQuestionWithContentAuditorFacetConfig(SearchQuestion question) {
+    void updateQuestionWithContentAuditorFacetConfig(SearchQuestion question) throws CollectionNotFoundException {
         FacetedNavigationConfig caFacetConfig = buildFacetConfig(question);
         
       //Override each profile to have have the CA facet config.
@@ -217,7 +229,7 @@ public class ContentAuditor extends AbstractInputProcessor {
     }
     
     /** Overwrite the facet config with a custom one */
-    FacetedNavigationConfig buildFacetConfig(SearchQuestion question) {
+    FacetedNavigationConfig buildFacetConfig(SearchQuestion question) throws CollectionNotFoundException {
 
         List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
         
@@ -229,7 +241,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         
         facetDefinitions.add(createMissingMetadataFacetDefinition(i18n.tr("label.missingMetadataFacet")));
 
-        for (Map.Entry<String, String> entry : readMetadataInfo(question, ContentAuditorKeys.FACET_METADATA_PREFIX).entrySet()) {
+        for (Map.Entry<String, String> entry : readMetadataInfo(question, IndexKeys.ContentAuditor.FACET_METADATA_PREFIX).entrySet()) {
             facetDefinitions.add(createMetadataFacetDefinition(entry.getValue(), entry.getKey()));
         }
 
@@ -271,13 +283,13 @@ public class ContentAuditor extends AbstractInputProcessor {
      * 
      * and will be returned as a hash of className to label
      */
-    private Map<String, String> readMetadataInfo(SearchQuestion question, String keyPrefix) {
+    private Map<String, String> readMetadataInfo(SearchQuestion question, String keyPrefix) throws CollectionNotFoundException {
         Map<String, String> metadataClassToLabel = new HashMap<>();
-        ServiceConfigReadOnly serviceConfig = question.getCurrentProfileConfig();
+        IndexConfigReadOnly indexConfig = configRepository.getIndexConfig(question.getCollection().getId());
 
-        for (ServiceConfigOptionDefinition<String> key : keysStartingWith(keyPrefix, serviceConfig)) {
+        for (IndexConfigOptionDefinition<String> key : keysStartingWith(keyPrefix, indexConfig)) {
             String metadata = key.getKey().substring(keyPrefix.length());
-            String label = serviceConfig.get(key);
+            String label = indexConfig.get(key);
 
             if (label.length() > 0) {
                 metadataClassToLabel.put(metadata, label);
@@ -287,16 +299,13 @@ public class ContentAuditor extends AbstractInputProcessor {
     }
 
     /**
-     * Gets all keys starting with a prefix as a String type key.
-     *
-     * @param keyPrefix
-     * @param serviceConfig
+     * Gets all keys starting with a prefix as a String type key
      * @return
      */
-    public List<ServiceConfigOptionDefinition<String>> keysStartingWith(String keyPrefix, ServiceConfigReadOnly serviceConfig) {
-        return serviceConfig.getRawKeys().stream()
+    public List<IndexConfigOptionDefinition<String>> keysStartingWith(String keyPrefix, IndexConfigReadOnly indexConfig) {
+        return indexConfig.getRawKeys().stream()
             .filter((k) -> k.startsWith(keyPrefix))
-            .map(k -> new ProfileAndCollectionConfigOption<String>(k, Marshallers.STRING_MARSHALLER, Validators.acceptAll(), ""))
+            .map(k -> new IndexConfigOption<String>(k, Marshallers.STRING_MARSHALLER, Validators.acceptAll(), ""))
             .collect(Collectors.toList());
     }
 
@@ -361,7 +370,6 @@ public class ContentAuditor extends AbstractInputProcessor {
 
         return FacetDefinition.getFacetWithUpgradedValues(label, categoryDefinitions);
     }
-
 
     /**
      * Customise the question to suit getting a large number of results to find duplicates
