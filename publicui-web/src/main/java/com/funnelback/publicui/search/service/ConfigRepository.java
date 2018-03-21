@@ -1,16 +1,17 @@
 package com.funnelback.publicui.search.service;
 
-import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import java.io.File;
 
 import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.config.configtypes.index.IndexConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
-import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
 
@@ -107,5 +108,14 @@ public interface ConfigRepository {
     public Map<String, String> getTranslations(String collectionId, String profileId, Locale locale);
     
     public ServerConfigReadOnly getServerConfig();
+    
+    /**
+     * Get a read only IndexConfig
+     *  
+     * @param collectionId
+     * @return
+     * @throws CollectionNotFoundException
+     */
+    public IndexConfigReadOnly getIndexConfig(String collectionId) throws CollectionNotFoundException;
 
 }

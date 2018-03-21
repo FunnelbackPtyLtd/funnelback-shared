@@ -1,8 +1,5 @@
 package com.funnelback.publicui.search.service.config;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,16 +13,20 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+
 import org.apache.commons.io.FileUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.CollectionId;
+import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
@@ -38,10 +39,13 @@ import com.funnelback.common.profile.ProfileId;
 import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.common.profile.ProfileView;
 import com.funnelback.common.views.View;
+import com.funnelback.config.configtypes.index.DefaultIndexConfigReadOnly;
+import com.funnelback.config.configtypes.index.IndexConfigReadOnly;
 import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.DefaultServiceConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.config.data.index.IndexConfigDataReadOnly;
 import com.funnelback.config.data.server.ServerConfigDataReadOnly;
 import com.funnelback.config.data.service.ServiceConfigDataReadOnly;
 import com.funnelback.config.keys.Keys;
@@ -67,6 +71,7 @@ import com.funnelback.springmvc.service.resource.impl.GroovyCollectionLoaderReso
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
+import com.funnelback.springmvc.service.resource.impl.config.IndexConfigDataReadOnlyResource;
 import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataReadOnlyResource;
 import com.funnelback.springmvc.service.resource.impl.config.ServiceConfigDataReadOnlyResource;
 
@@ -641,6 +646,14 @@ public class DefaultConfigRepository implements ConfigRepository {
         }
         
         return new DefaultServiceConfigReadOnly(serviceConfigData, getServerConfig().get(Keys.Environment.ENV));
+    }
+    
+    @Override
+    public IndexConfigReadOnly getIndexConfig(String collectionId) throws CollectionNotFoundException {
+        
+        IndexConfigDataReadOnly indexConfigData = resourceManager.loadResource(new IndexConfigDataReadOnlyResource(searchHome, collectionId));
+        
+        return new DefaultIndexConfigReadOnly(indexConfigData, getServerConfig().get(Keys.Environment.ENV));
     }
     
 }
