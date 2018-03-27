@@ -3,6 +3,12 @@ package com.funnelback.publicui.search.service.data;
 import static com.funnelback.common.io.file.FileUtils.getFileExtensionLowerCase;
 import static com.funnelback.publicui.utils.CompressingByteArrayOutputStream.DEFAULT_COMPRESS_AFTER_SIZE;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,11 +16,6 @@ import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -53,6 +54,9 @@ import com.funnelback.publicui.utils.jna.WindowsFileInputStream;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
 import com.google.common.collect.ArrayListMultimap;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.Secur32;
+import com.sun.jna.platform.win32.Secur32Util;
 
 import lombok.extern.log4j.Log4j2;
 /**
@@ -227,6 +231,11 @@ public class LocalDataRepository implements DataRepository {
     public InputStream getFilecopyDocument(Collection collection, URI uri,
             boolean withDls) throws IOException {
         if (withDls) {
+            if(log.isDebugEnabled()) {
+                log.debug("Native user name is '" + Secur32Util.getUserNameEx(Secur32.EXTENDED_NAME_FORMAT.NameSamCompatible) + "', "
+                    + "Current Process ID is: " + Kernel32.INSTANCE.GetCurrentProcessId() + ", "
+                    + "Current Thread ID is: " + Kernel32.INSTANCE.GetCurrentThreadId());
+            }
             // Convert the URI to a Windows path, taking care to preserve plus signs
             String windowsPath = VFSURLUtils.vfsUrlToSystemUrl(uri, true);
             return new WindowsFileInputStream(windowsPath);
