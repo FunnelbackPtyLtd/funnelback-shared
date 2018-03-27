@@ -73,6 +73,7 @@
         <ref bean="fixDisplayUrlsOutputProcessor" />
         <ref bean="htmlEncodeSummaries" />
         <ref bean="extraSearchesExecutor" />
+        <ref bean="relatedItemFetcherOutputProcessor" />
         <ref bean="facetedNavigationOutputProcessor" />
         <ref bean="facetedNavigationWhiteBlackListOutputProcessor" />
         <ref bean="accessibilityAuditorPopulateFacetCategoryLabels" />
