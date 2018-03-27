@@ -59,7 +59,7 @@ public class RelatedItemFetcher extends AbstractOutputProcessor {
     
     private interface RelationSource {
         public String getValueForResult(Result result);
-    };
+    }
     
     @Data
     private class MetadataRelationSource implements RelationSource {
@@ -104,12 +104,10 @@ public class RelatedItemFetcher extends AbstractOutputProcessor {
         relationsToExpand.add(new RelationToExpand(new RelatedDataRelationSource("previousMessage", "previousMessageUrl"), "previousPreviousMessage"));
         
         if (SearchTransactionUtils.hasResults(searchTransaction)) {
-            String metadataSeparator = indexRepository.getBuildInfoValue(searchTransaction.getQuestion().getCollection().getId(), "facet_item_sepchars");
-
             SetMultimap<URI, RelatedDataTarget> actionsForThisPass;
             List<Result> results = searchTransaction.getResponse().getResultPacket().getResults();
             
-            actionsForThisPass = createActionsForThisPass(results, relationsToExpand, metadataSeparator);
+            actionsForThisPass = createActionsForThisPass(results, relationsToExpand);
             
             while (!actionsForThisPass.isEmpty()) {
                 List<String> urlsForPadre = actionsForThisPass.keySet().stream().map((uri) -> uri.toString()).collect(Collectors.toList());
@@ -132,7 +130,7 @@ public class RelatedItemFetcher extends AbstractOutputProcessor {
                 }
                 
                 // Prepare the next pass
-                actionsForThisPass = createActionsForThisPass(results, relationsToExpand, metadataSeparator);
+                actionsForThisPass = createActionsForThisPass(results, relationsToExpand);
             }
             
             return;
@@ -140,7 +138,7 @@ public class RelatedItemFetcher extends AbstractOutputProcessor {
     }
 
     private SetMultimap<URI, RelatedDataTarget> createActionsForThisPass(List<Result> results,
-        List<RelationToExpand> relationsToExpand, String metadataSeparator) {
+        List<RelationToExpand> relationsToExpand) {
         SetMultimap<URI, RelatedDataTarget> actionsForThisPass = MultimapBuilder.hashKeys().hashSetValues().build();
 
         try {
@@ -149,6 +147,10 @@ public class RelatedItemFetcher extends AbstractOutputProcessor {
                     if (!r.getCustomData().containsKey(relationToExpand.getRelationTargetKey())) {
                         String relationSourceValue = relationToExpand.getRelationSource().getValueForResult(r);
                         if (relationSourceValue != null) {
+                            // AutoRefreshLocalIndexRepository caches these, so I think it's ok to fetch again every time
+                            // (we need to because different components of a meta collection may have different seperators)
+                            String metadataSeparator = indexRepository.getBuildInfoValue(r.getCollection(), "facet_item_sepchars");
+                            
                             String[] urls = relationSourceValue.split(Pattern.quote(metadataSeparator));
                             for (String url : urls) {
                                 actionsForThisPass.put(new URI(url), new RelatedDataTarget(r, relationToExpand.getRelationTargetKey()));
