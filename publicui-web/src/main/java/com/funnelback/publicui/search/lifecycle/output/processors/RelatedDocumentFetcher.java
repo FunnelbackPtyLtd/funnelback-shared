@@ -2,27 +2,39 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.config.CollectionId;
+import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.config.keys.Keys;
+import com.funnelback.config.keys.types.RelatedDocumentFetchConfig;
+import com.funnelback.config.keys.types.RelatedDocumentFetchConfig.RelatedDocumentFetchSourceType;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.recommender.dataapi.DataAPIConnectorPADRE;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.search.model.related.RelatedDocument;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.IndexRepository;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
+import com.google.common.collect.Sets;
 
 import lombok.Data;
 import lombok.Setter;
@@ -41,8 +53,8 @@ import lombok.Setter;
  *     (Not use customData, use a type which had the info we want and
  *     not stuff we don't)
  */
-@Component("relatedItemFetcherOutputProcessor")
-public class RelatedItemFetcher extends AbstractOutputProcessor {
+@Component("relatedDocumentFetcherOutputProcessor")
+public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     
     @Autowired
     DataAPIConnectorPADRE dataAPIConnectorPADRE;
@@ -58,7 +70,7 @@ public class RelatedItemFetcher extends AbstractOutputProcessor {
     }
     
     private interface RelationSource {
-        public String getValueForResult(Result result);
+        public Set<String> getValuesForResult(Result result);
     }
     
     @Data
@@ -67,8 +79,12 @@ public class RelatedItemFetcher extends AbstractOutputProcessor {
         private final String metadataClassName;
         
         @Override
-        public String getValueForResult(Result result) {
-            return result.getMetaData().get(metadataClassName);
+        public Set<String> getValuesForResult(Result result) {
+            if (result.getMetaData().containsKey(metadataClassName)) {
+                return Sets.newHashSet(result.getMetaData().get(metadataClassName));
+            } else {
+                return Sets.newHashSet();
+            }
         }
     }
 
@@ -79,14 +95,17 @@ public class RelatedItemFetcher extends AbstractOutputProcessor {
         private final String metadataClassName;
         
         @Override
-        public String getValueForResult(Result result) {
-            if (result.getCustomData().containsKey(relatedDataKey) && result.getCustomData().get(relatedDataKey) instanceof DocInfo) {
-                Map<String, String> metadata = ((DocInfo)result.getCustomData().get(relatedDataKey)).getMetaData();
-                if (metadata.containsKey(metadataClassName)) {
-                    return metadata.get(metadataClassName);
-                }
+        public Set<String> getValuesForResult(Result result) {
+            if (result.getRelatedDocuments().containsKey(relatedDataKey)) {
+                return result.getRelatedDocuments().get(relatedDataKey)
+                    .stream()
+                    .map((relatedDocument) -> relatedDocument.getMetadata())
+                    .filter((metadata) -> metadata.containsKey(metadataClassName))
+                    .map((metadata) -> metadata.get(metadataClassName))
+                    .filter((value) -> value != null)
+                    .collect(Collectors.toSet());
             }
-            return null;
+            return Sets.newHashSet();
         }
     }
 
@@ -98,12 +117,43 @@ public class RelatedItemFetcher extends AbstractOutputProcessor {
     
     @Override
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-        List<RelationToExpand> relationsToExpand = new ArrayList<>();
-        
-        relationsToExpand.add(new RelationToExpand(new MetadataRelationSource("previousMessageUrl"), "previousMessage"));
-        relationsToExpand.add(new RelationToExpand(new RelatedDataRelationSource("previousMessage", "previousMessageUrl"), "previousPreviousMessage"));
-        
         if (SearchTransactionUtils.hasResults(searchTransaction)) {
+            List<RelationToExpand> relationsToExpand = new ArrayList<>();
+            
+            ServiceConfigReadOnly config = searchTransaction.getQuestion().getCurrentProfileConfig();
+
+            // First work out which relatedDocumentKey names which are used in the config
+            String prefix = Keys.FrontEndKeys.UI.Modern.RELATED_DOCUMENT_FETCH_CONFIG_PREFIX;
+            Set<String> relatedDocumentKeys = config.getRawKeys().stream()
+                .filter((key) -> key.startsWith(prefix))
+                .map((key) -> key.substring(prefix.length()))
+                .map((key) -> {
+                    // Strip any suffix
+                    if (key.indexOf('.') != -1) {
+                        key = key.substring(0, key.indexOf('.'));
+                    }
+                    return key;
+                })
+                .collect(Collectors.toSet());
+            
+            for (String relatedDocumentKey : relatedDocumentKeys) {
+                ProfileAndCollectionConfigOption<RelatedDocumentFetchConfig> key = Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchConfigForKey(relatedDocumentKey);
+                RelatedDocumentFetchConfig rdfc = config.get(key);
+                
+                if (rdfc == null) {
+                    Log.warn("Missing expected related document fetch config at " + key.getKey() + ". Other settings for this relatedDocumentKey will be ignored.");
+                    continue;
+                }
+                
+                if (rdfc.getRelatedDocumentFetchSourceType().equals(RelatedDocumentFetchSourceType.METADATA)) {
+                    relationsToExpand.add(new RelationToExpand(new MetadataRelationSource(rdfc.getMetadataKey()), relatedDocumentKey));
+                } else if (rdfc.getRelatedDocumentFetchSourceType().equals(RelatedDocumentFetchSourceType.RELATED)) {
+                    relationsToExpand.add(new RelationToExpand(new RelatedDataRelationSource(rdfc.getRelatedKey().get(), rdfc.getMetadataKey()), relatedDocumentKey));
+                } else {
+                    throw new RuntimeException("Unknown type of related document fetching requested - " + rdfc.getRelatedDocumentFetchSourceType());
+                }
+            }
+                    
             SetMultimap<URI, RelatedDataTarget> actionsForThisPass;
             List<Result> results = searchTransaction.getResponse().getResultPacket().getResults();
             
@@ -119,13 +169,17 @@ public class RelatedItemFetcher extends AbstractOutputProcessor {
                     DocInfo relatedDocInfo = relatedData.get(action.getKey());
                     
                     if (relatedDocInfo != null) {
-                        // TODO - We ought to add a specific field to put these in, not use customData
-                        // TODO - We probably ought to have a specific type instead of DocInfo.
-                        //        I did try re-using Result, but has a lot of irrelevant fields, so that's
-                        //        not ideal either.
-                        //
-                        // TODO - Riaan did tell me it would be helpful to him if we included a click-tracking URL
-                        action.getValue().getResult().getCustomData().put(action.getValue().getRelationTargetKey(), relatedDocInfo);
+                        if (!action.getValue().getResult().getRelatedDocuments().containsKey(action.getValue().getRelationTargetKey())) {
+                            action.getValue().getResult().getRelatedDocuments().put(action.getValue().getRelationTargetKey(), new HashSet<>());
+                        }
+                        
+                        // FIXME - we can't currently tell which component the document comes from in
+                        // a meta collection case (i4u doesn't provide that info?) so we'll assume it's
+                        // the same as the result, but we need to fix that. See FUN-11445
+                        String documentsComponentCollection = action.getValue().getResult().getCollection();
+                        
+                        action.getValue().getResult().getRelatedDocuments().get(action.getValue().getRelationTargetKey()).add(
+                            new RelatedDocument(relatedDocInfo.getUri(), documentsComponentCollection, relatedDocInfo.getMetaData()));
                     }
                 }
                 
@@ -144,9 +198,9 @@ public class RelatedItemFetcher extends AbstractOutputProcessor {
         try {
             for(Result r: results) {
                 for (RelationToExpand relationToExpand : relationsToExpand) {
-                    if (!r.getCustomData().containsKey(relationToExpand.getRelationTargetKey())) {
-                        String relationSourceValue = relationToExpand.getRelationSource().getValueForResult(r);
-                        if (relationSourceValue != null) {
+                    if (!r.getRelatedDocuments().containsKey(relationToExpand.getRelationTargetKey())) {
+                        Set<String> relationSourceValues = relationToExpand.getRelationSource().getValuesForResult(r);
+                        for (String relationSourceValue : relationSourceValues) {
                             // AutoRefreshLocalIndexRepository caches these, so I think it's ok to fetch again every time
                             // (we need to because different components of a meta collection may have different seperators)
                             String metadataSeparator = indexRepository.getBuildInfoValue(r.getCollection(), "facet_item_sepchars");
