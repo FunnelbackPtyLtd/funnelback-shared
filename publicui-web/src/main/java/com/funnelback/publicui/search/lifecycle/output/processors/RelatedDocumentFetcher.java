@@ -46,12 +46,6 @@ import lombok.Setter;
  * This is more efficient than using extra-searches to achieve the same goal,
  * and easier (and most space efficient) than totally denormalising the 
  * documents before indexing.
- * 
- * TODO
- * - Need to determine how the configuration for this will be exposed
- * - Need to determine how to represent this within the SearchTransaction
- *     (Not use customData, use a type which had the info we want and
- *     not stuff we don't)
  */
 @Component("relatedDocumentFetcherOutputProcessor")
 public class RelatedDocumentFetcher extends AbstractOutputProcessor {
@@ -62,7 +56,6 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     @Autowired
     @Setter private IndexRepository indexRepository;
     
-    // TODO - The classes/interface below should eventually move out of home
     @Data
     private class RelationToExpand {
         private final RelationSource relationSource;
