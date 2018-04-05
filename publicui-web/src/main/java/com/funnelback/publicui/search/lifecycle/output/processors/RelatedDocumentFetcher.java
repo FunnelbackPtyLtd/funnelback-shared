@@ -25,6 +25,10 @@ import com.funnelback.config.keys.types.RelatedDocumentFetchConfig.RelatedDocume
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.recommender.dataapi.DataAPIConnectorPADRE;
+import com.funnelback.publicui.relateddocuments.MetadataRelationSource;
+import com.funnelback.publicui.relateddocuments.RelatedDataRelationSource;
+import com.funnelback.publicui.relateddocuments.RelatedDataTarget;
+import com.funnelback.publicui.relateddocuments.RelationToExpand;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -55,58 +59,6 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     
     @Autowired
     @Setter private IndexRepository indexRepository;
-    
-    @Data
-    private class RelationToExpand {
-        private final RelationSource relationSource;
-        private final String relationTargetKey;
-    }
-    
-    private interface RelationSource {
-        public Set<String> getValuesForResult(Result result);
-    }
-    
-    @Data
-    private class MetadataRelationSource implements RelationSource {
-
-        private final String metadataClassName;
-        
-        @Override
-        public Set<String> getValuesForResult(Result result) {
-            if (result.getMetaData().containsKey(metadataClassName)) {
-                return Sets.newHashSet(result.getMetaData().get(metadataClassName));
-            } else {
-                return Sets.newHashSet();
-            }
-        }
-    }
-
-    @Data
-    private class RelatedDataRelationSource implements RelationSource {
-
-        private final String relatedDataKey;
-        private final String metadataClassName;
-        
-        @Override
-        public Set<String> getValuesForResult(Result result) {
-            if (result.getRelatedDocuments().containsKey(relatedDataKey)) {
-                return result.getRelatedDocuments().get(relatedDataKey)
-                    .stream()
-                    .map((relatedDocument) -> relatedDocument.getMetadata())
-                    .filter((metadata) -> metadata.containsKey(metadataClassName))
-                    .map((metadata) -> metadata.get(metadataClassName))
-                    .filter((value) -> value != null)
-                    .collect(Collectors.toSet());
-            }
-            return Sets.newHashSet();
-        }
-    }
-
-    @Data
-    private class RelatedDataTarget {
-        private final Result result;
-        private final String relationTargetKey;
-    }
     
     @Override
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
