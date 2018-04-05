@@ -203,6 +203,8 @@ public class Result implements ResultType {
      * The map key is chosen by the related document fetching configuration and the
      * set of related documents are those that were fetched based on the metadata
      * relationships traversed by the configuration.
+     *
+     * @since 15.16
      */
     @Getter private final Map<String, Set<RelatedDocument>> relatedDocuments = new HashMap<>();
 
