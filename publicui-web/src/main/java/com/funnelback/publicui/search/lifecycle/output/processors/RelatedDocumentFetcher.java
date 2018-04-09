@@ -172,6 +172,13 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
             .collect(Collectors.toSet());
     }
 
+    /**
+     * Build a multi-map representing the metadata to fetch from padre-i4u (across the whole result set), and the location to 
+     * put the returned metadata.
+     * 
+     * No action is performed if the target location in a result already contains a related document (which prevents any
+     * possibility of infinite loops as long as the relationsToExpand are finite).
+     */
     /* private if not for testing */ public  SetMultimap<URI, RelatedDataTarget> createActionsForThisPass(List<Result> results,
         List<RelationToExpand> relationsToExpand) {
         SetMultimap<URI, RelatedDataTarget> actionsForThisPass = MultimapBuilder.hashKeys().hashSetValues().build();
