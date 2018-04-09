@@ -56,7 +56,7 @@ import lombok.Setter;
 public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     
     @Autowired
-    DataAPIConnectorPADRE dataAPIConnectorPADRE;
+    @Setter private DataAPIConnectorPADRE dataAPIConnectorPADRE;
     
     @Autowired
     @Setter private IndexRepository indexRepository;
@@ -87,7 +87,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
      * 
      * This method forks padre-i4u once to load all the necessary related-document for this pass.
      */
-    private void performActions(Config config, SetMultimap<URI, RelatedDataTarget> actionsForThisPass) {
+    /* private if not for testing */ public void performActions(Config config, SetMultimap<URI, RelatedDataTarget> actionsForThisPass) {
         List<String> urlsForPadre = actionsForThisPass.keySet().stream().map((uri) -> uri.toString()).collect(Collectors.toList());
         
         // Load up all the URLs we need in a single call to padre-i4u
@@ -118,7 +118,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     /*
      * Load the configured list of relations needing expansion
      */
-    private List<RelationToExpand> findRelationsToExpand(ServiceConfigReadOnly config) {
+    /* private if not for testing */ public List<RelationToExpand> findRelationsToExpand(ServiceConfigReadOnly config) {
         List<RelationToExpand> relationsToExpand = new ArrayList<>();
         for (String relatedDocumentKey : findRelatedDocumentKeys(config)) {
             ProfileAndCollectionConfigOption<RelatedDocumentFetchConfig> key = Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchConfigForKey(relatedDocumentKey);
@@ -132,7 +132,20 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
             if (rdfc.getRelatedDocumentFetchSourceType().equals(RelatedDocumentFetchSourceType.METADATA)) {
                 relationsToExpand.add(new RelationToExpand(new MetadataRelationSource(rdfc.getMetadataKey()), relatedDocumentKey));
             } else if (rdfc.getRelatedDocumentFetchSourceType().equals(RelatedDocumentFetchSourceType.RELATED)) {
-                relationsToExpand.add(new RelationToExpand(new RelatedDataRelationSource(rdfc.getRelatedKey().get(), rdfc.getMetadataKey()), relatedDocumentKey));
+                Integer depth = config.get(Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchDepthForKey(relatedDocumentKey));
+                
+                if (depth != null && depth > 1) {
+                    // They specified a depth for this config, so we expand that out into individual steps here
+                    int count = 0;
+                    
+                    relationsToExpand.add(new RelationToExpand(new RelatedDataRelationSource(rdfc.getRelatedKey().get(), rdfc.getMetadataKey()), relatedDocumentKey + count));
+                    while (count < depth) {
+                        relationsToExpand.add(new RelationToExpand(new RelatedDataRelationSource(relatedDocumentKey + count, rdfc.getMetadataKey()), relatedDocumentKey + (count + 1)));
+                        count++;
+                    }
+                } else {
+                    relationsToExpand.add(new RelationToExpand(new RelatedDataRelationSource(rdfc.getRelatedKey().get(), rdfc.getMetadataKey()), relatedDocumentKey));                    
+                }
             } else {
                 throw new RuntimeException("Unknown type of related document fetching requested - " + rdfc.getRelatedDocumentFetchSourceType());
             }
@@ -159,7 +172,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
             .collect(Collectors.toSet());
     }
 
-    private SetMultimap<URI, RelatedDataTarget> createActionsForThisPass(List<Result> results,
+    /* private if not for testing */ public  SetMultimap<URI, RelatedDataTarget> createActionsForThisPass(List<Result> results,
         List<RelationToExpand> relationsToExpand) {
         SetMultimap<URI, RelatedDataTarget> actionsForThisPass = MultimapBuilder.hashKeys().hashSetValues().build();
 
