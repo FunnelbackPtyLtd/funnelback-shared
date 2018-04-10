@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.funnelback.publicui.search.model.related.RelatedDocument;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -194,7 +196,18 @@ public class Result implements ResultType {
      * stored by hook scripts.
      */
     @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
-    
+
+    /**
+     * Documents related to this result which have been fetched by RelatedDocumentFetcher.
+     * 
+     * The map key is chosen by the related document fetching configuration and the
+     * set of related documents are those that were fetched based on the metadata
+     * relationships traversed by the configuration.
+     *
+     * @since 15.16
+     */
+    @Getter private final Map<String, Set<RelatedDocument>> relatedDocuments = new HashMap<>();
+
     @Getter @Setter private boolean documentVisibleToUser = true;
     
     /**

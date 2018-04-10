@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -30,6 +31,7 @@ import lombok.extern.log4j.Log4j2;
 public class DataAPIConnectorPADRE implements DataAPI {
 
     @Autowired
+    @Setter
     private File searchHome;
     
     /**
