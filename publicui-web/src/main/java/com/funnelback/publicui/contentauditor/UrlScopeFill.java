@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -35,7 +36,15 @@ import lombok.ToString;
  * 
  * Facet selections are done using padre's scope query processor option (see {@link
  * com.funnelback.publicui.search.lifecycle.input.processors.FacetedNavigation})
- * which I suspect may not be as efficient as we might ideally like here.
+ * which I suspect may not be as efficient as we might ideally like here. 
+ * 
+ * TODO doesn't actually work, the scope is really a does this url contain type check
+ * rather than the wanted prefix and sometimes case sensitive check.
+ * 
+ * TODO doesn't show the correct values the domain part of the URI is case
+ * insensitive yet this shows com/ and COM/ as separate values. Yet when clicking
+ * either we see results from both.
+ *
  */
 @Controller
 public class UrlScopeFill extends URLFill {
@@ -55,10 +64,8 @@ public class UrlScopeFill extends URLFill {
             List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
             
             // Find out the currently selected value and its depth
-            String currentlySelectedValue = st.getQuestion().getInputParameterMap().get(this.getQueryStringParamName());
-            if (currentlySelectedValue == null) {
-                currentlySelectedValue = "";
-            }
+            String currentlySelectedValue = getCurrentConstraint(st.getQuestion()).orElse("");
+            
             int currentDepth = countSegments(currentlySelectedValue);
             
             SegmentCountTable segmentCounts = new SegmentCountTable();
@@ -187,31 +194,29 @@ public class UrlScopeFill extends URLFill {
         public boolean matches(String value, String extraParams) {
             return TAG.equals(extraParams);
         }
-
-        /** TODO */
-        public String getScopeConstraint() {
-            return this.getData();
+        
+        @Override
+        protected Optional<QueryProcessorOption<?>> facetScopeToRestrictTo(SearchQuestion question) {
+            // It again makes sense here to take the first constraint as previously we only considered that one.
+            // Note that for this the value contains everything we need to know about the scope.
+            // TODO SCOPE is the wrong thing to use it only foes a contains check where what we want is a
+            // lower case does the domain start with with the requirement that the full segment of the
+            // domain is matched e.g. if value is foo.com then
+            // domain        | Current behaviour | Wanted Behaviour
+            // foo.com/      | Matches           | Matches
+            // bfoo.com/     | Matches           | Should not match
+            // bar.foo.com/  | Matches           | Matches
+            // plop/foo.com/ | Matches           | Should not match
+            return getCurrentConstraint(question)
+                .map(value -> new QueryProcessorOption<String>(QueryProcessorOptionKeys.SCOPE , value));
         }
         
         @Override
-        public String getQueryConstraint(String value) {
-            // No query constraint, scoping is done
-            // Via QPOs (-scope=)
-            return "";
+        protected String fullCurrentConstraintForCounting(SearchQuestion sq) {
+            // The current constraint will either not be set or 
+            // at the very least contain the last segment of the domain.
+            return getCurrentConstraint(sq).orElse("");
         }
-        
-        @Override
-        public List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question) {
-            // Make a copy of the list as the super one is immutable
-            List<QueryProcessorOption<?>> qpOptions = new ArrayList<>(super.getQueryProcessorOptions(question));
-            if (question.getSelectedFacets().contains(facetName)) {
-                question.getSelectedCategoryValues().get(getQueryStringParamName())
-                    .stream()
-                    .forEach(value -> qpOptions.add(new QueryProcessorOption<String>(QueryProcessorOptionKeys.SCOPE , value)));
-            }
-            
-            return qpOptions;
-        }        
 
         @ToString
         public class SegmentCountTable {

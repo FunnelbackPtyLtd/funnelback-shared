@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,6 +12,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -24,7 +25,6 @@ import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
-import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.google.common.base.Predicates;
@@ -40,7 +40,7 @@ import lombok.extern.log4j.Log4j2;
  * @since 11.0
  */
 @Log4j2
-public class URLFill extends CategoryDefinition implements MetadataBasedCategory {
+public class URLFill extends CategoryDefinition {
     
     /**
      * Minimum value for <code>-count_urls</code> option. This option is 1-based,
@@ -74,19 +74,39 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     
     private final static Function<String, String> fixURL = (url) -> {
         // Strip 'http://' prefixes as PADRE strips them.
-        url = url.replaceFirst("^http://", "");
+        
         
         if (url.startsWith(VFSURLUtils.WINDOWS_URL_PREFIX)) {
             // Windows style url \\server\share\folder\file.ext
             // Convert to smb://... so that URLs returned by PADRE will match
           url = VFSURLUtils.SystemUrlToVFSUrl(url);
           if(url.endsWith("//")) {
-              return url.substring(0, url.length()-1);
+              url = url.substring(0, url.length()-1);
           }
-          return url;
-        } else {
-            return url;
         }
+        
+        // lowercase the domain and schema
+        int schemeSepStart = url.indexOf("://");
+        if(schemeSepStart == -1) {
+            // sometimes we wont have http:// because padre drops it in a bunch of places this
+            // makes this code risky assume everythig up to the first / is the domain
+            schemeSepStart = 0;
+        }
+        
+        // find where the path starts
+        int pathStart = url.indexOf('/', schemeSepStart + 3);
+        if(pathStart == -1) {
+            pathStart = url.length();
+        }
+        
+        String schemeAndDomain = url.substring(0, pathStart);
+        String path = url.substring(pathStart, url.length());
+        url = schemeAndDomain.toLowerCase() + path;
+        
+        
+        url = url.replaceFirst("^http://", "");
+        
+        return url;
     };
     
     public URLFill(String url) {
@@ -97,8 +117,6 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     /** Identifier used in query string parameter. */
     public static final String TAG = "url";
     
-    /** URLs are indexed in the metadata class <tt>v</tt> */
-    private static final String MD = "v";
     
     /** {@inheritDoc} */
     @Override
@@ -111,41 +129,28 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         
         
         
-        String url = data;
+        String url = fixURL.apply(data);
 
         // Find out which URL is currently selected. By default
         // it's the root folder specified in the faceted nav. config.
-        String currentConstraint = url;
-        List<String> currentConstraints = st.getQuestion().getSelectedCategoryValues().get(getQueryStringParamName());
-        if (currentConstraints != null) {
-            if (currentConstraints.size() > 1) {
-                log.warn("More than one URL constraint was selected: '"+StringUtils.join(currentConstraints, ",")
-                    +"'. This is not supported, only '" + currentConstraints.get(0) + "' will be considered");
-            }
-            currentConstraint = currentConstraints.get(0);
-        }
+        
+        // Holds either the current constraint (which will just be a path section)
+        // or if no constraint is actually set (from the URL) then pretend the
+        // constraint is the user set url.
+        Optional<String> actualCurrentConstraint = getCurrentConstraint(st.getQuestion());
+        String currentConstraint = actualCurrentConstraint.orElse(url);
         
         // Find out what the selected items are, we will remove from this list as we find 
         // the items from the padre result packet. Anything left over will be faked with a 
         // zero count so the user can unselect it.
-        Set<String> selectedItems = new HashSet<>(getSelectedItems(Optional.ofNullable(currentConstraints)
-                                                                    .orElse(Collections.emptyList())
-                                                                    .stream()
-                                                                    .findFirst(), 
-                                                                    url));
-        
-        // Fix URLs and lower case them as comparisons are case-insensitive.
-        url = fixURL.apply(url).toLowerCase();
-        currentConstraint = fixURL.apply(currentConstraint).toLowerCase();
-        
+        Set<String> selectedItems = new HashSet<>(getSelectedItems(actualCurrentConstraint, url));
         
         List<Pair<Integer, CategoryValueComputedDataHolder>> depthAndValues = new ArrayList<>();
-        
         
         for (Entry<String, Integer> entry: st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
             // Do not toLowerCase() here, we still want the original data from Padre
             // with the correct case to display
-            String item = entry.getKey().replaceFirst("^http://", "");
+            String item = fixURL.apply(entry.getKey());
             int count = entry.getValue();
             workoutValue(item, count, url, currentConstraint).ifPresent(depthAndValues::add);
             selectedItems.remove(item);
@@ -167,14 +172,41 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     }
     
     /**
+     * Use this to get the single constraint from the list of currentConstraints
+     * 
+     * At this point if the response packet URLs are respected we should never have
+     * more than one constraint. Although it might happen from bad input, we take the first
+     * 
+     * @param currentConstraints
+     * @return
+     */
+    protected Optional<String> getCurrentConstraint(SearchQuestion sq) {
+        List<String> currentConstraints = sq.getSelectedCategoryValues().get(getQueryStringParamName());
+        if (currentConstraints != null) {
+            if (currentConstraints.size() > 1) {
+                log.warn("More than one URL constraint was selected: '"+StringUtils.join(currentConstraints, ",")
+                    +"'. This is not supported, only '" + currentConstraints.get(0) + "' will be considered");
+            }
+            return Optional.ofNullable(currentConstraints.get(0));
+        }
+        return Optional.empty();
+    }
+    
+    public String fixedUrl() {
+        return fixURL.apply(data);
+    }
+    
+    /**
      * By looking at the URL the user sets on the facet definition and the current constraint
      * this will return the selected items that padre may return if the result set has documents 
      * under those directories.
      * e.g. if the url is foo.com/1/ and the curentConstraint is 1/bar/foo then this will return
      * foo.com/1/bar and foo.com/1/bar/foo
      * 
-     * @param currentConstraint
-     * @param url
+     * @param currentConstraint the current constraint which will be some path under the users URL
+     * @param url the prefix set by the user that all URLs must be undert the constraint is deeper under 
+     * this e.g. if url is http://foo.com/ and constraint is bar then we would see URLs under
+     * http://foo.com/bar/
      * @return
      */
     public static List<String> getSelectedItems(Optional<String> currentConstraintOpt, String url) {
@@ -185,8 +217,8 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         
         // The path of the url is in the constraint when selected we need to strip
         // that from the constraint
-        String prefix = toUrlValue(fixURL.apply(url).toLowerCase());
-        if(!currentConstraint.toLowerCase().startsWith(prefix)) {
+        String prefix = toUrlValue(fixURL.apply(url));
+        if(!currentConstraint.startsWith(prefix)) {
             // I think this happens only when the facet definition changes while someone is using the facet.
             // or when the facet is not selected.
             return new ArrayList<>();
@@ -255,13 +287,16 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         return item.replaceFirst("(\\w+://)?[^/]*/", "");
     }
     
-    private Optional<Pair<Integer, CategoryValueComputedDataHolder>> workoutValue(String item, int count, String url, String currentConstraint) 
+    private Optional<Pair<Integer, CategoryValueComputedDataHolder>> workoutValue(String item, 
+                    int count, 
+                    String url, 
+                    String currentConstraint) 
             throws UnsupportedEncodingException {
         
-        if (item.toLowerCase().startsWith(url)
+        if (item.startsWith(url)
                 // Only consider parent items (which are de facto selected)
                 // and 1-depth children (Padre may return deeper children)
-                && getDepth(currentConstraint, item.toLowerCase()) <= 1) {
+                && getDepth(currentConstraint, item) <= 1) {
             
             String vValue = toUrlValue(item);
     
@@ -284,14 +319,14 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
                     URLDecoder.decode(relativeItem, "UTF-8"),
                     URLDecoder.decode(label, "UTF-8"),
                     count,
-                    getMetadataClass(),
+                    "", // Constraint is a prefix, this is not used so it doesn't matter.
                     // A URL fill value is selected if it's a parent or equal of the current constraint,
                     // because the parents had to be traversed to reach the current constraint.
                     // e.g with smb:///server/folder1/folder2/file3.txt the values
                     // "folder1" and "folder2" were selected to reach "file3.txt"
                     // So set selected=true to all parents and current values, but not
                     // for deeper ones
-                    getDepth(currentConstraint, item.toLowerCase()) <= 0,
+                    getDepth(currentConstraint, item) <= 0,
                     getQueryStringParamName(),
                     vValue
                     )));
@@ -321,23 +356,6 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     public boolean matches(String value, String extraParams) {
         return TAG.equals(extraParams);
     }
-    
-    /** {@inheritDoc} */
-    @Override
-    public String getMetadataClass() {
-        return MD;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    @SneakyThrows(UnsupportedEncodingException.class)
-    public String getQueryConstraint(String value) {
-        // FUN-7440: The value (path constraint) needs to be URL decoded here
-        // because PADRE will actually strip out punctuation from the query
-        // e.g. v:"with%20spaces" will be processed as v:"with 20spaces", where what
-        // we want is "v:with spaces"
-        return  MD + ":\"" + URLDecoder.decode(value, "UTF-8") + "\"";
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -363,15 +381,64 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     public List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question) {
         
         // Find maxmimum number of segments among all selected values as well as the URL prefix.
-        int maxSegments = Stream.concat(getSelectedValues(question), Stream.of(fixURL.apply(this.data)))
-            .map(URLFill::countSegments)
-            .reduce(Integer::max)
-            .orElse(DEFAULT_SEGMENTS);
+        int maxSegments = Integer.max(countSegments(fullCurrentConstraintForCounting(question)), 0);
         
-        return Collections.singletonList(new QueryProcessorOption<Integer>(
+        List<QueryProcessorOption<?>> qpOptions = new ArrayList<>();
+        qpOptions.add(new QueryProcessorOption<Integer>(
             QueryProcessorOptionKeys.COUNT_URLS,
             COUNT_URLS_START_VALUE + maxSegments + COUNT_URLS_INCREMENT));
+        facetScopeToRestrictTo(question).ifPresent(qpOptions::add);
+        return Collections.unmodifiableList(qpOptions);
+    }
+    
+    protected Optional<QueryProcessorOption<?>> facetScopeToRestrictTo(SearchQuestion question) {
+        return getCurrentConstraint(question)
+            .map(this::joinConstraintToUserPrefix)
+            .map(prefix -> new QueryProcessorOption<>("fscope", prefix));
+    }
+    
+    /**
+     * Must return a string which will have the number of segments counted to 
+     * determine how deep -count_urls needs to be.
+     * 
+     * returned value must include the host.
+     * @param sq
+     * @return
+     */
+    protected String fullCurrentConstraintForCounting(SearchQuestion sq) {
+        return joinConstraintToUserPrefix(getCurrentConstraint(sq).orElse(""));
+    }
+    
+    /**
+     * Joins the selected constraint (which is a path under the user URL prefix) to the URL
+     * prefix.
+     * 
+     * This takes care of slashes and makes some effort to ensure that we don't join with
+     * double slashes and we have a trailing slash to ensure the prefix check works.
+     *
+     * @param constraint
+     * @return
+     */
+    String joinConstraintToUserPrefix(String constraint) {
+        // URL always includes up to the host
+        String url = fixedUrl();
+        String sep = "/";
         
+        if(url.endsWith("/") || constraint.startsWith("/")) {
+            sep = "";
+        }
+        
+        if(url.endsWith("/") && constraint.startsWith("/")) {
+            constraint = constraint.substring(1);
+        }
+        
+        // Add trailing "/" so that it is easier for padre to work out which URLs
+        // are below the folder.
+        if(!constraint.endsWith("/")) {
+            constraint = constraint + "/";
+        }
+        
+        return url + sep + constraint;
     }
 
     /**

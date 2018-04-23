@@ -3,7 +3,6 @@ package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,15 +30,14 @@ public class URLFillTest {
     
     @Before
     public void before() {
-        category = new URLFill("http://example.org/");
+        category = new URLFill("https://example.org/");
         category.setFacetName("facetName");
         category.setLabel("label");
     }
     
     @Test
     public void testFields() {
-        Assert.assertEquals("http://example.org/", category.getData());
-        Assert.assertEquals("v", category.getMetadataClass());
+        Assert.assertEquals("https://example.org/", category.getData());
         Assert.assertEquals("facetName", category.getFacetName());
         Assert.assertEquals("label", category.getLabel());
         
@@ -47,29 +45,32 @@ public class URLFillTest {
     }
     
     @Test
-    public void testConstraint() {
-        Assert.assertEquals("v:\"http://example.org/about\"", category.getQueryConstraint("http://example.org/about"));
-    }
-    
-    @Test
     public void testQPOs() {
         SearchQuestion question = new SearchQuestion();
         question.getSelectedFacets().add("facetName");
-        question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("https://example.org/products"));
+        question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("products"));
         
         List<QueryProcessorOption<?>> actual = category.getQueryProcessorOptions(question);
-        Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_urls", 4)), actual);
+        Assert.assertEquals(new QueryProcessorOption<>("count_urls", 4), actual.get(0));
+        
+        Assert.assertEquals(new QueryProcessorOption<>("fscope", "https://example.org/products/"), actual.get(1));
+        
     }
-
+    
     @Test
     public void testQPOsMultipleValues() {
         SearchQuestion question = new SearchQuestion();
         question.getSelectedFacets().add("facetName");
-        question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("https://example.org/products",
-            "example.org/about/company", "example.org/produts/vacuum-cleaners/bagless/dyson"));
+        question.getSelectedCategoryValues().put("f.facetName|url", 
+            Lists.newArrayList("produts/vacuum-cleaners/bagless/dyson",
+                                    "about/company", 
+                                    "products",
+                                    "produts/vacuum-cleaners/bagless/dyson/air/expensive"));
 
         List<QueryProcessorOption<?>> actual = category.getQueryProcessorOptions(question);
-        Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_urls", 1 + 4 + 2)), actual);
+        // It should respect the first selected value only
+        Assert.assertEquals(Arrays.asList(new QueryProcessorOption<>("count_urls", 1 + 4 + 2),
+            new QueryProcessorOption<>("fscope", "https://example.org/produts/vacuum-cleaners/bagless/dyson/")), actual);
     }
     
     
@@ -77,12 +78,13 @@ public class URLFillTest {
     public void testLongURLPrefix() {
         SearchQuestion question = new SearchQuestion();
         question.getSelectedFacets().add("facetName");
-        question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("https://example.org/products"));
+        question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("products"));
 
         URLFill urlFill = new URLFill("http://foo.com/1/2/3/4/5/6/7/8/9/0");
+        urlFill.setFacetName("facetName");
         List<QueryProcessorOption<?>> actual = urlFill.getQueryProcessorOptions(question);
         Assert.assertEquals("We must have a count_urls depth that is deeper than the URL prefix of the category.",
-            Collections.singletonList(new QueryProcessorOption<>("count_urls", 13)), actual);
+            new QueryProcessorOption<>("count_urls", 10 + 1 + 1 + 2), actual.get(0));
     }
     
     @Test
@@ -133,8 +135,8 @@ public class URLFillTest {
    }
    
    @Test
-   public void testGetSelectedItemsCaseIsIgnored() throws Exception {
-       String currentConstraint = "home/luke/Documents";
+   public void testGetSelectedItemsCaseRespected() throws Exception {
+       String currentConstraint = "Home/luke/Documents";
        String url = "http://win.win/Home";
        List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
        Assert.assertTrue(items.contains("win.win/Home/luke"));
@@ -202,5 +204,14 @@ public class URLFillTest {
        
        Assert.assertEquals(0, result.size());
    }
-    
+   
+   @Test
+   public void testCreatingConstraint() {
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("/foo/"));
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("/foo"));
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("foo"));
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserPrefix("foo"));
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserPrefix("/foo"));
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("HTTPS://Foo.COM/bar").joinConstraintToUserPrefix("/foo"));
+   }
 }

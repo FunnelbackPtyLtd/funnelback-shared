@@ -39,6 +39,8 @@ public class CategoryValueComputedDataHolder {
      * 
      * @since 15.14
      */
+    // TODO need to deprecate this as it is only used in testing
+    // probably because it is unclear as to what the data in it is
     @Getter @Setter private String constraint;
     
     /**
