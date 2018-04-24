@@ -3,6 +3,7 @@ package com.funnelback.publicui.test.contentauditor;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,11 +11,12 @@ import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import org.mockito.Mockito;
 
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 public class UrlScopeFillTests {
 
@@ -117,7 +119,7 @@ public class UrlScopeFillTests {
 
         SearchTransaction st = mock(SearchTransaction.class, Mockito.RETURNS_DEEP_STUBS);
         when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
-        when(st.getQuestion().getInputParameterMap().get(new UrlScopeFill("").getQueryStringParamName())).thenReturn("example.com/foo");
+        when(st.getQuestion().getSelectedCategoryValues().get(new UrlScopeFill("").getQueryStringParamName())).thenReturn(Arrays.asList("example.com/foo"));
 
         List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st, mock(FacetDefinition.class));
 
