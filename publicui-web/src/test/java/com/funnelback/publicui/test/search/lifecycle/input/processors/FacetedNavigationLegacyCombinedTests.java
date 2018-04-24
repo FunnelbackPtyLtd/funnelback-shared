@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -67,14 +68,11 @@ public class FacetedNavigationLegacyCombinedTests {
         Assert.assertTrue(gscopesConstrains.contains("1"));
         Assert.assertTrue(gscopesConstrains.contains("10"));
         Assert.assertTrue(gscopesConstrains.contains("41"));
-        Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertEquals(1, st.getQuestion().getFacetsQueryConstraints().size());
         
         Assert.assertTrue(
             "we should see: '|[d:\"$++ 1600-01-01 $++\" d:\"$++ 1500-01-01 $++\"]' in facet query constraints",
             st.getQuestion().getFacetsQueryConstraints().contains("|[d:\"$++ 1600-01-01 $++\" d:\"$++ 1500-01-01 $++\"]"));
-        Assert.assertTrue("we should see: '|v:\"Shakespeare/cleopatra\"' in facet query constraints", 
-            st.getQuestion().getFacetsQueryConstraints().contains("|v:\"Shakespeare/cleopatra\""));
-        
     }
     
     @Test

@@ -1,15 +1,17 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Resource;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+
+import javax.annotation.Resource;
+
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -63,7 +65,6 @@ public class FacetedNavigationURLSmbTests {
         Assert.assertEquals(37, c.getValues().size());
         
         Facet.CategoryValue cv = c.getValues().get(0);
-        Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(46, cv.getCount() + 0);
         Assert.assertEquals("cleopatra", cv.getData());
         Assert.assertEquals("cleopatra", cv.getLabel());
@@ -72,7 +73,6 @@ public class FacetedNavigationURLSmbTests {
 
         // Check a category with encoded strings
         cv = c.getValues().get(1);
-        Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(44, cv.getCount() + 0);
         Assert.assertEquals("with spaces & ampersand", cv.getData());
         Assert.assertEquals("with spaces & ampersand", cv.getLabel());

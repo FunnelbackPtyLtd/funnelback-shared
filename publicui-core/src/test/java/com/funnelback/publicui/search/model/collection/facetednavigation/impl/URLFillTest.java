@@ -130,7 +130,8 @@ public class URLFillTest {
        String url = "\\\\win.win\\home\\/";
        List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
        Assert.assertTrue(items.contains("smb://win.win/home/luke"));
-       Assert.assertTrue(items.contains("smb://win.win/home/luke/Documents"));
+       // Note that case is dropped!
+       Assert.assertTrue(items.contains("smb://win.win/home/luke/documents"));
        Assert.assertEquals(2, items.size());
    }
    

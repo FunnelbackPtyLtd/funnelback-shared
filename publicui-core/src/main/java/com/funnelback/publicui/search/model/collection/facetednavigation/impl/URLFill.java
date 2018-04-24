@@ -3,8 +3,10 @@ package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -72,7 +74,7 @@ public class URLFill extends CategoryDefinition {
      */
     public final static int DEFAULT_SEGMENTS = 1;
     
-    private final static Function<String, String> fixURL = (url) -> {
+    private static Function<String, String> fixURL = (url) -> {
         // Strip 'http://' prefixes as PADRE strips them.
         
         
@@ -85,23 +87,28 @@ public class URLFill extends CategoryDefinition {
           }
         }
         
-        // lowercase the domain and schema
-        int schemeSepStart = url.indexOf("://");
-        if(schemeSepStart == -1) {
-            // sometimes we wont have http:// because padre drops it in a bunch of places this
-            // makes this code risky assume everythig up to the first / is the domain
-            schemeSepStart = 0;
-        }
         
-        // find where the path starts
-        int pathStart = url.indexOf('/', schemeSepStart + 3);
-        if(pathStart == -1) {
-            pathStart = url.length();
+        if(url.toLowerCase().startsWith("smb://")) {
+            url = url.toLowerCase();
+        } else {
+            // lowercase the domain and schema
+            int schemeSepStart = url.indexOf("://");
+            if(schemeSepStart == -1) {
+                // sometimes we wont have http:// because padre drops it in a bunch of places this
+                // makes this code risky assume everythig up to the first / is the domain
+                schemeSepStart = 0;
+            }
+            
+            // find where the path starts
+            int pathStart = url.indexOf('/', schemeSepStart + 3);
+            if(pathStart == -1) {
+                pathStart = url.length();
+            }
+            
+            String schemeAndDomain = url.substring(0, pathStart);
+            String path = url.substring(pathStart, url.length());
+            url = schemeAndDomain.toLowerCase() + path;
         }
-        
-        String schemeAndDomain = url.substring(0, pathStart);
-        String path = url.substring(pathStart, url.length());
-        url = schemeAndDomain.toLowerCase() + path;
         
         
         url = url.replaceFirst("^http://", "");
@@ -147,10 +154,19 @@ public class URLFill extends CategoryDefinition {
         
         List<Pair<Integer, CategoryValueComputedDataHolder>> depthAndValues = new ArrayList<>();
         
-        for (Entry<String, Integer> entry: st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
+        // It is possible thay fixing the URL reduces different URLs to be considered the same
+        // e.g. smb://foo/AA/bar.doc and smb://foo/Aa/plop.doc both files are actually
+        // in the same location. The down side of doing this is we never preserve case.
+        Map<String, Integer> urlEntries = new HashMap<>(); 
+        st.getResponse().getResultPacket().getUrlCounts().entrySet()
+            .stream()
+            .map(e -> Pair.of(fixURL.apply(e.getKey()), e.getValue()))
+            .forEach(e -> urlEntries.merge(e.getKey(), e.getValue(), Integer::sum));
+        
+        for (Entry<String, Integer> entry : urlEntries.entrySet()) {
             // Do not toLowerCase() here, we still want the original data from Padre
             // with the correct case to display
-            String item = fixURL.apply(entry.getKey());
+            String item = entry.getKey();
             int count = entry.getValue();
             workoutValue(item, count, url, currentConstraint).ifPresent(depthAndValues::add);
             selectedItems.remove(item);
@@ -287,6 +303,15 @@ public class URLFill extends CategoryDefinition {
         return item.replaceFirst("(\\w+://)?[^/]*/", "");
     }
     
+    /**
+     * 
+     * @param item comes from padre's URL counts.
+     * @param count
+     * @param url
+     * @param currentConstraint
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     private Optional<Pair<Integer, CategoryValueComputedDataHolder>> workoutValue(String item, 
                     int count, 
                     String url, 
