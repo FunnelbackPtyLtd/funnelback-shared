@@ -199,9 +199,9 @@ public class UrlScopeFill extends URLFill {
         protected Optional<QueryProcessorOption<?>> facetScopeToRestrictTo(SearchQuestion question) {
             // It again makes sense here to take the first constraint as previously we only considered that one.
             // Note that for this the value contains everything we need to know about the scope.
-            // TODO SCOPE is the wrong thing to use it only foes a contains check where what we want is a
-            // lower case does the domain start with with the requirement that the full segment of the
-            // domain is matched e.g. if value is foo.com then
+            // TODO SCOPE is the wrong thing to use it only does a contains check where what we want is a
+            // lower case does the domain end with some other domain 
+            // e.g. if value is foo.com then:
             // domain        | Current behaviour | Wanted Behaviour
             // foo.com/      | Matches           | Matches
             // bfoo.com/     | Matches           | Should not match
