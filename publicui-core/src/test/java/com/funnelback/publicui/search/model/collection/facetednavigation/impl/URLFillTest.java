@@ -15,6 +15,7 @@ import org.junit.Test;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.urlfill.FacetURL;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -115,33 +116,33 @@ public class URLFillTest {
     
    @Test
    public void testGetDepth() {
-       Assert.assertEquals(2, URLFill.getDepth("folder1", "smb://server/folder1/folder2/folder3"));
-       Assert.assertEquals(1, URLFill.getDepth("folder1/folder2", "smb://server/folder1/folder2/folder3"));
-       Assert.assertEquals(0, URLFill.getDepth("folder1/folder2/folder3", "smb://server/folder1/folder2/folder3"));
+       Assert.assertEquals(2, URLFill.getDepth(new FacetURL("smb://server/folder1"), new FacetURL("smb://server/folder1/folder2/folder3")));
+       Assert.assertEquals(1, URLFill.getDepth(new FacetURL("smb://server/folder1/folder2"), new FacetURL("smb://server/folder1/folder2/folder3")));
+       Assert.assertEquals(0, URLFill.getDepth(new FacetURL("smb://server/folder1/folder2/folder3"), new FacetURL("smb://server/folder1/folder2/folder3")));
        
-       Assert.assertEquals(-1, URLFill.getDepth("folder1/folder2/folder4", "smb://server/folder1/folder2/folder3/"));
-       Assert.assertEquals(-1, URLFill.getDepth("folder0/folder1", "smb://server/folder1/folder2/folder3"));
-       Assert.assertEquals(-1, URLFill.getDepth("dummy", "smb://server/folder1/folder2/folder3"));
+       Assert.assertEquals(-1, URLFill.getDepth(new FacetURL("smb://server/folder1/folder2/folder4"), new FacetURL("smb://server/folder1/folder2/folder3/")));
+       Assert.assertEquals(-1, URLFill.getDepth(new FacetURL("smb://server/folder0/folder1"), new FacetURL("smb://server/folder1/folder2/folder3")));
+       Assert.assertEquals(-1, URLFill.getDepth(new FacetURL("smb://dummy"), new FacetURL("smb://server/folder1/folder2/folder3")));
    }
    
    @Test
    public void testGetSelectedItemsVVSUrls() throws Exception {
-       String currentConstraint = "home/luke/Documents";
+       String currentConstraint = "luke/Documents/";
        String url = "\\\\win.win\\home\\/";
-       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
-       Assert.assertTrue(items.contains("smb://win.win/home/luke"));
-       // Note that case is dropped!
-       Assert.assertTrue(items.contains("smb://win.win/home/luke/documents"));
+       List<FacetURL> items = URLFill.getSelectedItems(Optional.of(currentConstraint), new FacetURL(url));
+       Assert.assertTrue(items.contains(new FacetURL("smb://win.win/home/luke")));
+       Assert.assertTrue(items.contains(new FacetURL("smb://win.win/home/luke/Documents")));
        Assert.assertEquals(2, items.size());
    }
    
    @Test
    public void testGetSelectedItemsCaseRespected() throws Exception {
-       String currentConstraint = "Home/luke/Documents";
+       String currentConstraint = "luke/Documents/";
        String url = "http://win.win/Home";
-       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
-       Assert.assertTrue(items.contains("win.win/Home/luke"));
-       Assert.assertTrue(items.contains("win.win/Home/luke/Documents"));
+       List<FacetURL> items = URLFill.getSelectedItems(Optional.of(currentConstraint), new FacetURL(url));
+       
+       Assert.assertTrue(items.contains(new FacetURL("http://win.win/Home/luke")));
+       Assert.assertTrue(items.contains(new FacetURL("http://win.win/Home/luke/Documents")));
        Assert.assertEquals(2, items.size());
    }
    
@@ -149,7 +150,7 @@ public class URLFillTest {
    public void testGetSelectedItemsNothingSelected() throws Exception {
        String currentConstraint = "";
        String url = "\\\\win.win\\home\\/";
-       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
+       List<FacetURL> items = URLFill.getSelectedItems(Optional.of(currentConstraint), new FacetURL(url));
        Assert.assertEquals(0, items.size());
    }
    
@@ -157,14 +158,14 @@ public class URLFillTest {
    public void testGetSelectedItemsHttps() throws Exception {
        String currentConstraint = "bar";
        String url = "https://www.funnelback.com/";
-       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
+       List<FacetURL> items = URLFill.getSelectedItems(Optional.of(currentConstraint), new FacetURL(url));
        Assert.assertEquals(1, items.size());
    }
    
    @Test
    public void testGetSelectedItemsNoConstraint() throws Exception {
        String url = "https://www.funnelback.com/";
-       List<String> items = URLFill.getSelectedItems(Optional.empty(), url);
+       List<FacetURL> items = URLFill.getSelectedItems(Optional.empty(), new FacetURL(url));
        Assert.assertEquals(0, items.size());
    }
    
@@ -175,7 +176,7 @@ public class URLFillTest {
        st.getResponse().setResultPacket(new ResultPacket());
        
        st.getQuestion().getSelectedCategoryValues().put(urlFill.getQueryStringParamName(), 
-           Arrays.asList("1/bar/Fruit"));
+           Arrays.asList("bar/Fruit"));
        
        Map<String, Integer> urlCounts = st.getResponse().getResultPacket().getUrlCounts();
        
@@ -208,12 +209,13 @@ public class URLFillTest {
    
    @Test
    public void testCreatingConstraint() {
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("/foo/"));
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("/foo"));
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("foo"));
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserPrefix("foo"));
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserPrefix("/foo"));
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("HTTPS://Foo.COM/bar").joinConstraintToUserPrefix("/foo"));
-       Assert.assertEquals("https:///Bar/foo/", new URLFill("HTTPS:///Bar").joinConstraintToUserPrefix("/foo"));
+       // We are conserned about not doubling up on slashes / here don't worry about the case 
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("/foo/").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("/foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserPrefix("foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserPrefix("/foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("HTTPS://Foo.COM/bar").joinConstraintToUserPrefix("/foo").getUrlForComparison());
+       Assert.assertEquals("https:///Bar/foo/", new URLFill("HTTPS:///Bar").joinConstraintToUserPrefix("/foo").getUrlForComparison());
    }
 }

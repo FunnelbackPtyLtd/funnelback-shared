@@ -1,15 +1,17 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Resource;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+
+import javax.annotation.Resource;
+
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -96,11 +98,10 @@ public class FacetedNavigationURLTests {
         Assert.assertEquals(36, c.getValues().size());
         
         Facet.CategoryValue cv = c.getValues().get(0);
-        Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(46, cv.getCount() + 0);
         Assert.assertEquals("cleopatra", cv.getData());
         Assert.assertEquals("cleopatra", cv.getLabel());
-        Assert.assertEquals("f.By+URL%7Curl=Shakespeare%2Fcleopatra", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+URL%7Curl=cleopatra", cv.getQueryStringParam());
         Assert.assertFalse(cv.isSelected());
         
         // No sub-categories should be returned since nothing
@@ -133,11 +134,10 @@ public class FacetedNavigationURLTests {
 
         Assert.assertEquals(1, c.getValues().size());
         CategoryValue cv = c.getValues().get(0);
-        Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(46, cv.getCount() + 0);
         Assert.assertEquals("cleopatra", cv.getData());
         Assert.assertEquals("cleopatra", cv.getLabel());
-        Assert.assertEquals("f.By+URL%7Curl=Shakespeare%2Fcleopatra", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+URL%7Curl=cleopatra", cv.getQueryStringParam());
         Assert.assertTrue(cv.isSelected());
     }
     

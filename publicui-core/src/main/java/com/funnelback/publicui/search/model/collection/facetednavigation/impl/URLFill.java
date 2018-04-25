@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,11 +21,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.funnelback.common.function.StreamUtils;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
-import com.funnelback.common.url.VFSURLUtils;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.urlfill.FacetURL;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.google.common.base.Predicates;
@@ -74,48 +73,6 @@ public class URLFill extends CategoryDefinition {
      */
     public final static int DEFAULT_SEGMENTS = 1;
     
-    private static Function<String, String> fixURL = (url) -> {
-        // Strip 'http://' prefixes as PADRE strips them.
-        
-        
-        if (url.startsWith(VFSURLUtils.WINDOWS_URL_PREFIX)) {
-            // Windows style url \\server\share\folder\file.ext
-            // Convert to smb://... so that URLs returned by PADRE will match
-          url = VFSURLUtils.SystemUrlToVFSUrl(url);
-          if(url.endsWith("//")) {
-              url = url.substring(0, url.length()-1);
-          }
-        }
-        
-        
-        if(url.toLowerCase().startsWith("smb://")) {
-            url = url.toLowerCase();
-        } else {
-            // lowercase the domain and schema
-            int schemeSepStart = url.indexOf("://");
-            if(schemeSepStart == -1) {
-                // sometimes we wont have http:// because padre drops it in a bunch of places this
-                // makes this code risky assume everythig up to the first / is the domain
-                schemeSepStart = 0;
-            }
-            
-            // find where the path starts
-            int pathStart = url.indexOf('/', schemeSepStart + 3);
-            if(pathStart == -1) {
-                pathStart = url.length();
-            }
-            
-            String schemeAndDomain = url.substring(0, pathStart);
-            String path = url.substring(pathStart, url.length());
-            url = schemeAndDomain.toLowerCase() + path;
-        }
-        
-        
-        url = url.replaceFirst("^http://", "");
-        
-        return url;
-    };
-    
     public URLFill(String url) {
         super(url);
         this.setData(url); // We reset data as we need to ensure the data is set correctly
@@ -130,52 +87,31 @@ public class URLFill extends CategoryDefinition {
     @SneakyThrows(UnsupportedEncodingException.class)
     public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st, FacetDefinition facetDefinition) {
         
-        // Note that Date facets are incompatible with getting data from the Unscoped query.
-        // this is because Date facets by nature force hierarchy where data from the unscoped
-        // query implies no hierarchy
+        FacetURL url = fixedUrl();
         
-        
-        
-        String url = fixURL.apply(data);
-
-        // Find out which URL is currently selected. By default
-        // it's the root folder specified in the faceted nav. config.
-        
-        // Holds either the current constraint (which will just be a path section)
-        // or if no constraint is actually set (from the URL) then pretend the
-        // constraint is the user set url.
         Optional<String> actualCurrentConstraint = getCurrentConstraint(st.getQuestion());
-        String currentConstraint = actualCurrentConstraint.orElse(url);
+        FacetURL currentConstraintWithUserPrefix = joinConstraintToUserPrefix(actualCurrentConstraint.orElse(""));
         
         // Find out what the selected items are, we will remove from this list as we find 
         // the items from the padre result packet. Anything left over will be faked with a 
         // zero count so the user can unselect it.
-        Set<String> selectedItems = new HashSet<>(getSelectedItems(actualCurrentConstraint, url));
+        Set<FacetURL> selectedItems = new HashSet<>(getSelectedItems(actualCurrentConstraint, url));
         
         List<Pair<Integer, CategoryValueComputedDataHolder>> depthAndValues = new ArrayList<>();
         
-        // It is possible thay fixing the URL reduces different URLs to be considered the same
-        // e.g. smb://foo/AA/bar.doc and smb://foo/Aa/plop.doc both files are actually
-        // in the same location. The down side of doing this is we never preserve case.
-        Map<String, Integer> urlEntries = new HashMap<>(); 
-        st.getResponse().getResultPacket().getUrlCounts().entrySet()
-            .stream()
-            .map(e -> Pair.of(fixURL.apply(e.getKey()), e.getValue()))
-            .forEach(e -> urlEntries.merge(e.getKey(), e.getValue(), Integer::sum));
         
-        for (Entry<String, Integer> entry : urlEntries.entrySet()) {
+        for (Entry<FacetURL, Integer> entry : convertUrlCountsToFacetUrlAndCount(st).entrySet()) {
             // Do not toLowerCase() here, we still want the original data from Padre
             // with the correct case to display
-            String item = entry.getKey();
+            FacetURL item = entry.getKey();
             int count = entry.getValue();
-            workoutValue(item, count, url, currentConstraint).ifPresent(depthAndValues::add);
+            workoutValue(item, count, url, currentConstraintWithUserPrefix).ifPresent(depthAndValues::add);
             selectedItems.remove(item);
         }
         
-        for(String s : selectedItems) {
-            workoutValue(s, 0, url, currentConstraint).ifPresent(depthAndValues::add);
+        for(FacetURL s : selectedItems) {
+            workoutValue(s, 0, url, currentConstraintWithUserPrefix).ifPresent(depthAndValues::add);
         }
-        
         
         // Order the values from lowest depth to highest, we want a before a/b which is before a/b/c
         // This is needed for sorting by selected first to ensure the drill down looks correct.
@@ -185,6 +121,28 @@ public class URLFill extends CategoryDefinition {
         return depthAndValues.stream()
                 .map(Pair::getRight)
                 .collect(Collectors.toList());
+    }
+    
+    /**
+     * Takes the URL counts from padre and convert them into a FacetUrl and count
+     * 
+     * If URLs flatten down to what is the same (e.g. smb://foo/BAR/ is the same as 
+     * smb://foo/bar/) the counts will be summed. We will still also have preserve the casing
+     * of one form which may make the results look nicer.
+     * 
+     * @param st
+     * @return
+     */
+    public Map<FacetURL, Integer> convertUrlCountsToFacetUrlAndCount(SearchTransaction st) {
+        // It is possible thay fixing the URL reduces different URLs to be considered the same
+        // e.g. smb://foo/AA/bar.doc and smb://foo/Aa/plop.doc both files are actually
+        // in the same location. The down side of doing this is we never preserve case.
+        Map<FacetURL, Integer> urlEntries = new HashMap<>(); 
+        st.getResponse().getResultPacket().getUrlCounts().entrySet()
+            .stream()
+            .map(e -> Pair.of(new FacetURL(e.getKey()), e.getValue()))
+            .forEach(e -> urlEntries.merge(e.getKey(), e.getValue(), Integer::sum));
+        return urlEntries;
     }
     
     /**
@@ -208,8 +166,8 @@ public class URLFill extends CategoryDefinition {
         return Optional.empty();
     }
     
-    public String fixedUrl() {
-        return fixURL.apply(data);
+    public FacetURL fixedUrl() {
+        return new FacetURL(data);
     }
     
     /**
@@ -225,30 +183,15 @@ public class URLFill extends CategoryDefinition {
      * http://foo.com/bar/
      * @return
      */
-    public static List<String> getSelectedItems(Optional<String> currentConstraintOpt, String url) {
-        if(!currentConstraintOpt.isPresent()) {
-            return new ArrayList<>();
-        }
-        String currentConstraint = currentConstraintOpt.get();
-        
-        // The path of the url is in the constraint when selected we need to strip
-        // that from the constraint
-        String prefix = toUrlValue(fixURL.apply(url));
-        if(!currentConstraint.startsWith(prefix)) {
-            // I think this happens only when the facet definition changes while someone is using the facet.
-            // or when the facet is not selected.
-            return new ArrayList<>();
-        }
-        
-        // Remove the prefix from the current constraint
-        currentConstraint = currentConstraint.substring(prefix.length(), currentConstraint.length());
+    public static List<FacetURL> getSelectedItems(Optional<String> currentConstraintOpt, FacetURL url) {
+        String currentConstraint = currentConstraintOpt.orElse("");
         
         List<String> currentFolderConstraints = StreamUtils.ofNullable(currentConstraint.split("/"))
             .filter(Predicates.not(String::isEmpty))
             .collect(Collectors.toList());
         
-        List<String> selectedItems = new ArrayList<>();
-        String urlPrefix = fixURL.apply(url);
+        List<FacetURL> selectedItems = new ArrayList<>();
+        String urlPrefix = url.getUrlFixed();
         if(urlPrefix.endsWith("/")) {
             urlPrefix = urlPrefix.substring(0, urlPrefix.length()-1);
         }
@@ -260,7 +203,7 @@ public class URLFill extends CategoryDefinition {
                 sb.append("/");
                 sb.append(currentFolderConstraints.get(j));
             }
-            selectedItems.add(fixURL.apply(sb.toString()));
+            selectedItems.add(new FacetURL(sb.toString()));
         }
         
         return selectedItems;
@@ -269,22 +212,21 @@ public class URLFill extends CategoryDefinition {
     /**
      * Get the depth of a URL, from the current constraint.
      *  
-     * @param currentConstraint Currently constraint URL, such as <tt>folder1/folder2/</tt>
+     * @param currentConstraint Currently constraint URL, such as <tt>smb://server/folder1/folder2/</tt>
      * @param checkUrl URL to check, absolute (Ex: <tt>smb://server/folder1/folder2/file3.txt</tt>)
      * @return the depth of the check URL compared to the current constraint. Will be negative if
      * the check URL is a parent, zero if the check URL is identical to the contraint, or positive
      * if the check URL is deeper (with the value indicating how deep)
      */
-    static int getDepth(String currentConstraint, String checkUrl) {
+    static int getDepth(FacetURL currentConstraint, FacetURL checkUrl) {
         if (currentConstraint == null || checkUrl == null) {
             return -1;
         }
         
-        int i = checkUrl.indexOf(currentConstraint);
-        if (i > -1) {
+        if(checkUrl.getUrlForComparison().startsWith(currentConstraint.getUrlForComparison())) {
             // Remove head + currentConstraint
-            String part = checkUrl.substring(i + currentConstraint.length());
-            if (part.startsWith("/")) { part = part.substring(1); }
+            String part = checkUrl.getUrlForComparison().substring(currentConstraint.getUrlForComparison().length());
+            part = stripLeadingAndTrailingSlash(part);
             if (part.length() > 0) {
                 // We have at least one part below our constraint
                 return 1 + StringUtils.countMatches(part, "/");
@@ -308,24 +250,33 @@ public class URLFill extends CategoryDefinition {
      * @param item comes from padre's URL counts.
      * @param count
      * @param url
-     * @param currentConstraint
+     * @param currentConstraint This should ba a path under the URL
      * @return
      * @throws UnsupportedEncodingException
      */
-    private Optional<Pair<Integer, CategoryValueComputedDataHolder>> workoutValue(String item, 
+    private Optional<Pair<Integer, CategoryValueComputedDataHolder>> workoutValue(FacetURL item, 
                     int count, 
-                    String url, 
-                    String currentConstraint) 
+                    FacetURL url, 
+                    FacetURL urlWithCurrentConstraint) 
             throws UnsupportedEncodingException {
         
-        if (item.startsWith(url)
-                // Only consider parent items (which are de facto selected)
-                // and 1-depth children (Padre may return deeper children)
-                && getDepth(currentConstraint, item) <= 1) {
-            
-            String vValue = toUrlValue(item);
-    
-            String relativeItem = item.substring(url.length());
+        // Is the item prefixed by the user set prefix?
+        if(!item.getUrlForComparison().startsWith(url.getUrlForComparison())) {
+            return Optional.empty();
+        }
+        
+        // Is the item just the users prefix?
+        if(item.getUrlForComparison().equals(url.getUrlForComparison())) {
+            return Optional.empty();
+        }
+        
+        // Only consider items which may have been already selected
+        // or the next level of folders
+        if (getDepth(urlWithCurrentConstraint, item) <= 1) {
+            // This is what is after the user prefix in the item.
+            String relativeItem = item.getUrlFixed().substring(url.getUrlFixed().length());
+            // Strip leading and trailing / to ensure the realtiveItems are consistent.
+            relativeItem = stripLeadingAndTrailingSlash(relativeItem);
     
             // Display only the folder name
             String label = relativeItem.substring(relativeItem.lastIndexOf('/')+1);
@@ -337,7 +288,7 @@ public class URLFill extends CategoryDefinition {
             //   metadata query and that will only work if it's decoded (See FUN-7440 comments)
             
             // Don't use the depth value as it can be negative.
-            int sortOrder = StringUtils.countMatches(vValue, "/");
+            int sortOrder = StringUtils.countMatches(relativeItem, "/");
             
             return Optional.of(Pair.of(sortOrder, 
                 new CategoryValueComputedDataHolder(
@@ -351,12 +302,30 @@ public class URLFill extends CategoryDefinition {
                     // "folder1" and "folder2" were selected to reach "file3.txt"
                     // So set selected=true to all parents and current values, but not
                     // for deeper ones
-                    getDepth(currentConstraint, item) <= 0,
+                    getDepth(urlWithCurrentConstraint, item) <= 0,
                     getQueryStringParamName(),
-                    vValue
+                    relativeItem
                     )));
         }
         return Optional.empty();
+    }
+    
+    private static String stripTrailingSlash(String str) {
+        if(str.endsWith("/")) {
+            return str.substring(0, str.length() - 1);
+        }
+        return str;
+    }
+    
+    private static String stripLeadingSlash(String str) {
+        if(str.startsWith("/")) {
+            return str.substring(1);
+        }
+        return str;
+    }
+    
+    private static String stripLeadingAndTrailingSlash(String str) {
+        return stripLeadingSlash(stripTrailingSlash(str));
     }
     
     /**
@@ -419,7 +388,7 @@ public class URLFill extends CategoryDefinition {
     protected Optional<QueryProcessorOption<?>> facetScopeToRestrictTo(SearchQuestion question) {
         return getCurrentConstraint(question)
             .map(this::joinConstraintToUserPrefix)
-            .map(prefix -> new QueryProcessorOption<>("fscope", prefix));
+            .map(prefix -> new QueryProcessorOption<>("fscope", prefix.getUrlForComparison()));
     }
     
     /**
@@ -431,7 +400,7 @@ public class URLFill extends CategoryDefinition {
      * @return
      */
     protected String fullCurrentConstraintForCounting(SearchQuestion sq) {
-        return joinConstraintToUserPrefix(getCurrentConstraint(sq).orElse(""));
+        return joinConstraintToUserPrefix(getCurrentConstraint(sq).orElse("")).getUrlFixed();
     }
     
     /**
@@ -444,26 +413,12 @@ public class URLFill extends CategoryDefinition {
      * @param constraint
      * @return
      */
-    String joinConstraintToUserPrefix(String constraint) {
-        // URL always includes up to the host
-        String url = fixedUrl();
-        String sep = "/";
-        
-        if(url.endsWith("/") || constraint.startsWith("/")) {
-            sep = "";
-        }
-        
-        if(url.endsWith("/") && constraint.startsWith("/")) {
+    FacetURL joinConstraintToUserPrefix(String constraint) {
+        if(constraint.startsWith("/")) {
             constraint = constraint.substring(1);
         }
-        
-        // Add trailing "/" so that it is easier for padre to work out which URLs
-        // are below the folder.
-        if(!constraint.endsWith("/")) {
-            constraint = constraint + "/";
-        }
-        
-        return url + sep + constraint;
+            
+        return new FacetURL(fixedUrl().getUrlFixed() + constraint);
     }
 
     /**
@@ -473,10 +428,8 @@ public class URLFill extends CategoryDefinition {
         // Strip protocol
         urlSubstring = urlSubstring.replaceAll("^.+://", "");
         
-        if (urlSubstring.endsWith("/")) {
-            // Strip any trailing '/' for consistency
-            urlSubstring = urlSubstring.substring(0, urlSubstring.length() - 1);
-        }
+        // Strip any trailing '/' for consistency
+        urlSubstring = stripTrailingSlash(urlSubstring); 
         
         // Strip anchor, query
         urlSubstring = StringUtils.substringBefore(urlSubstring, "#");
