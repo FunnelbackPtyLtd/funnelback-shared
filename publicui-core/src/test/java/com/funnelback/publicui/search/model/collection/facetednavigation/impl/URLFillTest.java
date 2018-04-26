@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -217,5 +218,29 @@ public class URLFillTest {
        Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserPrefix("/foo").getUrlFixed());
        Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("HTTPS://Foo.COM/bar").joinConstraintToUserPrefix("/foo").getUrlForComparison());
        Assert.assertEquals("https:///Bar/foo/", new URLFill("HTTPS:///Bar").joinConstraintToUserPrefix("/foo").getUrlForComparison());
+   }
+   
+   /**
+    * This is testing that if padre returns:
+    * smb://foo.com/BAR with count of 10
+    * smb://foo.com/bar with count of 2
+    * 
+    * They are treated the same and so the couns are summed
+    */
+   @Test
+   public void testDifferentUrlsThatAreNormalisedToTheSameHaveCountsAdded() {
+       URLFill urlFill = new URLFill("");
+       SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+       st.getResponse().setResultPacket(new ResultPacket());
+       Map<String, Integer> urlCounts = st.getResponse().getResultPacket().getUrlCounts();
+       urlCounts.put("smb://Foo.com/Bar", 100);
+       urlCounts.put("smb://foo.Com/baR/", 1);
+       Map<FacetURL, Integer> facetUrlAndCounts = urlFill.convertUrlCountsToFacetUrlAndCount(st);
+       Assert.assertEquals(1, facetUrlAndCounts.size());
+       Entry<FacetURL, Integer> entry = facetUrlAndCounts.entrySet().stream().findAny().get();
+       Assert.assertTrue(
+           Sets.newHashSet("smb://Foo.com/Bar/", "smb://foo.Com/baR").contains(entry.getKey().getUrlFixed()));
+       Assert.assertEquals(101, entry.getValue() + 0);
+       
    }
 }
