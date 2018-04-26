@@ -414,11 +414,7 @@ public class URLFill extends CategoryDefinition {
      * @return
      */
     FacetURL joinConstraintToUserPrefix(String constraint) {
-        if(constraint.startsWith("/")) {
-            constraint = constraint.substring(1);
-        }
-            
-        return new FacetURL(fixedUrl().getUrlFixed() + constraint);
+        return new FacetURL(fixedUrl().getUrlFixed() + stripLeadingSlash(constraint));
     }
 
     /**
