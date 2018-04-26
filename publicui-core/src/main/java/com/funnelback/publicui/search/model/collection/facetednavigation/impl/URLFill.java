@@ -90,7 +90,7 @@ public class URLFill extends CategoryDefinition {
         FacetURL url = fixedUrl();
         
         Optional<String> actualCurrentConstraint = getCurrentConstraint(st.getQuestion());
-        FacetURL currentConstraintWithUserPrefix = joinConstraintToUserPrefix(actualCurrentConstraint.orElse(""));
+        FacetURL currentConstraintWithUserPrefix = joinConstraintToUserURLPrefix(actualCurrentConstraint.orElse(""));
         
         // Find out what the selected items are, we will remove from this list as we find 
         // the items from the padre result packet. Anything left over will be faked with a 
@@ -385,7 +385,7 @@ public class URLFill extends CategoryDefinition {
     
     protected Optional<QueryProcessorOption<?>> facetScopeToRestrictTo(SearchQuestion question) {
         return getCurrentConstraint(question)
-            .map(this::joinConstraintToUserPrefix)
+            .map(this::joinConstraintToUserURLPrefix)
             .map(prefix -> new QueryProcessorOption<>("fscope", prefix.getUrlForComparison()));
     }
     
@@ -398,12 +398,12 @@ public class URLFill extends CategoryDefinition {
      * @return
      */
     protected String fullCurrentConstraintForCounting(SearchQuestion sq) {
-        return joinConstraintToUserPrefix(getCurrentConstraint(sq).orElse("")).getUrlFixed();
+        return joinConstraintToUserURLPrefix(getCurrentConstraint(sq).orElse("")).getUrlFixed();
     }
     
     /**
-     * Joins the selected constraint (which is a path under the user URL prefix) to the URL
-     * prefix.
+     * Joins the selected constraint (which is a path under the user URL prefix) to the 
+     * User url URL prefix.
      * 
      * This takes care of slashes and makes some effort to ensure that we don't join with
      * double slashes and we have a trailing slash to ensure the prefix check works.
@@ -411,7 +411,7 @@ public class URLFill extends CategoryDefinition {
      * @param constraint
      * @return
      */
-    FacetURL joinConstraintToUserPrefix(String constraint) {
+    FacetURL joinConstraintToUserURLPrefix(String constraint) {
         return new FacetURL(fixedUrl().getUrlFixed() + stripLeadingSlash(constraint));
     }
 

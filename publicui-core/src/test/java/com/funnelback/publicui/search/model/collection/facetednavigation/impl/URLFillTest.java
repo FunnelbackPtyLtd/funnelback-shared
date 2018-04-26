@@ -211,13 +211,13 @@ public class URLFillTest {
    @Test
    public void testCreatingConstraint() {
        // We are conserned about not doubling up on slashes / here don't worry about the case 
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("/foo/").getUrlFixed());
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("/foo").getUrlFixed());
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserPrefix("foo").getUrlFixed());
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserPrefix("foo").getUrlFixed());
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserPrefix("/foo").getUrlFixed());
-       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("HTTPS://Foo.COM/bar").joinConstraintToUserPrefix("/foo").getUrlForComparison());
-       Assert.assertEquals("https:///Bar/foo/", new URLFill("HTTPS:///Bar").joinConstraintToUserPrefix("/foo").getUrlForComparison());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserURLPrefix("/foo/").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserURLPrefix("/foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserURLPrefix("foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserURLPrefix("foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserURLPrefix("/foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("HTTPS://Foo.COM/bar").joinConstraintToUserURLPrefix("/foo").getUrlForComparison());
+       Assert.assertEquals("https:///Bar/foo/", new URLFill("HTTPS:///Bar").joinConstraintToUserURLPrefix("/foo").getUrlForComparison());
    }
    
    /**
