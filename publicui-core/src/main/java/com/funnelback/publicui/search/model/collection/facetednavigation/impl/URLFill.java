@@ -191,10 +191,8 @@ public class URLFill extends CategoryDefinition {
             .collect(Collectors.toList());
         
         List<FacetURL> selectedItems = new ArrayList<>();
-        String urlPrefix = url.getUrlFixed();
-        if(urlPrefix.endsWith("/")) {
-            urlPrefix = urlPrefix.substring(0, urlPrefix.length()-1);
-        }
+        String urlPrefix = stripTrailingSlash(url.getUrlFixed());
+        
         for(int i = 0; i < currentFolderConstraints.size(); i++) {
             StringBuilder sb = new StringBuilder();
             sb.append(urlPrefix);
