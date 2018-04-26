@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.FACET_URL_PREFIX;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -237,12 +239,6 @@ public class URLFill extends CategoryDefinition {
         return -1;        
     }
     
-    private static String toUrlValue(String item) {
-        // 'v' metadata value is the URI only, without
-        // the host or protocol.
-        return item.replaceFirst("(\\w+://)?[^/]*/", "");
-    }
-    
     /**
      * 
      * @param item comes from padre's URL counts.
@@ -386,7 +382,7 @@ public class URLFill extends CategoryDefinition {
     protected Optional<QueryProcessorOption<?>> facetScopeToRestrictTo(SearchQuestion question) {
         return getCurrentConstraint(question)
             .map(this::joinConstraintToUserURLPrefix)
-            .map(prefix -> new QueryProcessorOption<>("fscope", prefix.getUrlForComparison()));
+            .map(prefix -> new QueryProcessorOption<>(FACET_URL_PREFIX, prefix.getUrlForComparison()));
     }
     
     /**

@@ -55,7 +55,7 @@ public class URLFillTest {
         List<QueryProcessorOption<?>> actual = category.getQueryProcessorOptions(question);
         Assert.assertEquals(new QueryProcessorOption<>("count_urls", 4), actual.get(0));
         
-        Assert.assertEquals(new QueryProcessorOption<>("fscope", "https://example.org/products/"), actual.get(1));
+        Assert.assertEquals(new QueryProcessorOption<>("facet_url_prefix", "https://example.org/products/"), actual.get(1));
         
     }
     
@@ -72,7 +72,7 @@ public class URLFillTest {
         List<QueryProcessorOption<?>> actual = category.getQueryProcessorOptions(question);
         // It should respect the first selected value only
         Assert.assertEquals(Arrays.asList(new QueryProcessorOption<>("count_urls", 1 + 4 + 2),
-            new QueryProcessorOption<>("fscope", "https://example.org/produts/vacuum-cleaners/bagless/dyson/")), actual);
+            new QueryProcessorOption<>("facet_url_prefix", "https://example.org/produts/vacuum-cleaners/bagless/dyson/")), actual);
     }
     
     
