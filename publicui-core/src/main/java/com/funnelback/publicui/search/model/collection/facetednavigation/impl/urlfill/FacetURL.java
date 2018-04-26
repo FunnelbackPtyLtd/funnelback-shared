@@ -65,6 +65,10 @@ public class FacetURL {
             }
         }
         
+        // Add http:// in if no scheme is found, the http:// scheme is dropped by padre
+        // This wont be too bad is the only surpise to the user would be that a prefix of
+        // example.com/bar
+        // will match http://example.com/bar where it should match nothing becayse it has no scheme.
         return "http://" + url; 
     }
     
