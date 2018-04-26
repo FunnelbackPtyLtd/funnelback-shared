@@ -79,7 +79,7 @@ public class FacetURL {
     /**
      * May only change the case of letters, if it does otherwise getSelectedItems()
      * will need to change
-     * @param url
+     * @param url must have the scheme
      * @return
      */
     static String prepUrlForComparison(String url) {
@@ -92,9 +92,7 @@ public class FacetURL {
             // lowercase the domain and schema
             int schemeSepStart = url.indexOf("://");
             if(schemeSepStart == -1) {
-                // sometimes we wont have http:// because padre drops it in a bunch of places this
-                // makes this code risky assume everythig up to the first / is the domain
-                schemeSepStart = 0;
+                throw new IllegalArgumentException("URL must have a scheme could not find :// in " + url);
             }
             
             // find where the path starts
