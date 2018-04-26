@@ -1,11 +1,12 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
-import javax.annotation.Resource;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.annotation.Resource;
+
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -53,12 +54,8 @@ public class FacetedNavigationURLTests {
         processor.processInput(st);
         
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
-        Assert.assertEquals(1, st.getQuestion().getFacetsQueryConstraints().size());
-        Assert.assertEquals("|v:\"Shakespeare/cleopatra\"", st.getQuestion().getFacetsQueryConstraints().get(0));
-        
-        
-        
-        
+        Assert.assertEquals("URL fill scoping QP options are set by calling getQueryProcessorOptions()",
+            0, st.getQuestion().getFacetsQueryConstraints().size());
     }
     
     

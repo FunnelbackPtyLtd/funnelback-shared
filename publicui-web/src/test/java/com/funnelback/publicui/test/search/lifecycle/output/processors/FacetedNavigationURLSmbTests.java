@@ -1,15 +1,17 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Resource;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+
+import javax.annotation.Resource;
+
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -63,20 +65,18 @@ public class FacetedNavigationURLSmbTests {
         Assert.assertEquals(37, c.getValues().size());
         
         Facet.CategoryValue cv = c.getValues().get(0);
-        Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(46, cv.getCount() + 0);
         Assert.assertEquals("cleopatra", cv.getData());
         Assert.assertEquals("cleopatra", cv.getLabel());
-        Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fcleopatra", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+URL%7Curl=cleopatra", cv.getQueryStringParam());
         Assert.assertFalse(cv.isSelected());
 
         // Check a category with encoded strings
         cv = c.getValues().get(1);
-        Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(44, cv.getCount() + 0);
         Assert.assertEquals("with spaces & ampersand", cv.getData());
         Assert.assertEquals("with spaces & ampersand", cv.getLabel());
-        Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fwith%2520spaces%2520%2526%2520ampersand", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+URL%7Curl=with%2520spaces%2520%2526%2520ampersand", cv.getQueryStringParam());
 
         // No sub-categories should be returned since nothing
         // has been selected in the first level category
@@ -108,11 +108,10 @@ public class FacetedNavigationURLSmbTests {
         
         Assert.assertEquals(1, c.getValues().size());
         CategoryValue cv = c.getValues().get(0);
-        Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(46, cv.getCount() + 0);
         Assert.assertEquals("cleopatra", cv.getData());
         Assert.assertEquals("cleopatra", cv.getLabel());
-        Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fcleopatra", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+URL%7Curl=cleopatra", cv.getQueryStringParam());
         Assert.assertTrue(cv.isSelected());
     }
     
@@ -140,39 +139,35 @@ public class FacetedNavigationURLSmbTests {
         Assert.assertEquals(1, c.getValues().size());
         
         CategoryValue cv = c.getValues().get(0);
-        Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(44, cv.getCount() + 0);
         Assert.assertEquals("with spaces & ampersand", cv.getData());
         Assert.assertEquals("with spaces & ampersand", cv.getLabel());
-        Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fwith%2520spaces%2520%2526%2520ampersand", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+URL%7Curl=with%2520spaces%2520%2526%2520ampersand", cv.getQueryStringParam());
         Assert.assertTrue(cv.isSelected());
         
         c = c.getCategories().get(0);
         Assert.assertEquals(3, c.getValues().size());
         
         cv = c.getValues().get(0);
-        Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(40, cv.getCount() + 0);
         Assert.assertEquals("with spaces & ampersand/subfolder1", cv.getData());
         Assert.assertEquals("subfolder1", cv.getLabel());
-        Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fwith%2520spaces%2520%2526%2520ampersand%2Fsubfolder1", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+URL%7Curl=with%2520spaces%2520%2526%2520ampersand%2Fsubfolder1", cv.getQueryStringParam());
         Assert.assertFalse(cv.isSelected());
 
         
         cv = c.getValues().get(1);
-        Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(3, cv.getCount() + 0);
         Assert.assertEquals("with spaces & ampersand/subfolder2", cv.getData());
         Assert.assertEquals("subfolder2", cv.getLabel());
-        Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fwith%2520spaces%2520%2526%2520ampersand%2Fsubfolder2", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+URL%7Curl=with%2520spaces%2520%2526%2520ampersand%2Fsubfolder2", cv.getQueryStringParam());
         Assert.assertFalse(cv.isSelected());
 
         cv = c.getValues().get(2);
-        Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(1, cv.getCount() + 0);
         Assert.assertEquals("with spaces & ampersand/subfolder3", cv.getData());
         Assert.assertEquals("subfolder3", cv.getLabel());
-        Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fwith%2520spaces%2520%2526%2520ampersand%2Fsubfolder3", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+URL%7Curl=with%2520spaces%2520%2526%2520ampersand%2Fsubfolder3", cv.getQueryStringParam());
         Assert.assertFalse(cv.isSelected());
 
     }

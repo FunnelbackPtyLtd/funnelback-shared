@@ -25,6 +25,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.CollectionFill;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
 import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetails;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
@@ -65,7 +66,6 @@ public class FacetedNavigation extends AbstractInputProcessor {
                 SetMultimap<String, String> queryConstraints = SetMultimapBuilder.hashKeys().hashSetValues().build();
                 SetMultimap<String, Set<String>> cliveConstraints = SetMultimapBuilder.hashKeys().hashSetValues().build();
                 
-                
                 List<FacetSelectedDetails> facetParamaters = FacetedNavigationUtils.getFacetSelectedDetails(searchTransaction.getQuestion());
                 if (facetParamaters.size() > 0) {
                     for (final FacetSelectedDetails facetParameter : facetParamaters) {
@@ -100,6 +100,8 @@ public class FacetedNavigation extends AbstractInputProcessor {
                                     if (ct instanceof GScopeBasedCategory) {
                                         GScopeBasedCategory type = (GScopeBasedCategory) ct;
                                         gscope1Constraints.put(f.getName(), type.getGScope1Constraint());
+                                    } else if (ct instanceof URLFill) {
+                                        // The QP options come directly from getQueryProcessorOptions
                                     } else if (ct instanceof MetadataBasedCategory) {
                                         MetadataBasedCategory type = (MetadataBasedCategory) ct;
                                         queryConstraints.put(f.getName(), type.getQueryConstraint(value));

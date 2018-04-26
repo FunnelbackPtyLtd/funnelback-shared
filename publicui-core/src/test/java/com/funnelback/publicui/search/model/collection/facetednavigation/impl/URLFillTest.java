@@ -3,9 +3,9 @@ package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,6 +16,7 @@ import org.junit.Test;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.urlfill.FacetURL;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -31,15 +32,14 @@ public class URLFillTest {
     
     @Before
     public void before() {
-        category = new URLFill("http://example.org/");
+        category = new URLFill("https://example.org/");
         category.setFacetName("facetName");
         category.setLabel("label");
     }
     
     @Test
     public void testFields() {
-        Assert.assertEquals("http://example.org/", category.getData());
-        Assert.assertEquals("v", category.getMetadataClass());
+        Assert.assertEquals("https://example.org/", category.getData());
         Assert.assertEquals("facetName", category.getFacetName());
         Assert.assertEquals("label", category.getLabel());
         
@@ -47,29 +47,32 @@ public class URLFillTest {
     }
     
     @Test
-    public void testConstraint() {
-        Assert.assertEquals("v:\"http://example.org/about\"", category.getQueryConstraint("http://example.org/about"));
-    }
-    
-    @Test
     public void testQPOs() {
         SearchQuestion question = new SearchQuestion();
         question.getSelectedFacets().add("facetName");
-        question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("https://example.org/products"));
+        question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("products"));
         
         List<QueryProcessorOption<?>> actual = category.getQueryProcessorOptions(question);
-        Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_urls", 4)), actual);
+        Assert.assertEquals(new QueryProcessorOption<>("count_urls", 4), actual.get(0));
+        
+        Assert.assertEquals(new QueryProcessorOption<>("facet_url_prefix", "https://example.org/products/"), actual.get(1));
+        
     }
-
+    
     @Test
     public void testQPOsMultipleValues() {
         SearchQuestion question = new SearchQuestion();
         question.getSelectedFacets().add("facetName");
-        question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("https://example.org/products",
-            "example.org/about/company", "example.org/produts/vacuum-cleaners/bagless/dyson"));
+        question.getSelectedCategoryValues().put("f.facetName|url", 
+            Lists.newArrayList("produts/vacuum-cleaners/bagless/dyson",
+                                    "about/company", 
+                                    "products",
+                                    "produts/vacuum-cleaners/bagless/dyson/air/expensive"));
 
         List<QueryProcessorOption<?>> actual = category.getQueryProcessorOptions(question);
-        Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_urls", 1 + 4 + 2)), actual);
+        // It should respect the first selected value only
+        Assert.assertEquals(Arrays.asList(new QueryProcessorOption<>("count_urls", 1 + 4 + 2),
+            new QueryProcessorOption<>("facet_url_prefix", "https://example.org/produts/vacuum-cleaners/bagless/dyson/")), actual);
     }
     
     
@@ -77,12 +80,13 @@ public class URLFillTest {
     public void testLongURLPrefix() {
         SearchQuestion question = new SearchQuestion();
         question.getSelectedFacets().add("facetName");
-        question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("https://example.org/products"));
+        question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("products"));
 
         URLFill urlFill = new URLFill("http://foo.com/1/2/3/4/5/6/7/8/9/0");
+        urlFill.setFacetName("facetName");
         List<QueryProcessorOption<?>> actual = urlFill.getQueryProcessorOptions(question);
         Assert.assertEquals("We must have a count_urls depth that is deeper than the URL prefix of the category.",
-            Collections.singletonList(new QueryProcessorOption<>("count_urls", 13)), actual);
+            new QueryProcessorOption<>("count_urls", 10 + 1 + 1 + 2), actual.get(0));
     }
     
     @Test
@@ -113,32 +117,33 @@ public class URLFillTest {
     
    @Test
    public void testGetDepth() {
-       Assert.assertEquals(2, URLFill.getDepth("folder1", "smb://server/folder1/folder2/folder3"));
-       Assert.assertEquals(1, URLFill.getDepth("folder1/folder2", "smb://server/folder1/folder2/folder3"));
-       Assert.assertEquals(0, URLFill.getDepth("folder1/folder2/folder3", "smb://server/folder1/folder2/folder3"));
+       Assert.assertEquals(2, URLFill.getDepth(new FacetURL("smb://server/folder1"), new FacetURL("smb://server/folder1/folder2/folder3")));
+       Assert.assertEquals(1, URLFill.getDepth(new FacetURL("smb://server/folder1/folder2"), new FacetURL("smb://server/folder1/folder2/folder3")));
+       Assert.assertEquals(0, URLFill.getDepth(new FacetURL("smb://server/folder1/folder2/folder3"), new FacetURL("smb://server/folder1/folder2/folder3")));
        
-       Assert.assertEquals(-1, URLFill.getDepth("folder1/folder2/folder4", "smb://server/folder1/folder2/folder3/"));
-       Assert.assertEquals(-1, URLFill.getDepth("folder0/folder1", "smb://server/folder1/folder2/folder3"));
-       Assert.assertEquals(-1, URLFill.getDepth("dummy", "smb://server/folder1/folder2/folder3"));
+       Assert.assertEquals(-1, URLFill.getDepth(new FacetURL("smb://server/folder1/folder2/folder4"), new FacetURL("smb://server/folder1/folder2/folder3/")));
+       Assert.assertEquals(-1, URLFill.getDepth(new FacetURL("smb://server/folder0/folder1"), new FacetURL("smb://server/folder1/folder2/folder3")));
+       Assert.assertEquals(-1, URLFill.getDepth(new FacetURL("smb://dummy"), new FacetURL("smb://server/folder1/folder2/folder3")));
    }
    
    @Test
    public void testGetSelectedItemsVVSUrls() throws Exception {
-       String currentConstraint = "home/luke/Documents";
+       String currentConstraint = "luke/Documents/";
        String url = "\\\\win.win\\home\\/";
-       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
-       Assert.assertTrue(items.contains("smb://win.win/home/luke"));
-       Assert.assertTrue(items.contains("smb://win.win/home/luke/Documents"));
+       List<FacetURL> items = URLFill.getSelectedItems(Optional.of(currentConstraint), new FacetURL(url));
+       Assert.assertTrue(items.contains(new FacetURL("smb://win.win/home/luke")));
+       Assert.assertTrue(items.contains(new FacetURL("smb://win.win/home/luke/Documents")));
        Assert.assertEquals(2, items.size());
    }
    
    @Test
-   public void testGetSelectedItemsCaseIsIgnored() throws Exception {
-       String currentConstraint = "home/luke/Documents";
+   public void testGetSelectedItemsCaseRespected() throws Exception {
+       String currentConstraint = "luke/Documents/";
        String url = "http://win.win/Home";
-       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
-       Assert.assertTrue(items.contains("win.win/Home/luke"));
-       Assert.assertTrue(items.contains("win.win/Home/luke/Documents"));
+       List<FacetURL> items = URLFill.getSelectedItems(Optional.of(currentConstraint), new FacetURL(url));
+       
+       Assert.assertTrue(items.contains(new FacetURL("http://win.win/Home/luke")));
+       Assert.assertTrue(items.contains(new FacetURL("http://win.win/Home/luke/Documents")));
        Assert.assertEquals(2, items.size());
    }
    
@@ -146,7 +151,7 @@ public class URLFillTest {
    public void testGetSelectedItemsNothingSelected() throws Exception {
        String currentConstraint = "";
        String url = "\\\\win.win\\home\\/";
-       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
+       List<FacetURL> items = URLFill.getSelectedItems(Optional.of(currentConstraint), new FacetURL(url));
        Assert.assertEquals(0, items.size());
    }
    
@@ -154,14 +159,14 @@ public class URLFillTest {
    public void testGetSelectedItemsHttps() throws Exception {
        String currentConstraint = "bar";
        String url = "https://www.funnelback.com/";
-       List<String> items = URLFill.getSelectedItems(Optional.of(currentConstraint), url);
+       List<FacetURL> items = URLFill.getSelectedItems(Optional.of(currentConstraint), new FacetURL(url));
        Assert.assertEquals(1, items.size());
    }
    
    @Test
    public void testGetSelectedItemsNoConstraint() throws Exception {
        String url = "https://www.funnelback.com/";
-       List<String> items = URLFill.getSelectedItems(Optional.empty(), url);
+       List<FacetURL> items = URLFill.getSelectedItems(Optional.empty(), new FacetURL(url));
        Assert.assertEquals(0, items.size());
    }
    
@@ -172,7 +177,7 @@ public class URLFillTest {
        st.getResponse().setResultPacket(new ResultPacket());
        
        st.getQuestion().getSelectedCategoryValues().put(urlFill.getQueryStringParamName(), 
-           Arrays.asList("1/bar/Fruit"));
+           Arrays.asList("bar/Fruit"));
        
        Map<String, Integer> urlCounts = st.getResponse().getResultPacket().getUrlCounts();
        
@@ -202,5 +207,40 @@ public class URLFillTest {
        
        Assert.assertEquals(0, result.size());
    }
-    
+   
+   @Test
+   public void testCreatingConstraint() {
+       // We are conserned about not doubling up on slashes / here don't worry about the case 
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserURLPrefix("/foo/").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserURLPrefix("/foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar/").joinConstraintToUserURLPrefix("foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserURLPrefix("foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("https://foo.com/bar").joinConstraintToUserURLPrefix("/foo").getUrlFixed());
+       Assert.assertEquals("https://foo.com/bar/foo/", new URLFill("HTTPS://Foo.COM/bar").joinConstraintToUserURLPrefix("/foo").getUrlForComparison());
+       Assert.assertEquals("https:///Bar/foo/", new URLFill("HTTPS:///Bar").joinConstraintToUserURLPrefix("/foo").getUrlForComparison());
+   }
+   
+   /**
+    * This is testing that if padre returns:
+    * smb://foo.com/BAR with count of 10
+    * smb://foo.com/bar with count of 2
+    * 
+    * They are treated the same and so the couns are summed
+    */
+   @Test
+   public void testDifferentUrlsThatAreNormalisedToTheSameHaveCountsAdded() {
+       URLFill urlFill = new URLFill("");
+       SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+       st.getResponse().setResultPacket(new ResultPacket());
+       Map<String, Integer> urlCounts = st.getResponse().getResultPacket().getUrlCounts();
+       urlCounts.put("smb://Foo.com/Bar", 100);
+       urlCounts.put("smb://foo.Com/baR/", 1);
+       Map<FacetURL, Integer> facetUrlAndCounts = urlFill.convertUrlCountsToFacetUrlAndCount(st);
+       Assert.assertEquals(1, facetUrlAndCounts.size());
+       Entry<FacetURL, Integer> entry = facetUrlAndCounts.entrySet().stream().findAny().get();
+       Assert.assertTrue(
+           Sets.newHashSet("smb://Foo.com/Bar/", "smb://foo.Com/baR").contains(entry.getKey().getUrlFixed()));
+       Assert.assertEquals(101, entry.getValue() + 0);
+       
+   }
 }

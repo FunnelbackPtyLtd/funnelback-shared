@@ -3,12 +3,13 @@ package com.funnelback.publicui.test.search.lifecycle.input.processors;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.annotation.Resource;
+
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -65,7 +66,7 @@ public class FacetedNavigationCombinedTests {
         Assert.assertTrue(gscopesConstrains.contains("1"));
         Assert.assertTrue(gscopesConstrains.contains("10"));
         Assert.assertTrue(gscopesConstrains.contains("41"));
-        Assert.assertEquals(3, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
         
         Assert.assertTrue(
             "we should see the 1600 date coinstrain.",
@@ -74,10 +75,6 @@ public class FacetedNavigationCombinedTests {
         Assert.assertTrue(
             "Should see the 1500 date constraint.",
             st.getQuestion().getFacetsQueryConstraints().contains("|d:\"$++ 1500-01-01 $++\""));
-        
-        Assert.assertTrue("we should see: '|v:\"Shakespeare/cleopatra\"' in facet query constraints", 
-            st.getQuestion().getFacetsQueryConstraints().contains("|v:\"Shakespeare/cleopatra\""));
-        
     }
     
     @Test
