@@ -19,7 +19,6 @@ public class URLEncodeFragmentMethod extends AbstractTemplateMethod {
     }
 
     @Override
-    @SneakyThrows(UnsupportedEncodingException.class)
     protected Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
         String str = ((TemplateScalarModel) arguments.get(0)).getAsString();
         return UriUtils.encodeFragment(str, System.getProperty("file.encoding"));

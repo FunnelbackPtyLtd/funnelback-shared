@@ -103,7 +103,7 @@ public class SearchQuestionBinderTest {
         
         request.setRequestURI("/request-uri");
         request.setAuthType("auth-type");
-        request.addHeader("HOST", "http-host");
+        request.addHeader("HOST", "http.hostname.domain");
         request.setRemoteUser("remote-user");
         
         Config config = Mockito.mock(Config.class);
@@ -137,9 +137,9 @@ public class SearchQuestionBinderTest {
         Assert.assertEquals("127.0.0.1", to.getInputParameterMap().get("REMOTE_ADDR"));
         Assert.assertEquals("/request-uri", to.getInputParameterMap().get("REQUEST_URI"));
         Assert.assertEquals("auth-type", to.getInputParameterMap().get("AUTH_TYPE"));
-        Assert.assertEquals("http-host", to.getInputParameterMap().get("HTTP_HOST"));
+        Assert.assertEquals("http.hostname.domain", to.getInputParameterMap().get("HTTP_HOST"));
         Assert.assertEquals("remote-user", to.getInputParameterMap().get("REMOTE_USER"));
-        Assert.assertEquals("http://localhost/request-uri", to.getInputParameterMap().get("REQUEST_URL"));       
+        Assert.assertEquals("http://http.hostname.domain/request-uri", to.getInputParameterMap().get("REQUEST_URL"));       
         Assert.assertArrayEquals(new String[] {"cluster"}, to.getRawInputParameters().get(RequestParameters.ContextualNavigation.CN_CLICKED));
         Assert.assertArrayEquals(new String[] {"cluster1"}, to.getRawInputParameters().get(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"1"));
         Assert.assertArrayEquals(new String[] {"cluster2"}, to.getRawInputParameters().get(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"2"));
