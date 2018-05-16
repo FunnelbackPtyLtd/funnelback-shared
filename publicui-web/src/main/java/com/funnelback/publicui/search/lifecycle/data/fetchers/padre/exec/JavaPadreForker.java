@@ -1,10 +1,11 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
@@ -105,7 +106,8 @@ public class JavaPadreForker implements PadreForker {
                         //Seg faults are common to avoid support spending too long wondering what exit code 139 is
                         //just log it is a seg fault. If that is put into a Jira ticket any padre/c dev will pick it
                         //up immediately.
-                        throw new PadreForkingException(i18n.tr("padre.forking.java.failed.seg.fault", padreCmdLine.toString(), rc));
+                        throw new PadreForkingException(i18n.tr("padre.forking.java.failed.seg.fault", 
+                            cmdLineToString(padreCmdLine), envToString(environment), rc));
                     }
                     
                     ExecutionReturn er = new ExecutionReturn(rc, 
@@ -115,9 +117,9 @@ public class JavaPadreForker implements PadreForker {
                         StandardCharsets.UTF_8);
                     return er;
                 } catch (ExecuteException ee) {
-                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
+                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed", cmdLineToString(padreCmdLine), envToString(environment)), ee);
                 } catch (IOException ioe) {
-                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ioe);
+                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed", cmdLineToString(padreCmdLine), envToString(environment)), ioe);
                 } finally {
                     if (watchdog.killedProcess()) {
                         log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
@@ -138,7 +140,7 @@ public class JavaPadreForker implements PadreForker {
         } catch (OutOfMemoryError oome) {
             // Not sure if these are actually a good thing to do
             System.gc();
-            throw new PadreForkingException(i18n.tr("padre.forking.java.oom", padreCmdLine.toString()), oome);
+            throw new PadreForkingException(i18n.tr("padre.forking.java.oom", cmdLineToString(padreCmdLine), envToString(environment)), oome);
         }
     }
     
@@ -165,8 +167,19 @@ public class JavaPadreForker implements PadreForker {
      * @return String containing the command line and the details of the environment map
      */
     private String getExecutionDetails(CommandLine cmdLine, Map<String, String> environment) {
-        return " Command line was: "+cmdLine.toString()
-            + System.getProperty("line.separator") + "Environment was: "+Arrays.asList(environment.entrySet().toArray());
+        
+        return " Command line was: "+ cmdLineToString(cmdLine)
+            + System.getProperty("line.separator") + "Environment was: " + envToString(environment);
+    }
+    
+    private String cmdLineToString(CommandLine cmdLine) {
+        // Do we need the function, well it will make changing how we print this easier in
+        // the future.
+        return cmdLine.toString();
+    }
+    
+    private String envToString(Map<String, String> environment) {
+        return Arrays.asList(environment.entrySet().toArray()).toString();
     }
 
 }
