@@ -87,7 +87,7 @@ public class JavaPadreForker implements PadreForker {
                         String error = readPadreOutputForLogs(padreError).trim();
                         if(error.length() > 0) {
                             log.debug("PADRE printed the following to STDERR: '" + 
-                                error + "' " + getExecutionDetailsAsString(padreCmdLine, environment));
+                                error + "' " + getExecutionDetails(padreCmdLine, environment));
                         }
                     }
                     
@@ -97,7 +97,7 @@ public class JavaPadreForker implements PadreForker {
                         //TODO
                         log.debug("Output for non zero exit code (code: {}) when running: {}\nSTDOUT:\n{}\nSTDERR\n{}",
                             rc,
-                            getExecutionDetailsAsString(padreCmdLine, environment),
+                            getExecutionDetails(padreCmdLine, environment),
                                 readPadreOutputForLogs(padreOutput),
                                 readPadreOutputForLogs(padreError));    
                     }
@@ -123,7 +123,7 @@ public class JavaPadreForker implements PadreForker {
                 } finally {
                     if (watchdog.killedProcess()) {
                         log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
-                            + getExecutionDetailsAsString(padreCmdLine, environment));
+                            + getExecutionDetails(padreCmdLine, environment));
                     }
                 }
             } finally {
@@ -166,7 +166,7 @@ public class JavaPadreForker implements PadreForker {
      * @param environment Environment map
      * @return String containing the command line and the details of the environment map
      */
-    private String getExecutionDetailsAsString(CommandLine cmdLine, Map<String, String> environment) {
+    private String getExecutionDetails(CommandLine cmdLine, Map<String, String> environment) {
         
         return " Command line was: "+ cmdLineToString(cmdLine)
             + System.getProperty("line.separator") + "Environment was: " + envToString(environment);
