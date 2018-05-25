@@ -1,17 +1,19 @@
 package com.funnelback.publicui.utils.jna;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 import org.apache.commons.io.IOUtils;
 
+import com.funnelback.common.execute.windows.WindowsCommandEscaping;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingExceptionPacketSizeTooBig;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingOptions;
