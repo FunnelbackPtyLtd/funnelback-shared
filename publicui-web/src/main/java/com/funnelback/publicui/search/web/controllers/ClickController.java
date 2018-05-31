@@ -1,11 +1,6 @@
 package com.funnelback.publicui.search.web.controllers;
 
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,6 +8,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -185,7 +186,6 @@ public class ClickController extends SessionController {
                 throws IOException {
         
         Optional<String> givenProfileId = Optional.ofNullable(profile).map(ProfileId::getId);
-        profile = new ProfileId(DefaultValues.DEFAULT_PROFILE);
         
         if(indexUrl == null) {
             indexUrl = redirectUrl;
@@ -246,7 +246,7 @@ public class ClickController extends SessionController {
                      + toCgiParam(RequestParameters.QUERY, givenQuery, true);
                 
                 logService.logClick(new ClickLog(new Date(), collection, collection
-                        .getProfiles().get(profile.getId()), requestId, new URL(dummyReferer), rank,
+                        .getProfiles().get(givenProfileId.orElse(DefaultValues.DEFAULT_PROFILE)), requestId, new URL(dummyReferer), rank,
                         indexUrl, type, LogUtils.getUserId(user)));
                 
                 metrics.counter(MetricRegistry.name(
@@ -254,7 +254,7 @@ public class ClickController extends SessionController {
     
                 metrics.counter(MetricRegistry.name(
                     MetricsConfiguration.COLLECTION_NS, collection.getId(),
-                    profile.getId(), MetricsConfiguration.CLICK)).inc();
+                    givenProfileId.orElse(DefaultValues.DEFAULT_PROFILE), MetricsConfiguration.CLICK)).inc();
             } catch (Exception e) {
                 log.error("Error while processing click", e);
             }
