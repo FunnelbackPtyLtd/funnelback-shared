@@ -20,6 +20,7 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.model.transaction.session.SessionResultPK;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -33,6 +34,7 @@ import lombok.extern.log4j.Log4j2;
 public class SearchHistoryDao implements SearchHistoryRepository {
 
     @PersistenceContext
+    @Setter //for testing
     private EntityManager em;
 
     @Override
