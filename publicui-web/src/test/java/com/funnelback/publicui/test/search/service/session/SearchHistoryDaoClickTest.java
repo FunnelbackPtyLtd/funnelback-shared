@@ -2,14 +2,26 @@ package com.funnelback.publicui.test.search.service.session;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.net.URI;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.net.URI;
+
+import javax.persistence.EntityManager;
+
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -18,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
 import com.funnelback.publicui.search.model.transaction.session.SessionResult;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
+import com.funnelback.publicui.search.service.session.SearchHistoryDao;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -133,6 +146,47 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
         assertEquals("Summary", ch.getSummary());
         assertEquals("Title", ch.getTitle());
         assertEquals(user.getId(), ch.getUserId());
+    }
+    
+    
+    @Test
+    public void saveClickTestMetadataReplaced() {
+        SearchHistoryDao searchHistoryDao = new SearchHistoryDao();
+        EntityManager em = mock(EntityManager.class);
+        searchHistoryDao.setEm(em);
+        
+        ClickHistory ch1 = new ClickHistory();
+        ch1.setCollection(collection.getId());
+        ch1.setIndexUrl(URI.create("funnelback://test.result/"));
+        ch1.setSummary("Summary");
+        ch1.setTitle("Title");
+        ch1.setUserId(user.getId());
+        ch1.setQuery("query");
+        ch1.getMetaData().put("a", "a");
+        ch1.getMetaData().put("b", "b");
+        
+        when(em.find(eq(ClickHistory.class), any())).thenReturn(ch1);
+        
+        ClickHistory ch2 = new ClickHistory();
+        ch2.setCollection(collection.getId());
+        ch2.setIndexUrl(URI.create("funnelback://test.result/"));
+        ch2.setSummary("Summary updated");
+        ch2.setTitle("Title updated");
+        ch2.setUserId(user.getId());
+        ch2.setQuery("query");
+        ch2.getMetaData().put("a", "a");
+        ch2.getMetaData().put("c", "c");
+        
+        searchHistoryDao.saveClick(ch2);
+        
+        ArgumentCaptor<ClickHistory> acCH = ArgumentCaptor.forClass(ClickHistory.class);
+        verify(em, times(1)).persist(acCH.capture());
+        
+        ClickHistory chSaved = acCH.getValue();
+        
+        Assert.assertTrue(chSaved.getMetaData().containsKey("a"));
+        Assert.assertFalse(chSaved.getMetaData().containsKey("b"));
+        Assert.assertTrue(chSaved.getMetaData().containsKey("c"));
     }
     
     @Test

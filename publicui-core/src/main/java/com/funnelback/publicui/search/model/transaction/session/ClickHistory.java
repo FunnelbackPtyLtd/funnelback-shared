@@ -1,9 +1,10 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import java.net.URI;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
