@@ -1,15 +1,14 @@
 package com.funnelback.publicui.search.service.session;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import java.text.SimpleDateFormat;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-
-import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +19,8 @@ import com.funnelback.publicui.search.model.transaction.session.SearchHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.model.transaction.session.SessionResultPK;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * JDBC search history repository
@@ -87,6 +88,8 @@ public class SearchHistoryDao implements SearchHistoryRepository {
         ClickHistory existing = em.find(ClickHistory.class, pk);
         if (existing != null) {
             existing.setClickDate(h.getClickDate());
+            existing.getMetaData().clear();
+            existing.getMetaData().putAll(h.getMetaData());
             em.persist(existing);
         } else {
             em.persist(h);

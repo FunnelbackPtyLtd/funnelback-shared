@@ -3,13 +3,16 @@ package com.funnelback.publicui.test.search.service.session;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -109,6 +112,8 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
         ch1.setTitle("Title");
         ch1.setUserId(user.getId());
         ch1.setQuery("query");
+        ch1.getMetaData().put("a", "a");
+        ch1.getMetaData().put("b", "b");
 
         c.add(Calendar.DAY_OF_MONTH, 1);
         ClickHistory ch2 = new ClickHistory();
@@ -119,6 +124,8 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
         ch2.setTitle("Title updated");
         ch2.setUserId(user.getId());
         ch2.setQuery("query");
+        ch2.getMetaData().put("a", "a");
+        ch2.getMetaData().put("c", "c");
 
         repository.saveClick(ch1);
         repository.saveClick(ch2);
@@ -133,6 +140,9 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
         assertEquals("Summary", ch.getSummary());
         assertEquals("Title", ch.getTitle());
         assertEquals(user.getId(), ch.getUserId());
+        Assert.assertTrue(ch.getMetaData().containsKey("a"));
+        Assert.assertFalse(ch.getMetaData().containsKey("b"));
+        Assert.assertTrue(ch.getMetaData().containsKey("c"));
     }
     
     @Test

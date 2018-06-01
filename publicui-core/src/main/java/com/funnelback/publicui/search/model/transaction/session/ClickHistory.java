@@ -1,13 +1,15 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.net.URI;
+
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.PrePersist;
@@ -42,7 +44,7 @@ public class ClickHistory extends SessionResult {
      * at the time the result was first clicked by the user.
      */
     @Getter
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     @MapKeyColumn(name = "key")
     @CollectionTable(name="ClickHistoryMetadata", joinColumns = {
         @JoinColumn(name="userId", referencedColumnName="userId"),
