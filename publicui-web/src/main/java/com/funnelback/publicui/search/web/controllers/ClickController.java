@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.web.controllers;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -53,7 +52,6 @@ import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.ProfileEditor;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.publicui.utils.JsonPCallbackParam;
-import com.funnelback.publicui.utils.PadreSFEquivalentRegexMatch;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
 import com.funnelback.springmvc.web.binder.GenericEditor;
@@ -267,7 +265,7 @@ public class ClickController extends SessionController {
             // Save the click in the user history
             Result r = indexRepository.getResult(collection, indexUrl);
             if (r != null) {
-                ClickHistory h = ClickHistory.fromResult(r, metadataClassesToRecord(r.getMetaData().keySet(), collection, profile));
+                ClickHistory h = ClickHistory.fromResult(r, metadataClassesToRecord(collection, profile));
                 h.setCollection(collection.getId());
                 h.setClickDate(new Date());
                 h.setUserId(user.getId());
@@ -280,10 +278,9 @@ public class ClickController extends SessionController {
         }
     }
     
-    public Set<String> metadataClassesToRecord(java.util.Collection<String> knownMetadataClasses, Collection collection, Optional<String> profile) {
+    public Set<String> metadataClassesToRecord(Collection collection, Optional<String> profile) {
         ServiceConfigReadOnly profileConfig = getServiceConfigOrDefault(collection, profile);
-        return new PadreSFEquivalentRegexMatch()
-            .filterToMatchingMetadataClassnames(new ArrayList<>(knownMetadataClasses), profileConfig.get(FrontEndKeys.ModernUI.Session.SearchHistory.METADATA_TO_RECORD));
+        return new HashSet<>(profileConfig.get(FrontEndKeys.ModernUI.Session.SearchHistory.METADATA_TO_RECORD));
     }
     
     /**
