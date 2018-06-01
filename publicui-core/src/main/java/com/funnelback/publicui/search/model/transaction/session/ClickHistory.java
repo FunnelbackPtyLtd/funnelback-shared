@@ -3,6 +3,11 @@ package com.funnelback.publicui.search.model.transaction.session;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import java.net.URI;
 
 import java.net.URI;
 
@@ -13,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.PrePersist;
 
+import com.funnelback.common.function.Predicates;
 import com.funnelback.publicui.search.model.padre.Result;
 
 import lombok.Getter;
@@ -57,13 +63,17 @@ public class ClickHistory extends SessionResult {
      * @param r The {@link Result} to build from
      * @return A {@link ClickHistory}
      */
-    public static ClickHistory fromResult(Result r) {
+    public static ClickHistory fromResult(Result r, Set<String> metadataClassToRecord) {
         ClickHistory ch = new ClickHistory();
         ch.setCollection(r.getCollection());
         ch.setIndexUrl(URI.create(r.getIndexUrl()));
         ch.setTitle(r.getTitle());
         ch.setSummary(r.getSummary());
-        ch.getMetaData().putAll(r.getMetaData());
+        ch.getMetaData().putAll(r.getMetaData()
+                .entrySet()
+                .stream()
+                .filter(e -> Predicates.containedBy(metadataClassToRecord).test(e.getKey()))
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
         
         return ch;
 

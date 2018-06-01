@@ -31,6 +31,9 @@ import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.ProfileId;
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
@@ -223,23 +226,8 @@ public class ClickController extends SessionController {
                     givenQuery = Optional.ofNullable(qs.get(RequestParameters.QUERY));
                 }
                 
-                if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
-                    && user != null) {
-                    // Save the click in the user history
-                    Result r = indexRepository.getResult(collection, indexUrl);
-                    if (r != null) {
-                    
-                        ClickHistory h = ClickHistory.fromResult(r);
-                        h.setCollection(collection.getId());
-                        h.setClickDate(new Date());
-                        h.setUserId(user.getId());
-                        givenQuery.ifPresent(h::setQuery);
-                        
-                        searchHistoryRepository.saveClick(h);
-                    } else {
-                        log.warn("Result with URL '"+indexUrl+"' not found in collection '"+collection.getId()+"'");
-                    }
-                }
+                // Save result click history
+                saveResultHistory(collection, givenProfileId, user, indexUrl, givenQuery);
                 
                 String dummyReferer = "http://fake/?" + toCgiParam(RequestParameters.COLLECTION, givenCollectionId, false)
                      + toCgiParam(RequestParameters.PROFILE, givenProfileId, false)
@@ -268,6 +256,55 @@ public class ClickController extends SessionController {
             );
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+    
+    public void saveResultHistory(Collection collection, Optional<String> profile, SearchUser user, URI indexUrl, Optional<String> givenQuery) {
+        if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
+            && user != null) {
+            // Save the click in the user history
+            Result r = indexRepository.getResult(collection, indexUrl);
+            if (r != null) {
+                ClickHistory h = ClickHistory.fromResult(r, metadataClassesToRecord(collection, profile));
+                h.setCollection(collection.getId());
+                h.setClickDate(new Date());
+                h.setUserId(user.getId());
+                givenQuery.ifPresent(h::setQuery);
+                
+                searchHistoryRepository.saveClick(h);
+            } else {
+                log.warn("Result with URL '"+indexUrl+"' not found in collection '"+collection.getId()+"'");
+            }
+        }
+    }
+    
+    public Set<String> metadataClassesToRecord(Collection collection, Optional<String> profile) {
+        ServiceConfigReadOnly profileConfig = getServiceConfigOrDefault(collection, profile);
+        return new HashSet<>(profileConfig.get(FrontEndKeys.ModernUI.Session.SearchHistory.METADATA_TO_RECORD));
+    }
+    
+    /**
+     * Gets the Service config for the given profile, if no profile is given or the profile does not exist the default
+     * is returned.
+     * 
+     * @param collection
+     * @param profile
+     * @return
+     * @throws IllegalStateException when both the given profile and default profile do not exist.
+     */
+    public ServiceConfigReadOnly getServiceConfigOrDefault(Collection collection, Optional<String> profile) 
+        throws IllegalStateException {
+        if(profile.isPresent()) {
+            try {
+                return configRepository.getServiceConfig(collection.getId(), profile.get());
+            } catch (ProfileNotFoundException e) {
+                log.warn("Given prrofile {} does not exist reverting to default profile", profile.get());
+            }
+        }
+        try {
+            return configRepository.getServiceConfig(collection.getId(), DefaultValues.DEFAULT_PROFILE);
+        } catch (ProfileNotFoundException e) {
+            throw new IllegalStateException("The default profile is missing, it must be created if the collection still exists", e);
         }
     }
     
