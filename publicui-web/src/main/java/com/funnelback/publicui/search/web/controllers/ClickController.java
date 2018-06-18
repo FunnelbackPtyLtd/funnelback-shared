@@ -82,13 +82,13 @@ public class ClickController extends SessionController {
     @Autowired @Setter
     private ConfigRepository configRepository;
     
-    @Autowired
+    @Autowired @Setter
     private IndexRepository indexRepository;
     
-    @Autowired
+    @Autowired @Setter
     private SearchHistoryRepository searchHistoryRepository;
 
-    @Autowired
+    @Autowired @Setter
     private MetricRegistry metrics;
 
     @InitBinder
@@ -269,7 +269,7 @@ public class ClickController extends SessionController {
                 h.setCollection(collection.getId());
                 h.setClickDate(new Date());
                 h.setUserId(user.getId());
-                givenQuery.ifPresent(h::setQuery);
+                h.setQuery(givenQuery.orElse(""));
                 
                 searchHistoryRepository.saveClick(h);
             } else {
