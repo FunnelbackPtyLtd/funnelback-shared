@@ -1,5 +1,6 @@
 package com.funnelback.publicui.relateddocuments;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ public class RelatedDataRelationSource implements RelationSource {
                 .filter((metadata) -> metadata.containsKey(metadataClassName))
                 .map((metadata) -> metadata.get(metadataClassName))
                 .filter((value) -> value != null)
+                .flatMap((values) -> values.stream())
                 .collect(Collectors.toSet());
         }
         return Sets.newHashSet();
