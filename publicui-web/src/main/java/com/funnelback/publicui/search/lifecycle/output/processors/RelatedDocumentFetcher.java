@@ -65,28 +65,28 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     
     @Override
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-        log.fatal("Starting related document fetching");
+        log.trace("Starting related document fetching");
         if (SearchTransactionUtils.hasResults(searchTransaction)) {
             ServiceConfigReadOnly config = searchTransaction.getQuestion().getCurrentProfileConfig();
             List<Result> results = searchTransaction.getResponse().getResultPacket().getResults();
             List<RelationToExpand> relationsToExpand = findRelationsToExpand(config);
 
-            log.fatal("Got the following relations to expand - " + relationsToExpand);
+            log.trace("Got the following relations to expand - " + relationsToExpand);
 
             SetMultimap<URI, RelatedDataTarget> actionsForThisPass = createActionsForThisPass(results, relationsToExpand);
             
             while (!actionsForThisPass.isEmpty()) {
-                log.fatal("About to perform the following related document fetching actions - " + actionsForThisPass);
+                log.trace("About to perform the following related document fetching actions - " + actionsForThisPass);
                 performActions(searchTransaction.getQuestion().getCollection().getConfiguration(), actionsForThisPass);
                 
                 // Prepare the next pass
                 actionsForThisPass = createActionsForThisPass(results, relationsToExpand);
             }
-            log.fatal("No more related document fetching actions to perform");
+            log.trace("No more related document fetching actions to perform");
             
             return;
         }
-        log.fatal("Not running related document fetching because there are no results to examine");
+        log.trace("Not running related document fetching because there are no results to examine");
     }
 
     /**
