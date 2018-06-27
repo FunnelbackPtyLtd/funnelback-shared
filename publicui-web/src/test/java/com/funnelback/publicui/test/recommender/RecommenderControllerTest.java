@@ -4,22 +4,24 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -156,6 +158,8 @@ public class RecommenderControllerTest {
         i4uData.put("words_indexed", Lists.newArrayList("2048"));
         i4uData.put("flags", Lists.newArrayList("1234"));
         i4uData.put("qiescore", Lists.newArrayList("1.234"));
+        i4uData.put("title", Lists.newArrayList("title"));
+        i4uData.put("stem", Lists.newArrayList("stem"));
         docInfo = new DocInfo(i4uData);
 
         return docInfo;
