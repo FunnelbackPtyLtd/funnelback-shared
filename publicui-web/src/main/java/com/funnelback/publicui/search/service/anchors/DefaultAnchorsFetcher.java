@@ -135,7 +135,7 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
                         File generationStem = new File (entry.getIndexPath());
                         DocInfoResult result = new PadreConnector(searchHome, generationStem).docInfo(new URI(indexUrl)).fetch();
                         //Erroneous/missing results are not returned here, so if we get a result, it's the right one. 
-                        if (result.asList().size() > 0) {
+                        if (result.asMap().size() > 0) {
                             indexStem = generationStem;
                             break;
                         }

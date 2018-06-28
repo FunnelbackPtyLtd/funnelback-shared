@@ -43,6 +43,7 @@ import com.google.common.collect.Sets;
 
 import lombok.Data;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Fetches related documents from the index based on URLs in the
@@ -52,6 +53,7 @@ import lombok.Setter;
  * and easier (and most space efficient) than totally denormalising the 
  * documents before indexing.
  */
+@Log4j2
 @Component("relatedDocumentFetcherOutputProcessor")
 public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     
@@ -63,22 +65,28 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     
     @Override
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+        log.trace("Starting related document fetching");
         if (SearchTransactionUtils.hasResults(searchTransaction)) {
             ServiceConfigReadOnly config = searchTransaction.getQuestion().getCurrentProfileConfig();
             List<Result> results = searchTransaction.getResponse().getResultPacket().getResults();
             List<RelationToExpand> relationsToExpand = findRelationsToExpand(config);
-            
+
+            log.trace("Got the following relations to expand - " + relationsToExpand);
+
             SetMultimap<URI, RelatedDataTarget> actionsForThisPass = createActionsForThisPass(results, relationsToExpand);
             
             while (!actionsForThisPass.isEmpty()) {
+                log.trace("About to perform the following related document fetching actions - " + actionsForThisPass);
                 performActions(searchTransaction.getQuestion().getCollection().getConfiguration(), actionsForThisPass);
                 
                 // Prepare the next pass
                 actionsForThisPass = createActionsForThisPass(results, relationsToExpand);
             }
+            log.trace("No more related document fetching actions to perform");
             
             return;
         }
+        log.trace("Not running related document fetching because there are no results to examine");
     }
 
     /**
@@ -192,6 +200,11 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
                             // AutoRefreshLocalIndexRepository caches these, so I think it's ok to fetch again every time
                             // (we need to because different components of a meta collection may have different seperators)
                             String metadataSeparator = indexRepository.getBuildInfoValue(r.getCollection(), "facet_item_sepchars");
+                            if (metadataSeparator == null) {
+                                // TODO - This seems to happen on push collections - Not sure what to do about that.
+                                log.warn("Could not determine facet_item_sepchars for " + r.getCollection() + " - assuming the default of '|'");
+                                metadataSeparator = "|";
+                            }
                             
                             String[] urls = relationSourceValue.split(Pattern.quote(metadataSeparator));
                             for (String url : urls) {

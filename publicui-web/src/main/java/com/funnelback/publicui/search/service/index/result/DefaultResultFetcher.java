@@ -2,8 +2,11 @@ package com.funnelback.publicui.search.service.index.result;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -33,10 +36,10 @@ public class DefaultResultFetcher implements ResultFetcher {
         
         Set<String> metadata = DocInfoAccess.getMetadataForStem(indexStem);
         
-        List<DocInfo> dis = new PadreConnector(searchHome, indexStem)
+        List<DocInfo> dis = new ArrayList<>(new PadreConnector(searchHome, indexStem)
             .docInfo(resultUri)
             .withMetadata(metadata.toArray(new String[0]))
-            .fetch().asList();
+            .fetch().asMap().values());
 
         if (dis.size() < 1) {
             return null;
@@ -56,7 +59,9 @@ public class DefaultResultFetcher implements ResultFetcher {
         r.setFileSize(di.getUnfilteredLength());
         r.setSummary(di.getSummaryText());
         r.setTitle(di.getTitle());
-        r.getMetaData().putAll(di.getMetaData());
+        for (Map.Entry<String, List<String>> e : di.getMetaData().entrySet()) {
+            r.getMetaData().put(e.getKey(), String.join("|", e.getValue()));
+        }
         
         return r;        
     }

@@ -122,8 +122,8 @@ public class RelatedDocumentFetcherTests {
         result.setCollection("collection");
         result.getMetaData().put("parent", "http://example.com/1|http://example.com/2");
 
-        Map<String, String> cousinMetadata = new HashMap<>();
-        cousinMetadata.put("likes", "http://example.com/3");
+        Map<String, List<String>> cousinMetadata = new HashMap<>();
+        cousinMetadata.put("likes", Lists.newArrayList("http://example.com/3"));
         result.getRelatedDocuments().put("cousin", Sets.newHashSet(
             new RelatedDocument(
                 new URI("http://other.example.com/1"),
@@ -156,15 +156,15 @@ public class RelatedDocumentFetcherTests {
         
         DocInfo mockDocInfo1 = Mockito.mock(DocInfo.class);
         Mockito.when(mockDocInfo1.getUri()).thenReturn(new URI("http://example.com/1"));
-        Mockito.when(mockDocInfo1.getMetaData()).thenReturn(ImmutableMap.of("1","1"));
+        Mockito.when(mockDocInfo1.getMetaData()).thenReturn(ImmutableMap.of("1",Lists.newArrayList("1")));
 
         DocInfo mockDocInfo2 = Mockito.mock(DocInfo.class);
         Mockito.when(mockDocInfo2.getUri()).thenReturn(new URI("http://example.com/2"));
-        Mockito.when(mockDocInfo2.getMetaData()).thenReturn(ImmutableMap.of("2","2"));
+        Mockito.when(mockDocInfo2.getMetaData()).thenReturn(ImmutableMap.of("2",Lists.newArrayList("2")));
 
         DocInfo mockDocInfo3 = Mockito.mock(DocInfo.class);
         Mockito.when(mockDocInfo3.getUri()).thenReturn(new URI("http://example.com/3"));
-        Mockito.when(mockDocInfo3.getMetaData()).thenReturn(ImmutableMap.of("3","3"));
+        Mockito.when(mockDocInfo3.getMetaData()).thenReturn(ImmutableMap.of("3",Lists.newArrayList("3")));
 
         DocInfoResult mockDocInfoResult = Mockito.mock(DocInfoResult.class); // Surprisingly painful to construct these
         Mockito.when(mockDocInfoResult.asMap()).thenReturn(ImmutableMap.of(
@@ -189,12 +189,12 @@ public class RelatedDocumentFetcherTests {
 
         rdf.performActions(null, actions);
         
-        Assert.assertEquals(ImmutableSet.of(new RelatedDocument(new URI("http://example.com/1"), null, ImmutableMap.of("1","1"))),
+        Assert.assertEquals(ImmutableSet.of(new RelatedDocument(new URI("http://example.com/1"), null, ImmutableMap.of("1",Lists.newArrayList("1")))),
             result.getRelatedDocuments().get("a"));
         
         Assert.assertEquals(ImmutableSet.of(
-            new RelatedDocument(new URI("http://example.com/2"), null, ImmutableMap.of("2","2")),
-            new RelatedDocument(new URI("http://example.com/3"), null, ImmutableMap.of("3","3"))),
+            new RelatedDocument(new URI("http://example.com/2"), null, ImmutableMap.of("2",Lists.newArrayList("2"))),
+            new RelatedDocument(new URI("http://example.com/3"), null, ImmutableMap.of("3",Lists.newArrayList("3")))),
             result.getRelatedDocuments().get("b"));
     }
 

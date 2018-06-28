@@ -48,7 +48,7 @@ public class DataAPIConnectorPADRE implements DataAPI {
         DocInfoResult dir = getDocInfoResult(urls, collectionConfig);
 
         if (dir != null) {
-            dis = dir.asList();
+            dis = new ArrayList<>(dir.asMap().values());
         }
 
         if (dis != null && dis.size() > 0) {
