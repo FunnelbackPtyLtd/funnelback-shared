@@ -42,7 +42,7 @@
   <collection>junk_geo_range</collection>
   <component>0</component>
   <live_url>http://justright.com.au/</live_url>
-  <md f="1"><![CDATA[10.0, -160.0]]></md>
+  <md f="1" s="|"><v>10.0, -160.0</v></md>
   <cache_url>/search/cache.cgi?collection=junk_geo_range&amp;doc=geo_range.bundle&amp;off=1139&amp;len=212&amp;url=http%3A%2F%2Fjustright.com.au%2F</cache_url>
   <date>No Date</date>
   <filesize>146</filesize>
@@ -59,7 +59,7 @@
   <collection>junk_geo_range</collection>
   <component>0</component>
   <live_url>http://justleft.com.au/</live_url>
-  <md f="1"><![CDATA[10.0, 160.0]]></md>
+  <md f="1" s="|"><v>10.0, 160.0</v></md>
   <cache_url>/search/cache.cgi?collection=junk_geo_range&amp;doc=geo_range.bundle&amp;off=929&amp;len=210&amp;url=http%3A%2F%2Fjustleft.com.au%2F</cache_url>
   <date>No Date</date>
   <filesize>145</filesize>

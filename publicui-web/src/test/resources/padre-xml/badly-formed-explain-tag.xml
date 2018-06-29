@@ -479,13 +479,13 @@
   <collection>info-aus</collection>
   <component>0</component>
   <live_url>http://www.immi.gov.au/e_visa/</live_url>
-<md f="a"><![CDATA[Department of Immigration and Citizenship]]></md>
-<md f="c"><![CDATA[List of services provided on the Internet by the Australian Department of Immigration and Citizenship. Includes eVisas, ETAs, RRVs, Electronic Travel Authority, working holidays, resident return visas and citizenship applications.]]></md>
-<md f="p"><![CDATA[Department of Immigration and Citizenship]]></md>
-<md f="s"><![CDATA[visas]]></md>
-<md f="t"><![CDATA[Online <b>visa</b> applications]]></md>
-<md f="M"><![CDATA[2010-01-14T162745]]></md>
-<md f="R"><![CDATA[Topics;topics;Immigration;immigration;Visiting Australia;visiting-australia|Topics;topics;Immigration;immigration;Passports and Visas;passports-and-visas|People;people;Tourists;tourists;Visas;visas|Topics;topics;Tourism and Travel;tourism-and-travel;Passport and <b>Visa</b> Information;passport-and-<b>visa</b>-information|Politics;Politics;Visas;visas]]></md>
+<md f="a" s="|"><v>Department of Immigration and Citizenship</v></md>
+<md f="c" s="|"><v>List of services provided on the Internet by the Australian Department of Immigration and Citizenship. Includes eVisas, ETAs, RRVs, Electronic Travel Authority, working holidays, resident return visas and citizenship applications.</v></md>
+<md f="p" s="|"><v>Department of Immigration and Citizenship</v></md>
+<md f="s" s="|"><v>visas</v></md>
+<md f="t" s="|"><v>Online &lt;b&gt;visa&lt;/b&gt; applications</v></md>
+<md f="M" s="|"><v>2010-01-14T162745</v></md>
+<md f="R" s="|"><v s="|">Topics;topics;Immigration;immigration;Visiting Australia;visiting-australia</v><v s="|">Topics;topics;Immigration;immigration;Passports and Visas;passports-and-visas</v><v s="|">People;people;Tourists;tourists;Visas;visas</v><v s="|">Topics;topics;Tourism and Travel;tourism-and-travel;Passport and &lt;b&gt;Visa&lt;/b&gt; Information;passport-and-&lt;b&gt;visa&lt;/b&gt;-information</v><v>Politics;Politics;Visas;visas</v></md>
 <summary><![CDATA[A Maritime Crew <b>visa</b> is required by foreign crew of non-military ships visiting Australia. ... A Superyacht Crew <b>visa</b> is required by crew of Superyachts working in Australia.]]></summary>
   <cache_url>http://fed-cache.funnelback.com/search/cache.cgi?collection=info-aus&amp;doc=http%2Fwww.immi.gov.au%2Fe_visa%2F_default.fun.html.pan.txt</cache_url>
   <date>No Date</date>
@@ -508,14 +508,14 @@
   <collection>info-aus</collection>
   <component>0</component>
   <live_url>http://australia.gov.au/service/visa&#45;wizard</live_url>
-<md f="a"><![CDATA[Department of Immigration and Citizenship]]></md>
-<md f="c"><![CDATA[The <b>Visa</b> Wizard can help you find the Australian <b>visa</b> most likely to meet your specific circumstances. The <b>Visa</b> Wizard includes the most common Australian visas, but does not include every <b>visa</b>.]]></md>
-<md f="j"><![CDATA[http://www.immi.gov.au/visawizard/]]></md>
-<md f="p"><![CDATA[Department of Immigration and Citizenship]]></md>
-<md f="s"><![CDATA[travel-documents|student-visas|tourist-visas|working-visas|visas]]></md>
-<md f="t"><![CDATA[<b>Visa</b> Wizard]]></md>
-<md f="M"><![CDATA[2010-08-18T10:17:58]]></md>
-<md f="R"><![CDATA[General;General;Travel documents;travel-documents|Employment;Employment;Working visas;working-visas|Education;Education;Student visas;student-visas|Politics;Politics;Visas;visas|People;people;Students;students;International Students;international-students|Topics;topics;Immigration;immigration;Working in Australia;working-in-australia|Topics;topics;Immigration;immigration;Studying in Australia;studying-in-australia|Tourism;Tourism;Tourist visas;tourist-visas|Life Events;life-events;Immigrating to Australia;immigrating-to-australia;Living in Australia;living-in-australia|Services;services;Service Task;service-task;Apply for ...;apply-for]]></md>
+<md f="a" s="|"><v>Department of Immigration and Citizenship</v></md>
+<md f="c" s="|"><v>The &lt;b&gt;Visa&lt;/b&gt; Wizard can help you find the Australian &lt;b&gt;visa&lt;/b&gt; most likely to meet your specific circumstances. The &lt;b&gt;Visa&lt;/b&gt; Wizard includes the most common Australian visas, but does not include every &lt;b&gt;visa&lt;/b&gt;.</v></md>
+<md f="j" s="|"><v>http://www.immi.gov.au/visawizard/</v></md>
+<md f="p" s="|"><v>Department of Immigration and Citizenship</v></md>
+<md f="s" s="|"><v s="|">travel-documents</v><v s="|">student-visas</v><v s="|">tourist-visas</v><v s="|">working-visas</v><v>visas</v></md>
+<md f="t" s="|"><v>&lt;b&gt;Visa&lt;/b&gt; Wizard</v></md>
+<md f="M" s="|"><v>2010-08-18T10:17:58</v></md>
+<md f="R" s="|"><v s="|">General;General;Travel documents;travel-documents</v><v s="|">Employment;Employment;Working visas;working-visas</v><v s="|">Education;Education;Student visas;student-visas</v><v s="|">Politics;Politics;Visas;visas</v><v s="|">People;people;Students;students;International Students;international-students</v><v s="|">Topics;topics;Immigration;immigration;Working in Australia;working-in-australia</v><v s="|">Topics;topics;Immigration;immigration;Studying in Australia;studying-in-australia</v><v s="|">Tourism;Tourism;Tourist visas;tourist-visas</v><v s="|">Life Events;life-events;Immigrating to Australia;immigrating-to-australia;Living in Australia;living-in-australia</v><v>Services;services;Service Task;service-task;Apply for ...;apply-for</v></md>
 <summary><![CDATA[<b>Visa</b> Wizard. Service Description. The <b>Visa</b> Wizard can help you find the Australian <b>visa</b> most likely to meet your specific circumstances. ... The <b>Visa</b> Wizard includes the most common Australian visas, but does not include every <b>visa</b>.]]></summary>
   <cache_url>http://fed-cache.funnelback.com/search/cache.cgi?collection=info-aus&amp;doc=http%2Faustralia.gov.au%2Fservice%2Fvisa-wizard</cache_url>
   <date>No Date</date>
@@ -532,14 +532,14 @@
   <collection>info-aus</collection>
   <component>0</component>
   <live_url>http://www.rego.act.gov.au/</live_url>
-<md f="a"><![CDATA[ACT Government agency]]></md>
-<md f="c"><![CDATA[Rego.act is your gateway to the Australian Capital Territory Road Transport Authority. Allows you to complete tasks related to vehicle registration, pay infringements, change your address and find information on vehicle registration, and vehicle inspections.]]></md>
-<md f="m"><![CDATA[mailto:roaduserservices@act.gov.au]]></md>
-<md f="p"><![CDATA[ACT Government agency]]></md>
-<md f="s"><![CDATA[vehicle-registration]]></md>
-<md f="t"><![CDATA[Rego.act]]></md>
-<md f="M"><![CDATA[2010-10-28T083908]]></md>
-<md f="R"><![CDATA[Topics;topics;Transport;transport;Registration and Licences;registration-and-licences|Transport;Transport;Vehicle registration;vehicle-registration]]></md>
+<md f="a" s="|"><v>ACT Government agency</v></md>
+<md f="c" s="|"><v>Rego.act is your gateway to the Australian Capital Territory Road Transport Authority. Allows you to complete tasks related to vehicle registration, pay infringements, change your address and find information on vehicle registration, and vehicle inspections.</v></md>
+<md f="m" s="|"><v>mailto:roaduserservices@act.gov.au</v></md>
+<md f="p" s="|"><v>ACT Government agency</v></md>
+<md f="s" s="|"><v>vehicle-registration</v></md>
+<md f="t" s="|"><v>Rego.act</v></md>
+<md f="M" s="|"><v>2010-10-28T083908</v></md>
+<md f="R" s="|"><v s="|">Topics;topics;Transport;transport;Registration and Licences;registration-and-licences</v><v>Transport;Transport;Vehicle registration;vehicle-registration</v></md>
 <summary><![CDATA[Methods of Payment. BPAY, Mastercard and <b>Visa</b> Card accepted. Inspection Stations.]]></summary>
   <cache_url>http://fed-cache.funnelback.com/search/cache.cgi?collection=info-aus&amp;doc=http%2Fwww.rego.act.gov.au%2F_default.fun.html.pan.txt</cache_url>
   <date>20 Jan 2011</date>
@@ -556,13 +556,13 @@
   <collection>info-aus</collection>
   <component>0</component>
   <live_url>http://www.afta.com.au/FindTravelAgent</live_url>
-<md f="a"><![CDATA[Australian Federation of Travel Agents Limited]]></md>
-<md f="c"><![CDATA[The Australian Federation of Travel Agents Limited (AFTA) is the peak body for Australia's travel agents and represents the majority of travel agents in Australia. It is an affiliated member of the World Travel Agents Associations Alliance (WTAAA). This page provides th ability to search for a travel agent by location.]]></md>
-<md f="p"><![CDATA[Australian Federation of Travel Agents Limited]]></md>
-<md f="s"><![CDATA[travel-agents]]></md>
-<md f="t"><![CDATA[Australian Federation of Travel Agents - Find a travel agent]]></md>
-<md f="M"><![CDATA[2010-01-22T160830]]></md>
-<md f="R"><![CDATA[Tourism;Tourism;Travel agents;travel-agents|People;people;Tourists;tourists]]></md>
+<md f="a" s="|"><v>Australian Federation of Travel Agents Limited</v></md>
+<md f="c" s="|"><v>The Australian Federation of Travel Agents Limited (AFTA) is the peak body for Australia's travel agents and represents the majority of travel agents in Australia. It is an affiliated member of the World Travel Agents Associations Alliance (WTAAA). This page provides th ability to search for a travel agent by location.</v></md>
+<md f="p" s="|"><v>Australian Federation of Travel Agents Limited</v></md>
+<md f="s" s="|"><v>travel-agents</v></md>
+<md f="t" s="|"><v>Australian Federation of Travel Agents - Find a travel agent</v></md>
+<md f="M" s="|"><v>2010-01-22T160830</v></md>
+<md f="R" s="|"><v s="|">Tourism;Tourism;Travel agents;travel-agents</v><v>People;people;Tourists;tourists</v></md>
 <summary><![CDATA[Mission Statement &Code of Ethics.  Welcome from the AFTA Chairman.  AFTA Board of Directors.  Welcome from the AFTA Chief Executive.  AFTA's Role in the Travel Industry.  Importance of a Strong AFTA.  AFTA Membership Benefits.  Reports and]]></summary>
   <cache_url>http://fed-cache.funnelback.com/search/cache.cgi?collection=info-aus&amp;doc=http%2Fwww.afta.com.au%2FFindTravelAgent</cache_url>
   <date>26 Jan 2011</date>
@@ -579,11 +579,11 @@
   <collection>info-aus</collection>
   <component>0</component>
   <live_url>https://www.ecom.immi.gov.au/evo/start.do?actionType=firstPartyQuery</live_url>
-<md f="a"><![CDATA[Department of Immigration and Citizenship]]></md>
-<md f="c"><![CDATA[<b>Visa</b> Entitlement Verification Online (VEVO) is a free online facility for <b>visa</b> holders, who do not have a label in their passport, to confirm their current <b>visa</b> details. VEVO is also used by organisations to check the <b>visa</b> status of <b>visa</b> holders applying for work, study, licenses and access to Government services such as Medicare.]]></md>
-<md f="p"><![CDATA[Department of Immigration and Citizenship]]></md>
-<md f="t"><![CDATA[<b>Visa</b> Entitlement Verification Online (VEVO) for <b>visa</b> holders]]></md>
-<md f="M"><![CDATA[2010-02-04T163822]]></md>
+<md f="a" s="|"><v>Department of Immigration and Citizenship</v></md>
+<md f="c" s="|"><v>&lt;b&gt;Visa&lt;/b&gt; Entitlement Verification Online (VEVO) is a free online facility for &lt;b&gt;visa&lt;/b&gt; holders, who do not have a label in their passport, to confirm their current &lt;b&gt;visa&lt;/b&gt; details. VEVO is also used by organisations to check the &lt;b&gt;visa&lt;/b&gt; status of &lt;b&gt;visa&lt;/b&gt; holders applying for work, study, licenses and access to Government services such as Medicare.</v></md>
+<md f="p" s="|"><v>Department of Immigration and Citizenship</v></md>
+<md f="t" s="|"><v>&lt;b&gt;Visa&lt;/b&gt; Entitlement Verification Online (VEVO) for &lt;b&gt;visa&lt;/b&gt; holders</v></md>
+<md f="M" s="|"><v>2010-02-04T163822</v></md>
 <summary><![CDATA[Main applicants only. The Department has developed a new convenient form of service delivery for Internet <b>visa</b> applicants ( main applicants only) to check their own <b>visa</b> details. ... What details are displayed. You will be able to view and print all your]]></summary>
   <cache_url>http://fed-cache.funnelback.com/search/cache.cgi?collection=info-aus&amp;doc=https%2Fwww.ecom.immi.gov.au%2Fevo%2Fstart.do%3FactionType%3DfirstPartyQuery</cache_url>
   <date>No Date</date>
@@ -600,13 +600,13 @@
   <collection>info-aus</collection>
   <component>0</component>
   <live_url>http://www.dfat.gov.au/visas/index.html</live_url>
-<md f="a"><![CDATA[Department of Foreign Affairs and Trade]]></md>
-<md f="c"><![CDATA[Department of Foreign Affairs and Trade information on obtaining visas for Australians travelling overseas.]]></md>
-<md f="p"><![CDATA[Department of Foreign Affairs and Trade]]></md>
-<md f="s"><![CDATA[visas|passports|tourist-information]]></md>
-<md f="t"><![CDATA[Visas]]></md>
-<md f="M"><![CDATA[2010-01-22T160734]]></md>
-<md f="R"><![CDATA[Topics;topics;Immigration;immigration;Passports and Visas;passports-and-visas|Topics;topics;Tourism and Travel;tourism-and-travel;Passport and <b>Visa</b> Information;passport-and-<b>visa</b>-information|Life Events;life-events;Going Overseas;going-overseas|People;people;Australians Travelling;australians-travelling|Politics;Politics;Visas;visas|Tourism;Tourism;Tourist information;tourist-information|Politics;Politics;Passports;passports]]></md>
+<md f="a" s="|"><v>Department of Foreign Affairs and Trade</v></md>
+<md f="c" s="|"><v>Department of Foreign Affairs and Trade information on obtaining visas for Australians travelling overseas.</v></md>
+<md f="p" s="|"><v>Department of Foreign Affairs and Trade</v></md>
+<md f="s" s="|"><v s="|">visas</v><v s="|">passports</v><v>tourist-information</v></md>
+<md f="t" s="|"><v>Visas</v></md>
+<md f="M" s="|"><v>2010-01-22T160734</v></md>
+<md f="R" s="|"><v s="|">Topics;topics;Immigration;immigration;Passports and Visas;passports-and-visas</v><v s="|">Topics;topics;Tourism and Travel;tourism-and-travel;Passport and &lt;b&gt;Visa&lt;/b&gt; Information;passport-and-&lt;b&gt;visa&lt;/b&gt;-information</v><v s="|">Life Events;life-events;Going Overseas;going-overseas</v><v s="|">People;people;Australians Travelling;australians-travelling</v><v s="|">Politics;Politics;Visas;visas</v><v s="|">Tourism;Tourism;Tourist information;tourist-information</v><v>Politics;Politics;Passports;passports</v></md>
 <summary><![CDATA[Visas. A <b>visa</b> is a form of permission for a non-citizen to enter, transit or remain in a particular country. ... A <b>visa</b> does not guarantee entry, that decision remains the right of the immigration officials of the country concerned.]]></summary>
   <cache_url>http://fed-cache.funnelback.com/search/cache.cgi?collection=info-aus&amp;doc=http%2Fwww.dfat.gov.au%2Fvisas%2Findex.html.pan.txt</cache_url>
   <date>No Date</date>
@@ -623,12 +623,12 @@
   <collection>info-aus</collection>
   <component>0</component>
   <live_url>http://www.ireland.embassy.gov.au/dubl/home.html</live_url>
-<md f="a"><![CDATA[Department of Foreign Affairs and Trade]]></md>
-<md f="c"><![CDATA[Australian Embassy in Dublin, Ireland.]]></md>
-<md f="p"><![CDATA[Department of Foreign Affairs and Trade]]></md>
-<md f="t"><![CDATA[Australian Embassy, Ireland]]></md>
-<md f="M"><![CDATA[2009-11-09T162635]]></md>
-<md f="R"><![CDATA[Politics;Politics;Embassies;embassies]]></md>
+<md f="a" s="|"><v>Department of Foreign Affairs and Trade</v></md>
+<md f="c" s="|"><v>Australian Embassy in Dublin, Ireland.</v></md>
+<md f="p" s="|"><v>Department of Foreign Affairs and Trade</v></md>
+<md f="t" s="|"><v>Australian Embassy, Ireland</v></md>
+<md f="M" s="|"><v>2009-11-09T162635</v></md>
+<md f="R" s="|"><v>Politics;Politics;Embassies;embassies</v></md>
 <summary><![CDATA[<b>Visa</b> services for Australian visas. Please see the Australian High Commission in London. ... Australian Passport Holders Travelling to the United States from Ireland. All Australian passport holders eligible to travel to the United States under the <b>Visa</b>]]></summary>
   <cache_url>http://fed-cache.funnelback.com/search/cache.cgi?collection=info-aus&amp;doc=http%2Fwww.ireland.embassy.gov.au%2Fdubl%2Fhome.html.pan.txt</cache_url>
   <date>25 Jan 2011</date>
@@ -645,14 +645,14 @@
   <collection>info-aus</collection>
   <component>0</component>
   <live_url>http://www.serbia.embassy.gov.au/bgde/home.html</live_url>
-<md f="a"><![CDATA[Department of Foreign Affairs and Trade]]></md>
-<md f="c"><![CDATA[The Australian Embassy in Belgrade is accredited to the governments of the Republic of Serbia, Romania, Former Yugoslav Republic of Macedonia (FYROM) and the Republic of Montenegro.]]></md>
-<md f="m"><![CDATA[mailto:immigration.belgrade@dfat.gov.au]]></md>
-<md f="p"><![CDATA[Department of Foreign Affairs and Trade]]></md>
-<md f="s"><![CDATA[embassies]]></md>
-<md f="t"><![CDATA[Australian Embassy, Serbia]]></md>
-<md f="M"><![CDATA[2010-10-18T152529]]></md>
-<md f="R"><![CDATA[Politics;Politics;Embassies;embassies]]></md>
+<md f="a" s="|"><v>Department of Foreign Affairs and Trade</v></md>
+<md f="c" s="|"><v>The Australian Embassy in Belgrade is accredited to the governments of the Republic of Serbia, Romania, Former Yugoslav Republic of Macedonia (FYROM) and the Republic of Montenegro.</v></md>
+<md f="m" s="|"><v>mailto:immigration.belgrade@dfat.gov.au</v></md>
+<md f="p" s="|"><v>Department of Foreign Affairs and Trade</v></md>
+<md f="s" s="|"><v>embassies</v></md>
+<md f="t" s="|"><v>Australian Embassy, Serbia</v></md>
+<md f="M" s="|"><v>2010-10-18T152529</v></md>
+<md f="R" s="|"><v>Politics;Politics;Embassies;embassies</v></md>
 <summary><![CDATA[Some websites offering <b>visa</b> services have been designed to look like official Australian Government websites. ... These websites may not be scams, however may require clients to pay a service fee over and above normal <b>visa</b> application charges.]]></summary>
   <cache_url>http://fed-cache.funnelback.com/search/cache.cgi?collection=info-aus&amp;doc=http%2Fwww.serbia.embassy.gov.au%2Fbgde%2Fhome.html.pan.txt</cache_url>
   <date>24 Jan 2011</date>
@@ -674,12 +674,12 @@
   <collection>info-aus</collection>
   <component>0</component>
   <live_url>http://www.jordan.embassy.gov.au/aman/home.html</live_url>
-<md f="a"><![CDATA[Department of Foreign Affairs and Trade]]></md>
-<md f="c"><![CDATA[Australian Embassy in Amman, Jordan.]]></md>
-<md f="p"><![CDATA[Department of Foreign Affairs and Trade]]></md>
-<md f="t"><![CDATA[Australian Embassy, Jordan]]></md>
-<md f="M"><![CDATA[2009-11-09T162614]]></md>
-<md f="R"><![CDATA[Politics;Politics;Embassies;embassies]]></md>
+<md f="a" s="|"><v>Department of Foreign Affairs and Trade</v></md>
+<md f="c" s="|"><v>Australian Embassy in Amman, Jordan.</v></md>
+<md f="p" s="|"><v>Department of Foreign Affairs and Trade</v></md>
+<md f="t" s="|"><v>Australian Embassy, Jordan</v></md>
+<md f="M" s="|"><v>2009-11-09T162614</v></md>
+<md f="R" s="|"><v>Politics;Politics;Embassies;embassies</v></md>
 <summary><![CDATA[Assistant <b>Visa</b> Officer AVO. ... Senior <b>Visa</b> Officer Team Leader.]]></summary>
   <cache_url>http://fed-cache.funnelback.com/search/cache.cgi?collection=info-aus&amp;doc=http%2Fwww.jordan.embassy.gov.au%2Faman%2Fhome.html.pan.txt</cache_url>
   <date>24 Jan 2011</date>
@@ -696,12 +696,12 @@
   <collection>info-aus</collection>
   <component>0</component>
   <live_url>http://www.austria.embassy.gov.au/vien/home.html</live_url>
-<md f="a"><![CDATA[Department of Foreign Affairs and Trade]]></md>
-<md f="c"><![CDATA[Australian Embassy and Permanent Mission to the United Nations in Vienna . The Embassy in Vienna is accredited to Austria, Bosnia and Herzegovina, Slovakia, Slovenia and International Organisations in Vienna.]]></md>
-<md f="p"><![CDATA[Department of Foreign Affairs and Trade]]></md>
-<md f="t"><![CDATA[Australian Embassy and Permanent Mission to the United Nations]]></md>
-<md f="M"><![CDATA[2009-11-09T162611]]></md>
-<md f="R"><![CDATA[Politics;Politics;Embassies;embassies]]></md>
+<md f="a" s="|"><v>Department of Foreign Affairs and Trade</v></md>
+<md f="c" s="|"><v>Australian Embassy and Permanent Mission to the United Nations in Vienna . The Embassy in Vienna is accredited to Austria, Bosnia and Herzegovina, Slovakia, Slovenia and International Organisations in Vienna.</v></md>
+<md f="p" s="|"><v>Department of Foreign Affairs and Trade</v></md>
+<md f="t" s="|"><v>Australian Embassy and Permanent Mission to the United Nations</v></md>
+<md f="M" s="|"><v>2009-11-09T162611</v></md>
+<md f="R" s="|"><v>Politics;Politics;Embassies;embassies</v></md>
 <summary><![CDATA[Please wait to be connected to our operator. Please do not use the toll free number for <b>visa</b> and immigration enquiries. ... Visas, migration and citizenship. The Embassy’s <b>Visa</b> &Migration office processes <b>visa</b> applications from nationals and residents]]></summary>
   <cache_url>http://fed-cache.funnelback.com/search/cache.cgi?collection=info-aus&amp;doc=http%2Fwww.austria.embassy.gov.au%2Fvien%2Fhome.html.pan.txt</cache_url>
   <date>24 Jan 2011</date>

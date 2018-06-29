@@ -42,7 +42,7 @@
   <collection>Se2-push2-GeoBoundingBoxTest</collection>
   <component>0</component>
   <live_url>http://doc1/</live_url>
-  <md f="location"><![CDATA[45,100]]></md>
+  <md f="location" s="|"><v>45,100</v></md>
 <summary><![CDATA[bounding box.]]></summary>
   <cache_url>/s/cache?collection=Se2-push2-GeoBoundingBoxTest&amp;doc=%2Fhome%2Fluke%2Fcode%2Ftrunk%2Ffunnelback%2Fdata%2FSe2-push2-GeoBoundingBoxTest%2Flive%2F1-cache.readonly.warc&amp;off=282&amp;len=-1&amp;url=http%3A%2F%2Fdoc1%2F&amp;profile=_default</cache_url>
   <date>No Date</date>

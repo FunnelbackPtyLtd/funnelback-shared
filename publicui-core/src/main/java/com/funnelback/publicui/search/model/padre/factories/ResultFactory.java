@@ -6,6 +6,8 @@ import com.funnelback.publicui.search.model.padre.QuickLinks;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
+
+import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -164,6 +166,7 @@ public class ResultFactory {
         }
 
         Map<String, String> data = new HashMap<String, String>();
+        Map<String, Metadata> newMetadata = new HashMap<>();
         QuickLinks ql = null;
         Explain explain = null;
         Collapsed collapsed = null;
@@ -171,10 +174,19 @@ public class ResultFactory {
         while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
             if (xmlStreamReader.isStartElement()) {
                 if (Result.Schema.METADATA.equals(xmlStreamReader.getLocalName())) {
-                    // Specific case for metadtata <md f="x">value</md>
+                    // Specific case for metadtata <md f="x" s="|"><v s="|">value1</v><v>value2</v></md>
                     String mdClass = xmlStreamReader.getAttributeValue(null, Result.Schema.ATTR_METADATA_F);
-                    String value = xmlStreamReader.getElementText();
-                    data.put(Result.METADATA_PREFIX + mdClass, value);
+                    String definedClassSeparators = xmlStreamReader.getAttributeValue(null, Result.Schema.ATTR_METADATA_CLASS_SEPARATORS);
+
+                    Set<Character> definedClassSeparatorSet = new HashSet<Character>();
+                    for (char c : definedClassSeparators.toCharArray()) {
+                        definedClassSeparatorSet.add(c);
+                    }
+                    
+                    MetadataClass metadataClass = new MetadataClass(mdClass, definedClassSeparatorSet);
+                    List<MetadataValue> metadataValues = MetadataValue.fromXmlStreamReader(xmlStreamReader);
+                    
+                    newMetadata.put(metadataClass.getMetadataClassId(), new Metadata(metadataClass, metadataValues));
                 } else if (QuickLinks.Schema.QUICKLINKS.equals(xmlStreamReader.getLocalName())) {
                     ql = QuickLinksFactory.fromXmlStreamReader(xmlStreamReader);
                 } else if(Result.Schema.EXPLAIN.equals(xmlStreamReader.getLocalName())) {
@@ -190,8 +202,59 @@ public class ResultFactory {
             }
         }
 
-        return fromMap(data, ql, explain, collapsed);
+        Result result = fromMap(data, ql, explain, collapsed);
+        
+        for (Metadata m : newMetadata.values()) {
+            StringBuilder values = new StringBuilder();
+            for (MetadataValue mv : m.getMetadataValues()) {
+                values.append(mv.getValue());
+                mv.getTrailingSeparator().ifPresent((sep) -> values.append(sep));
+            }
+            
+            result.getMetaData().put(m.getMetadataClass().getMetadataClassId(), values.toString());
+        }
+        return result;
     }
+
+    @Data
+    private static class Metadata {
+        private final MetadataClass metadataClass;
+        private final List<MetadataValue> metadataValues;
+    }
+    
+    @Data
+    private static class MetadataClass {
+        private final String metadataClassId;
+        private final Set<Character> separators;
+    }
+    
+    @Data
+    private static class MetadataValue {
+        private final String value;
+        private final Optional<Character> trailingSeparator;
+
+        public static List<MetadataValue> fromXmlStreamReader(XMLStreamReader xmlStreamReader) throws XMLStreamException {
+            if (!Result.Schema.METADATA.equals(xmlStreamReader.getLocalName())) {
+                throw new IllegalArgumentException();
+            }
+
+            List<MetadataValue> result = new ArrayList<>();
+            while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
+                if (xmlStreamReader.isStartElement()) {
+                    if (Result.Schema.METADATA_VALUE.equals(xmlStreamReader.getLocalName())) {
+                        String trailingSeparatorString = xmlStreamReader.getAttributeValue(null, Result.Schema.ATTR_METADATA_VALUE_SEPARATOR);
+                        Character trailingSeparator = trailingSeparatorString == null ? null : trailingSeparatorString.charAt(0);
+                        String value = xmlStreamReader.getElementText();
+                        
+                        result.add(new MetadataValue(value, Optional.ofNullable(trailingSeparator)));
+                    }
+                }
+            }
+            return result;
+        }
+    }
+
+    
     
     /**
      * Parses tags associated with a results. <tt>href</tt> attributes are ignored because the URL
