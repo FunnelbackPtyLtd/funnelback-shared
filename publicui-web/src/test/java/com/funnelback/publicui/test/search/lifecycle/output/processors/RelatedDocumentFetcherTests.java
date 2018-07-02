@@ -120,14 +120,13 @@ public class RelatedDocumentFetcherTests {
 
         Result result = new Result();
         result.setCollection("collection");
-        result.getMetaData().put("parent", "http://example.com/1|http://example.com/2");
+        result.getListMetadata().put("parent", Lists.newArrayList("http://example.com/1","http://example.com/2"));
 
         Map<String, List<String>> cousinMetadata = new HashMap<>();
         cousinMetadata.put("likes", Lists.newArrayList("http://example.com/3"));
         result.getRelatedDocuments().put("cousin", Sets.newHashSet(
             new RelatedDocument(
                 new URI("http://other.example.com/1"),
-                "cousinCollection",
                 cousinMetadata
             )
         ));
@@ -135,10 +134,6 @@ public class RelatedDocumentFetcherTests {
         List<Result> results = Lists.newArrayList(result);
         
         RelatedDocumentFetcher rdf = new RelatedDocumentFetcher();
-        
-        IndexRepository indexRepository = Mockito.mock(IndexRepository.class);
-        Mockito.when(indexRepository.getBuildInfoValue(Mockito.eq("collection"), Mockito.eq("facet_item_sepchars"))).thenReturn("|");
-        rdf.setIndexRepository(indexRepository);
         
         SetMultimap<URI, RelatedDataTarget> actualResult = rdf.createActionsForThisPass(results, relationsToExpand);
         
@@ -189,12 +184,12 @@ public class RelatedDocumentFetcherTests {
 
         rdf.performActions(null, actions);
         
-        Assert.assertEquals(ImmutableSet.of(new RelatedDocument(new URI("http://example.com/1"), null, ImmutableMap.of("1",Lists.newArrayList("1")))),
+        Assert.assertEquals(ImmutableSet.of(new RelatedDocument(new URI("http://example.com/1"), ImmutableMap.of("1",Lists.newArrayList("1")))),
             result.getRelatedDocuments().get("a"));
         
         Assert.assertEquals(ImmutableSet.of(
-            new RelatedDocument(new URI("http://example.com/2"), null, ImmutableMap.of("2",Lists.newArrayList("2"))),
-            new RelatedDocument(new URI("http://example.com/3"), null, ImmutableMap.of("3",Lists.newArrayList("3")))),
+            new RelatedDocument(new URI("http://example.com/2"), ImmutableMap.of("2",Lists.newArrayList("2"))),
+            new RelatedDocument(new URI("http://example.com/3"), ImmutableMap.of("3",Lists.newArrayList("3")))),
             result.getRelatedDocuments().get("b"));
     }
 

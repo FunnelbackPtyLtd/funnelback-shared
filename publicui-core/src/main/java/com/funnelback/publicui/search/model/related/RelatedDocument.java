@@ -11,6 +11,5 @@ import lombok.Data;
 @Data
 public class RelatedDocument {
     private final URI url;
-    private final String collectionId;
     private final Map<String, List<String>> metadata;
 }
