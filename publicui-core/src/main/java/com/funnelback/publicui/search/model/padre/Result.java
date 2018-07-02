@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.funnelback.publicui.search.model.related.RelatedDocument;
+import com.funnelback.publicui.utils.MultimapToSingleStringMapWrapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -142,14 +143,57 @@ public class Result implements ResultType {
     @Getter @Setter private Float kmFromOrigin;
     
     /**
+     * <p>Map containing the separators defined for each metadata class.</p>
+     * 
+     * <p>Please note that currently separators are defined globally, however this data-model
+     *    aims to support the possibility of per-class separators in the future.</p>
+     * 
+     * @see <code>Metadata classes</code>
+     */
+    // Omitted from XStream by SearchXStreamMarshaller
+    @Getter private final Map<String, List<String>> definedMetadataSeparators = new HashMap<>();
+
+    /**
+     * <p>Multi-Map containing the list of metadata values for each metadata fields for each result.</p>
+     * 
+     * <p>The key is the metadata class name as defined in the metadata mappings.</p>
+     *
+     * <p>The values are each mapped metadata value, split based on any defined separators.</p>
+     * 
+     * <p>Note that changes to this multi-map will be reflected in the legacy metaData map, which
+     *    presents all values as a single string instead of pre-split, and changes to the legacy
+     *    map will likewise be reflected here.</p>
+     * 
+     * @see <code>Metadata classes</code>
+     */
+    @Getter private final Map<String, List<String>> listMetadata = new HashMap<>();
+
+    /**
+     * <p>Multi-Map containing the separators originally used by the metadata values within in newMetadata.</p>
+     * 
+     * <p>This map is only of interest if the specific separators are meaningful to an implementation
+     *    which is hopefully uncommon. If values are added to the newMetadata map, new separators
+     *    may be added here also. Some separator from the definedMetadataSeparators list will be used
+     *    for any added metadata if this map lacks sufficient values.</p>
+     * 
+     * <p>Note that changes to this multi-map will be reflected in the legacy metaData map, which
+     *    presents all values as a single string instead of pre-split, and changes to the legacy
+     *    map will likewise be reflected here.</p>
+     *
+     * @see <code>Metadata classes</code>
+     */
+    // Omitted from XStream by SearchXStreamMarshaller
+    @Getter private final Map<String, List<String>> listMetadataSeparators = new HashMap<>();
+
+    /**
      * <p>Map containing the metadata fields for the result.</p>
      * 
      * <p>The key is the metadata class name as defined in the metadata mappings.</p>
      * 
      * @see <code>Metadata classes</code>
      */
-    @Getter private final Map<String, String> metaData = new HashMap<String, String>();
-    
+    @Getter private final Map<String, String> metaData = new MultimapToSingleStringMapWrapper(listMetadata, listMetadataSeparators, definedMetadataSeparators);
+
     /**
      * <p>Tags associated with a result.</p>
      * 

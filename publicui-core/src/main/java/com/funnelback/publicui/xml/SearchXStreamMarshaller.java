@@ -23,6 +23,10 @@ public class SearchXStreamMarshaller extends XStreamMarshaller {
         xstream.registerLocalConverter(Details.class, "collectionUpdated", new DateConverter(Details.UPDATED_DATE_PATTERN, new String[] {Details.UPDATED_DATE_PATTERN}, TimeZone.getDefault()));
         xstream.registerLocalConverter(SearchError.class, "additionalData", new ExceptionConverter());
         xstream.registerConverter(new OptionalConverter());
+        xstream.registerLocalConverter(Result.class, "metaData", new MultimapToSingleStringMapConverter());
+        xstream.omitField(Result.class, "definedMetadataSeparators");
+        xstream.omitField(Result.class, "newMetadataSeparators");
+        xstream.setMode(XStream.NO_REFERENCES);
     }
     
 
