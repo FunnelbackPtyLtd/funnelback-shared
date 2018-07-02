@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -123,16 +124,16 @@ public class XSLTXStreamViewTests {
         // contains sub <results> that upsets the other subsequent tests
         oldXml = oldXml.replaceAll("(?s)<collapsed.*?>.*?</collapsed>\n", "");
 
-        // <md f... needs to be tested separately because there is no easy way
-        // to reorder them
-        p = Pattern.compile("<md f[^\n]*</md>");
+        // Check all the metadata content is present
+        p = Pattern.compile("<v>(.*?)</v>");
         Matcher m = p.matcher(oldXml);
         while (m.find()) {
-            Assert.assertTrue("Transformed XML should contain '"+m.group(0)+"'", actual.contains(m.group(0)));
+            System.out.println(actual);
+            Assert.assertTrue("Transformed XML should contain '"+m.group(1)+"'", actual.contains(StringEscapeUtils.unescapeXml(m.group(1))));
         }
         // Then strip the <md> tags
-        oldXml = oldXml.replaceAll("<md f[^\n]*</md>", "");
-        actual = actual.replaceAll("<md f[^\n]*</md>", "");
+        oldXml = oldXml.replaceAll("<md.*?</md>", "");
+        actual = actual.replaceAll("<md.*?</md>", "");
         
         // <explain> tags didn't exist prior to v11
         oldXml = oldXml.replaceAll("(?s)<explain>.*?</explain>\n", "");
