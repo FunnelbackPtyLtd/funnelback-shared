@@ -250,9 +250,12 @@ public class Result implements ResultType {
         public static final String KM_FROM_ORIGIN = "km_from_origin";
         public static final String EXPLAIN = "explain";
         public static final String METADATA = "md";
+        public static final String METADATA_VALUE = "v";
         public static final String TAGS = "tags";
         public static final String RQ = "rq";
         public static final String ATTR_METADATA_F = "f";
+        public static final String ATTR_METADATA_CLASS_SEPARATORS = "s";
+        public static final String ATTR_METADATA_VALUE_SEPARATOR = "s";
         public static final String GSCOPES_SET = "gscopes_set";
         
         public static final String COLLAPSED_SIG = "sig";
