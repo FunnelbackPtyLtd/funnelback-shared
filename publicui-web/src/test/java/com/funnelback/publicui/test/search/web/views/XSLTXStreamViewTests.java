@@ -128,7 +128,6 @@ public class XSLTXStreamViewTests {
         p = Pattern.compile("<v>(.*?)</v>");
         Matcher m = p.matcher(oldXml);
         while (m.find()) {
-            System.out.println(actual);
             Assert.assertTrue("Transformed XML should contain '"+m.group(1)+"'", actual.contains(StringEscapeUtils.unescapeXml(m.group(1))));
         }
         // Then strip the <md> tags
