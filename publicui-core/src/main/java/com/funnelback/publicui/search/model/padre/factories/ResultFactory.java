@@ -6,6 +6,7 @@ import com.funnelback.publicui.search.model.padre.QuickLinks;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
+import com.google.common.collect.Lists;
 
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
@@ -17,6 +18,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 /**
  * Builds {@link Result}s from various input sources.
@@ -205,13 +207,18 @@ public class ResultFactory {
         Result result = fromMap(data, ql, explain, collapsed);
         
         for (Metadata m : newMetadata.values()) {
-            StringBuilder values = new StringBuilder();
+            String key = m.getMetadataClass().getMetadataClassId();
+            result.getDefinedMetadataSeparators().put(key,
+                m.getMetadataClass().getSeparators().stream().map((c) -> Character.toString(c)).collect(Collectors.toList()));
             for (MetadataValue mv : m.getMetadataValues()) {
-                values.append(mv.getValue());
-                mv.getTrailingSeparator().ifPresent((sep) -> values.append(sep));
+                result.getListMetadata().putIfAbsent(key, Lists.newArrayList());
+                result.getListMetadataSeparators().putIfAbsent(key, Lists.newArrayList());
+
+                result.getListMetadata().get(key).add(mv.getValue());
+                if (mv.getTrailingSeparator().isPresent()) {
+                    result.getListMetadataSeparators().get(key).add(mv.getTrailingSeparator().get().toString());
+                }
             }
-            
-            result.getMetaData().put(m.getMetadataClass().getMetadataClassId(), values.toString());
         }
         return result;
     }
