@@ -152,6 +152,8 @@ public class Result implements ResultType {
     
     /**
      * <p>Map containing the separators defined for each metadata class.</p>
+     *
+     * <p>Intended only for internal use, and not exposed in the XML/JSON data model.</p>
      * 
      * <p>Please note that currently separators are defined globally, however this data-model
      *    aims to support the possibility of per-class separators in the future.</p>
@@ -181,6 +183,8 @@ public class Result implements ResultType {
 
     /**
      * <p>Multi-Map containing the separators originally used by the metadata values within in newMetadata.</p>
+     *
+     * <p>Intended only for internal use, and not exposed in the XML/JSON data model.</p>
      * 
      * <p>This map is only of interest if the specific separators are meaningful to an implementation
      *    which is hopefully uncommon. If values are added to the newMetadata map, new separators
