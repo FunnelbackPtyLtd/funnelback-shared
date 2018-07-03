@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.funnelback.config.keys.Keys.ServerKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 
@@ -15,7 +15,7 @@ import freemarker.template.TemplateScalarModel;
 
 /**
  * Generates an authentication token for a given URL
- * based on the {@link ServerKeys#SERVER_SECRET};
+ * based on the {@link Server#SERVER_SECRET};
  * 
  * @since 12.4
  */

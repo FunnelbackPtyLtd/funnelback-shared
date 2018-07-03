@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.lifecycle;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +11,6 @@ import org.apache.logging.log4j.ThreadContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 
-import com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
@@ -19,9 +20,9 @@ import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchError;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.springmvc.utils.web.RequestParameterValueUtils;
@@ -129,7 +130,7 @@ public class DefaultSearchTransactionProcessor implements SearchTransactionProce
                 log.error(i18n.tr("transaction-lifecycle.extra-search.internal.error", 
                                         extraSearchName.get(), 
                                         questionTypeAsString, 
-                                        ModernUI.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey()), 
+                                        FrontEndKeys.ModernUi.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey()), 
                            exception);
             } else {
                 log.error(i18n.tr("transaction-lifecycle.extra-search.error", extraSearchName.get(), questionTypeAsString), exception);

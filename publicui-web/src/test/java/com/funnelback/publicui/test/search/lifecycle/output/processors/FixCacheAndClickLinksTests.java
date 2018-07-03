@@ -23,8 +23,8 @@ import com.funnelback.config.configtypes.service.DefaultServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.config.data.InMemoryConfigData;
 import com.funnelback.config.data.environment.NoConfigEnvironment;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
-import com.funnelback.config.keys.Keys.ServerKeys;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixCacheAndClickLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -54,7 +54,7 @@ public class FixCacheAndClickLinksTests {
     @SneakyThrows
     private SearchTransaction getTestSearchTransaction(Boolean clickTracking) {
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
-        serviceConfig.set(FrontEndKeys.UI.Modern.CLICK_LINK, Optional.of("CLICK_LINK"));
+        serviceConfig.set(FrontEndKeys.ModernUi.CLICK_LINK, Optional.of("CLICK_LINK"));
         serviceConfig.set(FrontEndKeys.CLICK_TRACKING, clickTracking);
 
         Profile profile = new Profile();
