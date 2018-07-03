@@ -120,7 +120,7 @@ public class RelatedDocumentFetcherTests {
 
         Result result = new Result();
         result.setCollection("collection");
-        result.getListMetadata().put("parent", Lists.newArrayList("http://example.com/1","http://example.com/2"));
+        result.getListMetadata().putAll("parent", Lists.newArrayList("http://example.com/1","http://example.com/2"));
 
         Map<String, List<String>> cousinMetadata = new HashMap<>();
         cousinMetadata.put("likes", Lists.newArrayList("http://example.com/3"));
