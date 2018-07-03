@@ -7,11 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.related.RelatedDocument;
 import com.funnelback.publicui.utils.MultimapToSingleStringMapWrapper;
+import com.funnelback.publicui.xml.MultimapConverter;
+import com.funnelback.publicui.xml.MultimapToSingleStringMapConverter;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +32,6 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"definedMetadataSeparators","listMetadataSeparators"})
 public class Result implements ResultType {
 
     /**
@@ -155,7 +159,8 @@ public class Result implements ResultType {
      * @see <code>Metadata classes</code>
      * @since 15.16
      */
-    // Omitted from XStream by SearchXStreamMarshaller and Jackson by class @JsonIgnoreProperties
+    @JsonIgnore
+    @XStreamOmitField
     @Getter private final ListMultimap<String, String> definedMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
     /**
@@ -172,6 +177,7 @@ public class Result implements ResultType {
      * @see <code>Metadata classes</code>
      * @since 15.16
      */
+    @XStreamConverter(MultimapConverter.class)
     @Getter private final ListMultimap<String, String> listMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
     /**
@@ -189,7 +195,8 @@ public class Result implements ResultType {
      * @see <code>Metadata classes</code>
      * @since 15.16
      */
-    // Omitted from XStream by SearchXStreamMarshaller and Jackson by class @JsonIgnoreProperties
+    @JsonIgnore
+    @XStreamOmitField
     @Getter private final ListMultimap<String, String> listMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
     /**
@@ -199,6 +206,7 @@ public class Result implements ResultType {
      * 
      * @see <code>Metadata classes</code>
      */
+    @XStreamConverter(MultimapToSingleStringMapConverter.class)
     @Getter private final Map<String, String> metaData = new MultimapToSingleStringMapWrapper(listMetadata, listMetadataSeparators, definedMetadataSeparators);
 
     /**
