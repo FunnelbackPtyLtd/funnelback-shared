@@ -7,18 +7,20 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.publicui.utils.MultimapToSingleStringMapWrapper;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 
 public class MultimapToSingleStringMapWrapperTest {
 
     @Test
     public void testEmpty() {
-        Map<String, List<String>> underlyingMetadata = Maps.newHashMap();
+        ListMultimap<String, String> underlyingMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
-        Map<String, List<String>> underlyingMetadataSeparators = Maps.newHashMap();
+        ListMultimap<String, String> underlyingMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
-        Map<String, List<String>> definedMetadataSeparators = Maps.newHashMap();
+        ListMultimap<String, String> definedMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
         MultimapToSingleStringMapWrapper map = new MultimapToSingleStringMapWrapper(underlyingMetadata, underlyingMetadataSeparators, definedMetadataSeparators);
         
@@ -27,14 +29,14 @@ public class MultimapToSingleStringMapWrapperTest {
 
     @Test
     public void testGet() {
-        Map<String, List<String>> underlyingMetadata = Maps.newHashMap();
-        underlyingMetadata.put("foo", Lists.newArrayList("a","b","c","d"));
+        ListMultimap<String, String> underlyingMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
+        underlyingMetadata.putAll("foo", Lists.newArrayList("a","b","c","d"));
 
-        Map<String, List<String>> underlyingMetadataSeparators = Maps.newHashMap();
-        underlyingMetadataSeparators.put("foo", Lists.newArrayList("|",";"));
+        ListMultimap<String, String> underlyingMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
+        underlyingMetadataSeparators.putAll("foo", Lists.newArrayList("|",";"));
 
-        Map<String, List<String>> definedMetadataSeparators = Maps.newHashMap();
-        definedMetadataSeparators.put("foo", Lists.newArrayList(":","+"));
+        ListMultimap<String, String> definedMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
+        definedMetadataSeparators.putAll("foo", Lists.newArrayList(":","+"));
 
         MultimapToSingleStringMapWrapper map = new MultimapToSingleStringMapWrapper(underlyingMetadata, underlyingMetadataSeparators, definedMetadataSeparators);
         
@@ -43,12 +45,12 @@ public class MultimapToSingleStringMapWrapperTest {
 
     @Test
     public void testPut() {
-        Map<String, List<String>> underlyingMetadata = Maps.newHashMap();
+        ListMultimap<String, String> underlyingMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
-        Map<String, List<String>> underlyingMetadataSeparators = Maps.newHashMap();
+        ListMultimap<String, String> underlyingMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
-        Map<String, List<String>> definedMetadataSeparators = Maps.newHashMap();
-        definedMetadataSeparators.put("foo", Lists.newArrayList("|","+"));
+        ListMultimap<String, String> definedMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
+        definedMetadataSeparators.putAll("foo", Lists.newArrayList("|","+"));
 
         MultimapToSingleStringMapWrapper map = new MultimapToSingleStringMapWrapper(underlyingMetadata, underlyingMetadataSeparators, definedMetadataSeparators);
 

@@ -24,8 +24,9 @@ public class SearchXStreamMarshaller extends XStreamMarshaller {
         xstream.registerLocalConverter(SearchError.class, "additionalData", new ExceptionConverter());
         xstream.registerConverter(new OptionalConverter());
         xstream.registerLocalConverter(Result.class, "metaData", new MultimapToSingleStringMapConverter());
+        xstream.registerLocalConverter(Result.class, "multimapMetadata", new MultimapConverter());
         xstream.omitField(Result.class, "definedMetadataSeparators");
-        xstream.omitField(Result.class, "newMetadataSeparators");
+        xstream.omitField(Result.class, "listMetadataSeparators");
         xstream.setMode(XStream.NO_REFERENCES);
     }
     

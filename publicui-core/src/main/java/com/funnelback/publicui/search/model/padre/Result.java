@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.related.RelatedDocument;
 import com.funnelback.publicui.utils.MultimapToSingleStringMapWrapper;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +27,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"definedMetadataSeparators","listMetadataSeparators"})
 public class Result implements ResultType {
 
     /**
@@ -149,9 +153,10 @@ public class Result implements ResultType {
      *    aims to support the possibility of per-class separators in the future.</p>
      * 
      * @see <code>Metadata classes</code>
+     * @since 15.16
      */
-    // Omitted from XStream by SearchXStreamMarshaller
-    @Getter private final Map<String, List<String>> definedMetadataSeparators = new HashMap<>();
+    // Omitted from XStream by SearchXStreamMarshaller and Jackson by class @JsonIgnoreProperties
+    @Getter private final ListMultimap<String, String> definedMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
     /**
      * <p>Multi-Map containing the list of metadata values for each metadata fields for each result.</p>
@@ -165,8 +170,9 @@ public class Result implements ResultType {
      *    map will likewise be reflected here.</p>
      * 
      * @see <code>Metadata classes</code>
+     * @since 15.16
      */
-    @Getter private final Map<String, List<String>> listMetadata = new HashMap<>();
+    @Getter private final ListMultimap<String, String> listMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
     /**
      * <p>Multi-Map containing the separators originally used by the metadata values within in newMetadata.</p>
@@ -181,9 +187,10 @@ public class Result implements ResultType {
      *    map will likewise be reflected here.</p>
      *
      * @see <code>Metadata classes</code>
+     * @since 15.16
      */
-    // Omitted from XStream by SearchXStreamMarshaller
-    @Getter private final Map<String, List<String>> listMetadataSeparators = new HashMap<>();
+    // Omitted from XStream by SearchXStreamMarshaller and Jackson by class @JsonIgnoreProperties
+    @Getter private final ListMultimap<String, String> listMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
     /**
      * <p>Map containing the metadata fields for the result.</p>

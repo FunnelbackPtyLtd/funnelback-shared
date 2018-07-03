@@ -208,13 +208,10 @@ public class ResultFactory {
         
         for (Metadata m : newMetadata.values()) {
             String key = m.getMetadataClass().getMetadataClassId();
-            result.getDefinedMetadataSeparators().put(key,
+            result.getDefinedMetadataSeparators().putAll(key,
                 m.getMetadataClass().getSeparators().stream().map((c) -> Character.toString(c)).collect(Collectors.toList()));
             for (MetadataValue mv : m.getMetadataValues()) {
-                result.getListMetadata().putIfAbsent(key, Lists.newArrayList());
-                result.getListMetadataSeparators().putIfAbsent(key, Lists.newArrayList());
-
-                result.getListMetadata().get(key).add(mv.getValue());
+                result.getListMetadata().put(key, mv.getValue());
                 if (mv.getTrailingSeparator().isPresent()) {
                     result.getListMetadataSeparators().get(key).add(mv.getTrailingSeparator().get().toString());
                 }

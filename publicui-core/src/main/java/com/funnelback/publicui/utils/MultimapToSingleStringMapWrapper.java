@@ -9,13 +9,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ListMultimap;
+
 public class MultimapToSingleStringMapWrapper implements Map<String, String> {
 
-    private Map<String, List<String>> underlyingMetadata;
-    private Map<String, List<String>> separators;
-    private Map<String, List<String>> definedSeparators;
+    private ListMultimap<String, String> underlyingMetadata;
+    private ListMultimap<String, String> separators;
+    private ListMultimap<String, String> definedSeparators;
 
-    public MultimapToSingleStringMapWrapper(Map<String, List<String>> underlyingMetadata, Map<String, List<String>> separators, Map<String, List<String>> definedSeparators) {
+    public MultimapToSingleStringMapWrapper(ListMultimap<String, String> underlyingMetadata, ListMultimap<String, String> separators, ListMultimap<String, String> definedSeparators) {
         this.underlyingMetadata = underlyingMetadata;
         this.separators = separators;
         this.definedSeparators = definedSeparators;
@@ -62,7 +64,7 @@ public class MultimapToSingleStringMapWrapper implements Map<String, String> {
         
         List<String> values = underlyingMetadata.get(keyString);
         
-        if (values == null) {
+        if (values == null || values.isEmpty()) {
             return null;
         }
         
@@ -99,19 +101,19 @@ public class MultimapToSingleStringMapWrapper implements Map<String, String> {
             separatorCharacters = definedSeparators.get(key).stream().map((s) -> s.charAt(0)).collect(Collectors.toSet());
         }
 
-        underlyingMetadata.put(key, new ArrayList<String>());
-        separators.put(key, new ArrayList<String>());
+        underlyingMetadata.removeAll(key);
+        separators.removeAll(key);
         
         int start = 0;
         for (int i = 0; i < value.length(); i++) {
             if (separatorCharacters.contains(value.charAt(i))) {
-                underlyingMetadata.get(key).add(value.substring(start, i));
-                separators.get(key).add(Character.toString(value.charAt(i)));
+                underlyingMetadata.put(key, value.substring(start, i));
+                separators.put(key, Character.toString(value.charAt(i)));
                 start = i + 1;
             }
         }
         // Catch the last value
-        underlyingMetadata.get(key).add(value.substring(start));
+        underlyingMetadata.put(key, value.substring(start));
 
         return previousValue;
     }
@@ -119,8 +121,8 @@ public class MultimapToSingleStringMapWrapper implements Map<String, String> {
     @Override
     public String remove(Object key) {
         String result = get(key);
-        underlyingMetadata.remove(key);
-        separators.remove(key);
+        underlyingMetadata.removeAll(key);
+        separators.removeAll(key);
         return result;
     }
 

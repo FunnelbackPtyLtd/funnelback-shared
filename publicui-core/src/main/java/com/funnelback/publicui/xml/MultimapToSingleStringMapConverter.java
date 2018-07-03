@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.funnelback.publicui.utils.MultimapToSingleStringMapWrapper;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -32,8 +34,12 @@ public class MultimapToSingleStringMapConverter implements Converter {
 
     @Override
     public Object unmarshal(HierarchicalStreamReader arg0, UnmarshallingContext arg1) {
-        Map map = (Map) arg1.convertAnother(arg0, HashMap.class);
-        return new MultimapToSingleStringMapWrapper(map, new HashMap<>(), new HashMap<>());
+        Map<String, String> map = (Map) arg1.convertAnother(arg0, HashMap.class);
+        ListMultimap<String, String> metadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            metadata.put(entry.getKey(), entry.getValue());            
+        }
+        return new MultimapToSingleStringMapWrapper(metadata, ListMultimapBuilder.hashKeys().arrayListValues().build(), ListMultimapBuilder.hashKeys().arrayListValues().build());
     }
 
 }
