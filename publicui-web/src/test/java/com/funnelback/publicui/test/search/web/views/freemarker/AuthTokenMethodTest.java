@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
-import com.funnelback.config.keys.Keys.ServerKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
 import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;

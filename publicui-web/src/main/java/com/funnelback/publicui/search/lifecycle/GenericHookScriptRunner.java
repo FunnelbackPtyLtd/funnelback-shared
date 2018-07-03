@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.lifecycle;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,7 +12,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
@@ -113,7 +114,7 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
                         msg += " in extra search '" + searchTransaction.getExtraSearchName().get() + "'.";
                         if(searchQuestionType == SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH) {
                             msg +=  " To see this extra search in the JSON/XML output disable the config option: '" 
-                                + FrontEndKeys.ModernUI.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey() + "'";
+                                + FrontEndKeys.ModernUi.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey() + "'";
                         }
                     }
                     

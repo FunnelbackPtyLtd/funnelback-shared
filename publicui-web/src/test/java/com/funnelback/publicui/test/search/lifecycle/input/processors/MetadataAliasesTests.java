@@ -14,7 +14,7 @@ import com.funnelback.config.configtypes.service.DefaultServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.config.data.InMemoryConfigData;
 import com.funnelback.config.data.environment.NoConfigEnvironment;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.MetadataAliases;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -126,10 +126,10 @@ public class MetadataAliasesTests {
 
     private SearchTransaction getTestSearchTransaction(String filetype) {
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
-        serviceConfig.set(FrontEndKeys.UI.Modern.getMetadataAlias("link"), Optional.of("h"));
-        serviceConfig.set(FrontEndKeys.UI.Modern.getMetadataAlias("site"), Optional.of("u"));
-        serviceConfig.set(FrontEndKeys.UI.Modern.getMetadataAlias("filetype"), Optional.ofNullable(filetype));
-        serviceConfig.set(FrontEndKeys.UI.Modern.getMetadataAlias("allinurl"), Optional.of("v"));
+        serviceConfig.set(FrontEndKeys.ModernUi.getMetadataAlias("link"), Optional.of("h"));
+        serviceConfig.set(FrontEndKeys.ModernUi.getMetadataAlias("site"), Optional.of("u"));
+        serviceConfig.set(FrontEndKeys.ModernUi.getMetadataAlias("filetype"), Optional.ofNullable(filetype));
+        serviceConfig.set(FrontEndKeys.ModernUi.getMetadataAlias("allinurl"), Optional.of("v"));
 
         Profile profile = new Profile();
         profile.setServiceConfig(serviceConfig);

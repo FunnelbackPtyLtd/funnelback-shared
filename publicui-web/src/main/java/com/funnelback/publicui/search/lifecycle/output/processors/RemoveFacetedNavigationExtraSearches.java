@@ -1,11 +1,12 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
@@ -32,7 +33,7 @@ public class RemoveFacetedNavigationExtraSearches extends AbstractOutputProcesso
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
         if (SearchTransactionUtils.hasQuestion(searchTransaction) && 
             searchTransaction.getQuestion().getQuestionType() == SearchQuestionType.SEARCH) {
-            if(searchTransaction.getQuestion().getCurrentProfileConfig().get(ModernUI.REMOVE_INTERNAL_EXTRA_SEARCHES)) {
+            if(searchTransaction.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.ModernUi.REMOVE_INTERNAL_EXTRA_SEARCHES)) {
                 searchTransaction.getExtraSearches().keySet()
                 .stream()
                 .filter(facetExtraSearchNames::isFacetExtraSearch)

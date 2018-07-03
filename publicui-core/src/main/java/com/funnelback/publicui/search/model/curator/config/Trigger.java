@@ -1,7 +1,8 @@
 package com.funnelback.publicui.search.model.curator.config;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -11,10 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
 import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -53,7 +51,7 @@ public interface Trigger {
     public void configure(Configurer configurer);
 
     /**
-     * Reads FrontEndKeys.UI.Modern.Curator.QUERY_PARAMETER_PATTERN, finds matching input parameters and returns a single query for matching against.
+     * Reads FrontEnd.ModernUi.Curator.QUERY_PARAMETER_PATTERN, finds matching input parameters and returns a single query for matching against.
      * 
      * Values from each param are separated by a single space, and the values are ordered based on the Java String sort order of the keys.
      */
@@ -63,7 +61,7 @@ public interface Trigger {
         // them seemed like it would be useful sometimes, and would likely still work for anyone
         // assuming the values were matched individually. Using the key sort order because
         // nothing else seems like it would be easy to explain to users. -- Matt
-        ProfileAndCollectionConfigOption<String> queryParameterPatternKey = FrontEndKeys.UI.Modern.Curator.QUERY_PARAMETER_PATTERN;
+        ProfileAndCollectionConfigOption<String> queryParameterPatternKey = FrontEndKeys.ModernUi.CURATOR.QUERY_PARAMETER_PATTERN;
         String queryParameterPatternString = searchTransaction.getQuestion().getCurrentProfileConfig().get(queryParameterPatternKey);
 
         Pattern p;

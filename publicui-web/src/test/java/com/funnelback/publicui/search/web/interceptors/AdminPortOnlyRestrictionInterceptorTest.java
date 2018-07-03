@@ -11,7 +11,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
-import com.funnelback.config.keys.Keys.ServerKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 public class AdminPortOnlyRestrictionInterceptorTest {

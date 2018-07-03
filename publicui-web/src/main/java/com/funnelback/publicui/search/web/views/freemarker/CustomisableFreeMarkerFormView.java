@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.web.views.freemarker;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,7 +16,6 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
 import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.config.marshallers.Marshallers;
 import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -98,9 +99,9 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
                                     HttpServletResponse response, 
                                     String formName) {
         manipulateHeaders(serviceConfig, response, 
-            FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm(formName),
+            FrontEndKeys.ModernUi.getCustomContentTypeOptionForForm(formName),
             "ui.modern.form." + formName + ".headers.",
-            FrontEndKeys.UI.Modern.getRemoveHeaderForForm(formName));
+            FrontEndKeys.ModernUi.getRemoveHeaderForForm(formName));
     }
     
     /**
@@ -114,9 +115,9 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
                                     HttpServletResponse response, 
                                     String formName) {
         manipulateHeaders(serviceConfig, response, 
-            FrontEndKeys.UI.Modern.Cache.getCustomContentTypeOptionForForm(formName),
+            FrontEndKeys.ModernUi.Cache.getCustomContentTypeOptionForForm(formName),
             "ui.modern.cache.form." + formName + ".headers.",
-            FrontEndKeys.UI.Modern.Cache.getRemoveHeaderForForm(formName));
+            FrontEndKeys.ModernUi.Cache.getRemoveHeaderForForm(formName));
     }
     
     private void manipulateHeaders(ServiceConfigReadOnly serviceConfig, 

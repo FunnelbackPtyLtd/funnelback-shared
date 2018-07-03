@@ -48,7 +48,7 @@ import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.config.data.index.IndexConfigDataReadOnly;
 import com.funnelback.config.data.server.ServerConfigDataReadOnly;
 import com.funnelback.config.data.service.ServiceConfigDataReadOnly;
-import com.funnelback.config.keys.Keys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -645,7 +645,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             throw new ProfileNotFoundException(new CollectionId(collectionId), new ProfileId(profileId), profileView);
         }
         
-        return new DefaultServiceConfigReadOnly(serviceConfigData, getServerConfig().get(Keys.Environment.ENV));
+        return new DefaultServiceConfigReadOnly(serviceConfigData, getServerConfig().get(ServerKeys.ENV));
     }
     
     @Override
@@ -653,7 +653,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         
         IndexConfigDataReadOnly indexConfigData = resourceManager.loadResource(new IndexConfigDataReadOnlyResource(searchHome, collectionId));
         
-        return new DefaultIndexConfigReadOnly(indexConfigData, getServerConfig().get(Keys.Environment.ENV));
+        return new DefaultIndexConfigReadOnly(indexConfigData, getServerConfig().get(ServerKeys.ENV));
     }
     
 }

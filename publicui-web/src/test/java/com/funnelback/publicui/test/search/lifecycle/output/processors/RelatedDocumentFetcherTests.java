@@ -1,6 +1,5 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +7,9 @@ import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.net.URI;
+
 import org.mockito.Mockito;
 
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
@@ -54,9 +56,9 @@ public class RelatedDocumentFetcherTests {
             "ui.modern.related-document-fetch.peopleLikedByParent"
         ));
         
-        Mockito.when(config.get(Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchConfigForKey("parent")))
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey("parent")))
             .thenReturn(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.METADATA, "parent", Optional.empty()));
-        Mockito.when(config.get(Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchConfigForKey("peopleLikedByParent")))
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey("peopleLikedByParent")))
             .thenReturn(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.RELATED, "likes", Optional.of("parent")));
         
         List<RelationToExpand> relationsToExpand = new RelatedDocumentFetcher().findRelationsToExpand(config);
@@ -78,9 +80,9 @@ public class RelatedDocumentFetcherTests {
             "ui.modern.related-document-fetch.test.depth"
         ));
         
-        Mockito.when(config.get(Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchConfigForKey("test")))
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey("test")))
             .thenReturn(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.RELATED, "metadataKey", Optional.of("relatedKey")));
-        Mockito.when(config.get(Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchDepthForKey("test")))
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchDepthForKey("test")))
             .thenReturn(5);
         
         List<RelationToExpand> relationsToExpand = new RelatedDocumentFetcher().findRelationsToExpand(config);

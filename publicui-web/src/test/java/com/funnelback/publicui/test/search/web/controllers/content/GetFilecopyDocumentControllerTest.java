@@ -29,7 +29,7 @@ import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
-import com.funnelback.config.keys.Keys.ServerKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.web.controllers.content.GetFilecopyDocumentController;

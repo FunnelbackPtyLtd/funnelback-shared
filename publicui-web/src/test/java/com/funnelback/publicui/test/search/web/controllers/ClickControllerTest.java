@@ -26,8 +26,8 @@ import com.funnelback.common.config.ProfileId;
 import com.funnelback.common.config.DefaultValues.Metrics;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfig;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
-import com.funnelback.config.keys.Keys.ServerKeys;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -172,7 +172,7 @@ public class ClickControllerTest {
         when(srverConfig.get(ServerKeys.SERVER_SECRET)).thenReturn("");
         when(configRepository.getServerConfig()).thenReturn(srverConfig);
         ServiceConfig serviceConfig = mock(ServiceConfig.class);
-        when(serviceConfig.get(FrontEndKeys.ModernUI.Session.SearchHistory.METADATA_TO_RECORD)).thenReturn(new ArrayList<>());
+        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.METADATA_TO_RECORD)).thenReturn(new ArrayList<>());
         when(configRepository.getServiceConfig(Mockito.anyString(), Mockito.anyString())).thenReturn(serviceConfig);
         
         SearchHistoryRepository searchHistoryRepository = mock(SearchHistoryRepository.class);

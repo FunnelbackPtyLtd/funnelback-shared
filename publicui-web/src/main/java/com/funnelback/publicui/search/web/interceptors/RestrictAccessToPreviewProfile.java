@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.web.interceptors;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -15,7 +17,6 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.profile.ProfileId;
 import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.ExecutionContext;

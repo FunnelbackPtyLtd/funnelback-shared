@@ -235,7 +235,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         
         AtomicInteger extraSearchesAdded = new AtomicInteger(0);
         int maxExtraSearchesThatCanBeAdded = searchTransaction.getQuestion().getCurrentProfileConfig()
-                .get(com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI.MAX_FACET_EXTRA_SEARCHES);
+                .get(com.funnelback.config.keys.Keys.FrontEndKeys.ModernUi.MAX_FACET_EXTRA_SEARCHES);
         
         
         // Go over each facet that needs to run the search to work out the count
@@ -315,7 +315,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                     
                     if(extraSearchesAdded.incrementAndGet() > maxExtraSearchesThatCanBeAdded) {
                         log.info("Limit of extra searches has been reached try increasing '{}'", 
-                            com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI.MAX_FACET_EXTRA_SEARCHES.getKey());
+                            com.funnelback.config.keys.Keys.FrontEndKeys.ModernUi.MAX_FACET_EXTRA_SEARCHES.getKey());
                         searchTransaction.setAnyExtraSearchesIncomplete(true);
                         return;
                     }
