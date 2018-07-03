@@ -33,8 +33,8 @@ public class MultimapToSingleStringMapConverter implements Converter {
     }
 
     @Override
-    public Object unmarshal(HierarchicalStreamReader arg0, UnmarshallingContext arg1) {
-        Map<String, String> map = (Map) arg1.convertAnother(arg0, HashMap.class);
+    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        Map<String, String> map = (Map) context.convertAnother(reader, HashMap.class);
         ListMultimap<String, String> metadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
         for (Map.Entry<String, String> entry : map.entrySet()) {
             metadata.put(entry.getKey(), entry.getValue());            
