@@ -9,6 +9,7 @@ import org.springframework.oxm.xstream.XStreamMarshaller;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchError;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.DateConverter;
 
