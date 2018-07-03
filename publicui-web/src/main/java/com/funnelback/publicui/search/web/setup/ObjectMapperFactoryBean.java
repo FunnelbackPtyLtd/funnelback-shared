@@ -5,6 +5,7 @@ import org.springframework.beans.factory.FactoryBean;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 /**
@@ -36,6 +37,7 @@ public class ObjectMapperFactoryBean implements FactoryBean<ObjectMapper>{
         result.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         result.setSerializationInclusion(jsonInclusion);
         result.registerModule(new Jdk8Module());
+        result.registerModule(new GuavaModule());
         return result;
     }
  }

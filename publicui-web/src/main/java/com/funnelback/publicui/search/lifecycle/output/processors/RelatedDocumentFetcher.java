@@ -57,9 +57,6 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     @Autowired
     @Setter private DataAPIConnectorPADRE dataAPIConnectorPADRE;
     
-    @Autowired
-    @Setter private IndexRepository indexRepository;
-    
     @Override
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
         log.trace("Starting related document fetching");
@@ -115,7 +112,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
                 String documentsComponentCollection = action.getValue().getResult().getCollection();
                 
                 action.getValue().getResult().getRelatedDocuments().get(action.getValue().getRelationTargetKey()).add(
-                    new RelatedDocument(relatedDocInfo.getUri(), documentsComponentCollection, relatedDocInfo.getMetaData()));
+                    new RelatedDocument(relatedDocInfo.getUri(), relatedDocInfo.getMetaData()));
             }
         }
     }
@@ -193,20 +190,8 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
                 for (RelationToExpand relationToExpand : relationsToExpand) {
                     if (!r.getRelatedDocuments().containsKey(relationToExpand.getRelationTargetKey())) {
                         Set<String> relationSourceValues = relationToExpand.getRelationSource().getValuesForResult(r);
-                        for (String relationSourceValue : relationSourceValues) {
-                            // AutoRefreshLocalIndexRepository caches these, so I think it's ok to fetch again every time
-                            // (we need to because different components of a meta collection may have different seperators)
-                            String metadataSeparator = indexRepository.getBuildInfoValue(r.getCollection(), "facet_item_sepchars");
-                            if (metadataSeparator == null) {
-                                // TODO - This seems to happen on push collections - Not sure what to do about that.
-                                log.warn("Could not determine facet_item_sepchars for " + r.getCollection() + " - assuming the default of '|'");
-                                metadataSeparator = "|";
-                            }
-                            
-                            String[] urls = relationSourceValue.split(Pattern.quote(metadataSeparator));
-                            for (String url : urls) {
-                                actionsForThisPass.put(new URI(url), new RelatedDataTarget(r, relationToExpand.getRelationTargetKey()));
-                            }
+                        for (String url : relationSourceValues) {
+                            actionsForThisPass.put(new URI(url), new RelatedDataTarget(r, relationToExpand.getRelationTargetKey()));
                         }
                     }
                 }
