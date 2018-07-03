@@ -85,7 +85,6 @@ public class SearchQuestionBinder {
         question.getRawInputParameters().putAll(request.getParameterMap());
         
         // Record the request headers in the question
-        question.setRequestHeaders(ListMultimapBuilder.hashKeys().arrayListValues().build());
         Enumeration<String> headerNameIterator = request.getHeaderNames();
         while (headerNameIterator.hasMoreElements()) {
             String headerName = headerNameIterator.nextElement();

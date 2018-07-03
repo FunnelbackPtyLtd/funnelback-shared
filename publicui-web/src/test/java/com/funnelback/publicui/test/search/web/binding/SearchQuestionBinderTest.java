@@ -22,6 +22,8 @@ import com.funnelback.publicui.search.model.transaction.ExecutionContext;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
+import com.google.common.collect.Lists;
+import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 
 public class SearchQuestionBinderTest {
 
@@ -32,6 +34,7 @@ public class SearchQuestionBinderTest {
 
         SearchQuestion from = new SearchQuestion();
         from.setExecutionContext(ExecutionContext.Public);
+        from.getRequestHeaders().put("header", "value");
         from.setFunnelbackVersion(new FunnelbackVersion(1, 2, 3));
         from.getRawInputParameters().put("my-param", new String[] {"value1", "value2"});
         from.setQueryStringMap(queryStringMap);
@@ -51,6 +54,7 @@ public class SearchQuestionBinderTest {
         SearchQuestionBinder.bind(from, to);
         
         Assert.assertEquals(ExecutionContext.Public, to.getExecutionContext());
+        Assert.assertEquals("value", to.getRequestHeaders().get("header").get(0));
         Assert.assertEquals(new FunnelbackVersion(1, 2, 3), to.getFunnelbackVersion());
         Assert.assertEquals(1, to.getRawInputParameters().size());
         Assert.assertEquals(1,  to.getQueryStringMapCopy().size());
@@ -93,6 +97,8 @@ public class SearchQuestionBinderTest {
     @Test
     public void testFromRequest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("header", "value 1");
+        request.addHeader("header", "value 2");
         request.addParameter("my-param", new String[] {"value1", "value2"});
         request.addParameter(RequestParameters.ContextualNavigation.CN_CLICKED, "cluster");
         request.addParameter(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"1", "cluster1");
@@ -123,7 +129,9 @@ public class SearchQuestionBinderTest {
         Assert.assertEquals(ExecutionContext.Unknown, to.getExecutionContext());
         Assert.assertEquals(new FunnelbackVersion(1, 2, 3), to.getFunnelbackVersion());
         Assert.assertEquals("127.0.0.1", to.getRequestId());
-        
+
+        Assert.assertEquals(Lists.newArrayList("value 1", "value 2"), to.getRequestHeaders().get("header"));
+
         Assert.assertEquals(7, to.getQueryStringMapCopy().size());
         Assert.assertEquals(Arrays.asList(new String[] {"cluster"}), to.getQueryStringMapCopy().get(RequestParameters.ContextualNavigation.CN_CLICKED));
         Assert.assertEquals(Arrays.asList(new String[] {"cluster1"}), to.getQueryStringMapCopy().get(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"1"));

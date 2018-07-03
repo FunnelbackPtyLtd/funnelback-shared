@@ -20,7 +20,6 @@ public class SearchXStreamMarshaller extends XStreamMarshaller {
 
     @Override
     protected void customizeXStream(XStream xstream) {
-        xstream.omitField(SearchQuestion.class, "requestHeaders");
         xstream.registerLocalConverter(Result.class, "date", new DateConverter(Result.DATE_PATTERN_OUT, new String[] {Result.DATE_PATTERN_OUT}, TimeZone.getDefault()));
         xstream.registerLocalConverter(Details.class, "collectionUpdated", new DateConverter(Details.UPDATED_DATE_PATTERN, new String[] {Details.UPDATED_DATE_PATTERN}, TimeZone.getDefault()));
         xstream.registerLocalConverter(SearchError.class, "additionalData", new ExceptionConverter());

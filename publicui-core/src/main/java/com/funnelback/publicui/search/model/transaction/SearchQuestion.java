@@ -25,7 +25,9 @@ import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.search.model.profile.ServerConfigReadOnlyWhichAlsoHasAStringGetMethod;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.AllArgsConstructor;
@@ -47,7 +49,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"principal","maxPadrePacketSize", "currentProfile", "currentProfileConfig", "requestHeaders"})
+@JsonIgnoreProperties({"principal","maxPadrePacketSize", "currentProfile", "currentProfileConfig"})
 public class SearchQuestion {
 
     /**
@@ -64,8 +66,8 @@ public class SearchQuestion {
      * 
      * @since 15.16
      */
-    // Omitted from XStream by SearchXStreamMarshaller and Jackson by class @JsonIgnoreProperties
-    @Getter @Setter private Multimap<String, String> requestHeaders;
+    @JsonIgnore @XStreamOmitField
+    @Getter @Setter private ListMultimap<String, String> requestHeaders = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
     /**
      * <p>Query terms.</p>
