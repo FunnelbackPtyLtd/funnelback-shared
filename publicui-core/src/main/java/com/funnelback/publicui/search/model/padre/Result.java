@@ -177,7 +177,6 @@ public class Result implements ResultType {
      * @see <code>Metadata classes</code>
      * @since 15.16
      */
-    @XStreamConverter(MultimapConverter.class)
     @Getter private final ListMultimap<String, String> listMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
     /**
@@ -206,7 +205,6 @@ public class Result implements ResultType {
      * 
      * @see <code>Metadata classes</code>
      */
-    @XStreamConverter(MultimapToSingleStringMapConverter.class)
     @Getter private final Map<String, String> metaData = new MultimapToSingleStringMapWrapper(listMetadata, listMetadataSeparators, definedMetadataSeparators);
 
     /**
