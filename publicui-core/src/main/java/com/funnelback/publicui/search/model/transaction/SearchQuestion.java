@@ -25,6 +25,7 @@ import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.search.model.profile.ServerConfigReadOnlyWhichAlsoHasAStringGetMethod;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
+import com.google.common.collect.Multimap;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.AllArgsConstructor;
@@ -46,7 +47,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"principal","maxPadrePacketSize", "currentProfile", "currentProfileConfig"})
+@JsonIgnoreProperties({"principal","maxPadrePacketSize", "currentProfile", "currentProfileConfig", "requestHeaders"})
 public class SearchQuestion {
 
     /**
@@ -57,7 +58,15 @@ public class SearchQuestion {
      * @since 15.12
      */
     @Getter @Setter private ExecutionContext executionContext;
-    
+
+    /**
+     * Headers provided with the incoming search request
+     * 
+     * @since 15.16
+     */
+    // Omitted from XStream by SearchXStreamMarshaller and Jackson by class @JsonIgnoreProperties
+    @Getter @Setter private Multimap<String, String> requestHeaders;
+
     /**
      * <p>Query terms.</p>
      * 

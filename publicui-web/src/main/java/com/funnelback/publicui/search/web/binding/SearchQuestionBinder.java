@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.web.binding;
 
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.utils.web.ProfilePicker;
+import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 
 import waffle.servlet.WindowsPrincipal;
 
@@ -36,6 +38,7 @@ public class SearchQuestionBinder {
         to.setExecutionContext(from.getExecutionContext());
         to.setFunnelbackVersion(from.getFunnelbackVersion());
         to.getRawInputParameters().putAll(from.getRawInputParameters());
+        to.getRequestHeaders().putAll(from.getRequestHeaders());
         to.setQueryStringMap(from.getQueryStringMapCopy());
         to.setQuery(from.getQuery());
         to.setOriginalQuery(from.getOriginalQuery());
@@ -80,6 +83,17 @@ public class SearchQuestionBinder {
         question.setExecutionContext(executionContext);
         question.setFunnelbackVersion(funnelbackVersion);
         question.getRawInputParameters().putAll(request.getParameterMap());
+        
+        // Record the request headers in the question
+        question.setRequestHeaders(ListMultimapBuilder.hashKeys().arrayListValues().build());
+        Enumeration<String> headerNameIterator = request.getHeaderNames();
+        while (headerNameIterator.hasMoreElements()) {
+            String headerName = headerNameIterator.nextElement();
+            Enumeration<String> headerValueIterator = request.getHeaders(headerName);
+            while (headerValueIterator.hasMoreElements()) {
+                question.getRequestHeaders().put(headerName, headerValueIterator.nextElement());
+            }
+        }
         
         // Add query string parameters, converting Map<String, String[]>
         // to Map<String, List<String>> for convenience
