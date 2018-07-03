@@ -1,12 +1,13 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -40,7 +41,7 @@ public class MetadataAliases extends AbstractInputProcessor {
                     String alias = terms[i].split(SEPARATOR)[0];
                     if (alias.trim().isEmpty()) continue;
 
-                    Optional<String> metadata = serviceConfig.get(FrontEndKeys.UI.Modern.getMetadataAlias(alias));
+                    Optional<String> metadata = serviceConfig.get(FrontEndKeys.ModernUi.getMetadataAlias(alias));
                     if (metadata.isPresent() && !metadata.get().trim().isEmpty()) {
                         terms[i] = metadata.get() + terms[i].substring(alias.length());
                         updateQuery = true;

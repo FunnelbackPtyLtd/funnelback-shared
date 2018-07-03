@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.web.interceptors;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +22,6 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.net.NetUtils;
 import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -111,8 +112,8 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
                                                         + profileId + "' profile which is expected to exist.");
             }
             
-            if (serviceConfig.get(FrontEndKeys.ACCESS_RESTRICTION).isPresent()) {
-                String accessRestriction = serviceConfig.get(FrontEndKeys.ACCESS_RESTRICTION).get();
+            if (serviceConfig.get(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION).isPresent()) {
+                String accessRestriction = serviceConfig.get(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION).get();
                 log.trace(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction + "' for collection '" + collectionId + ":" + profileId + "'");
                 if (DefaultValues.NO_RESTRICTION.equals(accessRestriction)) {
                     log.debug("Access restriction explicitely disabled. Granting access to " + collectionId + ":" + profileId);

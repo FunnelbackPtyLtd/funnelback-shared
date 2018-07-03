@@ -204,7 +204,7 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
         long extraSearchesWaitTimeout = searchTransaction.getQuestion().getCollection().getConfiguration()
             .valueAsLong(EXTRA_SEARCH_TIMEOUT, EXTRA_SEARCH_TIMEOUT_MS);
         long extraSearchTimeLeft = searchTransaction.getQuestion().getCurrentProfileConfig()
-                .get(Keys.FrontEndKeys.ModernUI.EXTRA_SEARCH_TOTAL_TIMEOUT)
+                .get(Keys.FrontEndKeys.ModernUi.EXTRA_SEARCH_TOTAL_TIMEOUT)
             - searchTransaction.getExtraSearchesAproxTimeSpent().get();
         
         if(extraSearchTimeLeft <= 0L) {

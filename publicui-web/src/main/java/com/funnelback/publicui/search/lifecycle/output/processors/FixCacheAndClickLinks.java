@@ -1,21 +1,19 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Setter;
-import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.config.keys.Keys.FrontEndKeys;
-import com.funnelback.config.keys.Keys.ServerKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
@@ -32,6 +30,10 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.utils.MapUtils;
+
+import lombok.Setter;
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Apply transformation to the click URLs (Results, BestBets...) like
@@ -175,7 +177,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
     @SneakyThrows(UnsupportedEncodingException.class)
     private StringBuffer buildGenericClickTrackingUrl(SearchQuestion question, String url, String indexUrl) {
         StringBuffer out = new StringBuffer()
-        .append(question.getCurrentProfileConfig().get(FrontEndKeys.UI.Modern.CLICK_LINK).get())
+        .append(question.getCurrentProfileConfig().get(FrontEndKeys.ModernUi.CLICK_LINK).get())
         .append("?").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
         .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(url, "UTF-8"));
         

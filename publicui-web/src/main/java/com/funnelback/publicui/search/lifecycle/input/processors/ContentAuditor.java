@@ -23,7 +23,7 @@ import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.config.configtypes.index.IndexConfigOption;
 import com.funnelback.config.configtypes.index.IndexConfigOptionDefinition;
 import com.funnelback.config.configtypes.index.IndexConfigReadOnly;
-import com.funnelback.config.keys.Keys.IndexKeys;
+import static com.funnelback.config.keys.Keys.IndexKeys;
 import com.funnelback.config.marshallers.Marshallers;
 import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;

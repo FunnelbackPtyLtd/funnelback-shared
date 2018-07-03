@@ -1,9 +1,12 @@
 package com.funnelback.publicui.security;
 
+import static com.funnelback.config.keys.Keys.ServerKeys;
+
+import java.util.Optional;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Optional;
 
 import javax.servlet.ServletContext;
 
@@ -14,7 +17,6 @@ import org.springframework.stereotype.Component;
 import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigOptionDefinition;
 import com.funnelback.config.data.file.server.FileServerConfigDataReadOnly;
-import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.config.types.ConfigPassword;
 import com.funnelback.publicui.search.model.transaction.ExecutionContext;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;

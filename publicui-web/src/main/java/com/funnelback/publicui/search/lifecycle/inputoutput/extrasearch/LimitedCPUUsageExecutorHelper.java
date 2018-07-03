@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.inputoutput.extrasearch;
 
-import static com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -50,8 +50,8 @@ public class LimitedCPUUsageExecutorHelper implements ExecutorHelper {
     int getNumberOfProcsToUse(ServiceConfigReadOnly serviceConfig) {
         // this may be larger than 100%, this just results in something
         // like the old behavior where more extra searches are executed than CPUs.
-        double pcOfCores = serviceConfig.get(EXTRA_SEARCH_CPU_COUNT_PERCENTAGE) / 100.0D;
-        log.trace("The cores to use is {}% from config option", pcOfCores, EXTRA_SEARCH_CPU_COUNT_PERCENTAGE.getKey());
+        double pcOfCores = serviceConfig.get(FrontEndKeys.ModernUi.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE) / 100.0D;
+        log.trace("The cores to use is {}% from config option", pcOfCores, FrontEndKeys.ModernUi.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE.getKey());
         int numberOfProcs = (int) Math.floor((double) getNumberOfCurrentCPUs() * pcOfCores);
         return Math.max(numberOfProcs, 1);
     }

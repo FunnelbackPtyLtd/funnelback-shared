@@ -1,6 +1,8 @@
 package com.funnelback.publicui.search.web.controllers;
 
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,8 +35,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.ProfileId;
 import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
-import com.funnelback.config.keys.Keys.ServerKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.InteractionLog;
@@ -280,7 +281,7 @@ public class ClickController extends SessionController {
     
     public Set<String> metadataClassesToRecord(Collection collection, Optional<String> profile) {
         ServiceConfigReadOnly profileConfig = getServiceConfigOrDefault(collection, profile);
-        return new HashSet<>(profileConfig.get(FrontEndKeys.ModernUI.Session.SearchHistory.METADATA_TO_RECORD));
+        return new HashSet<>(profileConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.METADATA_TO_RECORD));
     }
     
     /**
