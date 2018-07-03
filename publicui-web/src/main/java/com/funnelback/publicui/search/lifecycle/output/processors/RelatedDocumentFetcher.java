@@ -1,8 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,11 +9,13 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.Config;
 import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
@@ -39,9 +38,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.IndexRepository;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
 
-import lombok.Data;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
@@ -126,7 +123,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     /* private if not for testing */ public List<RelationToExpand> findRelationsToExpand(ServiceConfigReadOnly config) {
         List<RelationToExpand> relationsToExpand = new ArrayList<>();
         for (String relatedDocumentKey : findRelatedDocumentKeys(config)) {
-            ProfileAndCollectionConfigOption<RelatedDocumentFetchConfig> key = Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchConfigForKey(relatedDocumentKey);
+            ProfileAndCollectionConfigOption<RelatedDocumentFetchConfig> key = Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey(relatedDocumentKey);
             RelatedDocumentFetchConfig rdfc = config.get(key);
             
             if (rdfc == null) {
@@ -137,7 +134,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
             if (rdfc.getRelatedDocumentFetchSourceType().equals(RelatedDocumentFetchSourceType.METADATA)) {
                 relationsToExpand.add(new RelationToExpand(new MetadataRelationSource(rdfc.getMetadataKey()), relatedDocumentKey));
             } else if (rdfc.getRelatedDocumentFetchSourceType().equals(RelatedDocumentFetchSourceType.RELATED)) {
-                Integer depth = config.get(Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchDepthForKey(relatedDocumentKey));
+                Integer depth = config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchDepthForKey(relatedDocumentKey));
                 
                 if (depth != null && depth > 1) {
                     // They specified a depth for this config, so we expand that out into individual steps here
@@ -162,7 +159,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
      * Return all the config keys with the RELATED_DOCUMENT_FETCH_CONFIG_PREFIX prefix
      */
     private Set<String> findRelatedDocumentKeys(ServiceConfigReadOnly config) {
-        String prefix = Keys.FrontEndKeys.UI.Modern.RELATED_DOCUMENT_FETCH_CONFIG_PREFIX;
+        String prefix = Keys.FrontEndKeys.ModernUi.RELATED_DOCUMENT_FETCH_CONFIG_PREFIX;
 
         return config.getRawKeys().stream()
             .filter((key) -> key.startsWith(prefix))

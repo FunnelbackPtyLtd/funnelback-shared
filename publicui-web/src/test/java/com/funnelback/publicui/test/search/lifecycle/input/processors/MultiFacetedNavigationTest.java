@@ -196,7 +196,7 @@ public class MultiFacetedNavigationTest {
         
         doReturn(profileConfig).when(st.getQuestion()).getCurrentProfileConfig();
         
-        when(profileConfig.get(com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI.MAX_FACET_EXTRA_SEARCHES))
+        when(profileConfig.get(com.funnelback.config.keys.Keys.FrontEndKeys.ModernUi.MAX_FACET_EXTRA_SEARCHES))
             .thenReturn(0)
             .thenReturn(100);
         

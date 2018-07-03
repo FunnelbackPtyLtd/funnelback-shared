@@ -19,7 +19,7 @@ import com.funnelback.config.configtypes.service.DefaultServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.config.data.InMemoryConfigData;
 import com.funnelback.config.data.environment.NoConfigEnvironment;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.config.marshallers.Marshallers;
 import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -63,7 +63,7 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
     
     @Test
     public void testCustomContentType() {
-        serviceConfig.set(FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm("simple"), Optional.of("test/junit"));
+        serviceConfig.set(FrontEndKeys.ModernUi.getCustomContentTypeOptionForForm("simple"), Optional.of("test/junit"));
         customiseOutput("conf/dummy/_default/simple.ftl", model, response);
 
         Assert.assertEquals("test/junit", response.getContentType());
@@ -101,7 +101,7 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
 
     @Test
     public void testBoth() {
-        serviceConfig.set(FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm("simple"), Optional.of("text/csv"));
+        serviceConfig.set(FrontEndKeys.ModernUi.getCustomContentTypeOptionForForm("simple"), Optional.of("text/csv"));
         serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.form.simple.headers.1", Marshallers.STRING_MARSHALLER,
             Validators.acceptAll(), ""), "Content-Disposition: attachment");
 

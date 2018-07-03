@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.inputoutput.extrasearch;
 
-import static com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doThrow;
@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import org.mockito.InOrder;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
@@ -198,7 +199,7 @@ public class LimitedCPUUsageExecutorHelperTest {
     
     ServiceConfigReadOnly getConfigWithExtraSearchCpuPercent(double pc) {
         ServiceConfigReadOnly config = mock(ServiceConfigReadOnly.class);
-        when(config.get(EXTRA_SEARCH_CPU_COUNT_PERCENTAGE)).thenReturn(pc);
+        when(config.get(FrontEndKeys.ModernUi.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE)).thenReturn(pc);
         return config;
     }
 }
