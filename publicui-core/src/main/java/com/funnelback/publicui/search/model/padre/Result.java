@@ -203,8 +203,11 @@ public class Result implements ResultType {
      * 
      * <p>The key is the metadata class name as defined in the metadata mappings.</p>
      * 
+     * @deprecated  As of release 15.16, replaced by {@link #listMetadata}
+     * 
      * @see <code>Metadata classes</code>
      */
+    @Deprecated
     @Getter private final Map<String, String> metaData = new MultimapToSingleStringMapWrapper(listMetadata, listMetadataSeparators, definedMetadataSeparators);
 
     /**
