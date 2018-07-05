@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 /**
  * A recommendation in the Recommender System.
@@ -47,7 +48,7 @@ public class Recommendation {
      * Any metadata associated with the item being recommended.
      */
     @Getter
-    private Map<String, String> metaData;
+    private Map<String, List<String>> metaData;
 
     /**
      * Description taken from metadata.
@@ -76,16 +77,20 @@ public class Recommendation {
         this.metaData = docInfo.getMetaData();
         this.frequency = itemTuple.getFrequency();
 
-        String value = metaData.get("c");
-
-        if (value != null) {
-            this.description = StringEscapeUtils.escapeHtml4(value);
+        if (metaData.containsKey("c")) {
+            String value = metaData.get("c").get(0);
+    
+            if (value != null) {
+                this.description = StringEscapeUtils.escapeHtml4(value);
+            }
         }
 
-        value = metaData.get("f");
-
-        if (value != null) {
-            this.format = StringEscapeUtils.escapeHtml4(value);
+        if (metaData.containsKey("f")) {
+            String value = metaData.get("f").get(0);
+    
+            if (value != null) {
+                this.format = StringEscapeUtils.escapeHtml4(value);
+            }
         }
     }
 }

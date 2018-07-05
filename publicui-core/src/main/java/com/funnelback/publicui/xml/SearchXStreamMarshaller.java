@@ -9,6 +9,7 @@ import org.springframework.oxm.xstream.XStreamMarshaller;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchError;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.DateConverter;
 
@@ -23,6 +24,9 @@ public class SearchXStreamMarshaller extends XStreamMarshaller {
         xstream.registerLocalConverter(Details.class, "collectionUpdated", new DateConverter(Details.UPDATED_DATE_PATTERN, new String[] {Details.UPDATED_DATE_PATTERN}, TimeZone.getDefault()));
         xstream.registerLocalConverter(SearchError.class, "additionalData", new ExceptionConverter());
         xstream.registerConverter(new OptionalConverter());
+        xstream.registerLocalConverter(Result.class, "metaData", new MultimapToSingleStringMapConverter());
+        xstream.registerLocalConverter(Result.class, "multimapMetadata", new MultimapConverter());
+        xstream.setMode(XStream.NO_REFERENCES);
     }
     
 

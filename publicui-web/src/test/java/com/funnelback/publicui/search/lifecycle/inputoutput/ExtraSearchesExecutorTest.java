@@ -23,7 +23,7 @@ import org.springframework.ldap.transaction.compensating.manager.TransactionAwar
 
 import com.funnelback.common.config.Config;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.keys.Keys.FrontEndKeys;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -197,7 +197,7 @@ public class ExtraSearchesExecutorTest {
             .valueAsLong(EXTRA_SEARCH_TIMEOUT, EXTRA_SEARCH_TIMEOUT_MS))
         .thenReturn(singleExtraSearchTimeout);
         
-        when(st.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.ModernUI.EXTRA_SEARCH_TOTAL_TIMEOUT))
+        when(st.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.ModernUi.EXTRA_SEARCH_TOTAL_TIMEOUT))
             .thenReturn(totalExtraSearchTimeout);
         
     }

@@ -17,8 +17,8 @@ public class MetadataRelationSource implements RelationSource {
     
     @Override
     public Set<String> getValuesForResult(Result result) {
-        if (result.getMetaData().containsKey(metadataClassName)) {
-            return Sets.newHashSet(result.getMetaData().get(metadataClassName));
+        if (result.getListMetadata().containsKey(metadataClassName)) {
+            return Sets.newHashSet(result.getListMetadata().get(metadataClassName));
         } else {
             return Sets.newHashSet();
         }

@@ -4,22 +4,24 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -44,6 +46,7 @@ import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
+import com.google.common.collect.Lists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -146,15 +149,17 @@ public class RecommenderControllerTest {
     private DocInfo getMockDocInfo(String address) {
         DocInfo docInfo;
 
-        Map<String, String> i4uData = new HashMap<>();
-        i4uData.put("url", address);
-        i4uData.put("filetype", "html");
-        i4uData.put("sumrytext", "Document summary text for: " + address);
-        i4uData.put("date", "");
-        i4uData.put("unfiltered_length", "1024");
-        i4uData.put("words_indexed", "2048");
-        i4uData.put("flags", "1234");
-        i4uData.put("qiescore", "1.234");
+        Map<String, List<String>> i4uData = new HashMap<>();
+        i4uData.put("url", Lists.newArrayList(address));
+        i4uData.put("filetype", Lists.newArrayList("html"));
+        i4uData.put("sumrytext", Lists.newArrayList("Document summary text for: " + address));
+        i4uData.put("date", Lists.newArrayList(""));
+        i4uData.put("unfiltered_length", Lists.newArrayList("1024"));
+        i4uData.put("words_indexed", Lists.newArrayList("2048"));
+        i4uData.put("flags", Lists.newArrayList("1234"));
+        i4uData.put("qiescore", Lists.newArrayList("1.234"));
+        i4uData.put("title", Lists.newArrayList("title"));
+        i4uData.put("stem", Lists.newArrayList("stem"));
         docInfo = new DocInfo(i4uData);
 
         return docInfo;

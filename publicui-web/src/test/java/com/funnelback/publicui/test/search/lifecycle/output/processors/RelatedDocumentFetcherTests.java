@@ -1,6 +1,5 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +7,9 @@ import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.net.URI;
+
 import org.mockito.Mockito;
 
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
@@ -54,9 +56,9 @@ public class RelatedDocumentFetcherTests {
             "ui.modern.related-document-fetch.peopleLikedByParent"
         ));
         
-        Mockito.when(config.get(Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchConfigForKey("parent")))
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey("parent")))
             .thenReturn(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.METADATA, "parent", Optional.empty()));
-        Mockito.when(config.get(Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchConfigForKey("peopleLikedByParent")))
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey("peopleLikedByParent")))
             .thenReturn(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.RELATED, "likes", Optional.of("parent")));
         
         List<RelationToExpand> relationsToExpand = new RelatedDocumentFetcher().findRelationsToExpand(config);
@@ -78,9 +80,9 @@ public class RelatedDocumentFetcherTests {
             "ui.modern.related-document-fetch.test.depth"
         ));
         
-        Mockito.when(config.get(Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchConfigForKey("test")))
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey("test")))
             .thenReturn(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.RELATED, "metadataKey", Optional.of("relatedKey")));
-        Mockito.when(config.get(Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchDepthForKey("test")))
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchDepthForKey("test")))
             .thenReturn(5);
         
         List<RelationToExpand> relationsToExpand = new RelatedDocumentFetcher().findRelationsToExpand(config);
@@ -120,14 +122,13 @@ public class RelatedDocumentFetcherTests {
 
         Result result = new Result();
         result.setCollection("collection");
-        result.getMetaData().put("parent", "http://example.com/1|http://example.com/2");
+        result.getListMetadata().putAll("parent", Lists.newArrayList("http://example.com/1","http://example.com/2"));
 
-        Map<String, String> cousinMetadata = new HashMap<>();
-        cousinMetadata.put("likes", "http://example.com/3");
+        Map<String, List<String>> cousinMetadata = new HashMap<>();
+        cousinMetadata.put("likes", Lists.newArrayList("http://example.com/3"));
         result.getRelatedDocuments().put("cousin", Sets.newHashSet(
             new RelatedDocument(
                 new URI("http://other.example.com/1"),
-                "cousinCollection",
                 cousinMetadata
             )
         ));
@@ -135,10 +136,6 @@ public class RelatedDocumentFetcherTests {
         List<Result> results = Lists.newArrayList(result);
         
         RelatedDocumentFetcher rdf = new RelatedDocumentFetcher();
-        
-        IndexRepository indexRepository = Mockito.mock(IndexRepository.class);
-        Mockito.when(indexRepository.getBuildInfoValue(Mockito.eq("collection"), Mockito.eq("facet_item_sepchars"))).thenReturn("|");
-        rdf.setIndexRepository(indexRepository);
         
         SetMultimap<URI, RelatedDataTarget> actualResult = rdf.createActionsForThisPass(results, relationsToExpand);
         
@@ -156,15 +153,15 @@ public class RelatedDocumentFetcherTests {
         
         DocInfo mockDocInfo1 = Mockito.mock(DocInfo.class);
         Mockito.when(mockDocInfo1.getUri()).thenReturn(new URI("http://example.com/1"));
-        Mockito.when(mockDocInfo1.getMetaData()).thenReturn(ImmutableMap.of("1","1"));
+        Mockito.when(mockDocInfo1.getMetaData()).thenReturn(ImmutableMap.of("1",Lists.newArrayList("1")));
 
         DocInfo mockDocInfo2 = Mockito.mock(DocInfo.class);
         Mockito.when(mockDocInfo2.getUri()).thenReturn(new URI("http://example.com/2"));
-        Mockito.when(mockDocInfo2.getMetaData()).thenReturn(ImmutableMap.of("2","2"));
+        Mockito.when(mockDocInfo2.getMetaData()).thenReturn(ImmutableMap.of("2",Lists.newArrayList("2")));
 
         DocInfo mockDocInfo3 = Mockito.mock(DocInfo.class);
         Mockito.when(mockDocInfo3.getUri()).thenReturn(new URI("http://example.com/3"));
-        Mockito.when(mockDocInfo3.getMetaData()).thenReturn(ImmutableMap.of("3","3"));
+        Mockito.when(mockDocInfo3.getMetaData()).thenReturn(ImmutableMap.of("3",Lists.newArrayList("3")));
 
         DocInfoResult mockDocInfoResult = Mockito.mock(DocInfoResult.class); // Surprisingly painful to construct these
         Mockito.when(mockDocInfoResult.asMap()).thenReturn(ImmutableMap.of(
@@ -189,12 +186,12 @@ public class RelatedDocumentFetcherTests {
 
         rdf.performActions(null, actions);
         
-        Assert.assertEquals(ImmutableSet.of(new RelatedDocument(new URI("http://example.com/1"), null, ImmutableMap.of("1","1"))),
+        Assert.assertEquals(ImmutableSet.of(new RelatedDocument(new URI("http://example.com/1"), ImmutableMap.of("1",Lists.newArrayList("1")))),
             result.getRelatedDocuments().get("a"));
         
         Assert.assertEquals(ImmutableSet.of(
-            new RelatedDocument(new URI("http://example.com/2"), null, ImmutableMap.of("2","2")),
-            new RelatedDocument(new URI("http://example.com/3"), null, ImmutableMap.of("3","3"))),
+            new RelatedDocument(new URI("http://example.com/2"), ImmutableMap.of("2",Lists.newArrayList("2"))),
+            new RelatedDocument(new URI("http://example.com/3"), ImmutableMap.of("3",Lists.newArrayList("3")))),
             result.getRelatedDocuments().get("b"));
     }
 

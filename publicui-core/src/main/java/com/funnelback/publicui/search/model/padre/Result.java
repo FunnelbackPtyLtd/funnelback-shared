@@ -7,7 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.related.RelatedDocument;
+import com.funnelback.publicui.utils.MultimapToSingleStringMapWrapper;
+import com.funnelback.publicui.xml.MultimapConverter;
+import com.funnelback.publicui.xml.MultimapToSingleStringMapConverter;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -142,14 +151,69 @@ public class Result implements ResultType {
     @Getter @Setter private Float kmFromOrigin;
     
     /**
+     * <p>Map containing the separators defined for each metadata class.</p>
+     *
+     * <p>Intended only for internal use, and not exposed in the XML/JSON data model.</p>
+     * 
+     * <p>Please note that currently separators are defined globally, however this data-model
+     *    aims to support the possibility of per-class separators in the future.</p>
+     * 
+     * @see <code>Metadata classes</code>
+     * @since 15.16
+     */
+    @JsonIgnore
+    @XStreamOmitField
+    @Getter private final ListMultimap<String, String> definedMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
+
+    /**
+     * <p>Multi-Map containing the list of metadata values for each metadata fields for each result.</p>
+     * 
+     * <p>The key is the metadata class name as defined in the metadata mappings.</p>
+     *
+     * <p>The values are each mapped metadata value, split based on any defined separators.</p>
+     * 
+     * <p>Note that changes to this multi-map will be reflected in the legacy metaData map, which
+     *    presents all values as a single string instead of pre-split, and changes to the legacy
+     *    map will likewise be reflected here.</p>
+     * 
+     * @see <code>Metadata classes</code>
+     * @since 15.16
+     */
+    @Getter private final ListMultimap<String, String> listMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
+
+    /**
+     * <p>Multi-Map containing the separators originally used by the metadata values within in newMetadata.</p>
+     *
+     * <p>Intended only for internal use, and not exposed in the XML/JSON data model.</p>
+     * 
+     * <p>This map is only of interest if the specific separators are meaningful to an implementation
+     *    which is hopefully uncommon. If values are added to the newMetadata map, new separators
+     *    may be added here also. Some separator from the definedMetadataSeparators list will be used
+     *    for any added metadata if this map lacks sufficient values.</p>
+     * 
+     * <p>Note that changes to this multi-map will be reflected in the legacy metaData map, which
+     *    presents all values as a single string instead of pre-split, and changes to the legacy
+     *    map will likewise be reflected here.</p>
+     *
+     * @see <code>Metadata classes</code>
+     * @since 15.16
+     */
+    @JsonIgnore
+    @XStreamOmitField
+    @Getter private final ListMultimap<String, String> listMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
+
+    /**
      * <p>Map containing the metadata fields for the result.</p>
      * 
      * <p>The key is the metadata class name as defined in the metadata mappings.</p>
      * 
+     * @deprecated  As of release 15.16, replaced by {@link #listMetadata}
+     * 
      * @see <code>Metadata classes</code>
      */
-    @Getter private final Map<String, String> metaData = new HashMap<String, String>();
-    
+    @Deprecated
+    @Getter private final Map<String, String> metaData = new MultimapToSingleStringMapWrapper(listMetadata, listMetadataSeparators, definedMetadataSeparators);
+
     /**
      * <p>Tags associated with a result.</p>
      * 
@@ -250,9 +314,12 @@ public class Result implements ResultType {
         public static final String KM_FROM_ORIGIN = "km_from_origin";
         public static final String EXPLAIN = "explain";
         public static final String METADATA = "md";
+        public static final String METADATA_VALUE = "v";
         public static final String TAGS = "tags";
         public static final String RQ = "rq";
         public static final String ATTR_METADATA_F = "f";
+        public static final String ATTR_METADATA_CLASS_SEPARATORS = "s";
+        public static final String ATTR_METADATA_VALUE_SEPARATOR = "s";
         public static final String GSCOPES_SET = "gscopes_set";
         
         public static final String COLLAPSED_SIG = "sig";

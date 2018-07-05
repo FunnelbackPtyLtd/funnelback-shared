@@ -1,8 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,11 +9,13 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.Config;
 import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
@@ -39,10 +38,9 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.IndexRepository;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
 
-import lombok.Data;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Fetches related documents from the index based on URLs in the
@@ -52,33 +50,37 @@ import lombok.Setter;
  * and easier (and most space efficient) than totally denormalising the 
  * documents before indexing.
  */
+@Log4j2
 @Component("relatedDocumentFetcherOutputProcessor")
 public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     
     @Autowired
     @Setter private DataAPIConnectorPADRE dataAPIConnectorPADRE;
     
-    @Autowired
-    @Setter private IndexRepository indexRepository;
-    
     @Override
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+        log.trace("Starting related document fetching");
         if (SearchTransactionUtils.hasResults(searchTransaction)) {
             ServiceConfigReadOnly config = searchTransaction.getQuestion().getCurrentProfileConfig();
             List<Result> results = searchTransaction.getResponse().getResultPacket().getResults();
             List<RelationToExpand> relationsToExpand = findRelationsToExpand(config);
-            
+
+            log.trace("Got the following relations to expand - " + relationsToExpand);
+
             SetMultimap<URI, RelatedDataTarget> actionsForThisPass = createActionsForThisPass(results, relationsToExpand);
             
             while (!actionsForThisPass.isEmpty()) {
+                log.trace("About to perform the following related document fetching actions - " + actionsForThisPass);
                 performActions(searchTransaction.getQuestion().getCollection().getConfiguration(), actionsForThisPass);
                 
                 // Prepare the next pass
                 actionsForThisPass = createActionsForThisPass(results, relationsToExpand);
             }
+            log.trace("No more related document fetching actions to perform");
             
             return;
         }
+        log.trace("Not running related document fetching because there are no results to examine");
     }
 
     /**
@@ -110,7 +112,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
                 String documentsComponentCollection = action.getValue().getResult().getCollection();
                 
                 action.getValue().getResult().getRelatedDocuments().get(action.getValue().getRelationTargetKey()).add(
-                    new RelatedDocument(relatedDocInfo.getUri(), documentsComponentCollection, relatedDocInfo.getMetaData()));
+                    new RelatedDocument(relatedDocInfo.getUri(), relatedDocInfo.getMetaData()));
             }
         }
     }
@@ -121,7 +123,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     /* private if not for testing */ public List<RelationToExpand> findRelationsToExpand(ServiceConfigReadOnly config) {
         List<RelationToExpand> relationsToExpand = new ArrayList<>();
         for (String relatedDocumentKey : findRelatedDocumentKeys(config)) {
-            ProfileAndCollectionConfigOption<RelatedDocumentFetchConfig> key = Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchConfigForKey(relatedDocumentKey);
+            ProfileAndCollectionConfigOption<RelatedDocumentFetchConfig> key = Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey(relatedDocumentKey);
             RelatedDocumentFetchConfig rdfc = config.get(key);
             
             if (rdfc == null) {
@@ -132,7 +134,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
             if (rdfc.getRelatedDocumentFetchSourceType().equals(RelatedDocumentFetchSourceType.METADATA)) {
                 relationsToExpand.add(new RelationToExpand(new MetadataRelationSource(rdfc.getMetadataKey()), relatedDocumentKey));
             } else if (rdfc.getRelatedDocumentFetchSourceType().equals(RelatedDocumentFetchSourceType.RELATED)) {
-                Integer depth = config.get(Keys.FrontEndKeys.UI.Modern.getRelatedDocumentFetchDepthForKey(relatedDocumentKey));
+                Integer depth = config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchDepthForKey(relatedDocumentKey));
                 
                 if (depth != null && depth > 1) {
                     // They specified a depth for this config, so we expand that out into individual steps here
@@ -157,7 +159,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
      * Return all the config keys with the RELATED_DOCUMENT_FETCH_CONFIG_PREFIX prefix
      */
     private Set<String> findRelatedDocumentKeys(ServiceConfigReadOnly config) {
-        String prefix = Keys.FrontEndKeys.UI.Modern.RELATED_DOCUMENT_FETCH_CONFIG_PREFIX;
+        String prefix = Keys.FrontEndKeys.ModernUi.RELATED_DOCUMENT_FETCH_CONFIG_PREFIX;
 
         return config.getRawKeys().stream()
             .filter((key) -> key.startsWith(prefix))
@@ -188,15 +190,8 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
                 for (RelationToExpand relationToExpand : relationsToExpand) {
                     if (!r.getRelatedDocuments().containsKey(relationToExpand.getRelationTargetKey())) {
                         Set<String> relationSourceValues = relationToExpand.getRelationSource().getValuesForResult(r);
-                        for (String relationSourceValue : relationSourceValues) {
-                            // AutoRefreshLocalIndexRepository caches these, so I think it's ok to fetch again every time
-                            // (we need to because different components of a meta collection may have different seperators)
-                            String metadataSeparator = indexRepository.getBuildInfoValue(r.getCollection(), "facet_item_sepchars");
-                            
-                            String[] urls = relationSourceValue.split(Pattern.quote(metadataSeparator));
-                            for (String url : urls) {
-                                actionsForThisPass.put(new URI(url), new RelatedDataTarget(r, relationToExpand.getRelationTargetKey()));
-                            }
+                        for (String url : relationSourceValues) {
+                            actionsForThisPass.put(new URI(url), new RelatedDataTarget(r, relationToExpand.getRelationTargetKey()));
                         }
                     }
                 }

@@ -1,11 +1,8 @@
 package com.funnelback.publicui.search.web.controllers;
 
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,6 +10,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +33,9 @@ import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.ProfileId;
-import com.funnelback.config.keys.Keys.ServerKeys;
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.InteractionLog;
@@ -78,13 +83,13 @@ public class ClickController extends SessionController {
     @Autowired @Setter
     private ConfigRepository configRepository;
     
-    @Autowired
+    @Autowired @Setter
     private IndexRepository indexRepository;
     
-    @Autowired
+    @Autowired @Setter
     private SearchHistoryRepository searchHistoryRepository;
 
-    @Autowired
+    @Autowired @Setter
     private MetricRegistry metrics;
 
     @InitBinder
@@ -185,7 +190,6 @@ public class ClickController extends SessionController {
                 throws IOException {
         
         Optional<String> givenProfileId = Optional.ofNullable(profile).map(ProfileId::getId);
-        profile = new ProfileId(DefaultValues.DEFAULT_PROFILE);
         
         if(indexUrl == null) {
             indexUrl = redirectUrl;
@@ -223,30 +227,15 @@ public class ClickController extends SessionController {
                     givenQuery = Optional.ofNullable(qs.get(RequestParameters.QUERY));
                 }
                 
-                if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
-                    && user != null) {
-                    // Save the click in the user history
-                    Result r = indexRepository.getResult(collection, indexUrl);
-                    if (r != null) {
-                    
-                        ClickHistory h = ClickHistory.fromResult(r);
-                        h.setCollection(collection.getId());
-                        h.setClickDate(new Date());
-                        h.setUserId(user.getId());
-                        givenQuery.ifPresent(h::setQuery);
-                        
-                        searchHistoryRepository.saveClick(h);
-                    } else {
-                        log.warn("Result with URL '"+indexUrl+"' not found in collection '"+collection.getId()+"'");
-                    }
-                }
+                // Save result click history
+                saveResultHistory(collection, givenProfileId, user, indexUrl, givenQuery);
                 
                 String dummyReferer = "http://fake/?" + toCgiParam(RequestParameters.COLLECTION, givenCollectionId, false)
                      + toCgiParam(RequestParameters.PROFILE, givenProfileId, false)
                      + toCgiParam(RequestParameters.QUERY, givenQuery, true);
                 
                 logService.logClick(new ClickLog(new Date(), collection, collection
-                        .getProfiles().get(profile.getId()), requestId, new URL(dummyReferer), rank,
+                        .getProfiles().get(givenProfileId.orElse(DefaultValues.DEFAULT_PROFILE)), requestId, new URL(dummyReferer), rank,
                         indexUrl, type, LogUtils.getUserId(user)));
                 
                 metrics.counter(MetricRegistry.name(
@@ -254,7 +243,7 @@ public class ClickController extends SessionController {
     
                 metrics.counter(MetricRegistry.name(
                     MetricsConfiguration.COLLECTION_NS, collection.getId(),
-                    profile.getId(), MetricsConfiguration.CLICK)).inc();
+                    givenProfileId.orElse(DefaultValues.DEFAULT_PROFILE), MetricsConfiguration.CLICK)).inc();
             } catch (Exception e) {
                 log.error("Error while processing click", e);
             }
@@ -268,6 +257,55 @@ public class ClickController extends SessionController {
             );
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+    
+    public void saveResultHistory(Collection collection, Optional<String> profile, SearchUser user, URI indexUrl, Optional<String> givenQuery) {
+        if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
+            && user != null) {
+            // Save the click in the user history
+            Result r = indexRepository.getResult(collection, indexUrl);
+            if (r != null) {
+                ClickHistory h = ClickHistory.fromResult(r, metadataClassesToRecord(collection, profile));
+                h.setCollection(collection.getId());
+                h.setClickDate(new Date());
+                h.setUserId(user.getId());
+                h.setQuery(givenQuery.orElse(""));
+                
+                searchHistoryRepository.saveClick(h);
+            } else {
+                log.warn("Result with URL '"+indexUrl+"' not found in collection '"+collection.getId()+"'");
+            }
+        }
+    }
+    
+    public Set<String> metadataClassesToRecord(Collection collection, Optional<String> profile) {
+        ServiceConfigReadOnly profileConfig = getServiceConfigOrDefault(collection, profile);
+        return new HashSet<>(profileConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.METADATA_TO_RECORD));
+    }
+    
+    /**
+     * Gets the Service config for the given profile, if no profile is given or the profile does not exist the default
+     * is returned.
+     * 
+     * @param collection
+     * @param profile
+     * @return
+     * @throws IllegalStateException when both the given profile and default profile do not exist.
+     */
+    public ServiceConfigReadOnly getServiceConfigOrDefault(Collection collection, Optional<String> profile) 
+        throws IllegalStateException {
+        if(profile.isPresent()) {
+            try {
+                return configRepository.getServiceConfig(collection.getId(), profile.get());
+            } catch (ProfileNotFoundException e) {
+                log.warn("Given prrofile {} does not exist reverting to default profile", profile.get());
+            }
+        }
+        try {
+            return configRepository.getServiceConfig(collection.getId(), DefaultValues.DEFAULT_PROFILE);
+        } catch (ProfileNotFoundException e) {
+            throw new IllegalStateException("The default profile is missing, it must be created if the collection still exists", e);
         }
     }
     
