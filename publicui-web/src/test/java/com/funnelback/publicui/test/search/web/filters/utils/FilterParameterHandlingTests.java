@@ -64,7 +64,7 @@ public class FilterParameterHandlingTests {
         String profileId = new FilterParameterHandling().getProfileAndViewId(mockedRequest);
         
         Assert.assertEquals(null, collectionId);
-        Assert.assertEquals(null, profileId);
+        Assert.assertEquals("_default", profileId);
     }
 
 }
