@@ -45,10 +45,11 @@ public class FilterParameterHandling {
                 && request.getPathInfo() != null
                 && request.getPathInfo().startsWith(ResourcesController.MAPPING_PATH)
                 && request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()) > -1) {
-            // TODO - need to find the second segment
+            Integer collectionStart = request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length());
+            
             profileId = request.getPathInfo().substring(
-                    ResourcesController.MAPPING_PATH.length(),
-                    request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()));
+                    collectionStart + 1,
+                    request.getPathInfo().indexOf('/', collectionStart + 1));
         }
         
         return profileId;
