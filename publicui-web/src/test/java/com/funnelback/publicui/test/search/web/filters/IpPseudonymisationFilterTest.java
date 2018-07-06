@@ -16,9 +16,9 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import com.funnelback.config.configtypes.service.ServiceConfigOption;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.web.filters.IpPseudonomysationFilter;
+import com.funnelback.publicui.search.web.filters.IpPseudonymisationFilter;
 
-public class IpPseudonomysationFilterTest {
+public class IpPseudonymisationFilterTest {
 
     @Test
     public void test() throws Exception {
@@ -31,7 +31,7 @@ public class IpPseudonomysationFilterTest {
         
         when(configRepository.getServiceConfig(collectionCaptor.capture(), profileCaptor.capture())).thenReturn(scro);
         
-        IpPseudonomysationFilter filter = new IpPseudonomysationFilter();
+        IpPseudonymisationFilter filter = new IpPseudonymisationFilter();
         filter.setConfigRepository(configRepository);
         
         MockHttpServletRequest req = new MockHttpServletRequest();

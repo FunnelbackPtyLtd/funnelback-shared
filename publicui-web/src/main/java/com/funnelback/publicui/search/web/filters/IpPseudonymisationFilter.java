@@ -24,20 +24,20 @@ import com.funnelback.publicui.utils.web.ProfilePicker;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 /**
- * Filter which Pseudonomises client IP addresses by stripping the last octet of the address - e.g.
- * 123.123.123.123 becomes 123.123.123.0. This pseudonomysed address is intended to be not personally identifiable
+ * Filter which Pseudonymises client IP addresses by stripping the last octet of the address - e.g.
+ * 123.123.123.123 becomes 123.123.123.0. This pseudonymised address is intended to be not personally identifiable
  * while still producing the same approximate location information when processed with MaxMind's database
  */
 @Log4j2
-public class IpPseudonomysationFilter implements Filter {
+public class IpPseudonymisationFilter implements Filter {
 
     /**
-     * This attribute name can be used to access the unpseudonomysed client IP address.
+     * This attribute name can be used to access the unpseudonymised client IP address.
      * 
      * We should take care not to log this address, however it is important to have
      * for things like IP address access restrictions.
      */
-    public static final String UNPSEUDONOMYSED_IP_ADDRESS_ATTRIBUTE_NAME = "com.funnelback.unpseudonomysed-ip-address";
+    public static final String UNPSEUDONYMISED_IP_ADDRESS_ATTRIBUTE_NAME = "com.funnelback.unpseudonymised-ip-address";
     
     @Autowired
     @Setter
@@ -54,37 +54,37 @@ public class IpPseudonomysationFilter implements Filter {
         String collectionId = fph.getCollectionId((HttpServletRequest) request);
         String profileAndViewId = fph.getProfileAndViewId((HttpServletRequest) request);
 
-        Boolean shouldPseudonomise;
+        Boolean shouldPseudonymise;
         try {
-            shouldPseudonomise = configRepository
+            shouldPseudonymise = configRepository
                 .getServiceConfig(collectionId, profileAndViewId)
-                .get(new ModernUI().PSEUDONOMISE_CLIENT_IPS);
+                .get(new ModernUI().PSEUDONYMISE_CLIENT_IPS);
         } catch (ProfileNotFoundException e) {
-            shouldPseudonomise = true;
+            shouldPseudonymise = true;
         }
         
-        chain.doFilter(new PseudonymousServletRequest((HttpServletRequest)request, shouldPseudonomise), response);
+        chain.doFilter(new PseudonymousServletRequest((HttpServletRequest)request, shouldPseudonymise), response);
     }
 
     @Override
     public void init(FilterConfig arg0) throws ServletException { }
 
-    public static String pseudonomyseRemoteAddress(String originalRemoteAddress) {
+    public static String pseudonymiseRemoteAddress(String originalRemoteAddress) {
         return originalRemoteAddress.replaceAll("(\\d+)\\.(\\d+)\\.(\\d+)\\.(\\d+)", "$1.$2.$3.0");
     }
 
     public static class PseudonymousServletRequest extends HttpServletRequestWrapper {
 
-        private Boolean shouldPseudonomise;
+        private Boolean shouldPseudonymise;
 
-        public PseudonymousServletRequest(HttpServletRequest request, Boolean shouldPseudonomise) {
+        public PseudonymousServletRequest(HttpServletRequest request, Boolean shouldPseudonymise) {
             super(request);
-            this.shouldPseudonomise = shouldPseudonomise;
+            this.shouldPseudonymise = shouldPseudonymise;
         }
         
         public String getRemoteAddr() {
-            if (shouldPseudonomise) {
-                return pseudonomyseRemoteAddress(getRequest().getRemoteAddr());
+            if (shouldPseudonymise) {
+                return pseudonymiseRemoteAddress(getRequest().getRemoteAddr());
             } else {
                 return getRequest().getRemoteAddr();
             }
@@ -94,7 +94,7 @@ public class IpPseudonomysationFilter implements Filter {
         // it's needed (e.g. for IP address restrictions).
         @Override
         public Object getAttribute(String key) {
-            if (UNPSEUDONOMYSED_IP_ADDRESS_ATTRIBUTE_NAME.equals(key)) {
+            if (UNPSEUDONYMISED_IP_ADDRESS_ATTRIBUTE_NAME.equals(key)) {
                 return getRequest().getRemoteAddr();
             }
             return super.getAttribute(key);
