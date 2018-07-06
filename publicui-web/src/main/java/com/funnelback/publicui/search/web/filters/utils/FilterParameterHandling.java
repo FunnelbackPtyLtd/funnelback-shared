@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.web.filters.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.web.controllers.ResourcesController;
 
@@ -50,6 +51,10 @@ public class FilterParameterHandling {
             profileId = request.getPathInfo().substring(
                     collectionStart + 1,
                     request.getPathInfo().indexOf('/', collectionStart + 1));
+        }
+        
+        if (profileId == null || profileId.trim().isEmpty()) {
+            profileId = DefaultValues.DEFAULT_PROFILE;
         }
         
         return profileId;

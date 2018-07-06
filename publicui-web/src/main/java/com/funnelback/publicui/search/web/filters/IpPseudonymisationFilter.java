@@ -54,13 +54,15 @@ public class IpPseudonymisationFilter implements Filter {
         String collectionId = fph.getCollectionId((HttpServletRequest) request);
         String profileAndViewId = fph.getProfileAndViewId((HttpServletRequest) request);
 
-        Boolean shouldPseudonymise;
-        try {
-            shouldPseudonymise = configRepository
-                .getServiceConfig(collectionId, profileAndViewId)
-                .get(new ModernUI().PSEUDONYMISE_CLIENT_IPS);
-        } catch (ProfileNotFoundException e) {
-            shouldPseudonymise = true;
+        Boolean shouldPseudonymise = true;
+        if (collectionId != null && profileAndViewId != null) {
+            try {
+                shouldPseudonymise = configRepository
+                    .getServiceConfig(collectionId, profileAndViewId)
+                    .get(new ModernUI().PSEUDONYMISE_CLIENT_IPS);
+            } catch (ProfileNotFoundException e) {
+                // Ok - We'll assume we as we did above should then
+            }
         }
         
         chain.doFilter(new PseudonymousServletRequest((HttpServletRequest)request, shouldPseudonymise), response);
