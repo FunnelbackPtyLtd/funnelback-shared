@@ -51,7 +51,8 @@
     </bean>
     
     <bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.search.web.filters.RequestParametersTransformFilter" />
-    <bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter" />    
+    <bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter" />
+    <bean id="IpPseudonymisationFilter" class="com.funnelback.publicui.search.web.filters.IpPseudonymisationFilter" />
     <bean id="ConfigurableSecurityFilter" class="com.funnelback.publicui.search.web.filters.ConfigurableSecurityFilter" />
     <bean id="ConfigurableCorsFilter" class="com.funnelback.publicui.search.web.filters.ConfigurableCorsFilter" />
     <bean id="UnhandledExceptionFilter" class="com.funnelback.publicui.search.web.filters.UnhandledExceptionFilter" />

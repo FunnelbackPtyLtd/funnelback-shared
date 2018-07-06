@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.web.filters.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.web.controllers.ResourcesController;
 
@@ -31,4 +32,32 @@ public class FilterParameterHandling {
         
         return collectionId;
     }
+
+    /**
+     * Look for the profile id in the query string as well
+     * as in the Path part of the URI for static requests like
+     * /resources/&lt;collection&gt;/&lt;profile&gt;/file.ext
+     * @param request
+     * @return
+     */
+    public String getProfileAndViewId(HttpServletRequest request) {
+        String profileId = request.getParameter(RequestParameters.PROFILE);
+        if (profileId == null
+                && request.getPathInfo() != null
+                && request.getPathInfo().startsWith(ResourcesController.MAPPING_PATH)
+                && request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()) > -1) {
+            Integer collectionStart = request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length());
+            
+            profileId = request.getPathInfo().substring(
+                    collectionStart + 1,
+                    request.getPathInfo().indexOf('/', collectionStart + 1));
+        }
+        
+        if (profileId == null || profileId.trim().isEmpty()) {
+            profileId = DefaultValues.DEFAULT_PROFILE;
+        }
+        
+        return profileId;
+    }
+
 }

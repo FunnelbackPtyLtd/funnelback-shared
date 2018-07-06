@@ -34,14 +34,37 @@ public class FilterParameterHandlingTests {
     }
 
     @Test
+    public void testProfileParam() {
+        HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
+        when(mockedRequest.getParameter(RequestParameters.PROFILE)).thenReturn("test-profile");
+        
+        String profileId = new FilterParameterHandling().getProfileAndViewId(mockedRequest);
+        
+        Assert.assertEquals("test-profile", profileId);
+    }
+
+    @Test
+    public void testPathProfile() {
+        HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
+        when(mockedRequest.getParameter(RequestParameters.COLLECTION)).thenReturn(null);
+        when(mockedRequest.getPathInfo()).thenReturn("/resources/test-collection/test-profile/file.ext");
+        
+        String profileId = new FilterParameterHandling().getProfileAndViewId(mockedRequest);
+        
+        Assert.assertEquals("test-profile", profileId);
+    }
+
+    @Test
     public void testNoMatch() {
         HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
         when(mockedRequest.getParameter(RequestParameters.COLLECTION)).thenReturn(null);
         when(mockedRequest.getPathInfo()).thenReturn("/index.html");
         
         String collectionId = new FilterParameterHandling().getCollectionId(mockedRequest);
+        String profileId = new FilterParameterHandling().getProfileAndViewId(mockedRequest);
         
         Assert.assertEquals(null, collectionId);
+        Assert.assertEquals("_default", profileId);
     }
 
 }

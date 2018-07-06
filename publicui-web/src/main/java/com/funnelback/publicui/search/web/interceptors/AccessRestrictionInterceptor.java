@@ -28,6 +28,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.exception.InvalidCollectionException;
+import com.funnelback.publicui.search.web.filters.IpPseudonymisationFilter;
 import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
 import com.funnelback.publicui.utils.web.ProfilePicker;
 
@@ -197,14 +198,15 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     }
     
     public String getConnectingIp(HttpServletRequest request, ServiceConfigReadOnly serviceConfig) {
-        String ip = request.getRemoteAddr();
-        log.trace("Real request IP (ignoring X-Forwarded-For): " + ip);
+        String possiblyPseudonymisedIp = request.getRemoteAddr();
+        log.trace("Real request IP (ignoring X-Forwarded-For, possibly pseudonymised for logging): " + possiblyPseudonymisedIp);
+        String ip = (String) request.getAttribute(IpPseudonymisationFilter.UNPSEUDONYMISED_IP_ADDRESS_ATTRIBUTE_NAME);
         if (serviceConfig.get(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR)) {
             ip = NetUtils.getIpPreferingXForwardedFor(ip
                     , request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR)
                     , serviceConfig.get(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES).get());
         }
-        log.trace("Connecting IP is: " + ip);
+        log.trace("Connecting IP (pseudonymised for logging) is: " + IpPseudonymisationFilter.pseudonymiseRemoteAddress(ip));
         return ip;
     }
 
