@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.funnelback.common.function.StreamUtils;
 import com.funnelback.publicui.search.model.padre.Result;
+import com.google.common.collect.Lists;
 
 
 
@@ -36,7 +37,19 @@ public class XJPathResultDataFetcherTest {
         Assert.assertEquals("http://foo", data.get(0));
         Assert.assertEquals("bar", data.get(1));
     }
-    
+
+    @Test
+    public void testListMetadata() {
+        Result result = new Result();
+        result.setCacheUrl("http://foo");
+        result.getListMetadata().put("a", "goo");
+        result.getListMetadata().put("a", "gar");
+        List<Object> data = dataFetcher.fetchFieldValues(dataFetcher.parseFields(toList("cacheUrl", "listMetadata/a")), result);
+        
+        Assert.assertEquals("http://foo", data.get(0));
+        Assert.assertEquals(Lists.newArrayList("goo","gar"), data.get(1));
+    }
+
     private final List<String> toList(String ... items) {
         return StreamUtils.ofNullable(items).collect(Collectors.toList());
     }

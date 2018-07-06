@@ -4,14 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.ServletContext;
+
 import org.apache.commons.jxpath.CompiledExpression;
 import org.apache.commons.jxpath.JXPathContext;
+import org.apache.commons.jxpath.JXPathIntrospector;
+import org.apache.commons.jxpath.servlet.ServletContextHandler;
 
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.streamedresults.ResultDataFetcher;
+import com.google.common.collect.Multimap;
 
 public class XJPathResultDataFetcher implements ResultDataFetcher<List<CompiledExpression>> {
 
+    static {
+        JXPathIntrospector.registerDynamicClass(
+            Multimap.class,
+            MultimapDynamicPropertyHandler.class);
+    }
+    
     @Override
     public List<CompiledExpression> parseFields(List<String> fields) {
         return fields.stream().map(JXPathContext::compile).collect(Collectors.toList());
