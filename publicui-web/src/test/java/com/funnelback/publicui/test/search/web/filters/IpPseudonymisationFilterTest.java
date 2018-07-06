@@ -50,4 +50,49 @@ public class IpPseudonymisationFilterTest {
         Assert.assertEquals("bar", profileCaptor.getValue());
     }
 
+    @Test
+    public void testAbsentCollectionAndProfile() throws Exception {
+        IpPseudonymisationFilter filter = new IpPseudonymisationFilter();
+        
+        MockHttpServletRequest req = new MockHttpServletRequest();
+        req.setRemoteAddr("1.2.3.4");
+        req.setRequestURI("http://example.com/s/search.html");
+        
+        MockFilterChain chain = new MockFilterChain();
+        filter.doFilter(req, new MockHttpServletResponse(), chain);
+        
+        ServletRequest wrappedRequest = chain.getRequest();
+        
+        Assert.assertEquals("1.2.3.0", wrappedRequest.getRemoteAddr());
+    }
+
+    @Test
+    public void testAbsentProfile() throws Exception {
+        ConfigRepository configRepository = mock(ConfigRepository.class);
+        ServiceConfigReadOnly scro = mock(ServiceConfigReadOnly.class);
+        when(scro.get((ServiceConfigOption<Boolean>)Mockito.anyObject())).thenReturn(true);
+        
+        ArgumentCaptor<String> collectionCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> profileCaptor = ArgumentCaptor.forClass(String.class);
+        
+        when(configRepository.getServiceConfig(collectionCaptor.capture(), profileCaptor.capture())).thenReturn(scro);
+        
+        IpPseudonymisationFilter filter = new IpPseudonymisationFilter();
+        filter.setConfigRepository(configRepository);
+        
+        MockHttpServletRequest req = new MockHttpServletRequest();
+        req.setRemoteAddr("1.2.3.4");
+        req.setRequestURI("http://example.com/s/search.html?collection=foo&query=goo");
+        req.setParameter("collection", "foo");
+        
+        MockFilterChain chain = new MockFilterChain();
+        filter.doFilter(req, new MockHttpServletResponse(), chain);
+        
+        ServletRequest wrappedRequest = chain.getRequest();
+        
+        Assert.assertEquals("1.2.3.0", wrappedRequest.getRemoteAddr());
+        Assert.assertEquals("foo", collectionCaptor.getValue());
+        Assert.assertEquals("_default", profileCaptor.getValue());
+    }
+
 }
