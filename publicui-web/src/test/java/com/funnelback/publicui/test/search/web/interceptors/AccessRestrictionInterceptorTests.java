@@ -35,6 +35,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.exception.InvalidCollectionException;
+import com.funnelback.publicui.search.web.filters.IpPseudonomysationFilter;
 import com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.google.common.collect.Maps;
@@ -72,7 +73,8 @@ public class AccessRestrictionInterceptorTests {
         request.setParameter(RequestParameters.COLLECTION, COLLECTION_ID);
         request.setParameter(RequestParameters.QUERY, "dummy");
         request.setQueryString(RequestParameters.COLLECTION + "=" + COLLECTION_ID + "&query=dummy");
-        request.setRemoteAddr("1.2.3.4");
+        request.setRemoteAddr("1.2.3.0");
+        request.setAttribute(IpPseudonomysationFilter.UNPSEUDONOMYSED_IP_ADDRESS_ATTRIBUTE_NAME, "1.2.3.4");
         request.setRemoteHost("remote.host.com");
 
         response = newResponse();

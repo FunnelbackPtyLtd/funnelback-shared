@@ -31,4 +31,27 @@ public class FilterParameterHandling {
         
         return collectionId;
     }
+
+    /**
+     * Look for the profile id in the query string as well
+     * as in the Path part of the URI for static requests like
+     * /resources/&lt;collection&gt;/&lt;profile&gt;/file.ext
+     * @param request
+     * @return
+     */
+    public String getProfileAndViewId(HttpServletRequest request) {
+        String profileId = request.getParameter(RequestParameters.PROFILE);
+        if (profileId == null
+                && request.getPathInfo() != null
+                && request.getPathInfo().startsWith(ResourcesController.MAPPING_PATH)
+                && request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()) > -1) {
+            // TODO - need to find the second segment
+            profileId = request.getPathInfo().substring(
+                    ResourcesController.MAPPING_PATH.length(),
+                    request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()));
+        }
+        
+        return profileId;
+    }
+
 }
