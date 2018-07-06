@@ -74,7 +74,7 @@ public class AccessRestrictionInterceptorTests {
         request.setParameter(RequestParameters.QUERY, "dummy");
         request.setQueryString(RequestParameters.COLLECTION + "=" + COLLECTION_ID + "&query=dummy");
         request.setRemoteAddr("1.2.3.0");
-        request.setAttribute(IpPseudonymisationFilter.UNPSEUDONOMYSED_IP_ADDRESS_ATTRIBUTE_NAME, "1.2.3.4");
+        request.setAttribute(IpPseudonymisationFilter.UNPSEUDONYMISED_IP_ADDRESS_ATTRIBUTE_NAME, "1.2.3.4");
         request.setRemoteHost("remote.host.com");
 
         response = newResponse();
