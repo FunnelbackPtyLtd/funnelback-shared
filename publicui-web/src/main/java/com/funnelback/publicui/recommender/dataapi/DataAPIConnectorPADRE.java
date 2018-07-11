@@ -48,7 +48,16 @@ public class DataAPIConnectorPADRE implements DataAPI {
         DocInfoResult dir = getDocInfoResult(urls, collectionConfig);
 
         if (dir != null) {
-            dis = new ArrayList<>(dir.asMap().values());
+            dis = new ArrayList<>();
+            Map<URI, DocInfo> docInfoResultMap = dir.asMap();
+            for (String url : urls) {
+                URI uri = URI.create(url);
+                if (docInfoResultMap.containsKey(uri)) {
+                    dis.add(docInfoResultMap.get(uri));
+                } else {
+                    log.error("url " + url + " unexpectedly absent from i4u results");
+                }
+            }
         }
 
         if (dis != null && dis.size() > 0) {
