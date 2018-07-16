@@ -37,20 +37,27 @@ public class FilterParameterHandling {
      * Look for the profile id in the query string as well
      * as in the Path part of the URI for static requests like
      * /resources/&lt;collection&gt;/&lt;profile&gt;/file.ext
+     * 
+     * Note that for the resource URL the profile part is optional
+     * and so the caller is responsible for ensuring that the profile exists.
      * @param request
      * @return
      */
     public String getProfileAndViewId(HttpServletRequest request) {
         String profileId = request.getParameter(RequestParameters.PROFILE);
+        String path = request.getPathInfo();
         if (profileId == null
-                && request.getPathInfo() != null
-                && request.getPathInfo().startsWith(ResourcesController.MAPPING_PATH)
-                && request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()) > -1) {
-            Integer collectionStart = request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length());
+                && path != null
+                && path.startsWith(ResourcesController.MAPPING_PATH)
+                && path.indexOf('/', ResourcesController.MAPPING_PATH.length()) > -1) {
+            Integer collectionStart = path.indexOf('/', ResourcesController.MAPPING_PATH.length());
             
-            profileId = request.getPathInfo().substring(
-                    collectionStart + 1,
-                    request.getPathInfo().indexOf('/', collectionStart + 1));
+            int endOfProfilePart = path.indexOf('/', collectionStart + 1);
+            if(endOfProfilePart == -1) {
+                profileId = DefaultValues.DEFAULT_PROFILE;
+            } else {
+                profileId = path.substring(collectionStart + 1,endOfProfilePart);
+            }
         }
         
         if (profileId == null || profileId.trim().isEmpty()) {
