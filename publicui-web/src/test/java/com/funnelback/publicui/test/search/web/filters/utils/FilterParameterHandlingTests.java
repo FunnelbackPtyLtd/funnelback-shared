@@ -1,15 +1,15 @@
 package com.funnelback.publicui.test.search.web.filters.utils;
 
-import javax.servlet.http.HttpServletRequest;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.web.filters.utils.FilterParameterHandling;
-
-
-import static org.mockito.Mockito.*;
 public class FilterParameterHandlingTests {
 
     @Test
@@ -52,6 +52,17 @@ public class FilterParameterHandlingTests {
         String profileId = new FilterParameterHandling().getProfileAndViewId(mockedRequest);
         
         Assert.assertEquals("test-profile", profileId);
+    }
+    
+    @Test
+    public void testPathProfileNoProfileSet() {
+        HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
+        when(mockedRequest.getParameter(RequestParameters.COLLECTION)).thenReturn(null);
+        when(mockedRequest.getPathInfo()).thenReturn("/resources/test-collection/file.ext");
+        
+        String profileId = new FilterParameterHandling().getProfileAndViewId(mockedRequest);
+        
+        Assert.assertEquals("_default", profileId);
     }
 
     @Test
