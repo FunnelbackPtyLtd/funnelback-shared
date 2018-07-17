@@ -10,6 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,29 +136,36 @@ public class SearchHistoryDao implements SearchHistoryRepository {
 
         AtomicInteger removed = new AtomicInteger(0);
 
-        em.createQuery("from " + ClickHistory.class.getSimpleName()
+        ScrollableResults scrollableClickHistoryResults = em.createQuery("from " + ClickHistory.class.getSimpleName()
             + " where clickDate < :date", ClickHistory.class)
             .setParameter("date", expiredDate.getTime())
-            .getResultList()
-            .stream()
-            .forEach(click -> {
-                em.remove(click);
-                removed.incrementAndGet();
-            });
+            .unwrap(org.hibernate.query.Query.class)
+            .scroll(ScrollMode.FORWARD_ONLY);
+
+        while (scrollableClickHistoryResults.next()) {
+            ClickHistory history = (ClickHistory) scrollableClickHistoryResults.get()[0];
+            em.remove(history);
+            if (removed.incrementAndGet() % 100 == 0) {
+                em.flush();
+            }
+        }
         
-        em.createQuery("from " + SearchHistory.class.getSimpleName()
+        ScrollableResults scrollableSearchHistoryResults = em.createQuery("from " + SearchHistory.class.getSimpleName()
             + " where searchDate < :date", SearchHistory.class)
             .setParameter("date", expiredDate.getTime())
-            .getResultList()
-            .stream()
-            .forEach(search -> {
-                em.remove(search);
-                removed.incrementAndGet();
-            });
+            .unwrap(org.hibernate.query.Query.class)
+            .scroll(ScrollMode.FORWARD_ONLY);
+        
+        while (scrollableSearchHistoryResults.next()) {
+            SearchHistory history = (SearchHistory) scrollableSearchHistoryResults.get()[0];
+            em.remove(history);
+            if (removed.incrementAndGet() % 100 == 0) {
+                em.flush();
+            }
+        }
         
         log.debug("Purged {} click & search history events older than {}", removed.get(), new SimpleDateFormat().format(expiredDate.getTime()));
         
         return removed.get();
     };
-    
 }
