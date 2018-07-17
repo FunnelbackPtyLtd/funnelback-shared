@@ -145,8 +145,7 @@ public class SearchHistoryDao implements SearchHistoryRepository {
         while (scrollableClickHistoryResults.next()) {
             ClickHistory history = (ClickHistory) scrollableClickHistoryResults.get()[0];
             em.remove(history);
-            int count = removed.incrementAndGet();
-            if (count % 100 == 0) {
+            if (removed.incrementAndGet() % 100 == 0) {
                 em.flush();
             }
         }
@@ -160,8 +159,7 @@ public class SearchHistoryDao implements SearchHistoryRepository {
         while (scrollableSearchHistoryResults.next()) {
             SearchHistory history = (SearchHistory) scrollableSearchHistoryResults.get()[0];
             em.remove(history);
-            int count = removed.incrementAndGet();
-            if (count % 100 == 0) {
+            if (removed.incrementAndGet() % 100 == 0) {
                 em.flush();
             }
         }
