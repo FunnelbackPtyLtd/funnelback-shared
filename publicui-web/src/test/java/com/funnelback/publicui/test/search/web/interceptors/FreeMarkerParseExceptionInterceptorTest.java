@@ -1,5 +1,10 @@
 package com.funnelback.publicui.test.search.web.interceptors;
 
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.google.common.collect.Maps;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,13 +13,13 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.funnelback.common.config.Config;
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.interceptors.FreeMarkerParseExceptionInterceptor;
 
 import freemarker.core.ParseException;
+
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 
 public class FreeMarkerParseExceptionInterceptorTest {
 
@@ -64,9 +69,12 @@ public class FreeMarkerParseExceptionInterceptorTest {
     @Test
     public void testParseExceptionCollectionDisplayErrors() throws Exception {
         Config c = Mockito.mock(Config.class);
+        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        serviceConfig.set(FrontEndKeys.FREEMARKER_DISPLAY_ERRORS, true);
+
         Mockito
-            .when(c.valueAsBoolean(Keys.ModernUI.FREEMARKER_DISPLAY_ERRORS, DefaultValues.ModernUI.FREEMARKER_DISPLAY_ERRORS))
-            .thenReturn(Boolean.TRUE);
+                .when(configRepository.getServiceConfig("collection","_default"))
+                .thenReturn(serviceConfig);
         Mockito
             .when(configRepository.getCollection("collection"))
             .thenReturn(new Collection("collection", c));
@@ -80,9 +88,13 @@ public class FreeMarkerParseExceptionInterceptorTest {
     @Test
     public void testParseExceptionCollectionNoDisplayErrors() throws Exception {
         Config c = Mockito.mock(Config.class);
+        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        serviceConfig.set(FrontEndKeys.FREEMARKER_DISPLAY_ERRORS, false);
+
         Mockito
-            .when(c.valueAsBoolean(Keys.ModernUI.FREEMARKER_DISPLAY_ERRORS, DefaultValues.ModernUI.FREEMARKER_DISPLAY_ERRORS))
-            .thenReturn(Boolean.FALSE);
+                .when(configRepository.getServiceConfig("collection","_default"))
+                .thenReturn(serviceConfig);
+
         Mockito
             .when(configRepository.getCollection("collection"))
             .thenReturn(new Collection("collection", c));
@@ -96,12 +108,16 @@ public class FreeMarkerParseExceptionInterceptorTest {
     @Test
     public void testNestedParseException() throws Exception {
         Config c = Mockito.mock(Config.class);
-        Mockito
-            .when(c.valueAsBoolean(Keys.ModernUI.FREEMARKER_DISPLAY_ERRORS, DefaultValues.ModernUI.FREEMARKER_DISPLAY_ERRORS))
-            .thenReturn(Boolean.TRUE);
+        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        serviceConfig.set(FrontEndKeys.FREEMARKER_DISPLAY_ERRORS, true);
+
         Mockito
             .when(configRepository.getCollection("collection"))
             .thenReturn(new Collection("collection", c));
+
+        Mockito
+                .when(configRepository.getServiceConfig("collection","_default"))
+                .thenReturn(serviceConfig);
         
         request.setParameter("collection", "collection");
         interceptor.afterCompletion(request, response, null, new RuntimeException(
