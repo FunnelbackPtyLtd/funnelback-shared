@@ -27,45 +27,45 @@ public class FreeMarkerParseExceptionInterceptorTest {
     private FreeMarkerParseExceptionInterceptor interceptor;
     private MockHttpServletResponse response;
     private MockHttpServletRequest request;
-    
+
     @Before
     public void before() {
-        
+
         configRepository = Mockito.mock(ConfigRepository.class);
-        
+
         interceptor = new FreeMarkerParseExceptionInterceptor();
         interceptor.setConfigRepository(configRepository);
-        
+
         response = new MockHttpServletResponse();
         request = new MockHttpServletRequest();
     }
-    
+
     @Test
     public void testNoException() throws Exception {
         interceptor.afterCompletion(request, response, null, null);
-        
+
         Assert.assertEquals("No content should have been written", "", response.getContentAsString());
     }
-    
+
     @Test
     public void testNoParseException() throws Exception {
         interceptor.afterCompletion(request, response, null, new RuntimeException(new RuntimeException()));
 
         Assert.assertEquals("No content should have been written", "", response.getContentAsString());
     }
-    
+
     @Test
     public void testParseExceptionNoCollection() throws Exception {
         // No collection in request
         interceptor.afterCompletion(request, response, null, new ParseException("description", null, 0, 0, 0, 0));
         Assert.assertEquals("No content should have been written", "", response.getContentAsString());
-        
+
         // Invalid collection (not in the repository)
         request.setParameter("collection", "collection");
         interceptor.afterCompletion(request, response, null, new ParseException("description", null, 0, 0, 0, 0));
         Assert.assertEquals("No content should have been written", "", response.getContentAsString());
     }
-    
+
     @Test
     public void testParseExceptionCollectionDisplayErrors() throws Exception {
         Config c = Mockito.mock(Config.class);
@@ -73,16 +73,16 @@ public class FreeMarkerParseExceptionInterceptorTest {
         serviceConfig.set(FrontEndKeys.FREEMARKER_DISPLAY_ERRORS, true);
 
         Mockito
-                .when(configRepository.getServiceConfig("collection","_default"))
-                .thenReturn(serviceConfig);
+            .when(configRepository.getServiceConfig("collection","_default"))
+            .thenReturn(serviceConfig);
         Mockito
             .when(configRepository.getCollection("collection"))
             .thenReturn(new Collection("collection", c));
-        
+
         request.setParameter("collection", "collection");
         interceptor.afterCompletion(request, response, null, new ParseException("description", null, 0, 0, 0, 0));
-        
-        Assert.assertFalse("Exception message should have been written", "".equals(response.getContentAsString())); 
+
+        Assert.assertFalse("Exception message should have been written", "".equals(response.getContentAsString()));
     }
 
     @Test
@@ -92,19 +92,19 @@ public class FreeMarkerParseExceptionInterceptorTest {
         serviceConfig.set(FrontEndKeys.FREEMARKER_DISPLAY_ERRORS, false);
 
         Mockito
-                .when(configRepository.getServiceConfig("collection","_default"))
-                .thenReturn(serviceConfig);
+            .when(configRepository.getServiceConfig("collection","_default"))
+            .thenReturn(serviceConfig);
 
         Mockito
             .when(configRepository.getCollection("collection"))
             .thenReturn(new Collection("collection", c));
-        
+
         request.setParameter("collection", "collection");
         interceptor.afterCompletion(request, response, null, new ParseException("description", null, 0, 0, 0, 0));
-        
-        Assert.assertEquals("No content should have been written", "", response.getContentAsString()); 
+
+        Assert.assertEquals("No content should have been written", "", response.getContentAsString());
     }
-    
+
     @Test
     public void testNestedParseException() throws Exception {
         Config c = Mockito.mock(Config.class);
@@ -116,15 +116,15 @@ public class FreeMarkerParseExceptionInterceptorTest {
             .thenReturn(new Collection("collection", c));
 
         Mockito
-                .when(configRepository.getServiceConfig("collection","_default"))
-                .thenReturn(serviceConfig);
-        
+            .when(configRepository.getServiceConfig("collection","_default"))
+            .thenReturn(serviceConfig);
+
         request.setParameter("collection", "collection");
         interceptor.afterCompletion(request, response, null, new RuntimeException(
             new RuntimeException(new ParseException("description", null, 0, 0, 0, 0))));
-        
-        Assert.assertFalse("Exception message should have been written", "".equals(response.getContentAsString())); 
-        
+
+        Assert.assertFalse("Exception message should have been written", "".equals(response.getContentAsString()));
+
     }
 
 }

@@ -71,6 +71,8 @@ public class DefaultTemplateExceptionHandlerTest {
         
         out = new StringWriter();
         env = new Environment(new Template("", new StringReader(""), null), (TemplateHashModel) model, out);
+
+
     }
     
     @Test
