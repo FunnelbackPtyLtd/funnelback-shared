@@ -3,6 +3,11 @@ package com.funnelback.publicui.search.web.interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.publicui.search.web.exception.InvalidCollectionException;
+import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
+import com.funnelback.publicui.utils.web.ProfilePicker;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -17,6 +22,8 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import freemarker.core.ParseException;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 
 /**
  * <p>Interceptor handling FreeMarker {@link ParseException}s.</p>
@@ -33,6 +40,8 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
+
+    private IntercepterHelper intercepterHelper = new IntercepterHelper();
 
     @Autowired
     @Setter private ConfigRepository configRepository;
@@ -62,18 +71,31 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
             if (pe != null) {
                 // Handle ParseException depending on the config
                 Collection collection = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
+                String profileId = new ProfilePicker().existingProfileForCollection(collection, intercepterHelper.getProfileFromRequestOrDefaultProfile(request));
+
+                String collectionId = intercepterHelper.getCollectionFromRequest(request);
+
+                if(collectionId == null) {
+                    log.trace("No collection is set.");
+                }
+
+                ServiceConfigReadOnly serviceConfig;
+                try {
+                    serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
+                } catch (ProfileNotFoundException e) {
+                    throw new InvalidCollectionException(collectionId + " appears to exist but is invalid as it is missing the '"
+                            + profileId + "' profile which is expected to exist.");
+                }
+
                 if(collection != null) {
-                   if (collection.getConfiguration().valueAsBoolean(
-                        Keys.ModernUI.FREEMARKER_DISPLAY_ERRORS,
-                        DefaultValues.ModernUI.FREEMARKER_DISPLAY_ERRORS)) {
-                       
+                   if (serviceConfig.get(FrontEndKeys.FREEMARKER_DISPLAY_ERRORS).booleanValue()) {
                        // No need to be fancy about the format of the error. If we were unable
                        // to parse the template, nothing will be rendered anyway. Just output
                        // the error as-is
                        response.setContentType("text/plain");
                        response.getWriter().write(pe.getMessage());                       
                    }
-                   
+
                    // Also log it for the per-collection log file
                    log.error("Error parsing FreeMarker template", pe);
                 }
