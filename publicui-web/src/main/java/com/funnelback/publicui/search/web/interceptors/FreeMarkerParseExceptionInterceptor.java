@@ -27,15 +27,16 @@ import static com.funnelback.config.keys.Keys.FrontEndKeys;
 
 /**
  * <p>Interceptor handling FreeMarker {@link ParseException}s.</p>
- * <p>
+ *
  * <p>They cannot be handled via standard FreeMarker error handling or controller
  * level Exception handlers because they happen after the controller, when the view
  * is rendered.</p>
- * <p>
+ *
  * <p>The interceptor will check if FreeMarker error output is enabled on the collection
  * before writing the exception message to the response</p>
  *
  * @author Nicolas Guillaumin
+ *
  */
 @Log4j2
 public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
@@ -43,8 +44,7 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
     private IntercepterHelper intercepterHelper = new IntercepterHelper();
 
     @Autowired
-    @Setter
-    private ConfigRepository configRepository;
+    @Setter private ConfigRepository configRepository;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -53,7 +53,7 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
-            throws Exception {
+        throws Exception {
     }
 
     @Override
@@ -62,11 +62,11 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
             // From experience the ParseException can be nested at different levels
             // Extract it
             ParseException pe = ExceptionUtils.getThrowableList(ex)
-                    .stream()
-                    .filter(t -> t.getClass().equals(ParseException.class))
-                    .map(t -> (ParseException) t)
-                    .findFirst()
-                    .orElse(null);
+                .stream()
+                .filter(t -> t.getClass().equals(ParseException.class))
+                .map(t -> (ParseException) t)
+                .findFirst()
+                .orElse(null);
 
             if (pe != null) {
                 // Handle ParseException depending on the config
@@ -74,13 +74,7 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
 
                 if (collection != null) {
                     String profileId = new ProfilePicker().existingProfileForCollection(collection, intercepterHelper.getProfileFromRequestOrDefaultProfile(request));
-
                     String collectionId = intercepterHelper.getCollectionFromRequest(request);
-
-                    if (collectionId == null) {
-                        log.trace("No collection is set.");
-                    }
-
                     ServiceConfigReadOnly serviceConfig;
                     try {
                         serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
@@ -95,7 +89,6 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
                         response.setContentType("text/plain");
                         response.getWriter().write(pe.getMessage());
                     }
-
                     // Also log it for the per-collection log file
                     log.error("Error parsing FreeMarker template", pe);
                 }
