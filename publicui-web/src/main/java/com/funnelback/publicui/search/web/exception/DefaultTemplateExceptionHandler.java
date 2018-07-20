@@ -47,7 +47,7 @@ public class DefaultTemplateExceptionHandler implements TemplateExceptionHandler
         TemplateHashModel model = env.getDataModel();
         if (model.get(SearchController.ModelAttributes.question.toString()) != null) {
             SearchQuestion sq = (SearchQuestion) ((AdapterTemplateModel)model.get(SearchController.ModelAttributes.question.toString())).getAdaptedObject(SearchQuestion.class);
-            boolean displayErrors = sq.getCurrentProfileConfig().get(FrontEndKeys.ModernUi.FREEMARKER.DISPLAY_ERRORS).booleanValue();
+            boolean displayErrors = sq.getCurrentProfileConfig().get(FrontEndKeys.ModernUi.Freemarker.DISPLAY_ERRORS).booleanValue();
             if (displayErrors) {
                 String errorFormat = sq.getCollection().getConfiguration().value(
                         Keys.ModernUI.FREEMARKER_ERROR_FORMAT,

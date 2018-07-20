@@ -56,7 +56,7 @@ public class DefaultTemplateExceptionHandlerTest {
         config = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy");
 
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
-        serviceConfig.set(FrontEndKeys.ModernUi.FREEMARKER.DISPLAY_ERRORS, true);
+        serviceConfig.set(FrontEndKeys.ModernUi.Freemarker.DISPLAY_ERRORS, true);
 
         Profile profile = new Profile("_default");
         profile.setServiceConfig(serviceConfig);
