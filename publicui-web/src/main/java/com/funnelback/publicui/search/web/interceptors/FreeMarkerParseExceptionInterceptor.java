@@ -82,7 +82,7 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
                         throw new InvalidCollectionException(collectionId + " appears to exist but is invalid as it is missing the '"
                                 + profileId + "' profile which is expected to exist.");
                     }
-                    if (serviceConfig.get(FrontEndKeys.ModernUi.FREEMARKER_DISPLAY_ERRORS).booleanValue()) {
+                    if (serviceConfig.get(FrontEndKeys.ModernUi.FREEMARKER.DISPLAY_ERRORS).booleanValue()) {
                         // No need to be fancy about the format of the error. If we were unable
                         // to parse the template, nothing will be rendered anyway. Just output
                         // the error as-is

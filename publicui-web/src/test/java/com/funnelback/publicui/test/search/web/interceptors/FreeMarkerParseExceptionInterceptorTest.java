@@ -70,7 +70,7 @@ public class FreeMarkerParseExceptionInterceptorTest {
     public void testParseExceptionCollectionDisplayErrors() throws Exception {
         Config c = Mockito.mock(Config.class);
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
-        serviceConfig.set(FrontEndKeys.ModernUi.FREEMARKER_DISPLAY_ERRORS, true);
+        serviceConfig.set(FrontEndKeys.ModernUi.FREEMARKER.DISPLAY_ERRORS, true);
 
         Mockito
             .when(configRepository.getServiceConfig("collection","_default"))
@@ -89,7 +89,7 @@ public class FreeMarkerParseExceptionInterceptorTest {
     public void testParseExceptionCollectionNoDisplayErrors() throws Exception {
         Config c = Mockito.mock(Config.class);
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
-        serviceConfig.set(FrontEndKeys.ModernUi.FREEMARKER_DISPLAY_ERRORS, false);
+        serviceConfig.set(FrontEndKeys.ModernUi.FREEMARKER.DISPLAY_ERRORS, false);
 
         Mockito
             .when(configRepository.getServiceConfig("collection","_default"))
@@ -109,7 +109,7 @@ public class FreeMarkerParseExceptionInterceptorTest {
     public void testNestedParseException() throws Exception {
         Config c = Mockito.mock(Config.class);
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
-        serviceConfig.set(FrontEndKeys.ModernUi.FREEMARKER_DISPLAY_ERRORS, true);
+        serviceConfig.set(FrontEndKeys.ModernUi.FREEMARKER.DISPLAY_ERRORS, true);
 
         Mockito
             .when(configRepository.getCollection("collection"))
