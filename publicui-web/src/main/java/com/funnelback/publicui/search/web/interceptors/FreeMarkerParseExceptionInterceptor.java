@@ -75,12 +75,11 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
                 if (collection != null) {
                     String profileId = new ProfilePicker().existingProfileForCollection(collection, intercepterHelper.getProfileFromRequestOrDefaultProfile(request));
                     String collectionId = intercepterHelper.getCollectionFromRequest(request);
-                    ServiceConfigReadOnly serviceConfig;
+                    ServiceConfigReadOnly serviceConfig = null;
                     try {
                         serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
                     } catch (ProfileNotFoundException e) {
-                        throw new InvalidCollectionException(collectionId + " appears to exist but is invalid as it is missing the '"
-                                + profileId + "' profile which is expected to exist.");
+                        log.error("Couldn't find profile '" + profileId + "' in " + collectionId, e);
                     }
                     if (serviceConfig.get(FrontEndKeys.ModernUi.Freemarker.DISPLAY_ERRORS).booleanValue()) {
                         // No need to be fancy about the format of the error. If we were unable
