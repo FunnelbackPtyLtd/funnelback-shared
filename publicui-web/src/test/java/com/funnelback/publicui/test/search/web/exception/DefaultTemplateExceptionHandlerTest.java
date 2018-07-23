@@ -4,7 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Optional;
 
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.publicui.search.model.collection.Profile;
+import com.google.common.collect.Maps;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +37,8 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModel;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class DefaultTemplateExceptionHandlerTest {
@@ -45,15 +54,24 @@ public class DefaultTemplateExceptionHandlerTest {
     public void before() throws IOException {
         
         config = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy");
-        
+
+        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        serviceConfig.set(FrontEndKeys.ModernUi.Freemarker.DISPLAY_ERRORS, true);
+
+        Profile profile = new Profile("_default");
+        profile.setServiceConfig(serviceConfig);
+        Collection collection = new Collection("dummy", config);
+        collection.getProfiles().put("_default", profile);
+
         SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(new Collection("dummy", config));
+        sq.setCurrentProfile("_default");
+        sq.setCollection(collection);
         SearchTransaction st = new SearchTransaction(sq, null);
         model = new BeanModel(st, new DefaultObjectWrapper());
         
         out = new StringWriter();
         env = new Environment(new Template("", new StringReader(""), null), (TemplateHashModel) model, out);
-        
+
 
     }
     

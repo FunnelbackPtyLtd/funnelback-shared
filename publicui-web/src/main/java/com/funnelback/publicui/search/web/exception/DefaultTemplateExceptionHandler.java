@@ -22,6 +22,8 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.TemplateHashModel;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 /**
  * <p>Customise the way FreeMarker template exceptions are handled.</p>
  * 
@@ -45,9 +47,7 @@ public class DefaultTemplateExceptionHandler implements TemplateExceptionHandler
         TemplateHashModel model = env.getDataModel();
         if (model.get(SearchController.ModelAttributes.question.toString()) != null) {
             SearchQuestion sq = (SearchQuestion) ((AdapterTemplateModel)model.get(SearchController.ModelAttributes.question.toString())).getAdaptedObject(SearchQuestion.class);
-            boolean displayErrors = sq.getCollection().getConfiguration().valueAsBoolean(
-                    Keys.ModernUI.FREEMARKER_DISPLAY_ERRORS,
-                    DefaultValues.ModernUI.FREEMARKER_DISPLAY_ERRORS);
+            boolean displayErrors = sq.getCurrentProfileConfig().get(FrontEndKeys.ModernUi.Freemarker.DISPLAY_ERRORS).booleanValue();
             if (displayErrors) {
                 String errorFormat = sq.getCollection().getConfiguration().value(
                         Keys.ModernUI.FREEMARKER_ERROR_FORMAT,

@@ -7,3 +7,4 @@ publicui-core/src/main/javadoc/overview.html
 publicui-web/src/test/resources/dummy-search_home/data/cache-*
 publicui-web/src/test/resources/dummy-search_home/data/padre-forking
 publicui-web/src/test/resources/dummy-search_home/databases
+*.iml
