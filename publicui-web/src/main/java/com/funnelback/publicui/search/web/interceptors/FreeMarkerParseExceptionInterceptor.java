@@ -75,18 +75,18 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
                 if (collection != null) {
                     String profileId = new ProfilePicker().existingProfileForCollection(collection, intercepterHelper.getProfileFromRequestOrDefaultProfile(request));
                     String collectionId = intercepterHelper.getCollectionFromRequest(request);
-                    ServiceConfigReadOnly serviceConfig = null;
+                    ServiceConfigReadOnly serviceConfig;
                     try {
                         serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
+                        if (serviceConfig.get(FrontEndKeys.ModernUi.Freemarker.DISPLAY_ERRORS).booleanValue()) {
+                            // No need to be fancy about the format of the error. If we were unable
+                            // to parse the template, nothing will be rendered anyway. Just output
+                            // the error as-is
+                            response.setContentType("text/plain");
+                            response.getWriter().write(pe.getMessage());
+                        }
                     } catch (ProfileNotFoundException e) {
                         log.error("Couldn't find profile '" + profileId + "' in " + collectionId, e);
-                    }
-                    if (serviceConfig.get(FrontEndKeys.ModernUi.Freemarker.DISPLAY_ERRORS).booleanValue()) {
-                        // No need to be fancy about the format of the error. If we were unable
-                        // to parse the template, nothing will be rendered anyway. Just output
-                        // the error as-is
-                        response.setContentType("text/plain");
-                        response.getWriter().write(pe.getMessage());
                     }
                     // Also log it for the per-collection log file
                     log.error("Error parsing FreeMarker template", pe);
