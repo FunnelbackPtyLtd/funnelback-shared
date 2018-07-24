@@ -50,12 +50,14 @@ public class DefaultTemplateExceptionHandlerTest {
     private TemplateModel model;
     private Config config;
     private StringWriter out;
+    private ServiceConfig serviceConfig;
+
     @Before
     public void before() throws IOException {
         
         config = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy");
 
-        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
         serviceConfig.set(FrontEndKeys.ModernUi.Freemarker.DISPLAY_ERRORS, true);
 
         Profile profile = new Profile("_default");
@@ -96,7 +98,7 @@ public class DefaultTemplateExceptionHandlerTest {
 
     @Test
     public void testInvalidFormat() {
-        config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "invalid");
+        serviceConfig.set(FrontEndKeys.ModernUi.Freemarker.ERROR_FORMAT, "invalid");
         try {
             handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
             Assert.fail();
@@ -109,7 +111,7 @@ public class DefaultTemplateExceptionHandlerTest {
     
     @Test
     public void testHtml() throws TemplateException {
-        config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "html");
+        serviceConfig.set(FrontEndKeys.ModernUi.Freemarker.ERROR_FORMAT, "html");
         handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
         
         Assert.assertFalse(out.getBuffer().toString().equals(""));
@@ -120,7 +122,7 @@ public class DefaultTemplateExceptionHandlerTest {
 
     @Test
     public void testJson() throws TemplateException {
-        config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "json");
+        serviceConfig.set(FrontEndKeys.ModernUi.Freemarker.ERROR_FORMAT, "json");
         handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
         
         Assert.assertFalse(out.getBuffer().toString().equals(""));
@@ -131,7 +133,7 @@ public class DefaultTemplateExceptionHandlerTest {
 
     @Test
     public void testString() throws TemplateException {
-        config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "json");
+        serviceConfig.set(FrontEndKeys.ModernUi.Freemarker.ERROR_FORMAT, "json");
         handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
         
         Assert.assertFalse(out.getBuffer().toString().equals(""));
