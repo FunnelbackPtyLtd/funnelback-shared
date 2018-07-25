@@ -3,11 +3,9 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
 
+    <bean id="funnelbackObjectWrapper" class="com.funnelback.publicui.search.web.views.freemarker.FunnelbackObjectWrapper" /> 
     <!-- Access FreeMarker bean wrapper so that we can pass Enums to FTL templates -->
-    <bean id="freemarkerWrapper" class="freemarker.ext.beans.BeansWrapper" factory-method="getDefaultInstance" />
-    <bean id="freemarkerEnumModels" factory-bean="freemarkerWrapper" factory-method="getEnumModels" />
-
-    <bean id="funnelbackObjectWrapper" class="com.funnelback.publicui.search.web.views.freemarker.FunnelbackObjectWrapper"></bean> 
+    <bean id="freemarkerEnumModels" factory-bean="funnelbackObjectWrapper" factory-method="getEnumModels" />
 
     <bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
          <property name="templateLoaderPaths">
