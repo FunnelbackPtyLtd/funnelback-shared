@@ -49,7 +49,7 @@ public class DefaultTemplateExceptionHandler implements TemplateExceptionHandler
             SearchQuestion sq = (SearchQuestion) ((AdapterTemplateModel)model.get(SearchController.ModelAttributes.question.toString())).getAdaptedObject(SearchQuestion.class);
             boolean displayErrors = sq.getCurrentProfileConfig().get(FrontEndKeys.ModernUi.Freemarker.DISPLAY_ERRORS).booleanValue();
             if (displayErrors) {
-                String errorFormat = sq.getCurrentProfileConfig().get(FrontEndKeys.ModernUi.Freemarker.ERROR_FORMAT);
+                String errorFormat = sq.getCurrentProfileConfig().get(FrontEndKeys.ModernUi.Freemarker.ERROR_FORMAT).toString();
                 try {
                     ErrorFormat fmt = ErrorFormat.valueOf(errorFormat);
                     switch (fmt) {
