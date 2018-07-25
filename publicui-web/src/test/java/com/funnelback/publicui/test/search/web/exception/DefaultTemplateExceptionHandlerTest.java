@@ -14,7 +14,6 @@ import com.funnelback.publicui.search.model.collection.Profile;
 import com.google.common.collect.Maps;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,20 +93,6 @@ public class DefaultTemplateExceptionHandlerTest {
         } catch (TemplateException te) { }        
 
         Assert.assertFalse(out.getBuffer().toString().equals(""));    
-    }
-
-    @Test
-    @Ignore
-    public void testInvalidFormat() {
-        serviceConfig.set(FrontEndKeys.ModernUi.Freemarker.ERROR_FORMAT, ErrorFormat.json);
-        try {
-            handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
-            Assert.fail();
-        } catch (TemplateException te) {
-            Assert.assertEquals(te.getCause().getClass(), IllegalArgumentException.class);
-        }
-
-        Assert.assertTrue(out.getBuffer().toString().equals(""));
     }
 
     @Test
