@@ -7,6 +7,8 @@
     <bean id="freemarkerWrapper" class="freemarker.ext.beans.BeansWrapper" factory-method="getDefaultInstance" />
     <bean id="freemarkerEnumModels" factory-bean="freemarkerWrapper" factory-method="getEnumModels" />
 
+    <bean id="funnelbackObjectWrapper" class="com.funnelback.publicui.search.web.views.freemarker.FunnelbackObjectWrapper"></bean> 
+
     <bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
          <property name="templateLoaderPaths">
             <list>
@@ -167,6 +169,12 @@
         <property name="targetObject" ref="freemarkerConfiguration" />
         <property name="targetMethod" value="setArithmeticEngine" />
         <property name="arguments" value="#{T(freemarker.core.ArithmeticEngine).CONSERVATIVE_ENGINE}" />
+     </bean>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="freemarkerConfiguration" />
+        <property name="targetMethod" value="setObjectWrapper" />
+        <property name="arguments" ref="funnelbackObjectWrapper" />
      </bean>
     
     <!-- Specific view for OpenSearch controller. It needs a specific configuration as it outputs XML and not HTML -->
