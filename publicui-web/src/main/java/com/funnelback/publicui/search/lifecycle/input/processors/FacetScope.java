@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,7 +16,6 @@ import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.google.common.collect.ObjectArrays;
 
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -46,7 +43,10 @@ public class FacetScope extends AbstractInputProcessor {
                             concatArray(e.getValue(), searchTransaction.getQuestion().getRawInputParameters().get(e.getKey()))))
                         .forEach(e -> searchTransaction.getQuestion().getRawInputParameters().put(e.getKey(), e.getValue()));
                     
-                    log.debug("Transformed facetScope '" + facetScope + "' to question parameters '" + params + "'");
+                    if(log.isDebugEnabled()) {
+                        log.debug("Transformed facetScope '" + facetScope 
+                                + "' to question parameters '" + QueryStringUtils.arrayMapAsString(params) + "'");
+                    }
                 }
             }
         }
@@ -72,13 +72,13 @@ public class FacetScope extends AbstractInputProcessor {
      * @param parameters Query string to convert
      * @return Converted URL. Will be identical to the input one if it didn't contain a <code>facetScope</code>
      */
-    @SneakyThrows(UnsupportedEncodingException.class)
+    
     public static String convertFacetScopeParameters(String parameters) {
+        
         Map<String, List<String>> qs = QueryStringUtils.toMap(parameters);
         if (qs.containsKey(RequestParameters.FACET_SCOPE)
             && qs.get(RequestParameters.FACET_SCOPE).size() > 0) {
-            Map<String, String[]> params = convertFacetScopeToParameters(
-                URLDecoder.decode(qs.get(RequestParameters.FACET_SCOPE).get(0), "UTF-8"));
+            Map<String, String[]> params = convertFacetScopeToParameters(qs.get(RequestParameters.FACET_SCOPE).get(0));
             qs.remove(RequestParameters.FACET_SCOPE);
             qs.putAll(MapUtils.convertMapList(params));
         
