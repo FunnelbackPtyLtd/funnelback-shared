@@ -4,8 +4,10 @@ import static com.funnelback.publicui.utils.FacetedNavigationUtils.isCategorySel
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
@@ -49,7 +51,11 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
        
         
         // For each metadata count <rmc item="a:new south wales">42</rmc>
-        for (Entry<String, Integer> entry : facetData.getResponseForValues().getResultPacket().getRmcs().entrySet()) {
+        for (Entry<String, Integer> entry : Optional.ofNullable(facetData.getResponseForValues())
+                                                .map(r -> r.getResultPacket())
+                                                .map(r -> r.getRmcs())
+                                                .map(r -> r.entrySet())
+                                                .orElse(new HashSet<>())) {
             String item = entry.getKey();
             if (item.startsWith(MetadataBasedCategory.METADATA_ABSENT_PREFIX)) {
                 continue; // Skip the 'documents with none of this metadata' count

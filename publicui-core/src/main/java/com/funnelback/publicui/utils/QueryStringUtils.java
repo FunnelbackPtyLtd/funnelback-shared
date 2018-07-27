@@ -1,12 +1,14 @@
 package com.funnelback.publicui.utils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -126,5 +128,27 @@ public class QueryStringUtils {
             }
         }
         return (prependQuestionMark ? "?" : "") + out.toString().substring(1);
+    }
+    
+    public static String arrayMapAsString(Map<String, String[]> map) {
+        StringBuilder sb = new StringBuilder();
+        for(Entry<String, String[]> e : map.entrySet()) {
+            sb.append(e.getKey()).append("\n");
+            for(String v : e.getValue()) {
+                sb.append("\t") .append(v).append("\n");
+            }
+        }
+        return sb.toString();
+    }
+    
+    public static String listMapAsString(Map<String, List<String>> map) {
+        StringBuilder sb = new StringBuilder();
+        for(Entry<String, List<String>> e : map.entrySet()) {
+            sb.append(e.getKey()).append("\n");
+            for(String v : e.getValue()) {
+                sb.append("\t") .append(v).append("\n");
+            }
+        }
+        return sb.toString();
     }
 }
