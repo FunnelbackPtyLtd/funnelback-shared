@@ -226,6 +226,9 @@ public class FacetedNavigationUtils {
             if (facetScopeQs.isEmpty()) {
                 queryStringMap.remove(SearchQuestion.RequestParameters.FACET_SCOPE);
             } else {
+                if(log.isDebugEnabled()) {
+                    log.debug("Transformaed map to be: {}", QueryStringUtils.listMapAsString(facetScopeQs));
+                }
                 // Serialize it back
                 queryStringMap.put(SearchQuestion.RequestParameters.FACET_SCOPE, asList(QueryStringUtils.toString(facetScopeQs, false)));
             }

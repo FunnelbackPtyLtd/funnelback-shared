@@ -55,7 +55,6 @@ public class FacetedNavigation extends AbstractInputProcessor {
         if (SearchTransactionUtils.hasCollection(searchTransaction)) {
             
             FacetedNavigationConfig config = FacetedNavigationUtils.selectConfiguration(searchTransaction.getQuestion().getCollection(), searchTransaction.getQuestion().getProfile());
-            
             if (config != null) {
                 
                 Map<String, FacetDefinition> facetConfigs = getFacetDefinitions(config);
@@ -78,7 +77,6 @@ public class FacetedNavigation extends AbstractInputProcessor {
                     
                         if (f != null) {
                             searchTransaction.getQuestion().getSelectedFacets().add(f.getName());
-                            
                             
                         
                             // Find corresponding category type, for the value

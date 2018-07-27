@@ -26,7 +26,6 @@ import com.funnelback.publicui.search.model.profile.ServerConfigReadOnlyWhichAls
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
