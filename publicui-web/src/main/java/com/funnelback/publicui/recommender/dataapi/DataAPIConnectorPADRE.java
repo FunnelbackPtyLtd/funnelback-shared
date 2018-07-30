@@ -1,21 +1,22 @@
 package com.funnelback.publicui.recommender.dataapi;
 
-import com.funnelback.common.views.View;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import java.io.File;
+import java.net.URI;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.funnelback.common.config.Config;
+import com.funnelback.common.views.View;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoAccess;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.io.File;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -96,7 +97,7 @@ public class DataAPIConnectorPADRE implements DataAPI {
     public DocInfoResult getDocInfoResult(List<String> urls, Config collectionConfig) {
         File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + View.live
                 + File.separator + "idx" + File.separator + "index");
-        return new DocInfoAccess().getDocInfoResult(urls, searchHome, indexStem);
+        return new DocInfoAccess().getDocInfoResult(urls, searchHome, indexStem, collectionConfig.getCollectionName());
     }
 
     /**
@@ -108,7 +109,7 @@ public class DataAPIConnectorPADRE implements DataAPI {
     public DocInfo getDocInfo(String url, Config collectionConfig) {
         File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + View.live
                 + File.separator + "idx" + File.separator + "index");
-        return new DocInfoAccess().getDocInfo(url, searchHome, indexStem);
+        return new DocInfoAccess().getDocInfo(url, searchHome, indexStem, collectionConfig.getCollectionName());
     }
 
     /**

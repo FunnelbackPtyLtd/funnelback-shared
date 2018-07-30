@@ -1,12 +1,35 @@
 package com.funnelback.publicui.search.service.anchors;
 
-import com.funnelback.common.views.View;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.exec.Executor;
+import org.apache.commons.exec.PumpStreamHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.execute.ExecutablePicker;
 import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.padre.SdinfoFile;
 import com.funnelback.common.padre.SdinfoFile.SdinfoEntry;
+import com.funnelback.common.views.View;
 import com.funnelback.contentoptimiser.utils.PanLook;
 import com.funnelback.contentoptimiser.utils.PanLookFactory;
 import com.funnelback.dataapi.connector.padre.PadreConnector;
@@ -21,23 +44,6 @@ import com.funnelback.publicui.search.service.index.QueryReadLock;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.exec.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Log4j2
 @Component
@@ -133,7 +139,7 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
                 for(SdinfoEntry entry : SdinfoFile.readSdinfoFile(new File(indexStem.getParentFile().getAbsolutePath() + File.separatorChar + Files.Index.SDINFO))) {
                     try {
                         File generationStem = new File (entry.getIndexPath());
-                        DocInfoResult result = new PadreConnector(searchHome, generationStem).docInfo(new URI(indexUrl)).fetch();
+                        DocInfoResult result = new PadreConnector(searchHome, generationStem, collectionName).docInfo(new URI(indexUrl)).fetch();
                         //Erroneous/missing results are not returned here, so if we get a result, it's the right one. 
                         if (result.asMap().size() > 0) {
                             indexStem = generationStem;
