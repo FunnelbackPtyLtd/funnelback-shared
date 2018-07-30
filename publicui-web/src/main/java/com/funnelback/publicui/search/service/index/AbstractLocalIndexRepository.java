@@ -1,10 +1,21 @@
 package com.funnelback.publicui.search.service.index;
 
-import com.funnelback.common.views.View;
+import java.util.Date;
+import java.util.Map;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.text.SimpleDateFormat;
+
+import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.indexer.BuildInfoUtils;
+import com.funnelback.common.views.View;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -14,15 +25,6 @@ import com.funnelback.publicui.search.service.index.result.ResultFetcher;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-
-import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * Implementation that assumes that the indexes are on the local disk.
@@ -113,11 +115,6 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
                 + File.separator + DefaultValues.FOLDER_IDX,
                 DefaultValues.INDEXFILES_PREFIX);
 
-        Result r = resultFetcher.fetchResult(indexStem, indexUri);
-        if (r != null) {
-            r.setCollection(collection.getId());
-        }
-
-        return r;
+        return resultFetcher.fetchResult(indexStem, collection.getConfiguration().getCollectionName(), indexUri);
     }
 }
