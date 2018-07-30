@@ -160,6 +160,7 @@ public class RecommenderControllerTest {
         i4uData.put("qiescore", Lists.newArrayList("1.234"));
         i4uData.put("title", Lists.newArrayList("title"));
         i4uData.put("stem", Lists.newArrayList("stem"));
+        i4uData.put("collection", Lists.newArrayList("collection"));
         docInfo = new DocInfo(i4uData);
 
         return docInfo;

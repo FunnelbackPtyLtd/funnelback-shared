@@ -1,11 +1,10 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import java.net.URI;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
@@ -14,10 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.PrePersist;
 
+import com.funnelback.publicui.search.model.padre.Result;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import com.funnelback.publicui.search.model.padre.Result;
 
 /**
  * A result in a results cart
@@ -30,6 +29,13 @@ public class CartResult extends SessionResult {
     /** Date when the result was added to the cart */
     @Getter @Setter
     private Date addedDate;
+    
+    /**
+     * The name of the collection the indexUrl came from.
+     */
+    // probably should be on the parent but I am doing the minimum
+    @Getter @Setter
+    private String collectionForIndexUrl;
     
     /**
      * Metadata values for the result
@@ -51,7 +57,7 @@ public class CartResult extends SessionResult {
      */
     public static CartResult fromResult(Result r) {
         CartResult cr = new CartResult();
-        cr.setCollection(r.getCollection());
+        cr.setCollectionForIndexUrl(r.getCollection());
         cr.setIndexUrl(URI.create(r.getIndexUrl()));
         cr.setTitle(r.getTitle());
         cr.setSummary(r.getSummary());

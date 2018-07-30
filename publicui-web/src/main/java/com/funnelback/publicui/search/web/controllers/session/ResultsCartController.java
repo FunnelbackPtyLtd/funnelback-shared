@@ -1,15 +1,13 @@
 package com.funnelback.publicui.search.web.controllers.session;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import java.io.IOException;
+import java.net.URI;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +30,9 @@ import com.funnelback.publicui.search.service.ResultsCartRepository;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
+
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Controller for the results shopping cart.
