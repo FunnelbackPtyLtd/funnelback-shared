@@ -23,16 +23,13 @@ import static com.funnelback.config.keys.Keys.FrontEndKeys;
 
 public class AccessibilityAuditorDaatOptionTest {
 
-    private TemplateModel model;
-    private Config config;
-    private StringWriter out;
     private ServiceConfig serviceConfig;
     private SearchQuestion searchQuestion;
 
     @Before
     public void before() throws IOException {
 
-        config = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy");
+        Config config = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy");
 
         serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
 
