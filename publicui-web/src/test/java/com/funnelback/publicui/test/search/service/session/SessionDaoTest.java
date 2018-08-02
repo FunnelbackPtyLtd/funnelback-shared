@@ -1,19 +1,17 @@
 package com.funnelback.publicui.test.search.service.session;
 
-import java.io.File;
-import java.net.URI;
-import java.sql.Connection;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 
+import org.junit.Before;
+
+import java.io.File;
+import java.net.URI;
+import java.sql.Connection;
+
 import javax.sql.DataSource;
 
-import liquibase.Liquibase;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
-
-import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.NoOptionsConfig;
@@ -22,6 +20,10 @@ import com.funnelback.publicui.search.model.transaction.session.CartResult;
 import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
+
+import liquibase.Liquibase;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
 
 /**
  * <p>Base class for tests that need to interact with the session database.</p>
@@ -64,6 +66,7 @@ public abstract class SessionDaoTest {
         return generateRandomCartResult(UUID.randomUUID().toString(), UUID.randomUUID().toString());
     }
     
+    // TODO who uses this?
     protected CartResult generateRandomCartResult(String collectionId, String userId) {
         CartResult cr = new CartResult();
         cr.setAddedDate(new Date());

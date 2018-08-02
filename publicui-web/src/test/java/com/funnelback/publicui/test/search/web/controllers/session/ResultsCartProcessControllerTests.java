@@ -4,11 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -94,7 +95,7 @@ public class ResultsCartProcessControllerTests extends SessionDaoTest {
     @Test
     public void testNonEmptyCart() throws Exception {
         for (int i = 0; i < 3; i++) {
-            repository.addToCart(generateRandomCartResult(collection.getId(), user.getId()));
+            repository.addToCart(collection.getId(), generateRandomCartResult(collection.getId() + "-comp", user.getId()));
         }
 
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -112,7 +113,7 @@ public class ResultsCartProcessControllerTests extends SessionDaoTest {
     public void testNonEmptyCartProcessingIsLogged() throws Exception {
         // Given a non empty cart
         for (int i = 0; i < 3; i++) {
-            repository.addToCart(generateRandomCartResult(collection.getId(), user.getId()));
+            repository.addToCart(collection.getId(), generateRandomCartResult(collection.getId() + "-comp", user.getId()));
         }
 
         // When the cart results are processed
@@ -130,7 +131,7 @@ public class ResultsCartProcessControllerTests extends SessionDaoTest {
     @Test
     public void testCustomProcessClassSimple() throws Exception {
         for (int i = 0; i < 3; i++) {
-            repository.addToCart(generateRandomCartResult(collection.getId(), user.getId()));
+            repository.addToCart(collection.getId(), generateRandomCartResult(collection.getId() + "-comp", user.getId()));
         }
 
         collection.setCartProcessClass(SimpleCustomCartProcessor.class);
@@ -149,7 +150,7 @@ public class ResultsCartProcessControllerTests extends SessionDaoTest {
     @Test
     public void testCustomProcessClassComplex() throws Exception {
         for (int i = 0; i < 3; i++) {
-            repository.addToCart(generateRandomCartResult(collection.getId(), user.getId()));
+            repository.addToCart(collection.getId(), generateRandomCartResult(collection.getId() + "-comp", user.getId()));
         }
 
         collection.setCartProcessClass(ComplexCustomCartProcessor.class);
@@ -165,6 +166,7 @@ public class ResultsCartProcessControllerTests extends SessionDaoTest {
         assertEquals("unit-value", mav.getModel().get("unit-test"));
         assertEquals("42", response.getHeader("X-Unit-Test"));
         assertEquals(3, ((List<CartResult>) mav.getModel().get("cart")).size());
+        assertEquals(collection.getId() + "-comp", ((List<CartResult>) mav.getModel().get("cart")).get(0).getCollection());
     }
 
     public static class SimpleCustomCartProcessor extends CustomCartProcessor {

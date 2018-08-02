@@ -8,7 +8,9 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.Transient;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,6 +23,8 @@ import lombok.ToString;
 @ToString
 @MappedSuperclass
 @IdClass(SessionResultPK.class)
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class SessionResult {
     
     /** Size of the column holding the summary */

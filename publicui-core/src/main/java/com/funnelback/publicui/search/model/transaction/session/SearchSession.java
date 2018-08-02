@@ -1,8 +1,9 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.net.URI;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

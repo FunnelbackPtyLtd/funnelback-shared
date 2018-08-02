@@ -1,10 +1,12 @@
 package com.funnelback.publicui.search.service;
 
-import java.net.URI;
 import java.util.List;
+
+import java.net.URI;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.session.CartResult;
+import com.funnelback.publicui.search.model.transaction.session.CartResultDBModel;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
@@ -16,9 +18,11 @@ public interface ResultsCartRepository {
 
     /**
      * Adds a single result to the cart
-     * @param result {@link CartResult} to add
+     * @param collectionToStoreUnder the collection under which we are storing the result
+     * may be a meta collection.
+     * @param result {@link CartResultDBModel} to add
      */
-    public void addToCart(CartResult result);
+    public void addToCart(String collectionToStoreUnder, CartResult result);
     
     /**
      * Removes a single result to the cart for the given user and collection

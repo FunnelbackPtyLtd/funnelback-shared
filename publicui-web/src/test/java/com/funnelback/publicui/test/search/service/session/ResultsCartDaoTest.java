@@ -2,22 +2,30 @@ package com.funnelback.publicui.test.search.service.session;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.net.URI;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.session.CartResult;
+import com.funnelback.publicui.search.model.transaction.session.CartResultDBModel;
 import com.funnelback.publicui.search.model.transaction.session.SessionResult;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
+import com.funnelback.publicui.search.service.session.ResultsCartDao;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -29,7 +37,7 @@ public class ResultsCartDaoTest extends SessionDaoTest {
     @Override
     public void before() throws Exception {
         for (int i=0; i<5; i++) {
-            repository.addToCart(generateRandomCartResult());
+            repository.addToCart(collection.getId(), generateRandomCartResult());
         }
     }
     
@@ -46,7 +54,7 @@ public class ResultsCartDaoTest extends SessionDaoTest {
             cr.setUserId(user.getId());
             cr.setTitle("Title #"+i);
     
-            repository.addToCart(cr);
+            repository.addToCart(collection.getId(), cr);
         }
         List<CartResult> cart = repository.getCart(user, collection);
         
@@ -95,7 +103,7 @@ public class ResultsCartDaoTest extends SessionDaoTest {
         cr.setUserId(user.getId());
         cr.setTitle("Title");
 
-        repository.addToCart(cr);
+        repository.addToCart(collection.getId(), cr);
         assertEquals(1, repository.getCart(user, collection).size());
         repository.removeFromCart(user, collection, URI.create("http://server.com/file.html"));
         
@@ -114,8 +122,8 @@ public class ResultsCartDaoTest extends SessionDaoTest {
         cr.setUserId(user.getId());
         cr.setTitle("Title");
 
-        repository.addToCart(cr);
-        repository.addToCart(cr);
+        repository.addToCart(collection.getId(), cr);
+        repository.addToCart(collection.getId(), cr);
         
         List<CartResult> cart = repository.getCart(user, collection);
         assertEquals(1, cart.size());
@@ -129,7 +137,7 @@ public class ResultsCartDaoTest extends SessionDaoTest {
         cr.setUserId(user.getId());
         cr.setSummary(new String(new byte[8192]));
         
-        repository.addToCart(cr);
+        repository.addToCart(collection.getId(), cr);
         
         List<CartResult> cart = repository.getCart(user, collection);
         assertEquals(1, cart.size());
@@ -145,7 +153,7 @@ public class ResultsCartDaoTest extends SessionDaoTest {
         cr.setUserId(user.getId());
         cr.getMetaData().put("abc", new String(new byte[8192]));
         
-        repository.addToCart(cr);
+        repository.addToCart(collection.getId(), cr);
         
         List<CartResult> cart = repository.getCart(user, collection);
         assertEquals(1, cart.size());
@@ -157,20 +165,35 @@ public class ResultsCartDaoTest extends SessionDaoTest {
     public void testPurgeResultsCart() {
         Calendar c = Calendar.getInstance();
         
-        CartResult recent = generateRandomCartResult(collection.getId(), user.getId());
+        CartResult recent = generateRandomCartResult("compcoll", user.getId());
         recent.setAddedDate(c.getTime());
-        repository.addToCart(recent);
+        repository.addToCart(collection.getId(), recent);
         
         c.add(Calendar.DAY_OF_MONTH, -5);
         CartResult older = generateRandomCartResult();
         older.setAddedDate(c.getTime());
-        repository.addToCart(older);
+        repository.addToCart(collection.getId(), older);
         
         repository.purgeCartResults(2);
         
         List<CartResult> cart = repository.getCart(user, collection);
         assertEquals("Only 1 entry (older) should have been removed", 1, cart.size());
         assertEquals("The recent cart result should be the one remaining", recent.getIndexUrl(), cart.get(0).getIndexUrl());
+        assertEquals("compcoll", recent.getCollection());
+    }
+    
+    @Test
+    public void fallBackToSearchedCollection() {
+        CartResultDBModel dbModel = new CartResultDBModel();
+        dbModel.setIndexUrl(URI.create("http://example.com/"));
+        dbModel.setTitle("title");
+        dbModel.setSummary("summary");
+        Collection collection = mock(Collection.class);
+        when(collection.getId()).thenReturn("coll");
+        CartResult cartResult = new ResultsCartDao().convertFromDB(dbModel, collection);
+        Assert.assertEquals("As the collection for the index of the result is unknown we should fall back"
+            + " to the collection we are running on.",
+            "coll", cartResult.getCollection());
     }
     
 }
