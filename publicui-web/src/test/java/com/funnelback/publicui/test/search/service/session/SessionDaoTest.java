@@ -66,7 +66,6 @@ public abstract class SessionDaoTest {
         return generateRandomCartResult(UUID.randomUUID().toString(), UUID.randomUUID().toString());
     }
     
-    // TODO who uses this?
     protected CartResult generateRandomCartResult(String collectionId, String userId) {
         CartResult cr = new CartResult();
         cr.setAddedDate(new Date());
