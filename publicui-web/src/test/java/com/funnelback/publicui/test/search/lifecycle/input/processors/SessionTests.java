@@ -3,13 +3,16 @@ package com.funnelback.publicui.test.search.lifecycle.input.processors;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+
 import org.springframework.dao.QueryTimeoutException;
 
 import com.funnelback.common.config.Keys;
@@ -39,12 +42,12 @@ public class SessionTests {
     private SearchTransaction st;
  
     @Before
-    public void before() {
+    public void before() throws Exception {
         processor = new Session();
         processor.setSearchHistoryRepository(searchHistoryRepository);
         processor.setResultsCartRepository(resultsCartRepository);
         
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy").setValue(Keys.ModernUI.SESSION, "true"));
+        Collection c = new Collection("dummy", new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy").setValue(Keys.ModernUI.SESSION, "true"));
         
         SearchQuestion question = new SearchQuestion();
         question.setCollection(c);
@@ -112,13 +115,13 @@ public class SessionTests {
         searchHistoryRepository.saveSearch(sh2);
         
         CartResult cr1 = new CartResult();
-        cr1.setCollection("dummy");
+        cr1.setCollection("dummy-component");
         cr1.setUserId("user");
-        resultsCartRepository.addToCart(cr1);
+        resultsCartRepository.addToCart("dummy", cr1);
         CartResult cr2 = new CartResult();
-        cr2.setCollection("other");
+        cr2.setCollection("other-component");
         cr2.setUserId("other user");
-        resultsCartRepository.addToCart(cr2);
+        resultsCartRepository.addToCart("other", cr2);
 
         processor.processInput(st);
         

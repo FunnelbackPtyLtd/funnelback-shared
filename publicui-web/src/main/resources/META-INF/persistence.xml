@@ -6,6 +6,6 @@
         <class>com.funnelback.publicui.search.model.transaction.session.SearchUser</class>
         <class>com.funnelback.publicui.search.model.transaction.session.SearchHistory</class>
         <class>com.funnelback.publicui.search.model.transaction.session.ClickHistory</class>
-        <class>com.funnelback.publicui.search.model.transaction.session.CartResult</class>
+        <class>com.funnelback.publicui.search.model.transaction.session.CartResultDBModel</class>
     </persistence-unit>
 </persistence> 

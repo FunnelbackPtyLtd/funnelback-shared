@@ -1,10 +1,11 @@
 package com.funnelback.publicui.test.mock;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import java.net.URI;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.session.CartResult;
@@ -16,13 +17,13 @@ public class MockResultsCartRepository implements ResultsCartRepository {
     private Map<String, Map<String, List<CartResult>>> cart = new HashMap<>();
     
     @Override
-    public void addToCart(CartResult r) {
+    public void addToCart(String searchedCollection, CartResult r) {
         if (cart.get(r.getUserId()) == null) {
             cart.put(r.getUserId(), new HashMap<String, List<CartResult>>());
-            cart.get(r.getUserId()).put(r.getCollection(), new ArrayList<CartResult>());
+            cart.get(r.getUserId()).put(searchedCollection, new ArrayList<CartResult>());
         }
         
-        cart.get(r.getUserId()).get(r.getCollection()).add(r);
+        cart.get(r.getUserId()).get(searchedCollection).add(r);
     }
 
     @Override

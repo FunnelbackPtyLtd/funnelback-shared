@@ -7,12 +7,14 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.IOException;
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -103,7 +105,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
     @Test
     public void testCartClear() throws IOException {
         for (int i = 0; i < 3; i++) {
-            repository.addToCart(generateRandomCartResult(collection.getId(), user.getId()));
+            repository.addToCart(collection.getId(), generateRandomCartResult(collection.getId() + "-comp", user.getId()));
         }
 
         assertEquals(3, repository.getCart(user, collection).size());
@@ -124,7 +126,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
     public void testCartClearCreatesLogs() throws IOException {
         // Given a cart with results
         for (int i = 0; i < 3; i++) {
-            repository.addToCart(generateRandomCartResult(collection.getId(), user.getId()));
+            repository.addToCart(collection.getId(), generateRandomCartResult(collection.getId() + "-comp", user.getId()));
         }
 
         assertEquals(3, repository.getCart(user, collection).size());
@@ -188,7 +190,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
     @Test
     public void testCartList() throws IOException {
         for (int i = 0; i < 3; i++) {
-            repository.addToCart(generateRandomCartResult(collection.getId(), user.getId()));
+            repository.addToCart(collection.getId(), generateRandomCartResult(collection.getId() + "-comp", user.getId()));
         }
         assertEquals(3, repository.getCart(user, collection).size());
 
@@ -203,7 +205,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
     @Test
     public void testCartRemove() throws IOException {
         for (int i = 0; i < 3; i++) {
-            repository.addToCart(generateRandomCartResult(collection.getId(), user.getId()));
+            repository.addToCart(collection.getId(), generateRandomCartResult(collection.getId() + "-comp", user.getId()));
         }
         List<CartResult> cart = repository.getCart(user, collection);
         assertEquals(3, cart.size());
@@ -229,7 +231,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
 
         // Given a cart with results
         for (int i = 0; i < 3; i++) {
-            repository.addToCart(generateRandomCartResult(collection.getId(), user.getId()));
+            repository.addToCart(collection.getId(), generateRandomCartResult(collection.getId() + "-comp", user.getId()));
         }
         List<CartResult> cart = repository.getCart(user, collection);
         assertEquals(3, cart.size());
@@ -250,7 +252,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
     @Test
     public void testCartRemoveNonExistent() throws IOException {
         for (int i = 0; i < 3; i++) {
-            repository.addToCart(generateRandomCartResult(collection.getId(), user.getId()));
+            repository.addToCart(collection.getId(), generateRandomCartResult(collection.getId() + "-comp", user.getId()));
         }
         assertEquals(3, repository.getCart(user, collection).size());
 
@@ -271,7 +273,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
     public void testCartRemoveNonExistentCreatesLog() throws IOException {
         // Given a cart with results
         for (int i = 0; i < 3; i++) {
-            repository.addToCart(generateRandomCartResult(collection.getId(), user.getId()));
+            repository.addToCart(collection.getId(), generateRandomCartResult(collection.getId() + "-comp", user.getId()));
         }
         assertEquals(3, repository.getCart(user, collection).size());
 

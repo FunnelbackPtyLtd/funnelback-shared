@@ -111,7 +111,7 @@ public class ResultsCartController extends SessionApiControllerBase {
                 cart.setUserId(user.getId());
                 cart.setAddedDate(new Date());
                 
-                cartRepository.addToCart(cart);
+                cartRepository.addToCart(collection.getId(), cart);
                 
                 logService.logCart(LogUtils.createCartLog(url, request, collection, CartClickLog.Type.ADD_TO_CART, user));
             } else {
