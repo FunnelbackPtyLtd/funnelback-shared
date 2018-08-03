@@ -6,79 +6,77 @@ import java.util.Map;
 
 import java.net.URI;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.PrePersist;
-
 import com.funnelback.publicui.search.model.padre.Result;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A result in a results cart
- * 
- * @since 12.5
+ * A Cart result presented to the user.
+ *
  */
-@Entity
 public class CartResult extends SessionResult {
 
-    /** Date when the result was added to the cart */
-    @Getter @Setter
-    private Date addedDate;
+    public CartResult(String userId, 
+            String collection, 
+            String indexUrl, 
+            String title, 
+            String summary, 
+            Date addedDate,
+            Map<String, String> metadata) {
+        super(userId, collection, indexUrl, title, summary);
+        this.addedDate = addedDate;
+        this.metaData = metadata;
+    }
     
-    /**
-     * The name of the collection the indexUrl came from.
-     */
-    // probably should be on the parent but I am doing the minimum
-    @Getter @Setter
-    private String collectionForIndexUrl;
+    public CartResult() {
+        this.metaData = new HashMap<>();
+    }
+
+    /** Date when the result was added to the cart */
+    @Getter @Setter private Date addedDate;
     
     /**
      * Metadata values for the result
      */
     @Getter
-    @ElementCollection
-    @MapKeyColumn(name = "key")
-    @CollectionTable(name="CartResultMetadata", joinColumns = {
-        @JoinColumn(name="userId", referencedColumnName="userId"),
-        @JoinColumn(name="collection", referencedColumnName="collection"),
-        @JoinColumn(name="indexUrl", referencedColumnName="indexUrl")
-        })
-    private final Map<String, String> metaData = new HashMap<>();
+    private final Map<String, String> metaData;
     
     /**
-     * Builds a {@link CartResult} from a {@link Result}
-     * @param r {@link Result} to build from
-     * @return A {@link CartResult}
+     * <p>
+     * Since 15.18 this is set to the collection the result came
+     * from rather than the collection the search ran on. After 
+     * an upgrade from 15.16 or earlier this may still be the meta
+     * collection, as the entry in the DB will needed to be updated.
+     * </p>
+     * 
+     * @return the collection for which the result came from it
+     * must be a component collection not a meta collection.
      */
+    public String getCollection() {
+        return super.getCollection();
+    }
+    
+    public static CartResult from(CartResultDBModel dbmodel) {
+        return new CartResult(dbmodel.getUserId(), 
+            dbmodel.getCollectionForIndexUrl(), 
+            dbmodel.getIndexUrl().toString(), 
+            dbmodel.getTitle(), 
+            dbmodel.getSummary(), 
+            dbmodel.getAddedDate(),
+            dbmodel.getMetaData());
+    }
+    
+    
     public static CartResult fromResult(Result r) {
         CartResult cr = new CartResult();
-        cr.setCollectionForIndexUrl(r.getCollection());
+        cr.setCollection(r.getCollection());
         cr.setIndexUrl(URI.create(r.getIndexUrl()));
         cr.setTitle(r.getTitle());
         cr.setSummary(r.getSummary());
         cr.getMetaData().putAll(r.getMetaData());
         
         return cr;
-    }
-
-    /**
-     * Truncate metadata to maximum size allowed in the database
-     * before saving to database
-     */
-    @PrePersist
-    protected void prePersist() {
-        super.prePersist();
-        
-        for (Map.Entry<String, String> entry: metaData.entrySet()) {
-            if (entry.getValue() != null && entry.getValue().length() > MAX_LEN_METADATA) {
-                entry.setValue(entry.getValue().substring(0, MAX_LEN_METADATA-1));
-            }
-        }
     }
     
 }
