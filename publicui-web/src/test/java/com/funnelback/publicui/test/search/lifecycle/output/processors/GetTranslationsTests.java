@@ -1,10 +1,15 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.publicui.search.model.collection.Profile;
+import com.google.common.collect.Maps;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.GetTranslations;
@@ -14,12 +19,15 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 public class GetTranslationsTests {
 
     private GetTranslations processor;
     private MockConfigRepository configRepository;
     private SearchTransaction st;
-    
+    private ServiceConfig serviceConfig;
+
     @Before
     public void before() {
         configRepository = new MockConfigRepository();
@@ -27,13 +35,22 @@ public class GetTranslationsTests {
         
         processor = new GetTranslations();
         processor.setConfigRepository(configRepository);
-        
-        Collection c = new Collection("dummy",
-                new NoOptionsConfig("dummy")
-                    .setValue(Keys.ModernUI.I18N, "true"));
-        SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(c);
-        st = new SearchTransaction(sq, new SearchResponse());
+
+        serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+
+        Profile profile = new Profile("_default");
+        profile.setServiceConfig(serviceConfig);
+        Collection collection = new Collection("dummy", new NoOptionsConfig("dummy"));
+        collection.getProfiles().put("_default", profile);
+
+        SearchQuestion searchQuestion = new SearchQuestion();
+        searchQuestion.setCurrentProfile("_default");
+        searchQuestion.setCollection(collection);
+
+        searchQuestion.setCollection(collection);
+        serviceConfig.set(FrontEndKeys.ModernUi.I18N, true);
+
+        st = new SearchTransaction(searchQuestion, new SearchResponse());
     }
     
     @Test
@@ -66,7 +83,7 @@ public class GetTranslationsTests {
 
     @Test
     public void testDisabled() throws OutputProcessorException {
-        st.getQuestion().getCollection().getConfiguration().setValue(Keys.ModernUI.I18N, "false");        
+        serviceConfig.set(FrontEndKeys.ModernUi.I18N, false);
         Assert.assertTrue(st.getResponse().getTranslations().isEmpty());
         processor.processOutput(st);
         Assert.assertTrue(st.getResponse().getTranslations().isEmpty());
