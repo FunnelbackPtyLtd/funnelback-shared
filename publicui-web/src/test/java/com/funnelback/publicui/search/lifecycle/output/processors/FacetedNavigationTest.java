@@ -5,8 +5,9 @@ import static com.funnelback.common.facetednavigation.models.FacetValuesOrder.CO
 import static com.funnelback.common.facetednavigation.models.FacetValuesOrder.LABEL_ASCENDING;
 import static com.funnelback.common.facetednavigation.models.FacetValuesOrder.SELECTED_FIRST;
 import static java.util.Arrays.asList;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,10 +15,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
+
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -37,10 +39,10 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType;
 
 import lombok.Setter;
 import lombok.experimental.Wither;
@@ -332,7 +334,7 @@ public class FacetedNavigationTest {
 
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                depth.set(invocation.getArgumentAt(0, Integer.class));
+                depth.set(invocation.getArgument(0));
                 return null;
             }}).when(value).setCategoryDepth(Matchers.anyInt());
 
