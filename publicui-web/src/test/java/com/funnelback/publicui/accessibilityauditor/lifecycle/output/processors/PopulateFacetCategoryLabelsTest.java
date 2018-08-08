@@ -3,12 +3,11 @@ package com.funnelback.publicui.accessibilityauditor.lifecycle.output.processors
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.mockito.Mockito;
 
-import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
-import com.funnelback.common.facetednavigation.models.FacetSelectionType;
-import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.filter.accessibility.Metadata;
+import com.funnelback.common.filter.accessibility.metadata.MetdataValueMappers.TechniquesAffectedBy;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.Facet;
@@ -20,10 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.wcag.checker.AffectedBy;
 import com.funnelback.wcag.checker.FailureType;
-import com.funnelback.wcag.checker.html.DocumentTitleChecker;
-import com.funnelback.wcag.checker.pdf.PDFTitleChecker;
 import com.funnelback.wcag.model.WCAG20Technique;
-import com.funnelback.common.filter.accessibility.metadata.MetdataValueMappers.TechniquesAffectedBy;
 public class PopulateFacetCategoryLabelsTest {
 
     private PopulateFacetCategoryLabels processor;
@@ -33,7 +29,7 @@ public class PopulateFacetCategoryLabelsTest {
     @Before
     public void beforeEach() {
         I18n i18n = Mockito.mock(I18n.class);
-        Mockito.when(i18n.tr(Mockito.anyString())).thenAnswer((invocation) -> "translated:" + invocation.getArgumentAt(0, String.class));
+        Mockito.when(i18n.tr(Mockito.anyString())).thenAnswer((invocation) -> "translated:" + invocation.getArgument(0));
         
         processor = new PopulateFacetCategoryLabels();
         processor.setI18n(i18n);
