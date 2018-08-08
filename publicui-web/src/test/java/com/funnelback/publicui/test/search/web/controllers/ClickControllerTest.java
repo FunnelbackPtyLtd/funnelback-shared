@@ -1,18 +1,24 @@
 package com.funnelback.publicui.test.search.web.controllers;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.net.URI;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -23,11 +29,8 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.ProfileId;
-import com.funnelback.common.config.DefaultValues.Metrics;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfig;
-import static com.funnelback.config.keys.Keys.FrontEndKeys;
-import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.padre.Result;
