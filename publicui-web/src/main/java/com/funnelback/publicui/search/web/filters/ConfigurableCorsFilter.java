@@ -39,9 +39,10 @@ public class ConfigurableCorsFilter extends CorsFilter implements Filter {
     @Override
     public Optional<String> getCorsAllowOrigin(ServletRequest request, ServletResponse response) {
 
-        Collection collection = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
-        if (collection != null) {
-            String profileId = new ProfilePicker().existingProfileForCollection(collection,
+        Optional<Collection> collection = Optional.ofNullable(request.getParameter(RequestParameters.COLLECTION))
+            .map(collectionName -> configRepository.getCollection(collectionName));
+        if (collection.isPresent()) {
+            String profileId = new ProfilePicker().existingProfileForCollection(collection.get(),
                 intercepterHelper.getProfileFromRequestOrDefaultProfile((HttpServletRequest) request));
             String collectionId = intercepterHelper.getCollectionFromRequest((HttpServletRequest) request);
             ServiceConfigReadOnly serviceConfig;
