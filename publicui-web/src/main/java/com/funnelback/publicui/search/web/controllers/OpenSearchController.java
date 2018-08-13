@@ -7,6 +7,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
+import com.funnelback.publicui.utils.web.ProfilePicker;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,10 +23,13 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 /**
  * Generate an OpenSearchDescription XML snippet
  * for a given collection. 
  */
+@Log4j2
 @Controller
 public class OpenSearchController {
 
@@ -35,8 +43,8 @@ public class OpenSearchController {
     
     @Resource(name="openSearchView")
     private FreeMarkerView openSearchView;
-    
-    
+
+    private IntercepterHelper intercepterHelper = new IntercepterHelper();
 
     @RequestMapping(value="/"+URI,params=RequestParameters.COLLECTION)
     public ModelAndView openSearch(HttpServletRequest request, HttpServletResponse response) {
@@ -55,11 +63,20 @@ public class OpenSearchController {
     }
     
     private String buildSearchUrl(HttpServletRequest request, Collection collection) {
-        return new StringBuffer()
-        .append(request.getScheme()).append("://").append(getHost(request))
-        .append(request.getRequestURI().toString().replace(URI, collection.getConfiguration().value(Keys.ModernUI.SEARCH_LINK)))
-        .append("?collection=" + collection.getId())
-        .append("&amp;query={searchTerms}").toString();
+        String profileId = new ProfilePicker().existingProfileForCollection(collection, intercepterHelper.getProfileFromRequestOrDefaultProfile(request));
+        String collectionId = collection.getId();
+        ServiceConfigReadOnly serviceConfig;
+        StringBuffer out = new StringBuffer();
+        try {
+            serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
+            out.append(request.getScheme()).append("://").append(getHost(request))
+                .append(request.getRequestURI().toString().replace(URI, serviceConfig.get(FrontEndKeys.ModernUi.SEARCH_LINK).get()))
+                .append("?collection=" + collection.getId())
+                .append("&amp;query={searchTerms}").toString();
+        } catch (ProfileNotFoundException e) {
+            log.error("Couldn't find profile '" + profileId + "' in " + collectionId, e);
+        }
+        return out.toString();
     }
     
     private static String getHost(HttpServletRequest request) {

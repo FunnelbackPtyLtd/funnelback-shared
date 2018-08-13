@@ -11,6 +11,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -25,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
-import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.ProfileId;
@@ -46,6 +48,8 @@ import com.funnelback.publicui.utils.JsonPCallbackParam;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 import com.funnelback.springmvc.web.binder.GenericEditor;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 /**
  * Query completion / suggestion controller.
  */
@@ -61,7 +65,9 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     
     /** Default weight to assign to suggestions coming from the search history */
     private static final float HISTORY_SUGGEST_DEFAULT_WEIGHT = 0.5f;
-    
+
+    private IntercepterHelper intercepterHelper = new IntercepterHelper();
+
     @Autowired
     @Setter private ConfigRepository configRepository;
     
@@ -127,7 +133,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     /**
      * Use the default suggester service, usually backed by LibQS.
      * 
-     * @param collectionId Id of the collection
+     * @param collection collection
      * @param profile Profile
      * @param partialQuery First letters of a query
      * @param show Number of items to show
@@ -161,7 +167,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             List<Suggestion> suggestions = suggester.suggest(collection, profile.getId(), partialQuery, show, Sort.valueOf(sort), alpha, category);
 
             // Augment them with search history if needed
-            augmentSuggestionsWithHistory(suggestions, collection, user, getSearchUrl(request, collection.getConfiguration()));
+            augmentSuggestionsWithHistory(suggestions, collection, user, getSearchUrl(request, collection.getId(), profile.getId()));
             
             ModelAndView mav = new ModelAndView();
             mav.addObject("suggestions", suggestions);
@@ -240,20 +246,25 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     /**
      * Get the base URL to perform a search
      * @param request HTTP Request to get the server information
-     * @param c Collection configuration to get the search_link
+     * @param collectionId CollectionId to get the search_link
+     * @param profileId CollectionId to get the search_link
      * @return The search URL
      */
     @SneakyThrows(MalformedURLException.class)
-    private String getSearchUrl(HttpServletRequest request, Config c) {
+    private String getSearchUrl(HttpServletRequest request, String collectionId, String profileId) {
         URL url = new URL(request.getRequestURL().toString());
         StringBuilder out = new StringBuilder();
-        
-        out.append(url.getProtocol()).append("://")
-            .append(url.getAuthority())
-            .append(executionContextHolder.getContextPath())
-            .append("/")
-            .append(c.value(Keys.ModernUI.SEARCH_LINK, DefaultValues.ModernUI.SEARCH_LINK));
-        
+        ServiceConfigReadOnly serviceConfig;
+        try {
+            serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
+            out.append(url.getProtocol()).append("://")
+                .append(url.getAuthority())
+                .append(executionContextHolder.getContextPath())
+                .append("/")
+                .append(serviceConfig.get(FrontEndKeys.ModernUi.SEARCH_LINK));
+        } catch (ProfileNotFoundException e) {
+            log.error("Couldn't find profile '" + profileId + "' in " + collectionId, e);
+        }
         return out.toString();
     }
     
