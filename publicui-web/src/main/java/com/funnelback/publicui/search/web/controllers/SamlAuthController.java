@@ -30,6 +30,7 @@ public class SamlAuthController {
         HttpServletResponse response,
         @RequestParam(required = false) String redirectTo) throws IOException {
         response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("text/html;charset=UTF-8");
         SamlAuthUtil.writeSamlLoginDocumentWithRedirect(response.getWriter(), redirectTo);
     }
 
