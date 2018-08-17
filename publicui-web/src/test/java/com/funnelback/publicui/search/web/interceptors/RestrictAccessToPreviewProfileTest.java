@@ -1,18 +1,19 @@
 package com.funnelback.publicui.search.web.interceptors;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.ExecutionContext;
@@ -21,7 +22,7 @@ import com.funnelback.publicui.search.web.exception.InvalidCollectionException;
 import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 import com.funnelback.publicui.utils.web.ProfilePicker;
-import com.funnelback.springmvc.api.config.security.user.model.FunnelbackUser;
+import com.funnelback.springmvc.api.config.security.role.FlattenedUser;
 import com.funnelback.springmvc.api.config.security.user.model.RestrictionSet;
 import com.funnelback.springmvc.api.config.security.user.model.UserInfoDetails;
 import com.funnelback.springmvc.web.security.CurrentFunnelbackUserHelper;
@@ -203,7 +204,7 @@ public class RestrictAccessToPreviewProfileTest {
     private CurrentFunnelbackUserHelper mockUserWithAccessToCollectionProfile(boolean hasAccess, boolean hasAccessToprofile) {
         CurrentFunnelbackUserHelper currentFunnelbackUserHelper = mock(CurrentFunnelbackUserHelper.class);
         
-        FunnelbackUser user = mock(FunnelbackUser.class);
+        FlattenedUser user = mock(FlattenedUser.class);
         UserInfoDetails userDetails = mock(UserInfoDetails.class);
         
         RestrictionSet restrictionSet = mock(RestrictionSet.class);
