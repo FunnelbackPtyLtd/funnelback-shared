@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import com.funnelback.common.profile.ProfileNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -52,18 +53,18 @@ public class ClickControllerTest {
         
         ClickController controller = new ClickController();
         controller.setAuthTokenManager(authTokenManager);
-        
+
         ConfigRepository configRepository = mock(ConfigRepository.class);
         ServerConfigReadOnly serverConfig = mock(ServerConfigReadOnly.class);
         when(configRepository.getServerConfig()).thenReturn(serverConfig);
         controller.setConfigRepository(configRepository);
-        
+
         MockHttpServletResponse response = new MockHttpServletResponse();
-        
+
         Collection c = new Collection("test", Mockito.mock(Config.class));
         Mockito.when(c.getConfiguration().value(Keys.REQUEST_ID_TO_LOG, DefaultValues.REQUEST_ID_TO_LOG.toString()))
             .thenReturn(DefaultValues.REQUEST_ID_TO_LOG.toString());
-        
+
         // Pass a NULL request to cause a NPE
         controller.redirect(null, response, c, ClickLog.Type.CLICK, 0, null, URI.create("http://redirected.com/"), null, "token", false, null, null);
         
@@ -104,13 +105,13 @@ public class ClickControllerTest {
         LogService logService = mock(LogService.class);
         
         ClickController controller = clickController(logService);
-        
+
         controller.redirect(new MockHttpServletRequest(), 
             new MockHttpServletResponse(), 
             new Collection("test", Mockito.mock(Config.class)), 
             ClickLog.Type.CLICK, 
             0, 
-            new ProfileId("myprofile"), 
+            new ProfileId("myprofile"),
             URI.create("http://redirected.com/"), 
             URI.create("http://foo/"), 
             "token", 
@@ -122,7 +123,7 @@ public class ClickControllerTest {
         
         ClickLog clickLog = clickLogAc.getValue();
         
-        Assert.assertEquals("http://fake/?collection=test&profile=myprofile&query=da%2B%20%26query", 
+        Assert.assertEquals("http://fake/?collection=test&profile=myprofile&query=da%2B%20%26query",
             clickLog.getReferer().toExternalForm());
         
         //check that it is also a valid URI
@@ -132,9 +133,9 @@ public class ClickControllerTest {
     @Test
     public void testClickLogWithReferer() throws Exception {
         LogService logService = mock(LogService.class);
-        
+
         ClickController controller = clickController(logService);
-        
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("referer", "http://foo.com/?query=da%2B%20%26query&collection=test&profile=myprofile");
         controller.redirect(request, 
@@ -175,6 +176,7 @@ public class ClickControllerTest {
         when(srverConfig.get(ServerKeys.SERVER_SECRET)).thenReturn("");
         when(configRepository.getServerConfig()).thenReturn(srverConfig);
         ServiceConfig serviceConfig = mock(ServiceConfig.class);
+        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SESSION)).thenReturn(true);
         when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.METADATA_TO_RECORD)).thenReturn(new ArrayList<>());
         when(configRepository.getServiceConfig(Mockito.anyString(), Mockito.anyString())).thenReturn(serviceConfig);
         
@@ -200,17 +202,20 @@ public class ClickControllerTest {
         Assert.assertEquals("", submittedClickHistory.getQuery());
     }
 
-    private ClickController clickController(LogService logService) {
+    private ClickController clickController(LogService logService) throws ProfileNotFoundException {
         AuthTokenManager authTokenManager = mock(AuthTokenManager.class);
         ConfigRepository configRepository = mock(ConfigRepository.class);
         ServerConfigReadOnly srverConfig = mock(ServerConfigReadOnly.class);
         when(srverConfig.get(ServerKeys.SERVER_SECRET)).thenReturn("");
         when(configRepository.getServerConfig()).thenReturn(srverConfig);
-        
-        
+
+        ServiceConfig serviceConfig = mock(ServiceConfig.class);
+        when(configRepository.getServiceConfig(Mockito.anyString(), Mockito.anyString())).thenReturn(serviceConfig);
+        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SESSION)).thenReturn(true);
+
         when(authTokenManager.checkToken(anyString(), anyString(), anyString())).thenReturn(true);
         
-        
+
         ClickController controller = new ClickController() {
             @Override
             protected String getRequestId(HttpServletRequest request, Collection collection) {

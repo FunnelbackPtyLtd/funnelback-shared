@@ -10,6 +10,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.publicui.search.model.collection.Profile;
+import com.google.common.collect.Maps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -17,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.SearchHistory;
@@ -32,6 +37,8 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.test.search.service.session.SessionDaoTest;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class SearchHistoryTests extends SessionDaoTest {
@@ -45,15 +52,25 @@ public class SearchHistoryTests extends SessionDaoTest {
     private SearchHistory processor;
     
     private SearchTransaction st;
-    
+    private ServiceConfig serviceConfig;
+
     @Override
     public void before() throws Exception {
         configRepository.addCollection(collection);
         
         processor = new SearchHistory();
         processor.setSearchHistoryRepository(repository);
-        
-        st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+
+        Profile profile = new Profile("_default");
+        profile.setServiceConfig(serviceConfig);
+        collection.getProfiles().put("_default", profile);
+
+        SearchQuestion sq = new SearchQuestion();
+        sq.setCurrentProfile("_default");
+        sq.setCollection(collection);
+
+        st = new SearchTransaction(sq, new SearchResponse());
         st.getQuestion().setCollection(collection);
         st.getQuestion().setOriginalQuery("original query");
         st.getQuestion().getInputParameterMap()
@@ -66,7 +83,7 @@ public class SearchHistoryTests extends SessionDaoTest {
         st.getResponse().getResultPacket().getResultsSummary().setNumRanks(36);
         st.getResponse().getResultPacket().getResultsSummary().setTotalMatching(1234);
         st.getResponse().getResultPacket().setQueryAsProcessed("query as processed");
-        
+
         st.setSession(new SearchSession(user));
     }
     
@@ -100,7 +117,7 @@ public class SearchHistoryTests extends SessionDaoTest {
     
     @Test
     public void testSessionDisabled() throws OutputProcessorException {
-        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "false");
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION, false);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
         processor.processOutput(st);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
@@ -109,7 +126,7 @@ public class SearchHistoryTests extends SessionDaoTest {
     
     @Test
     public void testLogQuerySetFalse() throws OutputProcessorException {
-        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION, true);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
         st.getQuestion().setLogQuery(Optional.of(false));
         processor.processOutput(st);
@@ -118,7 +135,7 @@ public class SearchHistoryTests extends SessionDaoTest {
     
     @Test
     public void testLogQuerySetTrue() throws OutputProcessorException {
-        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION, true);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
         st.getQuestion().setLogQuery(Optional.of(true));
         processor.processOutput(st);
@@ -127,7 +144,7 @@ public class SearchHistoryTests extends SessionDaoTest {
     
     @Test
     public void testLogQuerySetEmpty() throws OutputProcessorException {
-        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION, true);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
         st.getQuestion().setLogQuery(Optional.empty());
         processor.processOutput(st);
@@ -136,7 +153,7 @@ public class SearchHistoryTests extends SessionDaoTest {
     
     @Test
     public void test() throws OutputProcessorException {
-        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION, true);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
         processor.processOutput(st);
         
@@ -166,7 +183,7 @@ public class SearchHistoryTests extends SessionDaoTest {
     @Test
     public void testNoResultPacket() throws OutputProcessorException {
         st.getResponse().setResultPacket(null);
-        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION, true);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
         processor.processOutput(st);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
@@ -175,7 +192,7 @@ public class SearchHistoryTests extends SessionDaoTest {
     @Test
     public void testErrorInSearch() throws OutputProcessorException {
         st.getResponse().getResultPacket().setError(new Error());
-        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION, true);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
         processor.processOutput(st);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
@@ -183,7 +200,7 @@ public class SearchHistoryTests extends SessionDaoTest {
 
     @Test
     public void testInvalidURL() throws OutputProcessorException {
-        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION, true);
         st.getQuestion().getInputParameterMap()
             .put(PassThroughEnvironmentVariables.Keys.REQUEST_URL.toString(),
                 "this is not a valid URL, obviously");
@@ -199,7 +216,7 @@ public class SearchHistoryTests extends SessionDaoTest {
      */
     @Test
     public void testNoOriginalQuery() throws OutputProcessorException {
-        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION, true);
         st.getQuestion().setOriginalQuery(null);
         processor.processOutput(st);
         

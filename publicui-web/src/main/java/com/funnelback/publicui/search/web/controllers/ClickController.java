@@ -104,7 +104,7 @@ public class ClickController extends SessionController {
      * 
      * @param request HTTP request 
      * @param response HTTP response
-     * @param collectionId Collection to log for
+     * @param collection Collection to log for
      * @param profile Profile to log for
      * @param logType type of interaction
      * @param user Current user from the session
@@ -160,7 +160,7 @@ public class ClickController extends SessionController {
      * 
      * @param request HTTP Request
      * @param response HTTP response
-     * @param collectionId ID of the collection
+     * @param collection collection
      * @param type Faceted nav, Cluster, result click, etc.
      * @param rank Rank of the clicked result
      * @param profile Current profile
@@ -261,7 +261,8 @@ public class ClickController extends SessionController {
     }
     
     public void saveResultHistory(Collection collection, Optional<String> profile, SearchUser user, URI indexUrl, Optional<String> givenQuery) {
-        if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
+        ServiceConfigReadOnly profileConfig = getServiceConfigOrDefault(collection, profile);
+        if (profileConfig.get(FrontEndKeys.ModernUi.Session.SESSION)
             && user != null) {
             // Save the click in the user history
             Result r = indexRepository.getResult(collection, indexUrl);
@@ -271,7 +272,7 @@ public class ClickController extends SessionController {
                 h.setClickDate(new Date());
                 h.setUserId(user.getId());
                 h.setQuery(givenQuery.orElse(""));
-                
+
                 searchHistoryRepository.saveClick(h);
             } else {
                 log.warn("Result with URL '"+indexUrl+"' not found in collection '"+collection.getId()+"'");
