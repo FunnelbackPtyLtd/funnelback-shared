@@ -25,7 +25,7 @@ import com.funnelback.publicui.search.web.exception.InvalidCollectionException;
 import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 import com.funnelback.publicui.utils.web.ProfilePicker;
-import com.funnelback.springmvc.api.config.security.user.model.FunnelbackUser;
+import com.funnelback.springmvc.api.config.security.role.FlattenedUser;
 import com.funnelback.springmvc.web.security.CurrentFunnelbackUserHelper;
 
 import lombok.AccessLevel;
@@ -120,7 +120,7 @@ public class RestrictAccessToPreviewProfile implements HandlerInterceptor {
         
         
         if(executionContextHolder.getExecutionContext() == ExecutionContext.Admin) {
-            FunnelbackUser user = currentFunnelbackUserHelper.getCurrentFunnelbackUser();
+            FlattenedUser user = currentFunnelbackUserHelper.getCurrentFunnelbackUser();
             boolean hasAccessToColl = user.getUserInfoDetails().getCollectionRestriction().isPermitted(new CollectionId(collectionId));
             if(hasAccessToColl) {
                 
