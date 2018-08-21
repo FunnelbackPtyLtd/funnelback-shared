@@ -1,17 +1,19 @@
 package com.funnelback.publicui.search.web.filters;
 
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+
 import org.mockito.Mockito;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import freemarker.core.ParseException;
-import freemarker.core.TemplateObject;
 import freemarker.template.TemplateException;
 
 
@@ -42,7 +44,7 @@ public class UnhandledExceptionFilterTest {
     public void testNotFreeMarkerException() throws Exception {
         MockHttpServletResponse res = new MockHttpServletResponse();
         res.setStatus(1234);
-        Mockito.doThrow(Exception.class).when(chain).doFilter(Mockito.any(), Mockito.any());
+        Mockito.doThrow(RuntimeException.class).when(chain).doFilter(Mockito.any(), Mockito.any());
 
         filter.doFilter(req, res, chain);
         
@@ -59,8 +61,13 @@ public class UnhandledExceptionFilterTest {
             MockHttpServletResponse res = new MockHttpServletResponse();
             res.setStatus(1234);
             HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
-            Mockito.doThrow(clazz).when(chain).doFilter(Mockito.any(), Mockito.any());
+            
+            Exception e = mock(clazz);
+            doReturn("").when(e).getMessage();
+            
+            Mockito.doThrow(new RuntimeException(e)).when(chain).doFilter(Mockito.any(), Mockito.any());
 
+            // An axception would be thrown if we did not handle these freemarker exceptions correctly
             filter.doFilter(req, res, chain);
             Assert.assertEquals(500, res.getStatus());
             

@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -33,6 +34,9 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockDataFetcher;
 import com.funnelback.publicui.test.mock.MockInputProcessor;
 import com.funnelback.publicui.test.mock.MockOutputProcessor;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -99,31 +103,60 @@ public class DefaultSearchTransactionProcessorTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void testErrorHandling() throws Exception {
+    public void testErrorHandlingInputProcessor() throws Exception {
+        InputProcessor inputProcessor = Mockito.mock(InputProcessor.class);
+        Mockito.doThrow(InputProcessorException.class).when(inputProcessor).processInput(Mockito.any());
+        input.clear();
+        input.add(inputProcessor);
+        
+        SearchTransaction st = processor.process(q, null, Optional.empty());
+
+        this.testError(InputProcessorException.class, st);
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testErrorHandlingDataFetcher() throws Exception {
+        DataFetcher dataFetcher = Mockito.mock(DataFetcher.class);
+        Mockito.doThrow(DataFetchException.class).when(dataFetcher).fetchData(Mockito.any());
+        data.clear();
+        data.add(dataFetcher);
+        
+        SearchTransaction st = processor.process(q, null, Optional.empty());
+
+        this.testError(DataFetchException.class, st);
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testErrorHandlingOutputProcessor() throws Exception {
+        OutputProcessor outputProcessor = Mockito.mock(OutputProcessor.class);
+        Mockito.doThrow(OutputProcessorException.class).when(outputProcessor).processOutput(Mockito.any());
+        output.clear();
+        output.add(outputProcessor);
+        
+        SearchTransaction st = processor.process(q, null, Optional.empty());
+
+        this.testError(OutputProcessorException.class, st);
+    }
+    
+    private void testError(Class<? extends Exception> exceptionClass, SearchTransaction st) {
         Map<Class<? extends Exception>, Reason> errorReasons = new HashMap<>();
         errorReasons.put(InputProcessorException.class, Reason.InputProcessorError);
         errorReasons.put(OutputProcessorException.class, Reason.OutputProcessorError);
         errorReasons.put(DataFetchException.class, Reason.DataFetchError);
         errorReasons.put(ObscureException.class, Reason.Unknown);
         
-        for (Class<Exception> clazz: new Class[] {
-                        InputProcessorException.class,
-                        OutputProcessorException.class,
-                        DataFetchException.class
-        }) {
-            InputProcessor inputProcessor = Mockito.mock(InputProcessor.class);
-            Mockito.doThrow(clazz).when(inputProcessor).processInput(Mockito.any());
-            
-            input.clear();
-            input.add(inputProcessor);
-            
-            SearchTransaction st = processor.process(q, null, Optional.empty());
-            
-            Assert.assertNotNull(clazz.getSimpleName() + " error should have been handled", st.getError());
-            Assert.assertEquals("Invalid reason given for " + clazz.getSimpleName(), errorReasons.get(clazz), st.getError().getReason());
-            Assert.assertEquals("Invalid error additional data stored", clazz, st.getError().getAdditionalData().getClass());
-            
-        }
+        Assert.assertNotNull(exceptionClass.getSimpleName() + " error should have been handled", st.getError());
+        Assert.assertEquals("Invalid reason given for " + exceptionClass.getSimpleName(), errorReasons.get(exceptionClass), st.getError().getReason());
+        Assert.assertEquals("Invalid error additional data stored", exceptionClass, st.getError().getAdditionalData().getClass());
+    }
+    
+    @Data 
+    @AllArgsConstructor
+    public static class ProcessorAndException {
+        private Class<? extends Exception> exceptionClass;
+        private Class<?> processorClass;
     }
     
     @Test
