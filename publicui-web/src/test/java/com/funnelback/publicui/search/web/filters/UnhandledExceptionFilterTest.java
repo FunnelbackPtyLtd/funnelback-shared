@@ -67,7 +67,7 @@ public class UnhandledExceptionFilterTest {
             
             Mockito.doThrow(new RuntimeException(e)).when(chain).doFilter(Mockito.any(), Mockito.any());
 
-            // An axception would be thrown if we did not handle these freemarker exceptions correctly
+            // An exception would be thrown if we did not handle these freemarker exceptions correctly
             filter.doFilter(req, res, chain);
             Assert.assertEquals(500, res.getStatus());
             
