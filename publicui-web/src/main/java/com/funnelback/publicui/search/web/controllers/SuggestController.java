@@ -161,17 +161,8 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             HttpServletResponse response) throws IOException {
         
         if (collection != null) {
-            //ServiceConfigReadOnly serviceConfig = getServiceConfigOrDefault(configRepository, collection, Optional.of(profile.getId()));
+            ServiceConfigReadOnly serviceConfig = getServiceConfigOrDefault(configRepository, collection, Optional.of(profile.getId()));
 
-            ServiceConfigReadOnly serviceConfig;
-            try {
-                serviceConfig = configRepository.getServiceConfig(collection.getId(), profile.getId());
-            }catch (ProfileNotFoundException e) {
-                log.error("Couldn't find profile '" +  profile.getId() + "' in " + collection.getId(), e);
-                // Profile not found
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return null;
-            }
             // Get organic/CSV suggestions from PADRE
             List<Suggestion> suggestions = suggester.suggest(collection, profile.getId(), partialQuery, show, Sort.valueOf(sort), alpha, category);
 

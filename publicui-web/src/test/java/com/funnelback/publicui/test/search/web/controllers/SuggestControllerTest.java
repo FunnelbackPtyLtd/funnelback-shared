@@ -53,11 +53,8 @@ public class SuggestControllerTest {
         ConfigRepository configRepository = mock(ConfigRepository.class);
         ServiceConfig serviceConfig = mock(ServiceConfig.class);
         when(configRepository.getServiceConfig(anyString(),anyString())).thenReturn(serviceConfig);
-        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SESSION)).thenReturn(true);
-        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.Suggest.SUGGEST)).thenReturn(true);
-        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.SIZE)).thenReturn(10);
-        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.Suggest.DISPLAY_TEMPLATE))
-            .thenReturn("");
+        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SESSION)).thenReturn(false);
+        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.Suggest.SUGGEST)).thenReturn(false);
 
         suggestController = new SuggestController();
         suggestController.setConfigRepository(configRepository);
