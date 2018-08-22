@@ -44,13 +44,13 @@ public class ConfigurableCorsFilter extends CorsFilter implements Filter {
         if (collection.isPresent()) {
             String profileId = new ProfilePicker().existingProfileForCollection(collection.get(),
                 intercepterHelper.getProfileFromRequestOrDefaultProfile((HttpServletRequest) request));
-            String collectionId = intercepterHelper.getCollectionFromRequest((HttpServletRequest) request);
+            String collectionId = collection.get().getId();
             ServiceConfigReadOnly serviceConfig;
             try {
                 serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
                 return serviceConfig.get(FrontEndKeys.ModernUi.CORS_ALLOW_ORIGIN);
             } catch (ProfileNotFoundException e) {
-                log.error("Couldn't find profile '" + profileId + "' in " + collectionId, e);
+                log.warn("Couldn't find profile '" + profileId + "' in " + collectionId, e);
             }
         }
         return super.getCorsAllowOrigin(request, response);

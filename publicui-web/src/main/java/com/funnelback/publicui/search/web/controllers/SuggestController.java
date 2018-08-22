@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
 
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -65,8 +64,6 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     
     /** Default weight to assign to suggestions coming from the search history */
     private static final float HISTORY_SUGGEST_DEFAULT_WEIGHT = 0.5f;
-
-    private IntercepterHelper intercepterHelper = new IntercepterHelper();
 
     @Autowired
     @Setter private ConfigRepository configRepository;
@@ -261,7 +258,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
                 .append("/")
                 .append(serviceConfig.get(FrontEndKeys.ModernUi.SEARCH_LINK));
         } catch (ProfileNotFoundException e) {
-            log.error("Couldn't find profile '" + profileId + "' in " + collectionId, e);
+            log.warn("Couldn't find profile '" + profileId + "' in " + collectionId, e);
         }
         return out.toString();
     }

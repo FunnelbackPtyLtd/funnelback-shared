@@ -71,10 +71,10 @@ public class OpenSearchController {
             serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
             out.append(request.getScheme()).append("://").append(getHost(request))
                 .append(request.getRequestURI().toString().replace(URI, serviceConfig.get(FrontEndKeys.ModernUi.SEARCH_LINK).get()))
-                .append("?collection=" + collection.getId())
+                .append("?collection=" + collectionId)
                 .append("&amp;query={searchTerms}").toString();
         } catch (ProfileNotFoundException e) {
-            log.error("Couldn't find profile '" + profileId + "' in " + collectionId, e);
+            log.warn("Couldn't find profile '" + profileId + "' in " + collectionId, e);
         }
         return out.toString();
     }

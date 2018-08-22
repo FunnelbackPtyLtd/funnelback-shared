@@ -61,9 +61,9 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             && SearchQuestionType.ACCESSIBILITY_AUDITOR.equals(st.getQuestion().getQuestionType())) {
 
             st.getQuestion().setLogQuery(Optional.ofNullable(false));
+            options.add(new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion()));
             st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
 
-            st.getQuestion().getDynamicQueryProcessorOptions().add(new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion()));
         }
     }
 

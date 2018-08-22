@@ -40,11 +40,11 @@ public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAudi
     
     @Override
     protected void processAccessibilityAuditorTransaction(SearchTransaction st) throws InputProcessorException {
-        
+
+        options.add(new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion()));
         st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
         st.getQuestion().setLogQuery(Optional.ofNullable(false));
 
-        st.getQuestion().getDynamicQueryProcessorOptions().add(new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion()));
     }
     
     /**
