@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
@@ -7,6 +8,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.publicui.search.model.collection.Profile;
+import com.google.common.collect.Maps;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,16 +47,24 @@ public class SessionTests {
     private ResultsCartRepository resultsCartRepository = new MockResultsCartRepository();
     
     private SearchTransaction st;
- 
+    private ServiceConfig serviceConfig;
+
     @Before
     public void before() throws Exception {
         processor = new Session();
         processor.setSearchHistoryRepository(searchHistoryRepository);
         processor.setResultsCartRepository(resultsCartRepository);
         
-        Collection c = new Collection("dummy", new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy").setValue(Keys.ModernUI.SESSION, "true"));
-        
+        Collection c = new Collection("dummy", new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy"));
+
+        serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION,true);
+        Profile profile = new Profile("_default");
+        profile.setServiceConfig(serviceConfig);
+        c.getProfiles().put("_default", profile);
+
         SearchQuestion question = new SearchQuestion();
+        question.setCurrentProfile("_default");
         question.setCollection(c);
         st = new SearchTransaction(question, null);
         st.setSession(new SearchSession(new SearchUser("user")));
@@ -160,9 +175,8 @@ public class SessionTests {
     
     @Test
     public void testDisabled() throws InputProcessorException {
-        st.getQuestion().getCollection().getConfiguration()
-            .setValue(Keys.ModernUI.SESSION, "false");
-        
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION,false);
+
         SearchHistoryRepository r = mock(SearchHistoryRepository.class);
         when(r.getSearchHistory(any(SearchUser.class), any(Collection.class), anyInt()))
             .thenThrow(new RuntimeException());

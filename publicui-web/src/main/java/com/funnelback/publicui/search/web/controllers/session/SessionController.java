@@ -1,9 +1,15 @@
 package com.funnelback.publicui.search.web.controllers.session;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import lombok.extern.log4j.Log4j2;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -48,4 +54,29 @@ public abstract class SessionController {
         return null;
     }
 
+    /**
+     * Gets the Service config for the given profile, if no profile is given or the profile does not exist the default
+     * is returned.
+     *
+     * @param configRepository
+     * @param collection
+     * @param profile
+     * @return
+     * @throws IllegalStateException when both the given profile and default profile do not exist.
+     */
+    public ServiceConfigReadOnly getServiceConfigOrDefault(ConfigRepository configRepository, Collection collection, Optional<String> profile)
+        throws IllegalStateException {
+        if(profile.isPresent()) {
+            try {
+                return configRepository.getServiceConfig(collection.getId(), profile.get());
+            } catch (ProfileNotFoundException e) {
+                log.warn("Given prrofile {} does not exist reverting to default profile", profile.get());
+            }
+        }
+        try {
+            return configRepository.getServiceConfig(collection.getId(), DefaultValues.DEFAULT_PROFILE);
+        } catch (ProfileNotFoundException e) {
+            throw new IllegalStateException("The default profile is missing, it must be created if the collection still exists", e);
+        }
+    }
 }

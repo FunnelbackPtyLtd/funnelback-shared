@@ -1,5 +1,7 @@
 package com.funnelback.publicui.test.search.web.controllers;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
@@ -11,11 +13,13 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,7 +33,6 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.ExecutionContext;
 import com.funnelback.publicui.search.service.Suggester;
 import com.funnelback.publicui.search.web.controllers.SuggestController;
-import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.utils.JsonPCallbackParam;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 
@@ -37,19 +40,22 @@ import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class SuggestControllerTest {
 
-    @Autowired
-    private MockConfigRepository configRepository;
-
     private SuggestController suggestController;
     
     @Before
-    public void before() {
+    public void before() throws ProfileNotFoundException {
         Suggester suggester = mock(Suggester.class);
         when(suggester.suggest(any(), any(), any(), anyInt(), any(), anyDouble(), any())).thenReturn(new ArrayList<Suggestion>());
         
         ExecutionContextHolder holder = mock(ExecutionContextHolder.class);
         when(holder.getExecutionContext()).thenReturn(ExecutionContext.Unknown);
-        
+
+        ConfigRepository configRepository = mock(ConfigRepository.class);
+        ServiceConfig serviceConfig = mock(ServiceConfig.class);
+        when(configRepository.getServiceConfig(anyString(),anyString())).thenReturn(serviceConfig);
+        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SESSION)).thenReturn(false);
+        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.Suggest.SUGGEST)).thenReturn(false);
+
         suggestController = new SuggestController();
         suggestController.setConfigRepository(configRepository);
         suggestController.setSuggester(suggester);

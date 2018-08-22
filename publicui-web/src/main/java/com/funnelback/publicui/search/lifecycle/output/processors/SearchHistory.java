@@ -25,6 +25,8 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 /**
  * Saves the current search in the user search history.
  * 
@@ -51,10 +53,9 @@ public class SearchHistory extends AbstractOutputProcessor {
         }
 
         if (SearchTransactionUtils.hasResponse(st)
-                && SearchTransactionUtils.hasSession(st)
-                && st.getQuestion().getCollection()
-                    .getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
-                && st.getSession().getSearchUser() != null ) {
+            && SearchTransactionUtils.hasSession(st)
+            && st.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.ModernUi.Session.SESSION)
+            && st.getSession().getSearchUser() != null ) {
         
             SearchResponse r = st.getResponse();
             SearchQuestion q = st.getQuestion();

@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.web.interceptors;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -11,8 +12,15 @@ import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.publicui.search.service.ConfigRepository;
+import com.google.common.collect.Maps;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -29,14 +37,23 @@ public class SessionInterceptorTests {
     
     private MockHttpServletRequest req;
     private MockHttpServletResponse resp;
-    
+    private ServiceConfig serviceConfig;
+
     @Before
-    public void before() throws FileNotFoundException {
+    public void before() throws Exception {
         collection = new Collection("dummy",
             new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy"));
-        MockConfigRepository configRepository = new MockConfigRepository();
-        configRepository.addCollection(collection);
-        
+        ConfigRepository configRepository = Mockito.mock(ConfigRepository.class);
+
+        serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+
+        Mockito
+            .when(configRepository.getServiceConfig("dummy","_default"))
+            .thenReturn(serviceConfig);
+        Mockito
+            .when(configRepository.getCollection("dummy"))
+            .thenReturn(collection);
+
         interceptor = new SessionInterceptor();
         interceptor.setConfigRepository(configRepository);
         
@@ -87,8 +104,7 @@ public class SessionInterceptorTests {
     public void testCookieNewUser() throws Exception {
         enableFeatures(true);
         
-        collection.getConfiguration().setValue("ui.modern.session.timeout", "123");
-        
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.TIMEOUT, 123);
         interceptor.preHandle(req, resp, null);
 
         assertNull(req.getSession(false));
@@ -231,9 +247,7 @@ public class SessionInterceptorTests {
     }
 
     private void enableFeatures(boolean session) {
-        collection.getConfiguration().setValue(
-            Keys.ModernUI.SESSION,
-            Boolean.toString(session));
+        serviceConfig.set(FrontEndKeys.ModernUi.Session.SESSION, session);
     }
     
 }
