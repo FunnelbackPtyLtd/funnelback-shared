@@ -1,6 +1,7 @@
 package com.funnelback.publicui.test.search.web.controllers;
 
 import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
@@ -10,16 +11,16 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletResponse;
-
-import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.common.profile.ProfileNotFoundException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
@@ -84,14 +85,14 @@ public class SuggestControllerTest {
      * @throws IOException
      */
     @Test
-    public void testJsonp() throws IOException {
+    public void testJsonp() throws Exception {
         Config config = mock(Config.class);
         when(config.value(any())).thenReturn("");
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         suggestController.suggestJava(new Collection("test", config), new ProfileId("profile"), "query", 10, 0, "json", 0, null, null, null, request, response);
-        
+
         Assert.assertNull("No content type should be set by default (defaults to the one configured for the view)", response.getContentType());
         
         response = new MockHttpServletResponse();

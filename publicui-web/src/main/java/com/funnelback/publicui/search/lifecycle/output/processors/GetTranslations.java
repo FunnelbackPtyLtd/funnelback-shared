@@ -5,12 +5,13 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
+
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 
 /**
  * Retrieve the i18n bundle containing translated messages
@@ -31,7 +32,7 @@ public class GetTranslations extends AbstractOutputProcessor {
                 && SearchTransactionUtils.hasCollection(searchTransaction)
                 && searchTransaction.getQuestion().getLocale() != null
                 && SearchTransactionUtils.hasResponse(searchTransaction)
-                && searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.ModernUI.I18N)) {
+                && searchTransaction.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.ModernUi.I18N)) {
             searchTransaction.getResponse().getTranslations().putAll(
                     configRepository.getTranslations(
                             searchTransaction.getQuestion().getCollection().getId(),
