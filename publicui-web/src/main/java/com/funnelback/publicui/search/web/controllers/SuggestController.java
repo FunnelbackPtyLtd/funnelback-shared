@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
+
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -29,7 +30,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.ProfileId;
 import com.funnelback.dataapi.connector.padre.suggest.SuggestQuery.Sort;
 import com.funnelback.dataapi.connector.padre.suggest.Suggestion;
@@ -132,7 +132,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     
     /**
      * Use the default suggester service, usually backed by LibQS.
-     * 
+     *
      * @param collection collection
      * @param profile Profile
      * @param partialQuery First letters of a query
@@ -163,12 +163,14 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             HttpServletResponse response) throws IOException {
         
         if (collection != null) {
+            ServiceConfigReadOnly serviceConfig = getServiceConfigOrDefault(configRepository, collection, Optional.of(profile.getId()));
+
             // Get organic/CSV suggestions from PADRE
             List<Suggestion> suggestions = suggester.suggest(collection, profile.getId(), partialQuery, show, Sort.valueOf(sort), alpha, category);
 
             // Augment them with search history if needed
-            augmentSuggestionsWithHistory(suggestions, collection, user, getSearchUrl(request, collection.getId(), profile.getId()));
-            
+            augmentSuggestionsWithHistory(suggestions, collection, serviceConfig, user, getSearchUrl(request, collection.getId(), profile.getId()));
+
             ModelAndView mav = new ModelAndView();
             mav.addObject("suggestions", suggestions);
             mav.addObject("callback", Optional.ofNullable(callback).map(c -> c.getCallback()).orElse(null));
@@ -201,21 +203,19 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     /**
      * Augment suggestions with the recent queries from the search history
      * @param suggestions List of suggestions to augment
-     * @param c Collection
+     * @param serviceConfig ServiceConfig
      * @param user Current user from the session
      * @param searchUrl Base URL to generate a link to the previous searches
      */
-    private void augmentSuggestionsWithHistory(List<Suggestion> suggestions, Collection c,
+    private void augmentSuggestionsWithHistory(List<Suggestion> suggestions, Collection c, ServiceConfigReadOnly serviceConfig,
         SearchUser user, String searchUrl) {
-        
-        if (c.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
-            && c.getConfiguration().valueAsBoolean(Keys.ModernUI.Session.SearchHistory.SUGGEST,
-                DefaultValues.ModernUI.Session.SearchHistory.SUGGEST)) {
-            
+
+        if(serviceConfig.get(FrontEndKeys.ModernUi.Session.SESSION)
+            && serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.Suggest.SUGGEST)) {
+
             // Get search history
             List<SearchHistory> history = searchHistoryRepository.getSearchHistory(user, c,
-                c.getConfiguration().valueAsInt(Keys.ModernUI.Session.SearchHistory.SIZE,
-                    DefaultValues.ModernUI.Session.SearchHistory.SIZE));
+                serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.SIZE));
             
             for (SearchHistory h: history) {
                 // Build a suggestion for each history
@@ -226,14 +226,12 @@ public class SuggestController extends AbstractRunPadreBinaryController {
                 s.setActionType(ActionType.URL);
                 
                 // Display is templated from a collection.cfg parameter
-                s.setDisplay(c.getConfiguration().value(Keys.ModernUI.Session.SearchHistory.SUGGEST_DISPLAY_TEMPLATE,
-                    DefaultValues.ModernUI.Session.SearchHistory.SUGGEST_DISPLAY_TEMPLATE)
+                s.setDisplay(serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.Suggest.DISPLAY_TEMPLATE)
                     .replace(HISTORY_SUGGEST_QUERY, h.getOriginalQuery())
                     .replace(HISTORY_SUGGEST_TOTAL_MATCHING, Integer.toString(h.getTotalMatching())));
                 s.setDisplayType(DisplayType.HTML);
-                
-                s.setCategory(c.getConfiguration().value(Keys.ModernUI.Session.SearchHistory.SUGGEST_CATEGORY,
-                    DefaultValues.ModernUI.Session.SearchHistory.SUGGEST_CATEGORY));
+
+                s.setCategory(serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.Suggest.CATEGORY));
                 s.setCategoryType("");
                 
                 s.setWeight(HISTORY_SUGGEST_DEFAULT_WEIGHT);

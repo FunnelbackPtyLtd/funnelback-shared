@@ -8,8 +8,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionException;
 
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -19,6 +17,8 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQue
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
+
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 
 /**
  * Fetches session data: User, click history, search history, etc.
@@ -39,8 +39,7 @@ public class Session extends AbstractInputProcessor {
     public void processInput(SearchTransaction st) throws InputProcessorException {
         if (SearchTransactionUtils.hasSession(st)
             && SearchTransactionUtils.hasCollection(st)
-            && st.getQuestion().getCollection()
-                .getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
+            && st.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.ModernUi.Session.SESSION)
             // FUN-8076: Only allow on main search
             && SearchQuestionType.SEARCH.equals(st.getQuestion().getQuestionType())
             && st.getSession().getSearchUser() != null) {
@@ -51,15 +50,13 @@ public class Session extends AbstractInputProcessor {
             try {
                 // Retrieve previous search history
                 s.getSearchHistory().addAll(searchHistoryRepository.getSearchHistory(s.getSearchUser(),
-                        q.getCollection(), 
-                        q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SearchHistory.SIZE,
-                                DefaultValues.ModernUI.Session.SearchHistory.SIZE)));
+                        q.getCollection(),
+                        q.getCurrentProfileConfig().get(FrontEndKeys.ModernUi.Session.SearchHistory.SIZE)));
                 
                 // Retrieve previous click history
                 s.getClickHistory().addAll(searchHistoryRepository.getClickHistory(s.getSearchUser(),
                         q.getCollection(),
-                        q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SearchHistory.SIZE,
-                                DefaultValues.ModernUI.Session.SearchHistory.SIZE)));
+                        q.getCurrentProfileConfig().get(FrontEndKeys.ModernUi.Session.SearchHistory.SIZE)));
                 
                 // Retrieve results cart
                 st.getSession().getResultsCart().addAll(

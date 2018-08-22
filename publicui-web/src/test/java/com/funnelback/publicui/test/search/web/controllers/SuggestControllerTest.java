@@ -1,6 +1,8 @@
 package com.funnelback.publicui.test.search.web.controllers;
 
 import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
@@ -9,22 +11,16 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Optional;
-
 import javax.servlet.http.HttpServletResponse;
-
-import com.funnelback.config.configtypes.service.DefaultServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfig;
-import com.funnelback.config.data.InMemoryConfigData;
-import com.funnelback.config.data.environment.NoConfigEnvironment;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.google.common.collect.Maps;
+import com.funnelback.common.profile.ProfileNotFoundException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
@@ -45,19 +41,22 @@ import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class SuggestControllerTest {
 
-    @Autowired
-    private ConfigRepository configRepository;
-
     private SuggestController suggestController;
     
     @Before
-    public void before() {
+    public void before() throws ProfileNotFoundException {
         Suggester suggester = mock(Suggester.class);
         when(suggester.suggest(any(), any(), any(), anyInt(), any(), anyDouble(), any())).thenReturn(new ArrayList<Suggestion>());
         
         ExecutionContextHolder holder = mock(ExecutionContextHolder.class);
         when(holder.getExecutionContext()).thenReturn(ExecutionContext.Unknown);
-        configRepository = Mockito.mock(ConfigRepository.class);
+
+        ConfigRepository configRepository = mock(ConfigRepository.class);
+        ServiceConfig serviceConfig = mock(ServiceConfig.class);
+        when(configRepository.getServiceConfig(anyString(),anyString())).thenReturn(serviceConfig);
+        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SESSION)).thenReturn(false);
+        when(serviceConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.Suggest.SUGGEST)).thenReturn(false);
+
         suggestController = new SuggestController();
         suggestController.setConfigRepository(configRepository);
         suggestController.setSuggester(suggester);
@@ -89,13 +88,6 @@ public class SuggestControllerTest {
     public void testJsonp() throws Exception {
         Config config = mock(Config.class);
         when(config.value(any())).thenReturn("");
-
-        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
-        serviceConfig.set(FrontEndKeys.ModernUi.SEARCH_LINK, Optional.of("search"));
-
-        Mockito
-            .when(configRepository.getServiceConfig("test","profile"))
-            .thenReturn(serviceConfig);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
