@@ -11,7 +11,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 
 import lombok.Setter;
@@ -98,10 +97,10 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     
     @Autowired
     @Setter private Suggester suggester;
-    
+
     @Autowired
     private SearchHistoryRepository searchHistoryRepository;
-    
+
     @Autowired
     @Setter private ExecutionContextHolder executionContextHolder;
     
@@ -157,7 +156,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             @RequestParam(required=false) JsonPCallbackParam callback,
             @ModelAttribute SearchUser user,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
         
         if (collection != null) {
             ServiceConfigReadOnly serviceConfig = getServiceConfigOrDefault(configRepository, collection, Optional.of(profile.getId()));
@@ -166,7 +165,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             List<Suggestion> suggestions = suggester.suggest(collection, profile.getId(), partialQuery, show, Sort.valueOf(sort), alpha, category);
 
             // Augment them with search history if needed
-            augmentSuggestionsWithHistory(suggestions, collection, serviceConfig, user, getSearchUrl(request, collection.getId(), profile.getId()));
+            augmentSuggestionsWithHistory(suggestions, collection, serviceConfig, user, getSearchUrl(request, serviceConfig));
 
             ModelAndView mav = new ModelAndView();
             mav.addObject("suggestions", suggestions);
@@ -241,25 +240,18 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     /**
      * Get the base URL to perform a search
      * @param request HTTP Request to get the server information
-     * @param collectionId CollectionId to get the search_link
-     * @param profileId CollectionId to get the search_link
+     * @param serviceConfig ServiceConfig
      * @return The search URL
      */
     @SneakyThrows(MalformedURLException.class)
-    private String getSearchUrl(HttpServletRequest request, String collectionId, String profileId) {
+    private String getSearchUrl(HttpServletRequest request, ServiceConfigReadOnly serviceConfig) {
         URL url = new URL(request.getRequestURL().toString());
         StringBuilder out = new StringBuilder();
-        ServiceConfigReadOnly serviceConfig;
-        try {
-            serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
-            out.append(url.getProtocol()).append("://")
-                .append(url.getAuthority())
-                .append(executionContextHolder.getContextPath())
-                .append("/")
-                .append(serviceConfig.get(FrontEndKeys.ModernUi.SEARCH_LINK));
-        } catch (ProfileNotFoundException e) {
-            log.warn("Couldn't find profile '" + profileId + "' in " + collectionId, e);
-        }
+        out.append(url.getProtocol()).append("://")
+            .append(url.getAuthority())
+            .append(executionContextHolder.getContextPath())
+            .append("/")
+            .append(serviceConfig.get(FrontEndKeys.ModernUi.SEARCH_LINK));
         return out.toString();
     }
     

@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.Config;
-import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.Geolocation;
@@ -55,7 +54,7 @@ public class GeolocationTests {
     }
     
     @Test
-    public void testMissing() throws InputProcessorException, EnvironmentVariableException, FileNotFoundException {
+    public void testMissing() throws InputProcessorException, EnvironmentVariableException {
         //No transaction
         this.processor.processInput(null);
         
@@ -74,7 +73,7 @@ public class GeolocationTests {
     }
     
     @Test
-    public void testGeolocationEnabledAndOriginSet() throws FileNotFoundException, InputProcessorException {
+    public void testGeolocationEnabledAndOriginSet() throws InputProcessorException {
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.ENABLED, true);
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.SET_ORIGIN, true);
@@ -97,7 +96,7 @@ public class GeolocationTests {
      * @throws FileNotFoundException 
      */
     @Test
-    public void originAlreadySetAndOriginSet() throws InputProcessorException, FileNotFoundException {
+    public void originAlreadySetAndOriginSet() throws InputProcessorException {
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.ENABLED, true);
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.SET_ORIGIN, true);
@@ -129,7 +128,7 @@ public class GeolocationTests {
      * @throws FileNotFoundException 
      */
     @Test
-    public void originAlreadySetAndOriginNotSet() throws InputProcessorException, FileNotFoundException {
+    public void originAlreadySetAndOriginNotSet() throws InputProcessorException {
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.ENABLED, true);
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.SET_ORIGIN, false);
@@ -158,7 +157,7 @@ public class GeolocationTests {
     
     
     @Test 
-    public void testGeolocationEnabled() throws FileNotFoundException, InputProcessorException{
+    public void testGeolocationEnabled() throws InputProcessorException{
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.ENABLED, true);
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.SET_ORIGIN, false);
@@ -173,7 +172,7 @@ public class GeolocationTests {
     }
     
     @Test
-    public void testGeolocationDisabledAndOrginEnabled() throws FileNotFoundException, InputProcessorException{
+    public void testGeolocationDisabledAndOrginEnabled() throws InputProcessorException{
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.ENABLED, false);
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.SET_ORIGIN, true);
@@ -186,8 +185,7 @@ public class GeolocationTests {
     }
     
     @Test
-    public void testBothDisbled() throws FileNotFoundException, InputProcessorException {
-        //Keys.ModernUI.GEOLOCATION_ENABLED == false && Keys.ModernUI.GEOLOCATION_SET_ORIGIN == false
+    public void testBothDisbled() throws InputProcessorException {
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.ENABLED, false);
         serviceConfig.set(FrontEndKeys.ModernUi.GeoLocation.SET_ORIGIN, false);
