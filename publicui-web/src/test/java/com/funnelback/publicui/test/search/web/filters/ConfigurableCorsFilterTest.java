@@ -42,6 +42,7 @@ public class ConfigurableCorsFilterTest {
             .thenReturn(serviceConfig);
 
         when(configRepository.getCollection(collection)).thenReturn(c);
+        when(c.getId()).thenReturn(collection);
 
         configurableCorsFilter.setConfigRepository(configRepository);
 
