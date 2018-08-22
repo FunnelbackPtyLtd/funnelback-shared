@@ -161,6 +161,8 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             HttpServletResponse response) throws IOException {
         
         if (collection != null) {
+            //ServiceConfigReadOnly serviceConfig = getServiceConfigOrDefault(configRepository, collection, Optional.of(profile.getId()));
+
             ServiceConfigReadOnly serviceConfig;
             try {
                 serviceConfig = configRepository.getServiceConfig(collection.getId(), profile.getId());

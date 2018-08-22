@@ -59,7 +59,7 @@ public class SessionInterceptor implements HandlerInterceptor {
             
             if (collection != null) {
                 String profileId = new ProfilePicker().existingProfileForCollection(collection, intercepterHelper.getProfileFromRequestOrDefaultProfile(request));
-                String collectionId = intercepterHelper.getCollectionFromRequest(request);
+                String collectionId = collection.getId();
                 ServiceConfigReadOnly serviceConfig;
                 try {
                     serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
@@ -79,7 +79,7 @@ public class SessionInterceptor implements HandlerInterceptor {
                         request.setAttribute(SEARCH_USER_ID_ATTRIBUTE, uuid.toString());
                     }
                 } catch (ProfileNotFoundException e) {
-                    log.error("Couldn't find profile '" + profileId + "' in " + collectionId, e);
+                    log.warn("Couldn't find profile '" + profileId + "' in " + collectionId, e);
                 }
             }
         }

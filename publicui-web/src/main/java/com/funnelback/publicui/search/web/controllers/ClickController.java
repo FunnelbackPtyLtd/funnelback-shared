@@ -33,7 +33,6 @@ import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.ProfileId;
-import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -261,7 +260,7 @@ public class ClickController extends SessionController {
     }
     
     public void saveResultHistory(Collection collection, Optional<String> profile, SearchUser user, URI indexUrl, Optional<String> givenQuery) {
-        ServiceConfigReadOnly profileConfig = getServiceConfigOrDefault(collection, profile);
+        ServiceConfigReadOnly profileConfig = getServiceConfigOrDefault(configRepository, collection, profile);
         if (profileConfig.get(FrontEndKeys.ModernUi.Session.SESSION)
             && user != null) {
             // Save the click in the user history
@@ -281,35 +280,10 @@ public class ClickController extends SessionController {
     }
     
     public Set<String> metadataClassesToRecord(Collection collection, Optional<String> profile) {
-        ServiceConfigReadOnly profileConfig = getServiceConfigOrDefault(collection, profile);
+        ServiceConfigReadOnly profileConfig = getServiceConfigOrDefault(configRepository, collection, profile);
         return new HashSet<>(profileConfig.get(FrontEndKeys.ModernUi.Session.SearchHistory.METADATA_TO_RECORD));
     }
-    
-    /**
-     * Gets the Service config for the given profile, if no profile is given or the profile does not exist the default
-     * is returned.
-     * 
-     * @param collection
-     * @param profile
-     * @return
-     * @throws IllegalStateException when both the given profile and default profile do not exist.
-     */
-    public ServiceConfigReadOnly getServiceConfigOrDefault(Collection collection, Optional<String> profile) 
-        throws IllegalStateException {
-        if(profile.isPresent()) {
-            try {
-                return configRepository.getServiceConfig(collection.getId(), profile.get());
-            } catch (ProfileNotFoundException e) {
-                log.warn("Given prrofile {} does not exist reverting to default profile", profile.get());
-            }
-        }
-        try {
-            return configRepository.getServiceConfig(collection.getId(), DefaultValues.DEFAULT_PROFILE);
-        } catch (ProfileNotFoundException e) {
-            throw new IllegalStateException("The default profile is missing, it must be created if the collection still exists", e);
-        }
-    }
-    
+
     protected String getRequestId(HttpServletRequest request, Collection collection) {
         return LogUtils.getRequestIdentifier(request,
             DefaultValues.RequestId.valueOf(collection.getConfiguration()
