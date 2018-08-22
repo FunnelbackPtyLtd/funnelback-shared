@@ -58,6 +58,7 @@ public abstract class SessionController {
      * Gets the Service config for the given profile, if no profile is given or the profile does not exist the default
      * is returned.
      *
+     * @param configRepository
      * @param collection
      * @param profile
      * @return
