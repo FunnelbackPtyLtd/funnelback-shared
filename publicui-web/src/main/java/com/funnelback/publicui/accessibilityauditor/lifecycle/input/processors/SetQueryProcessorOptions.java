@@ -38,9 +38,19 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     /** Default value for PADRE's MBL option */
     private static final int DEFAULT_MBL = 250;
 
-    private final List<String> options = new ArrayList<>();
+    @Override
+    protected void processAccessibilityAuditorTransaction(SearchTransaction st) throws InputProcessorException {
+        if (SearchTransactionUtils.hasQuestion(st)
+            && SearchQuestionType.ACCESSIBILITY_AUDITOR.equals(st.getQuestion().getQuestionType())) {
 
-    public SetQueryProcessorOptions() {
+            st.getQuestion().setLogQuery(Optional.ofNullable(false));
+            
+            st.getQuestion().getDynamicQueryProcessorOptions().addAll(getOptions(st));
+        }
+    }
+    
+    private List<String> getOptions(SearchTransaction st) {
+        List<String> options = new ArrayList<>();
         options.add(getSMOption());
         options.add(getSFOption());
         options.add(getMBLOption());
@@ -51,20 +61,11 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         options.add(getCountUniqueByGroupSensitiveOption());
         options.add(getRmcSensitiveOption());
         options.add(getSortOption());
-
-        log.debug("Initialised with options: {}", options.stream().collect(Collectors.joining(System.getProperty("line.separator"))));
-    }
-
-    @Override
-    protected void processAccessibilityAuditorTransaction(SearchTransaction st) throws InputProcessorException {
-        if (SearchTransactionUtils.hasQuestion(st)
-            && SearchQuestionType.ACCESSIBILITY_AUDITOR.equals(st.getQuestion().getQuestionType())) {
-
-            st.getQuestion().setLogQuery(Optional.ofNullable(false));
-            options.add(new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion()));
-            st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
-
+        options.add(new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion()));
+        if(log.isDebugEnabled()) {
+            log.debug("Initialised with options: {}", options.stream().collect(Collectors.joining(System.getProperty("line.separator"))));
         }
+        return options;
     }
 
     /**
