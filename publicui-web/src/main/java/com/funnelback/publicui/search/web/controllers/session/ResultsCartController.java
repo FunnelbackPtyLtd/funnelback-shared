@@ -107,7 +107,6 @@ public class ResultsCartController extends SessionApiControllerBase {
             Result r = indexRepository.getResult(collection, url);
             if (r != null) {
                 CartResult cart = CartResult.fromResult(r);
-                cart.setCollection(collection.getId());
                 cart.setUserId(user.getId());
                 cart.setAddedDate(new Date());
                 

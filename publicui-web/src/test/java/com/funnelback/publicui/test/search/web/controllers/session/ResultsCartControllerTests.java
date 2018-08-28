@@ -2,8 +2,8 @@ package com.funnelback.publicui.test.search.web.controllers.session;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -291,7 +291,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
     @Test
     public void testCartAdd() throws IOException {
         Result r = new Result();
-        r.setCollection(collection.getId());
+        r.setCollection("other-collection");
         r.setIndexUrl("funnelback://result.url/");
         r.setSummary("A summary");
         r.setTitle("A title");
@@ -312,6 +312,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         assertNotSame("[]", response.getContentAsString());
         assertEquals(jsonMapper.writeValueAsString(repository.getCart(user, collection)), response.getContentAsString());
         assertEquals(1, repository.getCart(user, collection).size());
+        assertEquals("other-collection", repository.getCart(user, collection).get(0).getCollection());
         assertEquals(1, logService.getCartLogs().size());
         assertEquals(CartClickLog.Type.ADD_TO_CART, logService.getCartLogs().get(0).getType());
     }
