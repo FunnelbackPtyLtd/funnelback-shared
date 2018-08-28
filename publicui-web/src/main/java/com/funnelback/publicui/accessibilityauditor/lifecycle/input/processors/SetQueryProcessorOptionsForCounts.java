@@ -12,6 +12,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.PadreOptionsForSpeed;
 import com.google.common.collect.ImmutableList;
 
+import lombok.AccessLevel;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -29,6 +31,9 @@ public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAudi
     
     private final List<String> options;
 
+    @Setter(AccessLevel.PACKAGE)
+    private AccessibilityAuditorDaatOption accessibilityAuditorDaatOption =  new AccessibilityAuditorDaatOption();
+    
     public SetQueryProcessorOptionsForCounts() {
         options = ImmutableList.<String>builder()
             .addAll(getOptionsForSpeed()) //add options to speed things up.
@@ -40,9 +45,9 @@ public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAudi
     
     @Override
     protected void processAccessibilityAuditorTransaction(SearchTransaction st) throws InputProcessorException {
-
-        options.add(new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion()));
         st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
+        st.getQuestion().getDynamicQueryProcessorOptions()
+            .add(accessibilityAuditorDaatOption.getDaatOption(st.getQuestion()));
         st.getQuestion().setLogQuery(Optional.ofNullable(false));
 
     }
