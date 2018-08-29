@@ -39,7 +39,7 @@ public class ResultsCartDao implements ResultsCartRepository {
     @Override
     public void addToCart(String collectionToStoreTheCartUnder, CartResult result) {
         SessionResultPK pk = new SessionResultPK(result.getUserId(),
-            result.getCollection(), result.getIndexUrl().toString());
+            collectionToStoreTheCartUnder, result.getIndexUrl().toString());
         if (em.find(CartResultDBModel.class, pk) == null) {
             em.persist(CartResultDBModel.fromResult(collectionToStoreTheCartUnder, result));
             log.debug("Saved item with URL" +result.getIndexUrl());
