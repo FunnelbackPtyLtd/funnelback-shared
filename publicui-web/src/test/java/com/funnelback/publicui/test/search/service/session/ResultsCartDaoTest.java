@@ -48,7 +48,7 @@ public class ResultsCartDaoTest extends SessionDaoTest {
             c.add(Calendar.DAY_OF_MONTH, i);
             CartResult cr = new CartResult();
             cr.setAddedDate(c.getTime());
-            cr.setCollection(collection.getId());
+            cr.setCollection(collection.getId() + "-component-collection");
             cr.setIndexUrl(URI.create("funnelback://test.result/"+i));
             cr.setSummary("Summary #"+i);
             cr.setUserId(user.getId());
@@ -63,7 +63,7 @@ public class ResultsCartDaoTest extends SessionDaoTest {
         for (int i=2,j=0; j<3; i--,j++) {
             CartResult cr = cart.get(j);
             assertEquals(user.getId(), cr.getUserId());
-            assertEquals(collection.getId(), cr.getCollection());
+            assertEquals(collection.getId() + "-component-collection", cr.getCollection());
             assertTrue(cr.getIndexUrl().toString().matches("funnelback://test.result/"+i));
             assertTrue(cr.getSummary().matches("Summary #"+i));
             assertTrue(cr.getTitle().matches("Title #"+i));
@@ -97,7 +97,7 @@ public class ResultsCartDaoTest extends SessionDaoTest {
     public void removeNonExistingEntry() {
         CartResult cr = new CartResult();
         cr.setAddedDate(new Date());
-        cr.setCollection(collection.getId());
+        cr.setCollection(collection.getId() + "-component-collection");
         cr.setIndexUrl(URI.create("funnelback://test.result/"));
         cr.setSummary("Summary");
         cr.setUserId(user.getId());
@@ -116,7 +116,7 @@ public class ResultsCartDaoTest extends SessionDaoTest {
     public void addExistingEntry() {
         CartResult cr = new CartResult();
         cr.setAddedDate(new Date());
-        cr.setCollection(collection.getId());
+        cr.setCollection(collection.getId() + "-component-collection");
         cr.setIndexUrl(URI.create("funnelback://test.result/"));
         cr.setSummary("Summary");
         cr.setUserId(user.getId());
@@ -133,7 +133,7 @@ public class ResultsCartDaoTest extends SessionDaoTest {
     @Test
     public void testSummaryTruncation() {
         CartResult cr = super.generateRandomCartResult();
-        cr.setCollection(collection.getId());
+        cr.setCollection(collection.getId() + "-component-collection");
         cr.setUserId(user.getId());
         cr.setSummary(new String(new byte[8192]));
         
@@ -149,7 +149,7 @@ public class ResultsCartDaoTest extends SessionDaoTest {
     @Transactional  // Needed for lazy initialisation of the metaData collection
     public void testMetadataTruncation() {
         CartResult cr = super.generateRandomCartResult();
-        cr.setCollection(collection.getId());
+        cr.setCollection(collection.getId() + "-component-collection");
         cr.setUserId(user.getId());
         cr.getMetaData().put("abc", new String(new byte[8192]));
         
