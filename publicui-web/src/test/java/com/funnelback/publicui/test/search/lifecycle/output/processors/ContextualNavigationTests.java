@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -115,8 +114,16 @@ public class ContextualNavigationTests {
     public void testQueryCleaning() {
         Map<String, List<String>> userQueryStringMapCopy = ImmutableMap.of(
             "collection", Lists.newArrayList("coll-name"),
+            "start_rank", Lists.newArrayList("5"),
             "query", Lists.newArrayList("search"));
         
+        Assert.assertEquals(
+            "Expected start_rank to be stripped",
+            QueryStringUtils.toMap("?query=search&collection=coll-name"),
+            QueryStringUtils.toMap(
+                ContextualNavigation.cleanContextualNavigationLink(userQueryStringMapCopy,
+                    "?query=search&collection=coll-name")));
+
         Assert.assertEquals(
             "Expected type_max_clusters to be preserved through",
             QueryStringUtils.toMap("?type_max_clusters=40&query=search&collection=coll-name"), 

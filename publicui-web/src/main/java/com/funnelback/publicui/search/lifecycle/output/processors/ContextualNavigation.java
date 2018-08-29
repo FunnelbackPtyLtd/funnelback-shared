@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -91,6 +92,8 @@ public class ContextualNavigation extends AbstractOutputProcessor {
     
     private final static Set<String> PADRE_CONTEXTUAL_NAVIGATION_QUERY_PARAMETERS_TO_KEEP = Sets.newHashSet("site_max_clusters", "topic_max_clusters", "type_max_clusters", "query");
     
+    private final static Set<String> USER_QUERY_PARAMETERS_TO_CLEAR = Sets.newHashSet("start_rank");
+    
     /**
      * Cleans up a padre-generated contextual navigation link for modern-ui usage. In particular it will...
      * 
@@ -100,6 +103,9 @@ public class ContextualNavigation extends AbstractOutputProcessor {
      * - Keep only parameters that are set in the original userQueryStringMapCopy or that are specifically set by padre
      *   (see PADRE_CONTEXTUAL_NAVIGATION_QUERY_PARAMTERS_TO_KEEP). This avoids double-applying a gscope which a facet
      *   causes to be set, but which is passed to padre via the query_string.
+     *   
+     *   Some userQueryStringMapCopy parameters will be removed since they may not make sense after the contextual 
+     *   navigation link is clicked. For example 'start_rank'. See USER_QUERY_PARAMETERS_TO_CLEAR.
      */
     public /* private if not for unit tests */ static String cleanContextualNavigationLink(Map<String, List<String>> userQueryStringMapCopy, String padreGeneratedLink) {
         Map<String, List<String>> contextualNavigationLinkQueryStringMap;
@@ -113,13 +119,19 @@ public class ContextualNavigation extends AbstractOutputProcessor {
         }
 
         Map<String, List<String>> resultMap = new HashMap<>();
-        resultMap.putAll(userQueryStringMapCopy);
+        userQueryStringMapCopy.entrySet().stream().filter(entry -> {
+            return !USER_QUERY_PARAMETERS_TO_CLEAR.contains(entry.getKey());
+        }).forEach(entry -> {
+            resultMap.put(entry.getKey(), entry.getValue());
+        });
+        
 
         for (String param : PADRE_CONTEXTUAL_NAVIGATION_QUERY_PARAMETERS_TO_KEEP) {
             if (contextualNavigationLinkQueryStringMap.containsKey(param)) {
                 resultMap.put(param, contextualNavigationLinkQueryStringMap.get(param));
             }
         }
+        
 
         return (QueryStringUtils.toString(resultMap, prependQuestionMark));
     }
