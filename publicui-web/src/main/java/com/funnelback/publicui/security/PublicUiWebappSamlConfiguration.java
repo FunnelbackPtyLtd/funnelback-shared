@@ -2,14 +2,14 @@ package com.funnelback.publicui.security;
 
 import static com.funnelback.config.keys.Keys.ServerKeys;
 
-import java.util.Optional;
-
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -121,12 +121,34 @@ public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration 
     @Override
     public String getEntityBaseURL() {
         if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
-            return config.get(ServerKeys.Urls.ADMIN_PROTOCOL) + "://" + config.get(ServerKeys.Urls.ADMIN_HOSTNAME) + ":"
-                + config.get(ServerKeys.Urls.ADMIN_PORT) + servletContext.getContextPath();
+            return getAdminHostName() + servletContext.getContextPath();
         } else {
             return config.get(ServerKeys.Urls.SEARCH_PROTOCOL) + "://" + config.get(ServerKeys.Urls.SEARCH_HOSTNAME) + ":"
                 + config.get(ServerKeys.Urls.SEARCH_PORT) + servletContext.getContextPath();
         }
+    }
+
+    @Override
+    public Optional<String> getDefaultLoginRedirect() {
+        String url;
+        if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
+            url = config.get(ServerKeys.Auth.Admin.SAML.DEFAULT_LOGIN_REDIRECT_URL).orElse("");
+        } else {
+            url = config.get(ServerKeys.Auth.PublicUI.SAML.DEFAULT_LOGIN_REDIRECT_URL).orElse("");
+        }
+        if (StringUtils.isBlank(url)) {
+            return Optional.empty();
+        }
+        if (url.startsWith("http")) {
+            return Optional.of(url);
+        } else {
+            return Optional.of(this.getAdminHostName() + "/" + url);
+        }
+    }
+
+    private String getAdminHostName() {
+        return config.get(ServerKeys.Urls.ADMIN_PROTOCOL) + "://" + config.get(ServerKeys.Urls.ADMIN_HOSTNAME) + ":"
+            + config.get(ServerKeys.Urls.ADMIN_PORT);
     }
 
 }
