@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
 
+import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,12 +21,9 @@ import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
-import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
-import com.funnelback.config.configtypes.index.IndexConfigOption;
-import com.funnelback.config.configtypes.index.IndexConfigOptionDefinition;
-import com.funnelback.config.configtypes.index.IndexConfigReadOnly;
-import static com.funnelback.config.keys.Keys.IndexKeys;
+
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.config.marshallers.Marshallers;
 import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
@@ -142,7 +142,7 @@ public class ContentAuditor extends AbstractInputProcessor {
                     searchTransaction.addExtraSearch(ContentAuditor.DUPLICATES_EXTRA_SEARCH_KEY, createExtraQuestion(question));
 
                     // Add some custom display metadata labels to the data model
-                    searchTransaction.getResponse().getCustomData().put(ContentAuditor.DISPLAY_METADATA_KEY, readMetadataInfo(question, IndexKeys.ContentAuditor.DISPLAY_METADATA_PREFIX));
+                    searchTransaction.getResponse().getCustomData().put(ContentAuditor.DISPLAY_METADATA_KEY, readMetadataInfo(question, FrontEndKeys.ModernUi.ContentAuditor.DISPLAY_METADATA_PREFIX));
                 } catch (CollectionNotFoundException e) {
                     throw new InputProcessorException("Error while processing Conent Auditor for collection", e);
                 }
@@ -152,20 +152,20 @@ public class ContentAuditor extends AbstractInputProcessor {
 
     /** Modify the given question to suit content auditor's needs */
     private void customiseMainQuestion(SearchQuestion question) throws CollectionNotFoundException {
-        Config config = question.getCollection().getConfiguration();
+        ServiceConfigReadOnly serviceConfig = question.getCurrentProfileConfig();
         // Manipulate the request to suit content auditor
         question.getAdditionalParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
         question.getAdditionalParameters().put(RequestParameters.STEM, new String[] {"0"});
-        question.getAdditionalParameters().put(RequestParameters.DAAT, new String[] {config.value(Keys.ModernUI.ContentAuditor.DAAT_LIMIT)});
+        question.getAdditionalParameters().put(RequestParameters.DAAT, new String[] {serviceConfig.get(FrontEndKeys.ModernUi.ContentAuditor.DAAT_LIMIT).toString()});
         question.getAdditionalParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {Integer.toString(ContentAuditor.METADATA_BUFFER_LENGTH_VALUE)});
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.DAAT_TIMEOUT + "=" + ContentAuditor.DAAT_TIMEOUT_MAX_VALUE);
-        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.RMC_MAXPERFIELD + "=" + config.value(Keys.ModernUI.ContentAuditor.MAX_METADATA_FACET_CATEGORIES));
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.RMC_MAXPERFIELD + "=" + serviceConfig.get(FrontEndKeys.ModernUi.ContentAuditor.MAX_METADATA_FACET_CATEGORIES));
         // FUN-7978 Do not pollute analytics
         question.setLogQuery(Optional.ofNullable(false));
 
         if (question.getRawInputParameters().get(RequestParameters.NUM_RANKS) == null) {
             // Set a default from collection.cfg
-            question.getAdditionalParameters().put(RequestParameters.NUM_RANKS, new String[] {config.value(Keys.ModernUI.ContentAuditor.NUM_RANKS)});
+            question.getAdditionalParameters().put(RequestParameters.NUM_RANKS, new String[] {serviceConfig.get(FrontEndKeys.ModernUi.ContentAuditor.NUM_RANKS).toString()});
         }
 
         question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
@@ -174,8 +174,8 @@ public class ContentAuditor extends AbstractInputProcessor {
 
             // User scoped to a duplicate group, so we want to show only that
             question.getAdditionalParameters().put(
-                    RequestParameters.COLLAPSING_SIGNATURE,
-                    new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
+                RequestParameters.COLLAPSING_SIGNATURE,
+                new String[] {serviceConfig.get(FrontEndKeys.ModernUi.ContentAuditor.COLLAPSING_SIGNATURE)});
 
             question.getRawInputParameters().put(RequestParameters.S, 
                 ArrayUtils.add(
@@ -188,7 +188,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         // Metadata for displaying in the results view
         question.getAdditionalParameters().put(RequestParameters.SUMMARY_MODE, new String[] {"meta"});
         StringBuilder sfValue = new StringBuilder();
-        for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA).entrySet()) {
+        for (Map.Entry<String, String> entry : readMetadataInfo(question, FrontEndKeys.ModernUi.ContentAuditor.DISPLAY_METADATA_PREFIX).entrySet()) {
             sfValue.append("," + entry.getKey());
         }
         
@@ -242,7 +242,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         
         facetDefinitions.add(createMissingMetadataFacetDefinition(i18n.tr("label.missingMetadataFacet")));
 
-        for (Map.Entry<String, String> entry : readMetadataInfo(question, IndexKeys.ContentAuditor.FACET_METADATA_PREFIX).entrySet()) {
+        for (Map.Entry<String, String> entry : readMetadataInfo(question, FrontEndKeys.ModernUi.ContentAuditor.FACET_METADATA_PREFIX).entrySet()) {
             facetDefinitions.add(createMetadataFacetDefinition(entry.getValue(), entry.getKey()));
         }
 
@@ -284,13 +284,13 @@ public class ContentAuditor extends AbstractInputProcessor {
      * 
      * and will be returned as a hash of className to label
      */
-    private Map<String, String> readMetadataInfo(SearchQuestion question, String keyPrefix) throws CollectionNotFoundException {
+    private Map<String, String> readMetadataInfo(SearchQuestion question, String keyPrefix) {
         Map<String, String> metadataClassToLabel = new HashMap<>();
-        IndexConfigReadOnly indexConfig = configRepository.getIndexConfig(question.getCollection().getId());
+        ServiceConfigReadOnly serviceConfig = question.getCurrentProfileConfig();
 
-        for (IndexConfigOptionDefinition<String> key : keysStartingWith(keyPrefix, indexConfig)) {
+        for (ServiceConfigOptionDefinition<String> key : keysStartingWith(keyPrefix, serviceConfig)) {
             String metadata = key.getKey().substring(keyPrefix.length());
-            String label = indexConfig.get(key);
+            String label = serviceConfig.get(key);
 
             if (label.length() > 0) {
                 metadataClassToLabel.put(metadata, label);
@@ -300,13 +300,16 @@ public class ContentAuditor extends AbstractInputProcessor {
     }
 
     /**
-     * Gets all keys starting with a prefix as a String type key
+     * Gets all keys starting with a prefix as a String type key.
+     *
+     * @param keyPrefix
+     * @param serviceConfig
      * @return
      */
-    public List<IndexConfigOptionDefinition<String>> keysStartingWith(String keyPrefix, IndexConfigReadOnly indexConfig) {
-        return indexConfig.getRawKeys().stream()
+    public List<ServiceConfigOptionDefinition<String>> keysStartingWith(String keyPrefix, ServiceConfigReadOnly serviceConfig) {
+        return serviceConfig.getRawKeys().stream()
             .filter((k) -> k.startsWith(keyPrefix))
-            .map(k -> new IndexConfigOption<String>(k, Marshallers.STRING_MARSHALLER, Validators.acceptAll(), ""))
+            .map(k -> new ProfileAndCollectionConfigOption<String>(k, Marshallers.STRING_MARSHALLER, Validators.acceptAll(), ""))
             .collect(Collectors.toList());
     }
 
@@ -376,6 +379,8 @@ public class ContentAuditor extends AbstractInputProcessor {
      * Customise the question to suit getting a large number of results to find duplicates
      */
     private SearchQuestion createExtraQuestion(SearchQuestion originalQuestion) {
+        ServiceConfigReadOnly serviceConfig = originalQuestion.getCurrentProfileConfig();
+
         SearchQuestion question = new SearchQuestion();
         SearchQuestionBinder.bind(originalQuestion, question);
 
@@ -385,11 +390,11 @@ public class ContentAuditor extends AbstractInputProcessor {
         Config config = question.getCollection().getConfiguration();
 
         question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
-        question.getAdditionalParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
+        question.getAdditionalParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] { serviceConfig.get(FrontEndKeys.ModernUi.ContentAuditor.COLLAPSING_SIGNATURE) });
 
         question.getAdditionalParameters().put(RequestParameters.NUM_RANKS,
-            new String[] { config.value(Keys.ModernUI.ContentAuditor.OVERVIEW_CATEGORY_COUNT) });
-        
+            new String[] { serviceConfig.get(FrontEndKeys.ModernUi.ContentAuditor.OVERVIEW_CATEGORY_COUNT).toString() });
+
         question.getAdditionalParameters().put(RequestParameters.START_RANK, question.getAdditionalParameters().getOrDefault("duplicate_" + RequestParameters.START_RANK, new String[]{"0"}));
 
         // Speedup settings
