@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.web.controllers.content;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -83,7 +84,7 @@ public class GetFilecopyDocumentControllerTest {
                 new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "filecopy")
                     .setValue("collection_type", "filecopy")
                     .setValue(Keys.FileCopy.SECURITY_MODEL, DefaultValues.FileCopy.SECURITY_MODEL_NTFS)
-                    .setValue(Keys.ModernUI.AUTHENTICATION, "true")
+                    .setValue(FrontEndKeys.ModernUi.AUTHENTICATION.getKey(), "true")
                     .setValue(Keys.FileCopy.USERNAME, "")
                     .setValue(Keys.FileCopy.PASSWORD, "")
                     .setValue(Keys.FileCopy.DOMAIN, "")));
@@ -219,7 +220,7 @@ public class GetFilecopyDocumentControllerTest {
     @Test
     public void testDlsNoAuthConfigured() throws Exception {
         configRepository.getCollection("filecopy-dls")
-            .getConfiguration().setValue(Keys.ModernUI.AUTHENTICATION, "false");
+            .getConfiguration().setValue(FrontEndKeys.ModernUi.AUTHENTICATION.getKey(), "false");
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setUserPrincipal(new MockPrincipal());
