@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -95,7 +96,7 @@ public class FixPseudoLiveLinksPush2Tests {
     public void testServeFilecopyLink() throws Exception {
         configRepository.getCollection("collection-push")
             .getConfiguration()
-            .setValue(Keys.ModernUI.Serve.FILECOPY_LINK, "custom.link");
+            .setValue(FrontEndKeys.ModernUi.Serve.FILECOPY_LINK.getKey(), "custom.link");
         
         processor.processOutput(st);
         
@@ -113,7 +114,7 @@ public class FixPseudoLiveLinksPush2Tests {
         configRepository.getCollection("collection-push")
             .getConfiguration()
             .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "document")
-            .setValue(Keys.ModernUI.Serve.TRIM_LINK_PREFIX, "custom-prefix-");
+            .setValue(FrontEndKeys.ModernUi.Serve.TRIM_LINK_PREFIX.getKey(), "custom-prefix-");
     
         processor.processOutput(st);
         
@@ -129,7 +130,7 @@ public class FixPseudoLiveLinksPush2Tests {
         configRepository.getCollection("collection-push")
             .getConfiguration()
             .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "reference")
-            .setValue(Keys.ModernUI.Serve.TRIM_LINK_PREFIX, "custom-prefix-");
+            .setValue(FrontEndKeys.ModernUi.Serve.TRIM_LINK_PREFIX.getKey(), "custom-prefix-");
         
         processor.processOutput(st);
         
@@ -142,10 +143,15 @@ public class FixPseudoLiveLinksPush2Tests {
 
     @Test
     public void test() throws UnsupportedEncodingException, OutputProcessorException {
+
+        configRepository.getCollection("collection-push")
+            .getConfiguration()
+            .setValue(FrontEndKeys.ModernUi.Serve.FILECOPY_LINK.getKey(), "/search/serve-filecopy-document.cgi")
+            .setValue(FrontEndKeys.ModernUi.Serve.TRIM_LINK_PREFIX.getKey(), "serve-trim-");
+
         ResultPacket rp = st.getResponse().getResultPacket();
         rp.getResults().get(0).setCacheUrl("http://cache-link-1");
         rp.getResults().get(1).setCacheUrl("http://cache-link-2");
-        
         processor.processOutput(st);
         
         Assert.assertEquals(
