@@ -8,14 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.related.RelatedDocument;
 import com.funnelback.publicui.utils.MultimapToSingleStringMapWrapper;
-import com.funnelback.publicui.xml.MultimapConverter;
-import com.funnelback.publicui.xml.MultimapToSingleStringMapConverter;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.AllArgsConstructor;
@@ -107,6 +103,13 @@ public class Result implements ResultType {
     
     /** Query-biased summary */
     @Getter @Setter private String summary;
+    
+    /**
+     * All texts available for generating summary text
+     * 
+     * @since 15.18 
+     */
+    @Getter @Setter private String allSummaryText;
     
     /** URL to access the cached version of the result. */
     @Getter @Setter private String cacheUrl;
@@ -304,6 +307,7 @@ public class Result implements ResultType {
         public static final String COLLAPSED = "collapsed";
         public static final String LIVE_URL = "live_url";
         public static final String SUMMARY = "summary";
+        public static final String ALL_SUMMARY_TEXT = "all_summary_text";
         public static final String CACHE_URL = "cache_url";        
         public static final String DATE = "date";
         public static final String FILESIZE = "filesize";

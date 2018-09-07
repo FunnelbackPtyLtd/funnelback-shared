@@ -5,20 +5,22 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+
+import org.apache.commons.io.FileUtils;
 
 import com.funnelback.publicui.search.model.padre.BestBet;
 import com.funnelback.publicui.search.model.padre.Category;
@@ -49,6 +51,20 @@ public class StaxStreamParserTests {
             FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/complex.xml")),StandardCharsets.UTF_8,
             false);
         assertNotNull(rp);
+    }
+    
+    @Test
+    public void testAllSummaryText() throws Exception {
+//       Format is:
+//       <all_summary_text>text</all_summary_text>
+        
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/all-summary-text.xml")),StandardCharsets.UTF_8,
+            false);
+        
+        Assert.assertEquals("all summary text", rp.getResults().get(0).getAllSummaryText());
+        Assert.assertEquals("summary", rp.getResults().get(0).getSummary());
     }
     
     @Test
