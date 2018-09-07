@@ -11,6 +11,12 @@ import java.security.Principal;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.publicui.search.model.collection.Profile;
+import com.google.common.collect.Maps;
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -44,7 +50,7 @@ public class GetFilecopyDocumentControllerTest {
     
     @Autowired
     private GetFilecopyDocumentController controller;
-    
+
     @Autowired
     private MockConfigRepository configRepository;
     
@@ -219,8 +225,13 @@ public class GetFilecopyDocumentControllerTest {
     
     @Test
     public void testDlsNoAuthConfigured() throws Exception {
-        configRepository.getCollection("filecopy-dls")
-            .getConfiguration().setValue(FrontEndKeys.ModernUi.AUTHENTICATION.getKey(), "false");
+        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        serviceConfig.set(FrontEndKeys.ModernUi.AUTHENTICATION, false);
+
+        Profile profile = new Profile("_default");
+        profile.setServiceConfig(serviceConfig);
+        configRepository.setServiceConfig(serviceConfig);
+        configRepository.getCollection("filecopy-dls").getProfiles().put("_default", profile);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setUserPrincipal(new MockPrincipal());
@@ -232,6 +243,12 @@ public class GetFilecopyDocumentControllerTest {
     
     @Test
     public void testDlsNoRequestPrincipal() throws Exception {
+        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        serviceConfig.set(FrontEndKeys.ModernUi.AUTHENTICATION, false);
+
+        Profile profile = new Profile("_default");
+        profile.setServiceConfig(serviceConfig);
+        configRepository.setServiceConfig(serviceConfig);
         MockHttpServletResponse response = new MockHttpServletResponse();
         controller.getFilecopyDocument("filecopy-dls", uri, false, tokenize(uri), response, new MockHttpServletRequest());
         
