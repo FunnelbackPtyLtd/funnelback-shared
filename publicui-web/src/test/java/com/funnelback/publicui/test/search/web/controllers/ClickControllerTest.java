@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import com.funnelback.common.profile.ProfileNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,6 +29,7 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.ProfileId;
+import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -169,7 +169,7 @@ public class ClickControllerTest {
         IndexRepository indexRepository = mock(IndexRepository.class);
         Mockito.when(indexRepository.getResult(Mockito.anyObject(), Mockito.anyObject()))
             .thenReturn(new Result(1, 999, "title", "collection", 1, null, "http://example.com/", "summary", null, null, null, null, null,
-                null, null, null, null, null, null, null, "http://example.com", null, false, false, false));
+                null, null, null, null, null, null, null, null, "http://example.com", null, false, false, false));
         
         ConfigRepository configRepository = mock(ConfigRepository.class);
         ServerConfigReadOnly srverConfig = mock(ServerConfigReadOnly.class);
