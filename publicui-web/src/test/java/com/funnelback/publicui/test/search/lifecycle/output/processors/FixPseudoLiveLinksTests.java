@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -177,6 +178,18 @@ public class FixPseudoLiveLinksTests {
 
     @Test
     public void test() throws UnsupportedEncodingException, OutputProcessorException {
+        configRepository.getCollection("collection-trim")
+            .getConfiguration()
+            .setValue(FrontEndKeys.ModernUi.Serve.TRIM_LINK_PREFIX.getKey(), "serve-trim-");
+
+        configRepository.getCollection("collection-trimpush")
+            .getConfiguration()
+            .setValue(FrontEndKeys.ModernUi.Serve.TRIM_LINK_PREFIX.getKey(), "serve-trim-");
+
+        configRepository.getCollection("collection-filecopy")
+            .getConfiguration()
+            .setValue(FrontEndKeys.ModernUi.Serve.FILECOPY_LINK.getKey(), "/search/serve-filecopy-document.cgi");
+
         ResultPacket rp = st.getResponse().getResultPacket();
         
         rp.getResults().get(0).setCacheUrl("http://cache-link-1");

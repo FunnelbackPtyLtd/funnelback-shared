@@ -14,6 +14,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
+import com.funnelback.publicui.utils.web.ProfilePicker;
 import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.exec.OS;
@@ -23,12 +27,11 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 
 import waffle.servlet.NegotiateSecurityFilter;
 
-import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.web.controllers.ResourcesController;
 import com.funnelback.publicui.search.web.filters.utils.FilterParameterHandling;
+
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 
 /**
  * <p>Wrapper around the WAFFLE filter so that it can be disabled
@@ -45,7 +48,9 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 
     @Autowired
     private ConfigRepository configRepository;
-    
+
+    private IntercepterHelper intercepterHelper = new IntercepterHelper();
+
     private boolean active = false;
     
     @Override
@@ -54,28 +59,34 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
     
         if (OS.isFamilyWindows()) {
             active = true;
-            log.debug("Windows authentication filter is loaded. Use "+Keys.ModernUI.AUTHENTICATION+"=true to activate it on collections");
+            log.debug("Windows authentication filter is loaded. Use "+FrontEndKeys.ModernUi.AUTHENTICATION.getKey()+"=true to activate it on collections");
         }
     }
-    
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
+        ServletException {
 
         if (active) {
             String collectionId = new FilterParameterHandling().getCollectionId((HttpServletRequest) request);
-            
-            Collection collection = null;            
+
             if (collectionId != null) {
-                collection = configRepository.getCollection(collectionId);
-                if (collection != null && collection.getConfiguration().valueAsBoolean(Keys.ModernUI.AUTHENTICATION)) {
-                    log.debug("Using Windows authentication filter for collection '"+collectionId+"'");
-                    super.doFilter(request, response, chain);
-                    return;
+                Collection collection = configRepository.getCollection(collectionId);
+                String profileId = new ProfilePicker().existingProfileForCollection(collection, intercepterHelper.getProfileFromRequestOrDefaultProfile((HttpServletRequest) request));
+                ServiceConfigReadOnly serviceConfig;
+                try {
+                    serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
+                    if (collection != null && serviceConfig.get(FrontEndKeys.ModernUi.AUTHENTICATION)) {
+                        log.debug("Using Windows authentication filter for collection '"+collectionId+"'");
+                        super.doFilter(request, response, chain);
+                        return;
+                    }
+                } catch (ProfileNotFoundException e) {
+                    log.error("Couldn't find profile '" + profileId + "' in " + collectionId, e);
                 }
             }
         }
-        
+
         chain.doFilter(request, response);
     }
         

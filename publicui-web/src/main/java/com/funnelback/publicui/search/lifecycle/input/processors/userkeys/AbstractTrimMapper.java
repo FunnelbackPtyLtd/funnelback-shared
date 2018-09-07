@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -133,7 +134,7 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
             } else {
                 log.warn(AbstractTrimMapper.class.getSimpleName() + " is enabled on collection '"+
                     st.getQuestion().getCollection().getId() + "' but the request is not impersonated."
-                    + " Ensure "+Keys.ModernUI.AUTHENTICATION
+                    + " Ensure "+ FrontEndKeys.ModernUi.AUTHENTICATION.getKey()
                     +" is enabled and that Windows authentication is working.");
                 
             }

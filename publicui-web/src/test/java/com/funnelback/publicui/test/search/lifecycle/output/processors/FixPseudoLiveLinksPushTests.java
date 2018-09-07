@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -145,7 +146,12 @@ public class FixPseudoLiveLinksPushTests {
         ResultPacket rp = st.getResponse().getResultPacket();
         rp.getResults().get(0).setCacheUrl("http://cache-link-1");
         rp.getResults().get(1).setCacheUrl("http://cache-link-2");
-        
+
+        configRepository.getCollection("collection-push")
+            .getConfiguration()
+            .setValue(FrontEndKeys.ModernUi.Serve.FILECOPY_LINK.getKey(), "/search/serve-filecopy-document.cgi")
+            .setValue(FrontEndKeys.ModernUi.Serve.TRIM_LINK_PREFIX.getKey(), "serve-trim-");
+
         processor.processOutput(st);
         
         Assert.assertEquals(

@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.web.controllers.content;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import static com.funnelback.publicui.search.web.controllers.content.ContentConstants.CONTENT_DISPOSITION_HEADER;
 import static com.funnelback.publicui.search.web.controllers.content.ContentConstants.CONTENT_DISPOSITION_VALUE;
 import static com.funnelback.publicui.search.web.controllers.content.ContentConstants.OCTET_STRING_MIME_TYPE;
@@ -15,6 +16,10 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.publicui.search.web.interceptors.helpers.IntercepterHelper;
+import com.funnelback.publicui.utils.web.ProfilePicker;
 import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.io.IOUtils;
@@ -70,6 +75,8 @@ public class GetFilecopyDocumentController {
      */
     private static final int NOATTACHMENT_LIMIT = 2048;
 
+    private IntercepterHelper intercepterHelper = new IntercepterHelper();
+
     @Autowired
     private I18n i18n;
     
@@ -102,7 +109,8 @@ public class GetFilecopyDocumentController {
             @RequestParam(value=RequestParameters.Serve.AUTH) String authToken,
             HttpServletResponse response,
             HttpServletRequest request) throws IOException {
-        
+
+
         Collection collection = configRepository.getCollection(collectionId);
         if (collection == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -119,7 +127,7 @@ public class GetFilecopyDocumentController {
             response.getWriter().write(i18n.tr("serve.bad_token"));
             log.debug("Invalid auth. token '"+authToken+"' for URI '"+uri+"' on collection '"+collectionId+"'");
         } else {
-            
+            String profileId = new ProfilePicker().existingProfileForCollection(collection, intercepterHelper.getProfileFromRequestOrDefaultProfile(request));
             boolean withDls = false;
             
             // If DLS is on, fetch the file natively as the impersonated user
@@ -133,15 +141,20 @@ public class GetFilecopyDocumentController {
             if ((DefaultValues.DocumentLevelSecurity.ACTION_NTFS.equals(dlsAction)
                     && ! Config.isFalse(dlsMode))
                     || (securityModel != null && !DefaultValues.FileCopy.SECURITY_MODEL_NONE.equals(securityModel))) {
-                
-                // DLS mode, ensure impersonation is enabled
-                if (! collection.getConfiguration().valueAsBoolean(Keys.ModernUI.AUTHENTICATION)
+
+                try {
+                    ServiceConfigReadOnly serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
+                    // DLS mode, ensure impersonation is enabled
+                    if (! serviceConfig.get(FrontEndKeys.ModernUi.AUTHENTICATION)
                         || request.getUserPrincipal() == null) {
-                    log.error("DLS is enabled on collection '"+collectionId+"' but the request is not impersonated."
-                        + " Ensure "+Keys.ModernUI.AUTHENTICATION
-                        +" is enabled and that Windows authentication is working.");
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    return;
+                        log.error("DLS is enabled on collection '"+collectionId+"' but the request is not impersonated."
+                            + " Ensure "+FrontEndKeys.ModernUi.AUTHENTICATION.getKey()
+                            +" is enabled and that Windows authentication is working.");
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        return;
+                    }
+                } catch (ProfileNotFoundException e) {
+                    log.warn("Couldn't find profile '" + profileId + "' in " + collectionId, e);
                 }
                 withDls = true;
             }
