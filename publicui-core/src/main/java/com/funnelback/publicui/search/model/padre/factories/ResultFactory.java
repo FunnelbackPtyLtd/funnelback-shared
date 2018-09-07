@@ -1,24 +1,33 @@
 package com.funnelback.publicui.search.model.padre.factories;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateUtils;
+
 import com.funnelback.publicui.search.model.padre.Collapsed;
 import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.QuickLinks;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
-import com.google.common.collect.Lists;
 
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateUtils;
-
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.util.*;
-import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
 
 /**
  * Builds {@link Result}s from various input sources.
@@ -45,6 +54,7 @@ public class ResultFactory {
         Integer component = NumberUtils.toInt(data.get(Result.Schema.COMPONENT), 0);
         String liveUrl = data.get(Result.Schema.LIVE_URL);
         String summary = data.get(Result.Schema.SUMMARY);
+        String all_summary_text = data.get(Result.Schema.ALL_SUMMARY_TEXT);
         String cacheUrl = data.get(Result.Schema.CACHE_URL);
         String exploreLink = data.get(Result.Schema.EXPLORE_LINK);
         
@@ -94,6 +104,7 @@ public class ResultFactory {
                 collapsed,
                 liveUrl,
                 summary,
+                all_summary_text,
                 cacheUrl,
                 date,
                 fileSize,
