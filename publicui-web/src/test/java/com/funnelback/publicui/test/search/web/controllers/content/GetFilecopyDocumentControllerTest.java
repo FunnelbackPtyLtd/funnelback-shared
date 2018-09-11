@@ -93,7 +93,6 @@ public class GetFilecopyDocumentControllerTest {
                 new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "filecopy")
                     .setValue("collection_type", "filecopy")
                     .setValue(Keys.FileCopy.SECURITY_MODEL, DefaultValues.FileCopy.SECURITY_MODEL_NTFS)
-                    //.setValue(FrontEndKeys.ModernUi.AUTHENTICATION.getKey(), "true")
                     .setValue(Keys.FileCopy.USERNAME, "")
                     .setValue(Keys.FileCopy.PASSWORD, "")
                     .setValue(Keys.FileCopy.DOMAIN, "")));
