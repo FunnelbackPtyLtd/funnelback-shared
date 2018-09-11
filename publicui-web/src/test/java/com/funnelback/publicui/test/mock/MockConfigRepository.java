@@ -14,6 +14,7 @@ import java.io.File;
 
 import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.GlobalOnlyConfig;
+import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.index.IndexConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
@@ -32,11 +33,11 @@ public class MockConfigRepository implements ConfigRepository {
     private Map<String, Map<String, String>> extraSearchesConfigurations = new HashMap<>();
 
     @Getter @Setter private GlobalOnlyConfig globalConfiguration;
-    
+
     @Getter @Setter private ServerConfigReadOnly serverConfig;
 
-    @Getter @Setter private ServiceConfigReadOnly serviceConfig;
-    
+    @Getter private Map<String, Map<String, ServiceConfigReadOnly>> serviceConfigs = new HashMap<>();
+
     @Getter @Setter private IndexConfigReadOnly indexConfig;
 
     @Override
@@ -53,15 +54,15 @@ public class MockConfigRepository implements ConfigRepository {
     public List<String> getAllCollectionIds() {
         return new ArrayList<String>(collections.keySet());
     }
-    
+
     public void addCollection(Collection c) {
         collections.put(c.getId(), c);
     }
-    
+
     public void removeCollection(String collectionId) {
         collections.remove(collectionId);
     }
-    
+
     public void removeAllCollections() {
         collections.clear();
     }
@@ -75,12 +76,12 @@ public class MockConfigRepository implements ConfigRepository {
     public String[] getForms(String collectionId, String profileId) {
         return new String[]{"simple"};
     }
-    
+
     @Override
     public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId) {
         return extraSearchesConfigurations.get(collection.getId()+":"+extraSearchId);
     }
-    
+
     public void addExtraSearchConfiguration(String collectionId, String extraSearchId, Map<String, String> m) {
         extraSearchesConfigurations.put(collectionId+":"+extraSearchId, m);
     }
@@ -89,12 +90,12 @@ public class MockConfigRepository implements ConfigRepository {
     @Override
     public String getExecutablePath(String exeName) {
         // always returns perl.
-        
+
         File perlBin = null;
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             // Look in PATH for Perl
             String path = System.getenv("PATH");
-            
+
             // The folder containing Perl will be named something like
             // C:\Perl\... or C:\funnelback\wbin\ActivePerl\...
             if (path.contains("Perl")) {
@@ -113,7 +114,7 @@ public class MockConfigRepository implements ConfigRepository {
             // Linux boxes always have Perl
             perlBin = new File("/usr/bin/perl");
         }
-        
+
         // Skip the test if we haven't found a Perl interpreter
         // of if it cannot be executed.
         Assume.assumeTrue(perlBin != null && perlBin.canExecute());
@@ -123,7 +124,7 @@ public class MockConfigRepository implements ConfigRepository {
 
     @Override
     public Map<String, String> getTranslations(String collectionId,
-            String profileId, Locale locale) {
+        String profileId, Locale locale) {
         return translations;
     }
 
@@ -132,15 +133,24 @@ public class MockConfigRepository implements ConfigRepository {
         return xslTemplate;
     }
 
+    public void setServiceConfig(String collectionId, String profileIdAndView, ServiceConfigReadOnly serviceConfig) throws ProfileNotFoundException {
+        if(serviceConfigs.get(collectionId) == null) {
+            serviceConfigs.put(collectionId, new HashMap<>());
+        }
+        serviceConfigs.get(collectionId).put(profileIdAndView, serviceConfig);
+    }
+
     @Override
-    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) {
-        return serviceConfig;
+    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) throws ProfileNotFoundException {
+        ServiceConfigReadOnly serviceConfigReadOnly = serviceConfigs.getOrDefault(collectionId, new HashMap<>()).get(profileIdAndView);
+        if(serviceConfigReadOnly == null) throw new ProfileNotFoundException(collectionId, profileIdAndView);
+        return serviceConfigReadOnly;
     }
 
     @Override
     public IndexConfigReadOnly getIndexConfig(String collectionId) throws CollectionNotFoundException {
         return indexConfig;
     }
-    
+
 }
 
