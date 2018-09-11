@@ -1,7 +1,7 @@
 package com.funnelback.publicui.test.search.web.interceptors;
 
 import static com.funnelback.config.keys.Keys.FrontEndKeys;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +62,7 @@ public class AccessRestrictionInterceptorTests {
         configRepository.removeAllCollections();
 
         testServiceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
-        configRepository.setServiceConfig(testServiceConfig);
+        configRepository.setServiceConfig(COLLECTION_ID, "_default", testServiceConfig);
         
         Collection collection = mock(Collection.class);
         when(collection.getProfiles()).thenReturn(new HashMap<>());
