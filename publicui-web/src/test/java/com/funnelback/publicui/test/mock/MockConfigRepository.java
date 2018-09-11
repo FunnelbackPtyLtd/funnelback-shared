@@ -14,6 +14,7 @@ import java.io.File;
 
 import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.GlobalOnlyConfig;
+import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.index.IndexConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
@@ -35,7 +36,7 @@ public class MockConfigRepository implements ConfigRepository {
     
     @Getter @Setter private ServerConfigReadOnly serverConfig;
 
-    @Getter @Setter private ServiceConfigReadOnly serviceConfig;
+    @Getter private Map<String, Map<String, ServiceConfigReadOnly>> serviceConfigs = new HashMap<>();
     
     @Getter @Setter private IndexConfigReadOnly indexConfig;
 
@@ -132,9 +133,18 @@ public class MockConfigRepository implements ConfigRepository {
         return xslTemplate;
     }
 
+    public void setServiceConfig(String collectionId, String profileIdAndView, ServiceConfigReadOnly serviceConfig) throws ProfileNotFoundException {
+    	if(serviceConfigs.get(collectionId) == null) {
+    		serviceConfigs.put(collectionId, new HashMap<>());
+    	}
+    	serviceConfigs.get(collectionId).put(profileIdAndView, serviceConfig);
+    }
+    
     @Override
-    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) {
-        return serviceConfig;
+    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) throws ProfileNotFoundException {
+        ServiceConfigReadOnly serviceConfigReadOnly = serviceConfigs.getOrDefault(collectionId, new HashMap<>()).get(profileIdAndView);
+        if(serviceConfigReadOnly == null) throw new ProfileNotFoundException(collectionId, profileIdAndView);
+        return serviceConfigReadOnly;
     }
 
     @Override

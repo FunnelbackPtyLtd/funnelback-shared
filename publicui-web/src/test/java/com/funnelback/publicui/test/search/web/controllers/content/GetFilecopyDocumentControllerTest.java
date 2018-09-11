@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.security.Principal;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -54,6 +55,8 @@ public class GetFilecopyDocumentControllerTest {
     @Autowired
     private MockConfigRepository configRepository;
     
+    private ServiceConfig filecopyDlsDefaultProfile;
+    
     @Autowired
     private File searchHome;
     
@@ -90,10 +93,18 @@ public class GetFilecopyDocumentControllerTest {
                 new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "filecopy")
                     .setValue("collection_type", "filecopy")
                     .setValue(Keys.FileCopy.SECURITY_MODEL, DefaultValues.FileCopy.SECURITY_MODEL_NTFS)
-                    .setValue(FrontEndKeys.ModernUi.AUTHENTICATION.getKey(), "true")
+                    //.setValue(FrontEndKeys.ModernUi.AUTHENTICATION.getKey(), "true")
                     .setValue(Keys.FileCopy.USERNAME, "")
                     .setValue(Keys.FileCopy.PASSWORD, "")
                     .setValue(Keys.FileCopy.DOMAIN, "")));
+        
+        filecopyDlsDefaultProfile = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        filecopyDlsDefaultProfile.set(FrontEndKeys.ModernUi.AUTHENTICATION, false);
+        configRepository.setServiceConfig("filecopy-dls", "_default", filecopyDlsDefaultProfile);
+        
+        Profile profile = new Profile();
+        profile.setServiceConfig(filecopyDlsDefaultProfile);
+        configRepository.getCollection("filecopy-dls").getProfiles().put("_default", profile);
         
         if (OS.isFamilyWindows()) {
             uri = new URI("file:///"+TEST_FILE.getAbsolutePath().replace("\\", "/"));
@@ -149,6 +160,7 @@ public class GetFilecopyDocumentControllerTest {
     @Test
     public void testDlsEarlyBinding() throws Exception {
         if (OS.isFamilyWindows()) {
+        	filecopyDlsDefaultProfile.set(FrontEndKeys.ModernUi.AUTHENTICATION, true);
             MockHttpServletResponse response = new MockHttpServletResponse();
             MockHttpServletRequest request = new MockHttpServletRequest();
             request.setUserPrincipal(new MockPrincipal());
@@ -170,7 +182,8 @@ public class GetFilecopyDocumentControllerTest {
     @Test
     public void testDlsLateBinding() throws Exception {
         if (OS.isFamilyWindows()) {
-        
+        	filecopyDlsDefaultProfile.set(FrontEndKeys.ModernUi.AUTHENTICATION, true);
+        	
             configRepository.getCollection("filecopy-dls")
                 .getConfiguration().setValue(Keys.FileCopy.SECURITY_MODEL, DefaultValues.FileCopy.SECURITY_MODEL_NONE)
                     .setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_ACTION, "ntfs")
@@ -225,14 +238,6 @@ public class GetFilecopyDocumentControllerTest {
     
     @Test
     public void testDlsNoAuthConfigured() throws Exception {
-        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
-        serviceConfig.set(FrontEndKeys.ModernUi.AUTHENTICATION, false);
-
-        Profile profile = new Profile("_default");
-        profile.setServiceConfig(serviceConfig);
-        configRepository.setServiceConfig(serviceConfig);
-        configRepository.getCollection("filecopy-dls").getProfiles().put("_default", profile);
-
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setUserPrincipal(new MockPrincipal());
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -243,12 +248,6 @@ public class GetFilecopyDocumentControllerTest {
     
     @Test
     public void testDlsNoRequestPrincipal() throws Exception {
-        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
-        serviceConfig.set(FrontEndKeys.ModernUi.AUTHENTICATION, false);
-
-        Profile profile = new Profile("_default");
-        profile.setServiceConfig(serviceConfig);
-        configRepository.setServiceConfig(serviceConfig);
         MockHttpServletResponse response = new MockHttpServletResponse();
         controller.getFilecopyDocument("filecopy-dls", uri, false, tokenize(uri), response, new MockHttpServletRequest());
         
