@@ -57,6 +57,9 @@ public class Facet {
     /**
      * Categories definitions of this facet, for example
      * a GScope category, or a Metadata field fill category.
+     * 
+     * <p>This should not be used when displaying facets. Instead use
+     *  allValues and selectedValues.</p> 
      */
     @Getter private final List<Category> categories = new ArrayList<Category>();
     
