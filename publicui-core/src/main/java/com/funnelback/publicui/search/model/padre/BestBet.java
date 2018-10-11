@@ -30,7 +30,7 @@ public class BestBet {
     /** Description of the best bet*/
     @Getter @Setter private String description;
     
-    /** URL to the best bet with click tracking (<code>click.cgi</code>) */
+    /** URL to the best bet with click tracking (<code>/s/redirect</code>) */
     @Getter @Setter private String clickTrackingUrl;
     
     /**
