@@ -315,4 +315,12 @@ angular
             return text;
         }
     }
+})
+.filter('replace', function() {
+    return function(text, from, to) {
+        text = text || '';
+        from = from || '';
+        to = to || ''
+        return text.replace(new RegExp(from, 'g'), to);
+    }
 });
