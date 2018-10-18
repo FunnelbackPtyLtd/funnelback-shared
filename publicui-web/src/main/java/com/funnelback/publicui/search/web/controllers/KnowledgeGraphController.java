@@ -5,6 +5,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.profile.ProfileId;
 import com.google.common.net.UrlEscapers;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,8 +13,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Pattern;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,8 +38,7 @@ public class KnowledgeGraphController {
             @Pattern(regexp = "[\\w-]+")
             @RequestParam(required = true)
             String profile,
-            String targetUrl,
-            HttpServletResponse response) throws IOException {
+            String targetUrl) throws IOException {
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("collectionId", collection);
@@ -46,4 +50,40 @@ public class KnowledgeGraphController {
             +DefaultValues.FOLDER_TEMPLATES+"/"
             +DefaultValues.FOLDER_MODERNUI+"/knowledge-graph", model);
     }
+
+    @Autowired
+    private File searchHome;
+
+    @RequestMapping("/templates.json")
+    public void knowledgeGraphTemplates(
+        @Pattern(regexp = "[\\w-]+")
+        @RequestParam(required = true)
+        String collection,
+        @Pattern(regexp = "[\\w-]+")
+        @RequestParam(required = true)
+        String profile,
+        HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/json");
+
+        try (OutputStream os = response.getOutputStream()) {
+            Files.copy(new File(searchHome, DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + "fkg-templates.json").toPath(), os);
+        }
+    }
+
+    @RequestMapping("/labels.json")
+    public void knowledgeGraphLabels(
+        @Pattern(regexp = "[\\w-]+")
+        String collection,
+        @Pattern(regexp = "[\\w-]+")
+        String profile,
+        HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/json");
+
+        try (OutputStream os = response.getOutputStream()) {
+            Files.copy(new File(searchHome, DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + "fkg-labels.json").toPath(), os);
+        }
+    }
+
 }
