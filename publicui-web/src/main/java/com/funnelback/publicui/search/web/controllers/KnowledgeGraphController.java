@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -64,11 +65,9 @@ public class KnowledgeGraphController {
         String profile,
         HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/json");
+        File jsonTemplatesFile = new File(searchHome, DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + "fkg-templates.json");
 
-        try (OutputStream os = response.getOutputStream()) {
-            Files.copy(new File(searchHome, DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + "fkg-templates.json").toPath(), os);
-        }
+        serveJsonFile(response, jsonTemplatesFile);
     }
 
     @RequestMapping("/labels.json")
@@ -79,11 +78,24 @@ public class KnowledgeGraphController {
         String profile,
         HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/json");
+        File jsonLabelsFile = new File(searchHome, DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + "fkg-labels.json");
 
-        try (OutputStream os = response.getOutputStream()) {
-            Files.copy(new File(searchHome, DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + "fkg-labels.json").toPath(), os);
-        }
+        serveJsonFile(response, jsonLabelsFile);
     }
 
+    private void serveJsonFile(HttpServletResponse response, File file) throws IOException {
+        if (file.exists()) {
+            response.setContentType("application/json");
+
+            try (OutputStream os = response.getOutputStream()) {
+                Files.copy(file.toPath(), os);
+            }
+        } else {
+            response.setContentType("text/plain");
+            response.setStatus(404);
+            try (Writer writer = response.getWriter()) {
+                writer.append("No config file available.");
+            }
+        }
+    }
 }
