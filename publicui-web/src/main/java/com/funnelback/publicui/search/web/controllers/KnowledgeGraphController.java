@@ -66,7 +66,8 @@ public class KnowledgeGraphController {
         String profile,
         HttpServletResponse response) throws IOException {
 
-        File jsonTemplatesFile = new File(searchHome, DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + "fkg-templates.json");
+        File jsonTemplatesFile = new File(searchHome,
+            DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + com.funnelback.common.config.Files.FKG_TEMPLATES);
 
         serveJsonFile(response, jsonTemplatesFile);
     }
@@ -79,7 +80,8 @@ public class KnowledgeGraphController {
         String profile,
         HttpServletResponse response) throws IOException {
 
-        File jsonLabelsFile = new File(searchHome, DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + "fkg-labels.json");
+        File jsonLabelsFile = new File(searchHome,
+            DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + com.funnelback.common.config.Files.FKG_LABELS);
 
         serveJsonFile(response, jsonLabelsFile);
     }
