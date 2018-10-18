@@ -23,6 +23,8 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.funnelback.publicui.search.web.controllers.SearchController.GLOBAL_RESOURCES_LOCATION;
+
 /**
  * Provides the basic knowledge-graph endpoints for presenting the
  * widget UI and for serving up the necessary translation data etc.
@@ -45,7 +47,6 @@ public class KnowledgeGraphController {
         model.put("collectionId", collection);
         model.put("profileId", profile);
         model.put("targetUrl", targetUrl);
-        model.put("GlobalResourcesPrefix", "/s/resources-global/");
 
         return new ModelAndView(DefaultValues.FOLDER_WEB+"/"
             +DefaultValues.FOLDER_TEMPLATES+"/"
