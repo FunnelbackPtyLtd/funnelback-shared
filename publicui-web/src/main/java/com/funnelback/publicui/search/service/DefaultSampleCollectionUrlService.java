@@ -9,6 +9,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.utils.web.ProfilePicker;
+import lombok.AccessLevel;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class DefaultSampleCollectionUrlService implements SampleCollectionUrlService {
 
     @Autowired
+    @Setter(AccessLevel.PACKAGE)
     SearchTransactionProcessor searchTransactionProcessor;
 
     @Override public String getSampleUrl(Collection collection, ProfileId profile) throws CouldNotFindAnyUrlException {
