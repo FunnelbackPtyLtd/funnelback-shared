@@ -14,6 +14,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.SampleCollectionUrlService;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
+import com.funnelback.publicui.utils.web.ProfilePicker;
 import com.google.common.net.UrlEscapers;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,8 +74,8 @@ public class KnowledgeGraphController {
             @RequestParam(required = true)
             Collection collection,
             @Pattern(regexp = "[\\w-]+")
-            @RequestParam(required = true)
-            String profile,
+            @RequestParam(name = "profile", required = true)
+            String profileId,
             String targetUrl,
             HttpServletResponse response) throws IOException {
 
@@ -88,10 +89,12 @@ public class KnowledgeGraphController {
             return null;
         }
 
+        ProfileId profile = new ProfileId(new ProfilePicker().existingProfileForCollection(collection, profileId));
+
         if (targetUrl == null) {
             // We select some URL from the collection.
             try {
-                targetUrl = sampleCollectionUrlService.getSampleUrl(collection, new ProfileId(profile));
+                targetUrl = sampleCollectionUrlService.getSampleUrl(collection, profile);
             } catch (SampleCollectionUrlService.CouldNotFindAnyUrlException e) {
                 response.setContentType("text/plain");
                 response.setStatus(404);
@@ -104,7 +107,7 @@ public class KnowledgeGraphController {
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("collectionId", collection.getId());
-        model.put("profileId", profile);
+        model.put("profileId", profile.getId());
         model.put("targetUrl", targetUrl);
 
         return new ModelAndView(DefaultValues.FOLDER_WEB+"/"

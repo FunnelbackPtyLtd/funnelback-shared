@@ -8,6 +8,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
+import com.funnelback.publicui.utils.web.ProfilePicker;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ public class DefaultSampleCollectionUrlService implements SampleCollectionUrlSer
     @Override public String getSampleUrl(Collection collection, ProfileId profile) throws CouldNotFindAnyUrlException {
         SearchQuestion question = new SearchQuestion();
         question.setCollection(collection);
+        question.setProfile(profile.getId());
         question.setCurrentProfile(profile.getId());
         question.setQuery("!" + DefaultSampleCollectionUrlService.class.getSimpleName() + "NullQuery");
         question.getDynamicQueryProcessorOptions().add("-num_ranks=1");
