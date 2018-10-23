@@ -3,6 +3,9 @@ package com.funnelback.publicui.search.web.controllers;
 import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.profile.ProfileId;
+import com.funnelback.publicui.knowledgegraph.exception.InvalidInputException;
+import com.funnelback.publicui.knowledgegraph.model.KnowledgeGraphLabels;
+import com.funnelback.publicui.knowledgegraph.model.KnowledgeGraphTemplate;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -18,17 +21,23 @@ import com.funnelback.publicui.utils.web.ProfilePicker;
 import com.google.common.net.UrlEscapers;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -119,7 +128,7 @@ public class KnowledgeGraphController {
     private File searchHome;
 
     @RequestMapping("/templates.json")
-    public void knowledgeGraphTemplates(
+    public ModelAndView knowledgeGraphTemplates(
         @Pattern(regexp = "[\\w-]+")
         @RequestParam(required = true)
         String collection,
@@ -131,11 +140,16 @@ public class KnowledgeGraphController {
         File jsonTemplatesFile = new File(searchHome,
             DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + com.funnelback.common.config.Files.FKG_TEMPLATES);
 
-        serveJsonFile(response, jsonTemplatesFile);
+        try (FileInputStream fis = new FileInputStream(jsonTemplatesFile)) {
+            Map<String, KnowledgeGraphTemplate> result = KnowledgeGraphTemplate.fromConfigFile(fis);
+            return prepareJsonModelAndViewForSingleObject(result);
+        } catch (InvalidInputException | FileNotFoundException e) {
+            return prepareJsonModelAndViewForErrorMessage(response, e);
+        }
     }
 
     @RequestMapping("/labels.json")
-    public void knowledgeGraphLabels(
+    public ModelAndView knowledgeGraphLabels(
         @Pattern(regexp = "[\\w-]+")
         String collection,
         @Pattern(regexp = "[\\w-]+")
@@ -145,22 +159,31 @@ public class KnowledgeGraphController {
         File jsonLabelsFile = new File(searchHome,
             DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + com.funnelback.common.config.Files.FKG_LABELS);
 
-        serveJsonFile(response, jsonLabelsFile);
+        try (FileInputStream fis = new FileInputStream(jsonLabelsFile)) {
+            KnowledgeGraphLabels result = KnowledgeGraphLabels.fromConfigFile(fis);
+            return prepareJsonModelAndViewForSingleObject(result);
+        } catch (InvalidInputException | FileNotFoundException e) {
+            return prepareJsonModelAndViewForErrorMessage(response, e);
+        }
     }
 
-    private void serveJsonFile(HttpServletResponse response, File file) throws IOException {
-        if (file.exists()) {
-            response.setContentType("application/json");
+    private ModelAndView prepareJsonModelAndViewForSingleObject(Object object) {
+        MappingJackson2JsonView view = new MappingJackson2JsonView();
+        view.setExtractValueFromSingleKeyModel(true);
+        ModelAndView mav = new ModelAndView(view);
+        mav.addObject(object);
+        return mav;
+    }
 
-            try (OutputStream os = response.getOutputStream()) {
-                Files.copy(file.toPath(), os);
-            }
+    private ModelAndView prepareJsonModelAndViewForErrorMessage(HttpServletResponse response, Exception e) throws IOException {
+        response.setStatus(404);
+        Map<String, String> model = new HashMap<>();
+        if (e instanceof FileNotFoundException) {
+            model.put("message", "No config file available.");
         } else {
-            response.setContentType("text/plain");
-            response.setStatus(404);
-            try (Writer writer = response.getWriter()) {
-                writer.append("No config file available.");
-            }
+            model.put("message", e.getMessage());
         }
+
+        return prepareJsonModelAndViewForSingleObject(model);
     }
 }
