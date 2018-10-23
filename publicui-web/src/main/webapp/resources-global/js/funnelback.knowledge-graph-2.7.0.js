@@ -145,7 +145,7 @@
         }
       }).catch(function(error) {
         Api.error(error);
-        if (isShown && error.box && error.box.container) error.box.open();
+        if (box.options.trigger === 'full' && error.box && error.box.container) error.box.open();
       }).finally(function() {
         ProgressBar.stop();
       });
