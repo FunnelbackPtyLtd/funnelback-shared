@@ -62,7 +62,7 @@ public class KnowledgeGraphLabelsTest {
         KnowledgeGraphLabels labels = KnowledgeGraphLabels.fromConfigFile(bias);
     }
 
-    @Test(expected = InvalidInputException.class)
+    @Test
     public void testEmptyArrayInput() throws IOException, InvalidInputException {
         ByteArrayInputStream bias = new ByteArrayInputStream(("[]").getBytes());
 

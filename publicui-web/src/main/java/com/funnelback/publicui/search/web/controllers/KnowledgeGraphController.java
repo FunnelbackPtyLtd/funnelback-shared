@@ -176,7 +176,7 @@ public class KnowledgeGraphController {
         mav.addObject(object);
         return mav;
     }
-    
+
     private void returnErrorPage(HttpServletResponse response, Exception e) throws IOException {
         response.setContentType("text/plain");
         response.setStatus(404);

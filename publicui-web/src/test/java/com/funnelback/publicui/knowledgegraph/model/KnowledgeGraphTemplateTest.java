@@ -63,7 +63,7 @@ public class KnowledgeGraphTemplateTest {
         Map<String, KnowledgeGraphTemplate> templates = KnowledgeGraphTemplate.fromConfigFile(bias);
     }
 
-    @Test(expected = InvalidInputException.class)
+    @Test
     public void testEmptyArrayInput() throws IOException, InvalidInputException {
         ByteArrayInputStream bias = new ByteArrayInputStream(("[]").getBytes());
 
