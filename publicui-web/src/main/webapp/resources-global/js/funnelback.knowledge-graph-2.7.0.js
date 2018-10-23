@@ -104,6 +104,7 @@
   };
 
   const _prefix='flb-';
+  const _title = 'Funnelback Knowledge Graph';
 
   /**
    * Data handle
@@ -667,7 +668,7 @@
 
     // Render views
     nodesButton: function(box, url, data) {
-      $(box.context).attr({'data-fkg-nav': 'init', 'data-fkg-url': url, title: Log.prefix, style: 'cursor: pointer'}).on('click', function() { return View.init(box, this); });
+      $(box.context).attr({'data-fkg-nav': 'init', 'data-fkg-url': url, title: _title, style: 'cursor: pointer'}).on('click', function() { return View.init(box, this); });
       box.container.trigger('fkg:render', [box, url, data]);
     },
 
@@ -1772,8 +1773,6 @@
   };
 
   const Log = {
-    prefix: 'Funnelback Knowledge Graph',
-
     log: function(a1, a2, a3) {
       this.factory('log', a1, a2, a3);
     },
@@ -1783,7 +1782,7 @@
     },
 
     factory: function(type, a1, a2, a3) {
-      console.group(this.prefix);
+      console.group(_title);
       console[type](a1 || '', a2 || '', a3 || '');
       console.groupEnd();
     }
