@@ -56,7 +56,7 @@ public class KnowledgeGraphLabels {
                 } else if (category.equals("TYPE")) {
                     result.getType().put(key, label);
                 } else {
-                    // throw some error
+                    throw new InvalidInputException("Unknown category type " + category);
                 }
 
             });
