@@ -144,8 +144,7 @@ public class KnowledgeGraphController {
             Map<String, KnowledgeGraphTemplate> result = KnowledgeGraphTemplate.fromConfigFile(fis);
             return prepareJsonModelAndViewForSingleObject(result);
         } catch (InvalidInputException | FileNotFoundException e) {
-            returnErrorPage(response, e);
-            return null;
+            return prepareJsonModelAndViewForErrorMessage(response, e);
         }
     }
 
@@ -164,8 +163,7 @@ public class KnowledgeGraphController {
             KnowledgeGraphLabels result = KnowledgeGraphLabels.fromConfigFile(fis);
             return prepareJsonModelAndViewForSingleObject(result);
         } catch (InvalidInputException | FileNotFoundException e) {
-            returnErrorPage(response, e);
-            return null;
+            return prepareJsonModelAndViewForErrorMessage(response, e);
         }
     }
 
@@ -177,31 +175,15 @@ public class KnowledgeGraphController {
         return mav;
     }
 
-    private void returnErrorPage(HttpServletResponse response, Exception e) throws IOException {
-        response.setContentType("text/plain");
+    private ModelAndView prepareJsonModelAndViewForErrorMessage(HttpServletResponse response, Exception e) throws IOException {
         response.setStatus(404);
-        try (Writer writer = response.getWriter()) {
-            if (e instanceof FileNotFoundException) {
-                writer.append("No config file available.");
-            } else {
-                writer.append(e.getMessage());
-            }
-        }
-    }
-
-    private void serveJsonFile(HttpServletResponse response, File file) throws IOException {
-        if (file.exists()) {
-            response.setContentType("application/json");
-
-            try (OutputStream os = response.getOutputStream()) {
-                Files.copy(file.toPath(), os);
-            }
+        Map<String, String> model = new HashMap<>();
+        if (e instanceof FileNotFoundException) {
+            model.put("message", "No config file available.");
         } else {
-            response.setContentType("text/plain");
-            response.setStatus(404);
-            try (Writer writer = response.getWriter()) {
-                writer.append("No config file available.");
-            }
+            model.put("message", e.getMessage());
         }
+
+        return prepareJsonModelAndViewForSingleObject(model);
     }
 }
