@@ -95,7 +95,6 @@
         if (Box.triggers.indexOf(val) < 0) val = Box.triggers[0];
         options[k] = val;
         box.view  = val === 'full' || val === 'fixed' ? val : 'auto';
-        // box.data  = val === 'full' ? Api.share : Api.autolink;
         const t = box.view.capitalize();
         box.open  = Box['open' + t];
         box.close = Box['close' + t];
@@ -132,15 +131,8 @@
     },
 
     nodes: function() {
-      Api.fetch(this, Api.getUrl(this, Api.resolveId(this)));
-    },
-
-    share: function() {
-      Api.fetch(this, Api.getUrl(this, Url.getPathParams(window.location.search).targetUrl), true);
-    },
-
-    fetch: function(box, url, isShown) {
-      Api.get(box, url, Data.processNodes).then(function(response) {
+      const box = this;
+      Api.get(box, Api.getUrl(box, Api.resolveId(box)), Data.processNodes).then(function(response) {
         if (box.options.trigger === 'icon' || box.options.trigger === 'link') {
           View.nodesAutolink(response.box, response.url, response.data);
         } else if (box.options.trigger === 'button') {
@@ -164,8 +156,10 @@
     },
 
     resolveId: function(box) {
+      const targetUrlParam = Url.getPathParams(window.location.search).targetUrl;
       var id = window.location.href;
-      if (box.options.targetUrl && $.isString(box.options.targetUrl)) id = box.options.targetUrl;
+      if (targetUrlParam) id = targetUrlParam;
+      else if (box.options.targetUrl && $.isString(box.options.targetUrl)) id = box.options.targetUrl;
       else if (box.options.contentSelector) {
         const sel = document.querySelector(box.options.contentSelector);
         id = undefined;
@@ -1563,7 +1557,7 @@
     },
 
     getUrl: function(box, data) {
-      const id = data['_fields'] && data['_fields']['id'];
+      const id = data['_fields'] && data['_fields']['id'] && data['_fields']['id'][0];
       return id ? Url.get(this.urlPath, {collection: box.options.collection, profile: box.options.profile, targetUrl: id}, box.options.apiBase) : undefined;
     }
   }
