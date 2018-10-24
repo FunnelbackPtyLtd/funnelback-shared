@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service;
 
+import com.funnelback.common.profile.ProfileAndView;
 import com.funnelback.common.profile.ProfileId;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -25,11 +26,11 @@ public class DefaultSampleCollectionUrlService implements SampleCollectionUrlSer
     @Setter(AccessLevel.PACKAGE)
     SearchTransactionProcessor searchTransactionProcessor;
 
-    @Override public String getSampleUrl(Collection collection, ProfileId profile) throws CouldNotFindAnyUrlException {
+    @Override public String getSampleUrl(Collection collection, ProfileAndView profileAndView) throws CouldNotFindAnyUrlException {
         SearchQuestion question = new SearchQuestion();
         question.setCollection(collection);
-        question.setProfile(profile.getId());
-        question.setCurrentProfile(profile.getId());
+        question.setProfile(profileAndView.asFolderName());
+        question.setCurrentProfile(profileAndView.asFolderName());
         question.setQuery("!" + DefaultSampleCollectionUrlService.class.getSimpleName() + "NullQuery");
         question.getDynamicQueryProcessorOptions().add("-num_ranks=1");
         question.getDynamicQueryProcessorOptions().add("-daat=1");

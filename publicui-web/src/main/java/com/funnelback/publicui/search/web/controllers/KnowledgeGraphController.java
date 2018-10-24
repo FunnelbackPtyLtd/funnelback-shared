@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.web.controllers;
 
 import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.profile.ProfileAndView;
 import com.funnelback.common.profile.ProfileId;
 import com.funnelback.publicui.knowledgegraph.exception.InvalidInputException;
 import com.funnelback.publicui.knowledgegraph.model.KnowledgeGraphLabels;
@@ -98,12 +99,12 @@ public class KnowledgeGraphController {
             return null;
         }
 
-        ProfileId profile = new ProfileId(new ProfilePicker().existingProfileForCollection(collection, profileId));
+        ProfileAndView profileAndView = ProfileAndView.fromFolder(new ProfilePicker().existingProfileForCollection(collection, profileId));
 
         if (targetUrl == null) {
             // We select some URL from the collection.
             try {
-                targetUrl = sampleCollectionUrlService.getSampleUrl(collection, profile);
+                targetUrl = sampleCollectionUrlService.getSampleUrl(collection, profileAndView);
             } catch (SampleCollectionUrlService.CouldNotFindAnyUrlException e) {
                 response.setContentType("text/plain");
                 response.setStatus(404);
@@ -116,7 +117,7 @@ public class KnowledgeGraphController {
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("collectionId", collection.getId());
-        model.put("profileId", profile.getId());
+        model.put("profileId", profileAndView.asFolderName());
         model.put("targetUrl", targetUrl);
 
         return new ModelAndView(DefaultValues.FOLDER_WEB+"/"
