@@ -95,7 +95,6 @@
         if (Box.triggers.indexOf(val) < 0) val = Box.triggers[0];
         options[k] = val;
         box.view  = val === 'full' || val === 'fixed' ? val : 'auto';
-        // box.data  = val === 'full' ? Api.share : Api.autolink;
         const t = box.view.capitalize();
         box.open  = Box['open' + t];
         box.close = Box['close' + t];
@@ -104,6 +103,7 @@
   };
 
   const _prefix='flb-';
+  const _title = 'Funnelback Knowledge Graph';
 
   /**
    * Data handle
@@ -131,15 +131,8 @@
     },
 
     nodes: function() {
-      Api.fetch(this, Api.getUrl(this, Api.resolveId(this)));
-    },
-
-    share: function() {
-      Api.fetch(this, Api.getUrl(this, Url.getPathParams(window.location.search).targetUrl), true);
-    },
-
-    fetch: function(box, url, isShown) {
-      Api.get(box, url, Data.processNodes).then(function(response) {
+      const box = this;
+      Api.get(box, Api.getUrl(box, Api.resolveId(box)), Data.processNodes).then(function(response) {
         if (box.options.trigger === 'icon' || box.options.trigger === 'link') {
           View.nodesAutolink(response.box, response.url, response.data);
         } else if (box.options.trigger === 'button') {
@@ -152,7 +145,7 @@
         }
       }).catch(function(error) {
         Api.error(error);
-        if (isShown && error.box && error.box.container) error.box.open();
+        if (box.options.trigger === 'full' && error.box && error.box.container) error.box.open();
       }).finally(function() {
         ProgressBar.stop();
       });
@@ -163,8 +156,10 @@
     },
 
     resolveId: function(box) {
+      const targetUrlParam = Url.getPathParams(window.location.search).targetUrl;
       var id = window.location.href;
-      if (box.options.targetUrl && $.isString(box.options.targetUrl)) id = box.options.targetUrl;
+      if (targetUrlParam) id = targetUrlParam;
+      else if (box.options.targetUrl && $.isString(box.options.targetUrl)) id = box.options.targetUrl;
       else if (box.options.contentSelector) {
         const sel = document.querySelector(box.options.contentSelector);
         id = undefined;
@@ -667,7 +662,7 @@
 
     // Render views
     nodesButton: function(box, url, data) {
-      $(box.context).attr({'data-fkg-nav': 'init', 'data-fkg-url': url, title: Log.prefix, style: 'cursor: pointer'}).on('click', function() { return View.init(box, this); });
+      $(box.context).attr({'data-fkg-nav': 'init', 'data-fkg-url': url, title: _title, style: 'cursor: pointer'}).on('click', function() { return View.init(box, this); });
       box.container.trigger('fkg:render', [box, url, data]);
     },
 
@@ -1562,7 +1557,7 @@
     },
 
     getUrl: function(box, data) {
-      const id = data['_fields'] && data['_fields']['id'];
+      const id = data['_fields'] && data['_fields']['id'] && data['_fields']['id'][0];
       return id ? Url.get(this.urlPath, {collection: box.options.collection, profile: box.options.profile, targetUrl: id}, box.options.apiBase) : undefined;
     }
   }
@@ -1772,8 +1767,6 @@
   };
 
   const Log = {
-    prefix: 'Funnelback Knowledge Graph',
-
     log: function(a1, a2, a3) {
       this.factory('log', a1, a2, a3);
     },
@@ -1783,7 +1776,7 @@
     },
 
     factory: function(type, a1, a2, a3) {
-      console.group(this.prefix);
+      console.group(_title);
       console[type](a1 || '', a2 || '', a3 || '');
       console.groupEnd();
     }
