@@ -1,6 +1,8 @@
 package com.funnelback.publicui.search.service;
 
+import com.funnelback.common.profile.ProfileAndView;
 import com.funnelback.common.profile.ProfileId;
+import com.funnelback.common.profile.ProfileView;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -39,7 +41,7 @@ public class DefaultSampleCollectionUrlServiceTest {
 
         Collection collection = Mockito.mock(Collection.class);
 
-        String url = service.getSampleUrl(collection, new ProfileId("foo"));
+        String url = service.getSampleUrl(collection, new ProfileAndView(new ProfileId("foo"), ProfileView.live));
 
         Assert.assertEquals("http://expected.com/", url);
     }
