@@ -40,7 +40,11 @@ public class DefaultSampleCollectionUrlService implements SampleCollectionUrlSer
         SearchTransaction transaction = searchTransactionProcessor.process(question, user, Optional.empty());
 
         if (!SearchTransactionUtils.hasResults(transaction)) {
-            throw new CouldNotFindAnyUrlException("Unable to find sample URL - " +  transaction.getError().getReason());
+            String errorMessage = " - No error message available";
+            if (transaction.getError() != null) {
+                errorMessage = " - " + transaction.getError().getReason().toString();
+            }
+            throw new CouldNotFindAnyUrlException("Unable to find sample URL - transaction was missing results" + errorMessage);
         }
 
         List<Result> results = transaction.getResponse().getResultPacket().getResults();
