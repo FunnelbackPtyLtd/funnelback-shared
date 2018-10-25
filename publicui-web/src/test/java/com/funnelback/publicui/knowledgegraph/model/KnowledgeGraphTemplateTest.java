@@ -1,5 +1,6 @@
 package com.funnelback.publicui.knowledgegraph.model;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.funnelback.publicui.knowledgegraph.exception.InvalidInputException;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -49,69 +50,26 @@ public class KnowledgeGraphTemplateTest {
         Assert.assertEquals(templates.get("document").getDetail().getSecondary(), ImmutableList.of("created2"));
     }
 
-    @Test(expected = InvalidInputException.class)
-    public void testEmptyInput() throws IOException, InvalidInputException {
+    @Test(expected = MismatchedInputException.class)
+    public void testEmptyInput() throws IOException {
         ByteArrayInputStream bias = new ByteArrayInputStream(("").getBytes());
 
         Map<String, KnowledgeGraphTemplate> templates = KnowledgeGraphTemplate.fromConfigFile(bias);
     }
 
-    @Test(expected = InvalidInputException.class)
-    public void testNonArrayInput() throws IOException, InvalidInputException {
+    @Test(expected = MismatchedInputException.class)
+    public void testNonArrayInput() throws IOException {
         ByteArrayInputStream bias = new ByteArrayInputStream(("{}").getBytes());
 
         Map<String, KnowledgeGraphTemplate> templates = KnowledgeGraphTemplate.fromConfigFile(bias);
     }
 
     @Test
-    public void testEmptyArrayInput() throws IOException, InvalidInputException {
+    public void testEmptyArrayInput() throws IOException {
         ByteArrayInputStream bias = new ByteArrayInputStream(("[]").getBytes());
 
         Map<String, KnowledgeGraphTemplate> templates = KnowledgeGraphTemplate.fromConfigFile(bias);
 
         Assert.assertEquals(templates.size(), 0);
-    }
-
-    @Test(expected = InvalidInputException.class)
-    public void testMissingProperties() throws IOException, InvalidInputException {
-        ByteArrayInputStream bias = new ByteArrayInputStream((
-                  "[ {\n"
-                + "  \"type\" : \"document\",\n"
-                + "  \"icon\" : \"fa-doc\",\n"
-                + "  \"subtitle\" : \"category\",\n"
-                + "  \"desc\" : \"some description\",\n"
-                + "  \"list\" : {\n"
-                + "    \"primary\" : [ \"size\" ],\n"
-                + "    \"secondary\" : [ \"created\" ]\n"
-                + "  },\n"
-                + "  \"detail\" : {\n"
-                + "    \"primary\" : [ \"size\" ],\n"
-                + "    \"secondary\" : [ \"created\" ]\n"
-                + "  }\n"
-                + "} ]").getBytes());
-
-        Map<String, KnowledgeGraphTemplate> templates = KnowledgeGraphTemplate.fromConfigFile(bias);
-    }
-
-    @Test(expected = InvalidInputException.class)
-    public void testUnexpectedlyNotAList() throws IOException, InvalidInputException {
-        ByteArrayInputStream bias = new ByteArrayInputStream((
-            "[ {\n"
-                + "  \"type\" : \"document\",\n"
-                + "  \"icon\" : \"fa-doc\",\n"
-                + "  \"title\" : \"author\",\n"
-                + "  \"subtitle\" : \"category\",\n"
-                + "  \"desc\" : \"some description\",\n"
-                + "  \"list\" : {\n"
-                + "    \"primary\" : [ \"size\" ],\n"
-                + "    \"secondary\" : [ \"created\" ]\n"
-                + "  },\n"
-                + "  \"detail\" : {\n"
-                + "    \"primary\" : \"foo\",\n"
-                + "    \"secondary\" : [ \"created\" ]\n"
-                + "  }\n"
-                + "} ]").getBytes());
-
-        Map<String, KnowledgeGraphTemplate> templates = KnowledgeGraphTemplate.fromConfigFile(bias);
     }
 }
