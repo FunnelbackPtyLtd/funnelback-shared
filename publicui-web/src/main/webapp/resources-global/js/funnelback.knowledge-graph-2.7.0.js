@@ -133,9 +133,7 @@
     nodes: function() {
       const box = this;
       Api.get(box, Api.getUrl(box, Api.resolveId(box)), Data.processNodes).then(function(response) {
-        if (box.options.trigger === 'icon' || box.options.trigger === 'link') {
-          View.nodesAutolink(response.box, response.url, response.data);
-        } else if (box.options.trigger === 'button') {
+          if (box.options.trigger === 'button') {
           View.nodesButton(response.box, response.url, response.data);
         } else {
           View.init(response.box);
@@ -429,7 +427,7 @@
     },
 
     rel: function(box, data) {
-      const sortField = box.template.sort[Url.getPathParts(data._url, box.options.apiBase, 1)], url = Url.getUrl(data._url);
+      const sortField = box.template.sort[Url.getPathParts(data._url, box.options.apiBase, 2)], url = Url.getUrl(data._url);
       var params = Url.getPathParams(data._url);
       if (sortField) {
         params['sort'] = sortField;
@@ -695,7 +693,7 @@
 
         const params = Url.getPathParams(url);
         box.header.html(data.total + ' Knowledge Graph links found ' + (params['query'] ? 'for ' + '<b>' + params['query'] + '</b>' : 'on this page') + ':');
-        box.list.html(Template.render(box, 'list', {list: Data.convertToView(box, data.list, '_list'), _options: box.options}));
+        box.list.html(Template.render(box, 'list', {list: Data.convertToView(box, data.list, '_list')}));
       }
 
       Back.hide(box);
@@ -708,7 +706,7 @@
 
       if (data.list && data.list.length) {
         box.searchHeader.html(Template.render(box, 'searchHeader', data.summary));
-        box.searchList.html(Template.render(box, 'list', {list: Data.convertToView(box, data.list, '_list'), _options: box.options}));
+        box.searchList.html(Template.render(box, 'list', {list: Data.convertToView(box, data.list, '_list')}));
         box.facets.html(Template.render(box, 'facets', data.facets));
       } else {
         box.searchHeader.html('');
@@ -733,7 +731,6 @@
       }).catch(function(error) {
         Api.error(error);
       });
-      data['_options'] = box.options;
       box.detail.html(Template.render(box, 'detail', data));
       const longPathWrapper = box.detail.find('.fkg-long-path').parent();
       if (longPathWrapper && longPathWrapper.get(0) && longPathWrapper.get(0).nodeName === 'TD') box.detail.find('.fkg-long-path').parent().addClass('fkg-long-path');
@@ -756,13 +753,13 @@
     },
 
     tabsList: function(box, url, data, context) {
-      const parts = Url.getPathParts(url, box.options.apiBase), type = parts[1], rels = parts[2], related = Data.groupNodes(box, Data.convertToView(box, data.list, '_list'), type, rels);
+      const parts = Url.getPathParts(url, box.options.apiBase), type = parts[2], rels = parts[3], related = Data.groupNodes(box, Data.convertToView(box, data.list, '_list'), type, rels);
       Tabs.setData(box, context._id ? `#${context._id}` : context._tab, {_url: url, _total: data.total});
 
       if (context._id) {
-        box.list.append(Template.render(box, 'tabList', {list: related, _id: context._id, _options: box.options}));
+        box.list.append(Template.render(box, 'tabList', {list: related, _id: context._id}));
       } else { // list is paginating
-        Tabs.getPanel(box, context._tab).html(Template.render(box, 'list', {list: related, _options: box.options}));
+        Tabs.getPanel(box, context._tab).html(Template.render(box, 'list', {list: related}));
         Pagination.set(box, url);
       }
     },
@@ -881,14 +878,14 @@
       {{/each}}`,
       detail: `<div class="${_prefix}card-body ${_prefix}d-flex ${_prefix}flex-column fkg-content" data-fkg-url="{{_url.self}}">
         <div class="${_prefix}d-block">
-          <span class="${_prefix}d-inline-flex ${_prefix}mb-2 ${_prefix}align-items-center ${_prefix}text-gray-light fkg-detail-type">{{>icon-block}}{{translate 'types' _type}}</span>
+          <span class="${_prefix}d-inline-flex ${_prefix}mb-2 ${_prefix}align-items-center ${_prefix}text-gray-light fkg-detail-type">{{>icon-block}}{{translate @root._translate.type _type}}</span>
           {{>img-block _classes="${_prefix}float-right ${_prefix}card-image-lg"}}
           <h4 class="fkg-title ${_prefix}card-title">{{{_title}}}</h4>
           <h5 class="fkg-subtitle ${_prefix}card-subtitle ${_prefix}text-gray-light">{{{_subtitle}}}</h5>
           {{> primary-block _classes="${_prefix}mt-3 ${_prefix}mb-4"}}
           <hr>
           {{#if secondary}}<table class="fkg-secondary-table ${_prefix}table ${_prefix}table-backgroundless ${_prefix}table-borderless ${_prefix}table-sm">
-          {{#each secondary}}<tr><th class="${_prefix}text-gray-light ${_prefix}text-bold" scope="row">{{translate 'properties'../_type key}}</th><td>{{> (item)}}</td></tr>{{/each}}
+          {{#each secondary}}<tr><th class="${_prefix}text-gray-light ${_prefix}text-bold" scope="row">{{translate @root._translate.property ../_type key}}</th><td>{{> (item)}}</td></tr>{{/each}}
           </table>{{/if}}
           {{#if _desc}}<p class="${_prefix}mb-4">{{_desc}}</p>{{/if}}
         </div>
@@ -931,7 +928,7 @@
     partial: {
       text: `{{val}}`,
       date: `{{#dateFormat @root._options.dateFormat}}{{val}}{{/dateFormat}}`,
-      badge: `<span class="${_prefix}badge ${_prefix}badge-{{key}} ${_prefix}badge-{{badgeType val}}">{{translate 'properties' _type key}}: {{val}}</span>`,
+      badge: `<span class="${_prefix}badge ${_prefix}badge-{{key}} ${_prefix}badge-{{badgeType val}}">{{translate @root._translate.type _type key}}: {{val}}</span>`,
       email: `{{#if val}}<a class="{{_classes}}" href="mailto:{{val}}">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}`,
       path: `<span class="fkg-long-path">{{val}}</span>`,
       phone: `{{#if val}}<a class="{{_classes}}" href="tel:{{val}}">{{>icon-block _classes="" _icon=_icon}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}`,
@@ -970,7 +967,7 @@
       listItemMenuItem: `<a class="${_prefix}dropdown-item" href="{{url}}"><span class="fa fa-fw fa-{{icon}}"></span> {{label}}</a>`,
       listItemSecondary: `{{#if secondary}}<div id="collapsed{{_id}}{{collapseId}}" class="${_prefix}collapse fkg-secondary">
         <div class="${_prefix}d-flex ${_prefix}flex-wrap ${_prefix}py-2 ${_prefix}ml-475 ${_prefix}mr-2 ${_prefix}border-top">
-        {{#each secondary}}<span class="${_prefix}d-flex ${_prefix}flex-fill ${_prefix}mt-1 ${_prefix}mb-2"><span class="${_prefix}text-bold ${_prefix}mr-1">{{translate 'properties' ../_type key}}</span><span class="${_prefix}d-inline-block ${_prefix}text-width ${_prefix}text-muted ${_prefix}text-truncate" title="{{val}}">{{> (item) _type=../_type test="111"}}</span></span>{{/each}}
+        {{#each secondary}}<span class="${_prefix}d-flex ${_prefix}flex-fill ${_prefix}mt-1 ${_prefix}mb-2"><span class="${_prefix}text-bold ${_prefix}mr-1">{{translate @root._translate.property ../_type key}}</span><span class="${_prefix}d-inline-block ${_prefix}text-width ${_prefix}text-muted ${_prefix}text-truncate" title="{{val}}">{{>(item) _type=../_type}}</span></span>{{/each}}
         </div>
       </div>{{/if}}`,
       pagination: `<nav class="fkg-pagination ${_prefix}my-3 ${_prefix}pagination ${_prefix}justify-content-center">
@@ -978,9 +975,9 @@
         <span class="fkg-paginationList ${_prefix}pagination-pages ${_prefix}d-flex"></span>
         <span class="fkg-paginationNext ${_prefix}page-item ${_prefix}pagination-nav"><a class="${_prefix}page-link" href="#" data-fkg-nav="next">Next <span class="fa fa-fw fa-chevron-right"></span></a></span>
       </nav>`,
-      tabItem: `<a class="${_prefix}nav-link" id="{{_id}}-tab" href="#{{_id}}" data-fkg-nav="tab" data-fkg-url="{{_url}}" data-fkg-total="{{_total}}" data-toggle="tab" role="tab" aria-controls="{{_id}}" aria-selected="false">{{translate 'relationships' _label}} <small class="${_prefix}text-muted">{{_count}}</small></a>`,
-      typeItem: `<a href="#" class="${_prefix}list-group-item ${_prefix}d-flex ${_prefix}pb-4 ${_prefix}flex-wrap ${_prefix}flex-column ${_prefix}justify-content-center ${_prefix}align-items-center ${_prefix}text-center" data-fkg-nav="rel" data-fkg-url="{{_url}}" data-fkg-label="{{translate 'types' _label}}">
-      <small class="${_prefix}badge ${_prefix}badge-gray-light ${_prefix}badge-pill ${_prefix}ml-auto ${_prefix}mb-2">{{_count}}</small>{{>icon-block _classes="${_prefix}mb-1 ${_prefix}text-gray-light"}}{{translate 'types' _label}}</a>`,
+      tabItem: `<a class="${_prefix}nav-link" id="{{_id}}-tab" href="#{{_id}}" data-fkg-nav="tab" data-fkg-url="{{_url}}" data-fkg-total="{{_total}}" data-toggle="tab" role="tab" aria-controls="{{_id}}" aria-selected="false">{{translate @root._translate.relationship _label}} <small class="${_prefix}text-muted">{{_count}}</small></a>`,
+      typeItem: `<a href="#" class="${_prefix}list-group-item ${_prefix}d-flex ${_prefix}pb-4 ${_prefix}flex-wrap ${_prefix}flex-column ${_prefix}justify-content-center ${_prefix}align-items-center ${_prefix}text-center" data-fkg-nav="rel" data-fkg-url="{{_url}}" data-fkg-label="{{translate @root._translate.type _label}}">
+      <small class="${_prefix}badge ${_prefix}badge-gray-light ${_prefix}badge-pill ${_prefix}ml-auto ${_prefix}mb-2">{{_count}}</small>{{>icon-block _classes="${_prefix}mb-1 ${_prefix}text-gray-light"}}{{translate @root._translate.type _label}}</a>`,
     },
 
     _default: '_defaultTemplate',
@@ -1000,9 +997,9 @@
           for (var type in response.data) {
             templ = $.isString(response.data[type]) ? response.data[response.data[type]] : response.data[type];
             Template.setFields(box, type, templ);
-            Template.setGrouping(box, type, templ.listSort || '');
+            Template.setGrouping(box, type, templ.sort || '');
             Template.setIcon(box, type, templ.icon || '');
-            Template.setSorting(box, type, templ.listSort || []);
+            Template.setSorting(box, type, templ.sort || '');
           }
         }
       }).catch(function(error) {
@@ -1049,6 +1046,8 @@
     },
 
     render: function(box, name, data) {
+      data._options = box.options;
+      data._translate = Translation.keys;
       return box.template[name](data);
     },
 
@@ -1063,16 +1062,7 @@
     },
 
     setGrouping: function(box, type, config) {
-      if ($.isString(config)) box.template.group[type] = config;
-      else if ($.isArray(config)) box.template.group[type] = getGroupBy(config);
-      else {
-        box.template.group[type] = {};
-        for (var rel in config) box.template.group[type][rel] = getGroupBy(config[rel]);
-      }
-
-      function getGroupBy (config) {
-        return config[0].field;
-      }
+      box.template.group[type] = config.field ? config.field : '';
     },
 
     setIcon: function(box, type, config) {
@@ -1080,20 +1070,7 @@
     },
 
     setSorting: function(box, type, config) {
-      if ($.isArray(config)) {
-        box.template.sort[type] = getSortBy(config);
-      } else {
-        box.template.sort[type] = []
-        for (var rel in config) box.template.sort[type][rel] = getSortBy(config[rel]);
-      }
-
-      function getSortBy(config) {
-        var sortBy = [];
-        for (var i = 0, len = config.length; i < len; i++) {
-          if (config[i].field) sortBy.push((config[i].order ? config[i].order : '') + config[i].field);
-        }
-        return sortBy.join(',');
-      }
+      box.template.sort[type] = (config.field && config.order) ? (config.order === 'DESC' ? '-' : '') + config.field : '';
     }
   }
 
@@ -1886,6 +1863,11 @@
     defaultLang: 'en',
     storageKey: 'translations',
     urlPath: 's/knowledge-graph/labels.json',
+    keys: {
+      property: 'property',
+      relationship: 'relationship',
+      type: 'type',
+    },
 
     configure: function(box) {
       const url = Url.get(this.urlPath, {collection: box.options.collection, profile: box.options.profile}, box.options.apiBase);
@@ -1900,21 +1882,15 @@
       if (!arguments.length) {
         return undefined;
       } else {
-        var i, keys = [].slice.call(arguments), len = keys.length, translation, translations = Storage.getItem(this.storageKey);
+        var keys = [].slice.call(arguments), translation, translations = Storage.getItem(this.storageKey);
         if (translations) {
-          if (keys[0] ===  'types' || keys[0] === 'relationships') {
-            translations = translations[keys[0]][keys[1]] || undefined;
-          } else {
-            for (i = 0; i < len; i++) {
-              if (!translations) break;
-              translation = translations[keys[i]];
-              while ($.isString(translation) && translations[translation]) translation = translations[translation];
-              translations = translation;
-              if ($.isObject(translations) && translations[keys[i]]) translations = translations[keys[i]];
-            }
+          translation = (translations[keys[0]] && translations[keys[0]][keys[1]]) || undefined;
+          if (keys[0] === Translation.keys.property && translation) {
+            while($.isString(translation) && translations[keys[0]][translation]) translation = translations[keys[0]][translation];
+            if ($.isObject(translation) && translation[keys[2]]) translation = translation[keys[2]];
           }
         }
-        return translations ? translations : keys[len-1].capitalize();
+        return translation ? translation : keys[keys.length-1].capitalize();
       }
     }
   };
