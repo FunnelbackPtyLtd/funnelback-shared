@@ -16,17 +16,21 @@
   var _box = {};
 
   var KnowledgeGraph = function(element, options) {
-    this.set(element, options);
-    this.init();
+    if (!options.collection || !options.profile) {
+      Log.warn('Missing "collection" and/or "profile" parameter');
+      return null;
+    }
+    this.set(element, options).init();
     return this;
   };
 
   KnowledgeGraph.defaults = {
     apiBase: '/',
-    contentFetcher: 'autolink',
-    contentSelector: 'body',
+    contentFetcher: 'nodes',
+    contentSelector: null,
     contentType: 'text', // [text|attr]
     contentAttr: null,
+    targetUrl: true,
     dateFormat: 'DD MMMM YYYY, HH:mm', // moment.js date formatting
     maxBreadcrumb: 5,
     maxPagination: 5,
@@ -35,9 +39,8 @@
     searchParams: {
       SF: '[^(?i)(?!Fun).*,FUNfkgNodeLabel]',
     },
-    templatesFile: 'js/knowledgeGraph-config.flb.json', // path to templates configuration file
     iconPrefix: 'fa fa-fw fa-',
-    trigger: 'icon', // [icon|button|link|fixed|full]
+    trigger: 'button', // [button|fixed|full]
   };
 
   KnowledgeGraph.Handlebars = Handlebars.noConflict();
@@ -59,10 +62,12 @@
   KnowledgeGraph.prototype.init = function() {
     const instance = this.get();
     ProgressBar.start();
-    Translation.configure(instance).then(function() {
-      Template.configure(instance).then(function() {
-        if (instance.data) instance.data();
-      });
+
+    Promise.all([Template.configure(instance), Translation.configure(instance)]).then(function() {
+    }).catch(function(error) {
+      Api.error(error, true);
+    }).finally(function() {
+      if (instance.data) instance.data();
     });
 
     return this;
@@ -71,7 +76,7 @@
   KnowledgeGraph.prototype.option = function(box, key, val) {
     if (arguments.length === 1) return box.options;
 
-		var that = this, options = $.isObject(key) ? key : {}, parts;
+		var options = $.isObject(key) ? key : {};
 		if ($.isString(key)) {
 			if (arguments.length === 2 || !$.isDefined(val)) return $.dataVals($.extend({}, box.options), key);
 			options[key] = val;
@@ -90,7 +95,6 @@
         if (Box.triggers.indexOf(val) < 0) val = Box.triggers[0];
         options[k] = val;
         box.view  = val === 'full' || val === 'fixed' ? val : 'auto';
-        // box.data  = val === 'full' ? Api.share : Api.autolink;
         const t = box.view.capitalize();
         box.open  = Box['open' + t];
         box.close = Box['close' + t];
@@ -99,6 +103,7 @@
   };
 
   const _prefix='flb-';
+  const _title = 'Funnelback Knowledge Graph';
 
   /**
    * Data handle
@@ -106,37 +111,7 @@
 
   // Handle API request and responses
   const Api = {
-    autolinkV: 3,
-    autolinkUrl: function(box) {
-      return Url.get('autolink/v' + Api.autolinkV, null, box.options.apiBase);
-    },
-    autolink: function() {
-      const box = this;
-
-      Api.post(box, Api.autolinkUrl(box), null, Api.getInitContent(box)).then(function(response) {
-        const data = response.data;
-        if (!data || !data.nodesSummary || !data.nodesSummary.totalMatching) return;
-
-        if (box.options.trigger === 'icon' || box.options.trigger === 'link') {
-          var i, len, j, lenj, matches = [];
-          for(i = 0, len = data.nodesInText.length; i < len; i++) {
-            for (j = 0, lenj = data.nodesInText[i].match.length; j < lenj; j++) {
-              Utils.findAutolink(data.nodesInText[i].match[j], data.nodesInText[i].node, response.box.options.contentSelector, matches);
-            }
-          }
-          View.nodesAutolink(response.box, Data.processAutolinkFind(response.box, response.url, matches));
-        } else if (box.options.trigger === 'button') {
-          View.nodesButton(response.box, response.url, Data.processAutolink(response.box, response.url, data.nodesInText));
-        } else {
-          View.init(response.box);
-          View.nodesList(response.box, response.url, Data.processAutolink(response.box, response.url, data.nodesInText));
-        }
-      }).catch(function(error) {
-        Api.error(error);
-      }).then(function() {
-        ProgressBar.stop();
-      });
-    },
+    urlPrefix: 'fkg/nodes',
 
     keywordsV: 1,
     keywords: function() {
@@ -150,42 +125,63 @@
         }
       }).catch(function(error) {
         Api.error(error);
-      }).then(function() {
+      }).finally(function() {
         ProgressBar.stop();
       });
     },
 
-    shareV1: 1,
-    share: function() {
-      const box = this, url = Url.get('nodes/' + Url.getPathParams(window.location.search).id, null, box.options.apiBase);
-      Api.get(box, url, Data.processNodes).then(function(response) {
-        View.init(response.box);
-        View.nodesDetails(response.box, response.url, response.data);
+    nodes: function() {
+      const box = this;
+      Api.get(box, Api.getUrl(box, Api.resolveId(box)), Data.processNodes).then(function(response) {
+          if (box.options.trigger === 'button') {
+          View.nodesButton(response.box, response.url, response.data);
+        } else {
+          View.init(response.box);
+          box.options.trigger === 'full'
+            ? View.nodesDetails(response.box, response.url, response.data)
+            : View.nodesList(response.box, response.url, response.data);
+        }
       }).catch(function(error) {
         Api.error(error);
-      }).then(function() {
+        if (box.options.trigger === 'full' && error.box && error.box.container) error.box.open();
+      }).finally(function() {
         ProgressBar.stop();
       });
     },
 
-    getInitContent: function(box) {
-      var i, len, content = [];
-      for (i = 0, len = box.options.contentSelector.length; i < len; i++) {
-        content.push($.extractTextContent(box.options.contentSelector[i], box.options.contentType, box.options.contentAttr).trim());
+    getUrl: function(box, id) {
+      return Url.get(Api.urlPrefix, {liveUrl: id, collection: box.options.collection, profile: box.options.profile}, box.options.apiBase);
+    },
+
+    resolveId: function(box) {
+      const targetUrlParam = Url.getPathParams(window.location.search).targetUrl;
+      var id = window.location.href;
+      if (targetUrlParam) id = targetUrlParam;
+      else if (box.options.targetUrl && $.isString(box.options.targetUrl)) id = box.options.targetUrl;
+      else if (box.options.contentSelector) {
+        const sel = document.querySelector(box.options.contentSelector);
+        id = undefined;
+        if (sel) id = (box.options.contentType === 'attr' ? sel.getAttribute(box.options.contentAttr) : sel.innerText).trim();
+        else Log.warn('Element "' + box.options.contentSelector + '" has not been found');
       }
-      return content.join(' ');
+      return id;
     },
 
     // Fetch data
-    error: function(data) {
+    error: function(data, inConsole) {
       if (data.box) {
         try {
           const res = data.error.response ? JSON.parse(data.error.response) : '';
-          if (res.status && res.status != 500) View.error(data.box, res.status, res.error);
-          else View.error(data.box, res.status, 'Something went wrong');
-        } catch(error) {}
+          if (inConsole) {
+            Log.log(data.url, res.status, res.error);
+          } else {
+            if (res.status && res.status != 500) View.error(data.box, res.status, res.error);
+            else View.error(data.box, res.status, 'Something went wrong');
+          }
+        } catch(error) {
+          Log.log(error);
+        }
       }
-      if (window.location.origin.indexOf('localhost')) console.warn(data);
     },
 
     get: function(box, url, process, params) {
@@ -305,22 +301,6 @@
       const processedData = Model.retrieve(box, data, 'graph', 'type');
       Storage.setItem(Url.storageKey(url, box.options.apiBase), processedData);
       return processedData;
-    },
-
-    processAutolinkFind: function(box, url, data) {
-      var i, len, list = [], nodeUrl, nodesLen;
-      for (i = 0, len = data.length; i < len; i++) {
-        nodesLen = data[i].match.length;
-        nodeUrl = nodesLen == 1 ? Data.mapLinks(data[i].match[0]).self : url + '/nodes/' + data[i].range.commonAncestorContainer.textContent.trim();
-        Data.processNodes(box, nodeUrl, {nodes: data[i].match, nodesSummary: {totalMatching: nodesLen}});
-        list.push({range: data[i].range, url : nodeUrl});
-      }
-      return list;
-    },
-
-    processAutolink: function(box, url, data) {
-      const nodes = $.map(data, function(item) { return item.node });
-      return Data.processNodes(box, url, {nodes: nodes, nodesSummary: {totalMatching: nodes.length}}, true);
     },
 
     processSearch: function(box, url, data) {
@@ -447,7 +427,7 @@
     },
 
     rel: function(box, data) {
-      const sortField = box.template.sort[Url.getPathParts(data._url, box.options.apiBase, 1)], url = Url.getUrl(data._url);
+      const sortField = box.template.sort[Url.getPathParts(data._url, box.options.apiBase, 2)], url = Url.getUrl(data._url);
       var params = Url.getPathParams(data._url);
       if (sortField) {
         params['sort'] = sortField;
@@ -460,9 +440,7 @@
       if (view === 'graph') {
         if (data._fields) Model.fields(box, data);
       }
-
-      if (view === 'search') {
-      }
+      if (view === 'search') {}
     }
   }
 
@@ -681,53 +659,8 @@
     },
 
     // Render views
-    nodesAutolink: function(box, matches) {
-      const attrs = {'data-fkg-nav': 'init', 'data-fkg-url':  '', title: 'Funnelback Knowledge Graph'};
-      const clickEvent = function() { return View.init(box, this); };
-
-      for (var i = 0, len = matches.length; i < len; i++) {
-        attrs['data-fkg-url'] = matches[i].url;
-        try {
-          box.options.trigger === 'link' ? insertLink(i) : insertIcon(i);
-        } catch(e) { console.warn('insert Autolink', matches[i], e); }
-      }
-
-      function insertIcon(i) {
-        matches[i].range.collapse(false);
-        matches[i].range.insertNode(Utils.createElement('fkg-trigger', null, 'a', '<span class="fkg-icon"></span>', attrs, {click: clickEvent}, true).get(0));
-      }
-
-      function insertLink(i) {
-        const node = Utils.createElement('fkg-trigger', null, 'a', null, attrs, {click: clickEvent}, true).addClass('fkg-link').get(0);
-        if (matches[i].range.commonAncestorContainer.nodeType === 3) convertText(matches[i].range, node);
-        else if (matches[i].range.startContainer.nodeType === 3 && matches[i].range.endContainer.nodeType === 3) convertElement(matches[i].range, node);
-        else if (matches[i].range.startContainer.nodeType === 3 && matches[i].range.endContainer.isSameNode(matches[i].range.commonAncestorContainer)) {
-          matches[i].range.setStart(matches[i].range.startContainer.parentNode, 1);
-          matches[i].range.setEnd(matches[i].range.startContainer.parentNode, matches[i].range.startContainer.parentNode.childNodes.length);
-          convertElement(matches[i].range, node);
-        }
-
-        function convertElement(range, node) {
-          if (range.commonAncestorContainer.nodeName === 'A') convertLink(range.commonAncestorContainer);
-          else if (range.startContainer.nodeName === 'A') convertLink(range.startContainer);
-          else {
-            node.appendChild(range.extractContents());
-            range.insertNode(node);
-          }
-        }
-
-        function convertLink(node) {
-          $(node).attr($.extend({}, {href: '#', class: 'fkg-trigger fkg-link'}, attrs)).removeAttr('target').on('click', clickEvent);
-        }
-
-        function convertText(range, node) {
-          range.surroundContents(node);
-        }
-      }
-    },
-
     nodesButton: function(box, url, data) {
-      $(box.context).attr({'data-fkg-nav': 'init', 'data-fkg-url':  url, title: 'Funnelback Knowledge Graph'}).on('click', function() { return View.init(box, this); });
+      $(box.context).attr({'data-fkg-nav': 'init', 'data-fkg-url': url, title: _title, style: 'cursor: pointer'}).on('click', function() { return View.init(box, this); });
       box.container.trigger('fkg:render', [box, url, data]);
     },
 
@@ -736,7 +669,6 @@
       box.viewSearch.hide();
       Box.fixedToFull(box);
       View.loaderShow(box, box.tabs);
-
       View.details(box, url, data, context);
       box.container.trigger('fkg:render', [box, url, data, context]);
     },
@@ -761,7 +693,7 @@
 
         const params = Url.getPathParams(url);
         box.header.html(data.total + ' Knowledge Graph links found ' + (params['query'] ? 'for ' + '<b>' + params['query'] + '</b>' : 'on this page') + ':');
-        box.list.html(Template.render(box, 'list', {list: Data.convertToView(box, data.list, '_list'), _options: box.options}));
+        box.list.html(Template.render(box, 'list', {list: Data.convertToView(box, data.list, '_list')}));
       }
 
       Back.hide(box);
@@ -774,7 +706,7 @@
 
       if (data.list && data.list.length) {
         box.searchHeader.html(Template.render(box, 'searchHeader', data.summary));
-        box.searchList.html(Template.render(box, 'list', {list: Data.convertToView(box, data.list, '_list'), _options: box.options}));
+        box.searchList.html(Template.render(box, 'list', {list: Data.convertToView(box, data.list, '_list')}));
         box.facets.html(Template.render(box, 'facets', data.facets));
       } else {
         box.searchHeader.html('');
@@ -793,13 +725,12 @@
       }
 
       data = Data.convertToView(box, data.list, '_detail')[0];
-      data['_shareUrl'] = Url.get('share', {id: data._id}, box.options.apiBase);
+      data['_shareUrl'] = Share.getUrl(box, data);
       if (data._url['typesLeaf'] || data._url['types']) Api.get(box, data._url['typesLeaf'] || data._url['types'], Data.processTypes).then(function(response) {
         View.typesList(response.box, response.url, response.data, context);
       }).catch(function(error) {
         Api.error(error);
       });
-      data['_options'] = box.options;
       box.detail.html(Template.render(box, 'detail', data));
       const longPathWrapper = box.detail.find('.fkg-long-path').parent();
       if (longPathWrapper && longPathWrapper.get(0) && longPathWrapper.get(0).nodeName === 'TD') box.detail.find('.fkg-long-path').parent().addClass('fkg-long-path');
@@ -822,13 +753,13 @@
     },
 
     tabsList: function(box, url, data, context) {
-      const parts = Url.getPathParts(url, box.options.apiBase), type = parts[1], rels = parts[2], related = Data.groupNodes(box, Data.convertToView(box, data.list, '_list'), type, rels);
+      const parts = Url.getPathParts(url, box.options.apiBase), type = parts[2], rels = parts[3], related = Data.groupNodes(box, Data.convertToView(box, data.list, '_list'), type, rels);
       Tabs.setData(box, context._id ? `#${context._id}` : context._tab, {_url: url, _total: data.total});
 
       if (context._id) {
-        box.list.append(Template.render(box, 'tabList', {list: related, _id: context._id, _options: box.options}));
+        box.list.append(Template.render(box, 'tabList', {list: related, _id: context._id}));
       } else { // list is paginating
-        Tabs.getPanel(box, context._tab).html(Template.render(box, 'list', {list: related, _options: box.options}));
+        Tabs.getPanel(box, context._tab).html(Template.render(box, 'list', {list: related}));
         Pagination.set(box, url);
       }
     },
@@ -879,7 +810,7 @@
         </div>
       </div>`,
       layout: `<nav class="${_prefix}navbar ${_prefix}sticky-top ${_prefix}navbar-expand-lg ${_prefix}navbar-dark ${_prefix}bg-dark">
-        <a class="${_prefix}navbar-brand"><img src="{{options.apiBase}}images/funnelback_logo.png"/><span>knowledge graph</span></a>
+        <a class="${_prefix}navbar-brand"><img src="{{options.apiBase}}s/resources-global/images/funnelback_logo.png"/><span>knowledge graph</span></a>
         <button class="${_prefix}navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="${_prefix}navbar-toggler-icon"></span>
         </button>
@@ -934,6 +865,7 @@
     },
 
     notpartial: {
+      alert: `<div class="${_prefix}alert ${_prefix}alert-{{type}}" role="alert">{{#if status}}<h5>Error code: <b>{{status}}</b></h5>{{/if}}{{{msg}}}</div>`,
       back: `{{> breadcrumbItem-block _nav='back' _title='Go back one page' _icon='fa fa-fw fa-arrow-left'}}`,
       breadcrumb: `{{#each list}}{{#if @index}}
         {{#if _sub}}<div class="${_prefix}btn-group ${_prefix}ml-auto">
@@ -946,24 +878,23 @@
       {{/each}}`,
       detail: `<div class="${_prefix}card-body ${_prefix}d-flex ${_prefix}flex-column fkg-content" data-fkg-url="{{_url.self}}">
         <div class="${_prefix}d-block">
-          <span class="${_prefix}d-inline-flex ${_prefix}mb-2 ${_prefix}align-items-center ${_prefix}text-gray-light fkg-detail-type">{{>icon-block}}{{translate 'types' _type}}</span>
+          <span class="${_prefix}d-inline-flex ${_prefix}mb-2 ${_prefix}align-items-center ${_prefix}text-gray-light fkg-detail-type">{{>icon-block}}{{translate @root._translate.type _type}}</span>
           {{>img-block _classes="${_prefix}float-right ${_prefix}card-image-lg"}}
           <h4 class="fkg-title ${_prefix}card-title">{{{_title}}}</h4>
           <h5 class="fkg-subtitle ${_prefix}card-subtitle ${_prefix}text-gray-light">{{{_subtitle}}}</h5>
           {{> primary-block _classes="${_prefix}mt-3 ${_prefix}mb-4"}}
           <hr>
           {{#if secondary}}<table class="fkg-secondary-table ${_prefix}table ${_prefix}table-backgroundless ${_prefix}table-borderless ${_prefix}table-sm">
-          {{#each secondary}}<tr><th class="${_prefix}text-gray-light ${_prefix}text-bold" scope="row">{{translate 'properties'../_type key}}</th><td>{{> (item)}}</td></tr>{{/each}}
+          {{#each secondary}}<tr><th class="${_prefix}text-gray-light ${_prefix}text-bold" scope="row">{{translate @root._translate.property ../_type key}}</th><td>{{> (item)}}</td></tr>{{/each}}
           </table>{{/if}}
           {{#if _desc}}<p class="${_prefix}mb-4">{{_desc}}</p>{{/if}}
         </div>
         <div class="${_prefix}mt-auto">
           {{>url-block _classes="${_prefix}btn ${_prefix}btn-block ${_prefix}btn-dark" _label="View" _icon="fa fa-fw fa-external-link"}}
           {{>phone-block _classes="${_prefix}btn ${_prefix}btn-block ${_prefix}btn-dark" _label="Call now" _icon="icon-Phone"}}
-          <a class="${_prefix}btn ${_prefix}btn-block ${_prefix}btn-dark" href="#" data-fkg-nav="share" data-fkg-url="{{_shareUrl}}" title="Click to copy link to the clickboard">Share</a>
+          {{#if _shareUrl}}<a class="${_prefix}btn ${_prefix}btn-block ${_prefix}btn-dark" href="#" data-fkg-nav="share" data-fkg-url="{{_shareUrl}}" title="Click to copy link to the clickboard">Share</a>{{/if}}
         </div>
       </div>`,
-      alert: `<div class="${_prefix}alert ${_prefix}alert-{{type}}" role="alert">{{#if status}}<h5>Error code: <b>{{status}}</b></h5>{{/if}}{{{msg}}}</div>`,
       facets: `{{#each this as |facet facetId|}}<div class="${_prefix}card ${_prefix}my-2 ${_prefix}border-0 ${_prefix}bg-transparent">
         <div class="${_prefix}card-header ${_prefix}bg-transparent ${_prefix}py-2 ${_prefix}px-3">
           {{facet.name}}
@@ -997,7 +928,7 @@
     partial: {
       text: `{{val}}`,
       date: `{{#dateFormat @root._options.dateFormat}}{{val}}{{/dateFormat}}`,
-      badge: `<span class="${_prefix}badge ${_prefix}badge-{{key}} ${_prefix}badge-{{badgeType val}}">{{translate 'properties' _type key}}: {{val}}</span>`,
+      badge: `<span class="${_prefix}badge ${_prefix}badge-{{key}} ${_prefix}badge-{{badgeType val}}">{{translate @root._translate.type _type key}}: {{val}}</span>`,
       email: `{{#if val}}<a class="{{_classes}}" href="mailto:{{val}}">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}`,
       path: `<span class="fkg-long-path">{{val}}</span>`,
       phone: `{{#if val}}<a class="{{_classes}}" href="tel:{{val}}">{{>icon-block _classes="" _icon=_icon}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}`,
@@ -1036,7 +967,7 @@
       listItemMenuItem: `<a class="${_prefix}dropdown-item" href="{{url}}"><span class="fa fa-fw fa-{{icon}}"></span> {{label}}</a>`,
       listItemSecondary: `{{#if secondary}}<div id="collapsed{{_id}}{{collapseId}}" class="${_prefix}collapse fkg-secondary">
         <div class="${_prefix}d-flex ${_prefix}flex-wrap ${_prefix}py-2 ${_prefix}ml-475 ${_prefix}mr-2 ${_prefix}border-top">
-        {{#each secondary}}<span class="${_prefix}d-flex ${_prefix}flex-fill ${_prefix}mt-1 ${_prefix}mb-2"><span class="${_prefix}text-bold ${_prefix}mr-1">{{translate 'properties' ../_type key}}</span><span class="${_prefix}d-inline-block ${_prefix}text-width ${_prefix}text-muted ${_prefix}text-truncate" title="{{val}}">{{> (item) _type=../_type test="111"}}</span></span>{{/each}}
+        {{#each secondary}}<span class="${_prefix}d-flex ${_prefix}flex-fill ${_prefix}mt-1 ${_prefix}mb-2"><span class="${_prefix}text-bold ${_prefix}mr-1">{{translate @root._translate.property ../_type key}}</span><span class="${_prefix}d-inline-block ${_prefix}text-width ${_prefix}text-muted ${_prefix}text-truncate" title="{{val}}">{{>(item) _type=../_type}}</span></span>{{/each}}
         </div>
       </div>{{/if}}`,
       pagination: `<nav class="fkg-pagination ${_prefix}my-3 ${_prefix}pagination ${_prefix}justify-content-center">
@@ -1044,38 +975,36 @@
         <span class="fkg-paginationList ${_prefix}pagination-pages ${_prefix}d-flex"></span>
         <span class="fkg-paginationNext ${_prefix}page-item ${_prefix}pagination-nav"><a class="${_prefix}page-link" href="#" data-fkg-nav="next">Next <span class="fa fa-fw fa-chevron-right"></span></a></span>
       </nav>`,
-      tabItem: `<a class="${_prefix}nav-link" id="{{_id}}-tab" href="#{{_id}}" data-fkg-nav="tab" data-fkg-url="{{_url}}" data-fkg-total="{{_total}}" data-toggle="tab" role="tab" aria-controls="{{_id}}" aria-selected="false">{{translate 'relationships' _label}} <small class="${_prefix}text-muted">{{_count}}</small></a>`,
-      typeItem: `<a href="#" class="${_prefix}list-group-item ${_prefix}d-flex ${_prefix}pb-4 ${_prefix}flex-wrap ${_prefix}flex-column ${_prefix}justify-content-center ${_prefix}align-items-center ${_prefix}text-center" data-fkg-nav="rel" data-fkg-url="{{_url}}" data-fkg-label="{{translate 'types' _label}}">
-      <small class="${_prefix}badge ${_prefix}badge-gray-light ${_prefix}badge-pill ${_prefix}ml-auto ${_prefix}mb-2">{{_count}}</small>{{>icon-block _classes="${_prefix}mb-1 ${_prefix}text-gray-light"}}{{translate 'types' _label}}</a>`,
+      tabItem: `<a class="${_prefix}nav-link" id="{{_id}}-tab" href="#{{_id}}" data-fkg-nav="tab" data-fkg-url="{{_url}}" data-fkg-total="{{_total}}" data-toggle="tab" role="tab" aria-controls="{{_id}}" aria-selected="false">{{translate @root._translate.relationship _label}} <small class="${_prefix}text-muted">{{_count}}</small></a>`,
+      typeItem: `<a href="#" class="${_prefix}list-group-item ${_prefix}d-flex ${_prefix}pb-4 ${_prefix}flex-wrap ${_prefix}flex-column ${_prefix}justify-content-center ${_prefix}align-items-center ${_prefix}text-center" data-fkg-nav="rel" data-fkg-url="{{_url}}" data-fkg-label="{{translate @root._translate.type _label}}">
+      <small class="${_prefix}badge ${_prefix}badge-gray-light ${_prefix}badge-pill ${_prefix}ml-auto ${_prefix}mb-2">{{_count}}</small>{{>icon-block _classes="${_prefix}mb-1 ${_prefix}text-gray-light"}}{{translate @root._translate.type _label}}</a>`,
     },
 
     _default: '_defaultTemplate',
+
+    urlPath: 's/knowledge-graph/templates.json',
 
     configure: function(box) {
       $.map(Template.notpartial, (template, name) => {
         box.template[name] = HandlebarsUtil.compile(template);
       });
+      Template.setFields(box, Template._default, {});
 
-      if (box.options.templatesFile) {
-        return new Promise(function(resolve, reject) {
-          $.getJSON(box.options.templatesFile, function(data) {
-            if (data) {
-              var templ;
-              for (var type in data) {
-                templ = $.isString(data[type]) ? data[data[type]] : data[type];
-                Template.setFields(box, type, templ);
-                Template.setGrouping(box, type, templ.listSort || '');
-                Template.setIcon(box, type, templ.icon || '');
-                Template.setSorting(box, type, templ.listSort || []);
-              }
-              Template.setFields(box, Template._default, {});
-              resolve();
-            } else {
-              reject();
-            }
-          });
-        });
-      }
+      const url = Url.get(this.urlPath, {collection: box.options.collection, profile: box.options.profile}, box.options.apiBase);
+      return Api.get(box, url).then(function(response) {
+        if (response.data) {
+          var templ;
+          for (var type in response.data) {
+            templ = $.isString(response.data[type]) ? response.data[response.data[type]] : response.data[type];
+            Template.setFields(box, type, templ);
+            Template.setGrouping(box, type, templ.sort || '');
+            Template.setIcon(box, type, templ.icon || '');
+            Template.setSorting(box, type, templ.sort || '');
+          }
+        }
+      }).catch(function(error) {
+        Api.error(error, true);
+      });
     },
 
     get: function() {
@@ -1117,6 +1046,8 @@
     },
 
     render: function(box, name, data) {
+      data._options = box.options;
+      data._translate = Translation.keys;
       return box.template[name](data);
     },
 
@@ -1131,16 +1062,7 @@
     },
 
     setGrouping: function(box, type, config) {
-      if ($.isString(config)) box.template.group[type] = config;
-      else if ($.isArray(config)) box.template.group[type] = getGroupBy(config);
-      else {
-        box.template.group[type] = {};
-        for (var rel in config) box.template.group[type][rel] = getGroupBy(config[rel]);
-      }
-
-      function getGroupBy (config) {
-        return config[0].field;
-      }
+      box.template.group[type] = config.field ? config.field : '';
     },
 
     setIcon: function(box, type, config) {
@@ -1148,20 +1070,7 @@
     },
 
     setSorting: function(box, type, config) {
-      if ($.isArray(config)) {
-        box.template.sort[type] = getSortBy(config);
-      } else {
-        box.template.sort[type] = []
-        for (var rel in config) box.template.sort[type][rel] = getSortBy(config[rel]);
-      }
-
-      function getSortBy(config) {
-        var sortBy = [];
-        for (var i = 0, len = config.length; i < len; i++) {
-          if (config[i].field) sortBy.push((config[i].order ? config[i].order : '') + config[i].field);
-        }
-        return sortBy.join(',');
-      }
+      box.template.sort[type] = (config.field && config.order) ? (config.order === 'DESC' ? '-' : '') + config.field : '';
     }
   }
 
@@ -1189,7 +1098,7 @@
       }
       if (type === 'share') {
         $trigger.trigger(Events.name('nav'), [box, url, type]);
-        Utils.copyToClipboard(box, url);
+        Share.copyToClipboard(box, url);
         return false;
       }
       if (type === 'tab') {
@@ -1240,7 +1149,7 @@
         renderCallback = View.searchList;
       }
       if (type === 'search') {
-        url = Url.get(url, Object.assign(box.options.searchParams || {}, {query: $trigger.closest('form').find('input[type="search"]').val() || ''}));
+        url = Url.get(url, Object.assign(box.options.searchParams || {}, {collection: box.options.collection, profile: box.options.profile, query: $trigger.closest('form').find('input[type="search"]').val() || ''}));
         box.results.url = url;
         proccessCallback = Data.processSearch;
         renderCallback = View.searchList;
@@ -1611,6 +1520,25 @@
     }
   }
 
+  const Share = {
+    urlPath: 's/knowledge-graph/index.html',
+
+    copyToClipboard: function(box, link) {
+      const el = document.createElement('textarea'), msg = 'Link was copied to the clickboard';
+      el.value = link;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      box.snackbar? Snackbar.show(box, msg) : alert(msg);
+    },
+
+    getUrl: function(box, data) {
+      const id = data['_fields'] && data['_fields']['id'] && data['_fields']['id'][0];
+      return id ? Url.get(this.urlPath, {collection: box.options.collection, profile: box.options.profile, targetUrl: id}, box.options.apiBase) : undefined;
+    }
+  }
+
   const Snackbar = {
     selector: '[role="alert"]',
     active: _prefix + 'show',
@@ -1815,6 +1743,22 @@
     }
   };
 
+  const Log = {
+    log: function(a1, a2, a3) {
+      this.factory('log', a1, a2, a3);
+    },
+
+    warn: function(a1, a2, a3) {
+      this.factory('warn', a1, a2, a3);
+    },
+
+    factory: function(type, a1, a2, a3) {
+      console.group(_title);
+      console[type](a1 || '', a2 || '', a3 || '');
+      console.groupEnd();
+    }
+  };
+
   // URL helper
   const Url = {
     encode: function(params) {
@@ -1864,16 +1808,6 @@
 
   // Helpers to work with DOM and native JS methods
   const Utils = {
-    copyToClipboard: function(box, link) {
-      const el = document.createElement('textarea'), msg = 'Link was copied to the clickboard';
-      el.value = link;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
-      box.snackbar? Snackbar.show(box, msg) : alert(msg);
-    },
-
     getElement: function(id, $context) {
       return ($context || $('body')).find('.' + id);
     },
@@ -1913,70 +1847,6 @@
       $context.show().css('display', 'flex');
     },
 
-    findAutolink: function(text, item, sel, matches) {
-      const currentView = window == window.parent ? window : window.parent, scrollTop = currentView.pageYOffset || currentView.document.documentElement.scrollTop;
-      var context = document.querySelector(sel), inputs = $(document.querySelector('body')).find('input, textarea'), select = window.getSelection(), wholeWord = text.indexOf(' ') < 0 ? true : false;
-      inputs.attr('disabled', true);
-      select.collapse(isFormElement(context) ? document.querySelector('body') : context, 0);
-
-      if (window.find) { // Firefox, Chrome, Safari
-        while (window.find(text, false, false, false, wholeWord)) {
-          insertRange();
-        }
-      } else if (document.body.createTextRange) { // IE, Opera < v10.5
-        var textRange = document.body.createTextRange();
-        textRange.moveToElementText(context);
-        while (textRange.findText(text, 1, 2)) {
-          textRange.collapse(false);
-          if (!textRange.getClientRects().length) return;
-          textRange.select();
-          insertRange();
-          select.removeAllRanges();
-        }
-      }
-
-      inputs.attr('disabled', false);
-      currentView.document.documentElement.scrollTop = currentView.document.body.scrollTop = scrollTop;
-
-      function insertRange() {
-        var i, len, isNewRange = true, node, range;
-        select = window.getSelection();
-        if (select.isCollapsed || select.type === 'Caret') return;
-        range = select.getRangeAt(0);
-        node  = isNoneBreakableElement(range.commonAncestorContainer);
-        if (node) range.setEndAfter(node);
-        else if (isTextEmail(range.commonAncestorContainer)) range.setEndAfter(range.commonAncestorContainer);
-        for (var i = 0, len = matches.length; i < len; i++) {
-          if (range.endContainer.isSameNode(matches[i].range.endContainer)) {
-            matches[i].match.push(item);
-            isNewRange = false;
-          }
-        }
-        if (isNewRange) matches.push({match: [item], range: range});
-        select.collapseToEnd();
-      }
-
-      function isFormElement(node) {
-        return isSpecificTag(node, ['INPUT', 'TEXTAREA']);
-      }
-
-      function isNoneBreakableElement(node) {
-        return isSpecificTag(node, ['A', 'BUTTON', 'CODE', 'PRE']);
-      }
-
-      function isSpecificTag(node, tags) {
-        while (node) {
-          if (tags.indexOf(node.tagName) < 0) node = node.parentNode;
-          else return node;
-        }
-        return null;
-      }
-
-      function isTextEmail(node) {
-        return /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(node.textContent);
-      }
-    },
-
     // -----
     getDetailsTitle: function(box) {
       return Utils.getElementLabel('fkg-title', box.detail);
@@ -1992,12 +1862,19 @@
     currentLang: window.navigator.languages ? window.navigator.languages[0] : window.navigator.language,
     defaultLang: 'en',
     storageKey: 'translations',
+    urlPath: 's/knowledge-graph/labels.json',
+    keys: {
+      property: 'property',
+      relationship: 'relationship',
+      type: 'type',
+    },
 
     configure: function(box) {
-      return Api.get(box, Url.get(Translation.storageKey, null, box.options.apiBase)).then(function(response) {
+      const url = Url.get(this.urlPath, {collection: box.options.collection, profile: box.options.profile}, box.options.apiBase);
+      return Api.get(box, url).then(function(response) {
         Storage.setItem(Translation.storageKey, response.data);
       }).catch(function(error) {
-        Api.error(error)
+        Api.error(error, true);
       });
     },
 
@@ -2005,20 +1882,15 @@
       if (!arguments.length) {
         return undefined;
       } else {
-        var i, keys = [].slice.call(arguments), len = keys.length, translation, translations = Storage.getItem(this.storageKey);
-        if (!translations) translations = this.i18n;
-        if (keys[0] ===  'types' || keys[0] === 'relationships') {
-          translations = translations[keys[0]][keys[1]] || undefined;
-        } else {
-          for (i = 0; i < len; i++) {
-            if (!translations) break;
-            translation = translations[keys[i]];
-            while ($.isString(translation) && translations[translation]) translation = translations[translation];
-            translations = translation;
-            if ($.isObject(translations) && translations[keys[i]]) translations = translations[keys[i]];
+        var keys = [].slice.call(arguments), translation, translations = Storage.getItem(this.storageKey);
+        if (translations) {
+          translation = (translations[keys[0]] && translations[keys[0]][keys[1]]) || undefined;
+          if (keys[0] === Translation.keys.property && translation) {
+            while($.isString(translation) && translations[keys[0]][translation]) translation = translations[keys[0]][translation];
+            if ($.isObject(translation) && translation[keys[2]]) translation = translation[keys[2]];
           }
         }
-        return translations ? translations : keys[len-1].capitalize();
+        return translation ? translation : keys[keys.length-1].capitalize();
       }
     }
   };
@@ -2111,7 +1983,6 @@
   $.isObject  = function(obj) { return typeof(obj) === 'object'; }
   $.isString  = function(obj) { return typeof(obj) === 'string'; }
   $.dataVals  = function(obj, key) { var parts = key.split('.'), key = parts.shift(); if (parts.length) { for (var i = 0, len = parts.length; i < len; i++) { obj = obj[key] || {}; key = parts[i]; } } return obj[key]; }
-  $.extractTextContent = function(sel, type, attr) { var i, len, content = [], sels = document.querySelectorAll(sel); for (i = 0, len = sels.length; i < len; i++) content.push(type === 'attr' && attr ? sels[i].getAttribute(attr) : sels[i].innerText); return content.length ? content.join(' ') : ''; }
 
   String.prototype.capitalize = function() { return this.charAt(0).toUpperCase() + this.slice(1); }
   String.prototype.endsWithIndexOf = function(suffix) { return this.indexOf(suffix, this.length - suffix.length) !== -1; }
