@@ -32,7 +32,7 @@ public class KnowledgeGraphTemplate {
     private final PrimaryAndSecondaryLists list = new PrimaryAndSecondaryLists();
     private final PrimaryAndSecondaryLists detail = new PrimaryAndSecondaryLists();
 
-    private final SortList sort = new SortList();
+    private SortList sort;
 
     @Data
     public static class PrimaryAndSecondaryLists {
@@ -42,8 +42,8 @@ public class KnowledgeGraphTemplate {
 
     @Data
     public static class SortList {
-        private String field;
-        private SortOrder order;
+        private final String field;
+        private final SortOrder order;
     }
 
     public enum SortOrder {
@@ -65,6 +65,13 @@ public class KnowledgeGraphTemplate {
             template.setTitle(configTemplate.getTitle());
             template.setSubtitle(configTemplate.getSubtitle());
             template.setDesc(configTemplate.getDesc());
+
+            template.setSort(
+                new SortList(
+                    configTemplate.getSort().getField(),
+                    SortOrder.valueOf(configTemplate.getSort().getOrder().getValue())
+                )
+            );
 
             template.getList().getPrimary().addAll(configTemplate.getList().getPrimary());
             template.getList().getSecondary().addAll(configTemplate.getList().getSecondary());

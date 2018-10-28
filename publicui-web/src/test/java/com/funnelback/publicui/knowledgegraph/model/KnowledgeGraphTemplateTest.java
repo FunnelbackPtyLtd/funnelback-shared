@@ -34,7 +34,11 @@ public class KnowledgeGraphTemplateTest {
                 + "  \"detail\" : {\n"
                 + "    \"primary\" : [ \"size2\" ],\n"
                 + "    \"secondary\" : [ \"created2\" ]\n"
-                + "  }\n"
+                + "  },\n"
+                + "  \"sort\": {\n"
+                + "    \"field\": \"field\",\n"
+                + "    \"order\": \"ASC\"\n"
+                + "  }"
                 + "} ]").getBytes());
 
         Map<String, KnowledgeGraphTemplate> templates = KnowledgeGraphTemplate.fromConfigFile(bias);
@@ -44,6 +48,8 @@ public class KnowledgeGraphTemplateTest {
         Assert.assertEquals(templates.get("document").getTitle(), "author");
         Assert.assertEquals(templates.get("document").getSubtitle(), "category");
         Assert.assertEquals(templates.get("document").getDesc(), "some description");
+        Assert.assertEquals(templates.get("document").getSort().getField(), "field");
+        Assert.assertEquals(templates.get("document").getSort().getOrder(), KnowledgeGraphTemplate.SortOrder.ASC);
         Assert.assertEquals(templates.get("document").getList().getPrimary(), ImmutableList.of("size"));
         Assert.assertEquals(templates.get("document").getList().getSecondary(), ImmutableList.of("created"));
         Assert.assertEquals(templates.get("document").getDetail().getPrimary(), ImmutableList.of("size2"));
