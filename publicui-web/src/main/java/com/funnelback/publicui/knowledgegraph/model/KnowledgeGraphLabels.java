@@ -1,7 +1,11 @@
 package com.funnelback.publicui.knowledgegraph.model;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.funnelback.adminapi.client.model.KnowledgeGraphLabelModel;
+import com.funnelback.adminapi.client.model.KnowledgeGraphTemplateModel;
 import com.funnelback.publicui.knowledgegraph.exception.InvalidInputException;
 import lombok.Data;
 
@@ -20,48 +24,22 @@ public class KnowledgeGraphLabels {
     public static KnowledgeGraphLabels fromConfigFile(InputStream is) throws IOException, InvalidInputException {
         KnowledgeGraphLabels result = new KnowledgeGraphLabels();
 
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode json = mapper.readTree(is);
+        ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+        mapper.registerModule(new JavaTimeModule());
 
-        if (json == null) {
-            throw new InvalidInputException("Input data was empty, top level array required.");
-        }
+        List<KnowledgeGraphLabelModel> configLabels = mapper.readValue(is, new TypeReference<List<KnowledgeGraphLabelModel>>(){});
 
-        if (json.isArray()) {
-            json.forEach((entry) -> {
-                if (!(entry.hasNonNull("category") &&
-                    entry.hasNonNull("key") &&
-                    entry.hasNonNull("label"))) {
-                    throw new InvalidInputException("Input data missing required properties (category, key and label).");
-                }
-
-                String category = entry.get("category").textValue();
-                String key = entry.get("key").textValue();
-                String label = entry.get("label").textValue();
-
-                if (category.equals("PROPERTY")) {
-                    if (!entry.hasNonNull("type")) {
-                        throw new InvalidInputException("Missing required property 'type' for PROPERTY entry.");
-                    }
-
-                    String type = entry.get("type").textValue();
-
-                    if (!result.getProperty().containsKey(type)) {
-                        result.getProperty().put(type, new HashMap<>());
-                    }
-
-                    result.getProperty().get(type).put(key, label);
-                } else if (category.equals("RELATIONSHIP")) {
-                    result.getRelationship().put(key, label);
-                } else if (category.equals("TYPE")) {
-                    result.getType().put(key, label);
-                } else {
-                    throw new InvalidInputException("Unknown category type " + category);
-                }
-
-            });
-        } else {
-            throw new InvalidInputException("Invalid input (should have a top-level array)");
+        for (KnowledgeGraphLabelModel configLabel : configLabels) {
+            if (configLabel.getCategory().equals(KnowledgeGraphLabelModel.CategoryEnum.PROPERTY)) {
+                result.getProperty().putIfAbsent(configLabel.getType(), new HashMap<>());
+                result.getProperty().get(configLabel.getType()).put(configLabel.getKey(), configLabel.getLabel());
+            } else if (configLabel.getCategory().equals(KnowledgeGraphLabelModel.CategoryEnum.RELATIONSHIP)) {
+                result.getRelationship().put(configLabel.getKey(), configLabel.getLabel());
+            } else if (configLabel.getCategory().equals(KnowledgeGraphLabelModel.CategoryEnum.TYPE)) {
+                result.getType().put(configLabel.getKey(), configLabel.getLabel());
+            } else {
+                throw new RuntimeException("Unknown category type " + configLabel.getCategory().toString());
+            }
         }
 
         return result;

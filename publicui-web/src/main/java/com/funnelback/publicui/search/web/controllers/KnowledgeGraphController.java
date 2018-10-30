@@ -4,6 +4,7 @@ import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.profile.ProfileAndView;
 import com.funnelback.common.profile.ProfileId;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.publicui.knowledgegraph.exception.InvalidInputException;
 import com.funnelback.publicui.knowledgegraph.model.KnowledgeGraphLabels;
 import com.funnelback.publicui.knowledgegraph.model.KnowledgeGraphTemplate;
@@ -33,7 +34,9 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpUtils;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.File;
@@ -50,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import static com.funnelback.publicui.search.web.controllers.SearchController.GLOBAL_RESOURCES_LOCATION;
 
 /**
@@ -87,6 +91,7 @@ public class KnowledgeGraphController {
             @RequestParam(name = "profile", required = true)
             String profileId,
             String targetUrl,
+            HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         if (collection == null) {

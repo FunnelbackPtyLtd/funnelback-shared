@@ -1,5 +1,6 @@
 package com.funnelback.publicui.knowledgegraph.model;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.funnelback.publicui.knowledgegraph.exception.InvalidInputException;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Assert;
@@ -15,28 +16,37 @@ public class KnowledgeGraphLabelsTest {
     @Test
     public void testFromConfigFile() throws IOException, InvalidInputException {
         ByteArrayInputStream bias = new ByteArrayInputStream((
-                "[ {\n"
-              + "  \"created\" : \"should\",\n"
-              + "  \"lastModified\" : \"be\",\n"
-              + "  \"id\" : \"ignored\",\n"
-              + "  \"category\" : \"PROPERTY\",\n"
-              + "  \"key\" : \"author\",\n"
-              + "  \"label\" : \"Author\",\n"
-              + "  \"type\" : \"doc\"\n"
-              + "}, {\n"
-              + "  \"category\" : \"PROPERTY\",\n"
-              + "  \"key\" : \"keyValue\",\n"
-              + "  \"label\" : \"labelValue\",\n"
-              + "  \"type\" : \"typeValue\"\n"
-              + "}, {\n"
-              + "  \"category\" : \"RELATIONSHIP\",\n"
-              + "  \"key\" : \"keyValueR\",\n"
-              + "  \"label\" : \"labelValueR\"\n"
-              + "}, {\n"
-              + "  \"category\" : \"TYPE\",\n"
-              + "  \"key\" : \"keyValueT\",\n"
-              + "  \"label\" : \"labelValueT\"\n"
-              + "} ]").getBytes());
+            "[ {\n"
+                + "  \"created\" : \"2018-09-12T12:04:22.519+10:00\",\n"
+                + "  \"lastModified\" : \"2018-10-22T16:35:49.379+11:00\",\n"
+                + "  \"id\" : \"cde16db2-8690-40fa-a172-0e0bca0fdf69\",\n"
+                + "  \"category\" : \"PROPERTY\",\n"
+                + "  \"key\" : \"author\",\n"
+                + "  \"label\" : \"Author\",\n"
+                + "  \"type\" : \"doc\"\n"
+                + "}, {\n"
+                + "  \"created\" : \"2018-09-12T12:04:22.519+10:00\",\n"
+                + "  \"lastModified\" : \"2018-10-22T16:35:49.379+11:00\",\n"
+                + "  \"id\" : \"cde16db2-8690-40fa-a172-0e0bca0fdf69\",\n"
+                + "  \"category\" : \"PROPERTY\",\n"
+                + "  \"key\" : \"keyValue\",\n"
+                + "  \"label\" : \"labelValue\",\n"
+                + "  \"type\" : \"typeValue\"\n"
+                + "}, {\n"
+                + "  \"created\" : \"2018-09-12T12:04:22.519+10:00\",\n"
+                + "  \"lastModified\" : \"2018-10-22T16:35:49.379+11:00\",\n"
+                + "  \"id\" : \"cde16db2-8690-40fa-a172-0e0bca0fdf69\",\n"
+                + "  \"category\" : \"RELATIONSHIP\",\n"
+                + "  \"key\" : \"keyValueR\",\n"
+                + "  \"label\" : \"labelValueR\"\n"
+                + "}, {\n"
+                + "  \"created\" : \"2018-09-12T12:04:22.519+10:00\",\n"
+                + "  \"lastModified\" : \"2018-10-22T16:35:49.379+11:00\",\n"
+                + "  \"id\" : \"cde16db2-8690-40fa-a172-0e0bca0fdf69\",\n"
+                + "  \"category\" : \"TYPE\",\n"
+                + "  \"key\" : \"keyValueT\",\n"
+                + "  \"label\" : \"labelValueT\"\n"
+                + "} ]").getBytes());
 
         KnowledgeGraphLabels labels = KnowledgeGraphLabels.fromConfigFile(bias);
 
@@ -48,16 +58,9 @@ public class KnowledgeGraphLabelsTest {
         Assert.assertEquals(labels.getType(), ImmutableMap.of("keyValueT","labelValueT"));
     }
 
-    @Test(expected = InvalidInputException.class)
-    public void testEmptyInput() throws IOException, InvalidInputException {
+    @Test(expected = MismatchedInputException.class)
+    public void testEmptyInput() throws IOException {
         ByteArrayInputStream bias = new ByteArrayInputStream(("").getBytes());
-
-        KnowledgeGraphLabels labels = KnowledgeGraphLabels.fromConfigFile(bias);
-    }
-
-    @Test(expected = InvalidInputException.class)
-    public void testNonArrayInput() throws IOException, InvalidInputException {
-        ByteArrayInputStream bias = new ByteArrayInputStream(("{}").getBytes());
 
         KnowledgeGraphLabels labels = KnowledgeGraphLabels.fromConfigFile(bias);
     }
@@ -72,20 +75,4 @@ public class KnowledgeGraphLabelsTest {
         Assert.assertEquals(labels.getRelationship().size(), 0);
         Assert.assertEquals(labels.getType().size(), 0);
     }
-
-    @Test(expected = InvalidInputException.class)
-    public void testMissingProperties() throws IOException, InvalidInputException {
-        ByteArrayInputStream bias = new ByteArrayInputStream((
-                  "[ {\n"
-                + "  \"created\" : \"should\",\n"
-                + "  \"lastModified\" : \"be\",\n"
-                + "  \"id\" : \"ignored\",\n"
-                + "  \"category\" : \"PROPERTY\",\n"
-                + "  \"labelIsMissing\" : \"Author\",\n"
-                + "  \"type\" : \"doc\"\n"
-                + "} ]").getBytes());
-
-        KnowledgeGraphLabels labels = KnowledgeGraphLabels.fromConfigFile(bias);
-    }
-
 }

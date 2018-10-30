@@ -429,6 +429,16 @@
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.funnelback.admin</groupId>
+            <artifactId>admin-api-client-swagger-generated</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${version.jackson2}</version>
+        </dependency>
     </dependencies>
 
     <reporting>
