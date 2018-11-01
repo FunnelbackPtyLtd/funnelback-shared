@@ -1388,7 +1388,7 @@
     },
 
     getUrl: function(box, path, params) {
-      return Url.get(path, params, box.options.apiBase);
+      return Url.get(box.options.searchUrl + path, params);
     },
 
     isUrl: function(box, url) {
