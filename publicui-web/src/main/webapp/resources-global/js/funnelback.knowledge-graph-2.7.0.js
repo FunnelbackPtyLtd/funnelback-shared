@@ -89,7 +89,7 @@
       if (key === 'apiBase' && val) options[key] = Url.setBase(val);
       if (key === 'contentFetcher') box.data = Api[val];
       if (key === 'contentSelector' && val) options[k] = $.isString(val) ? [val] : val || [];
-      if (key === 'maxPagination' && val) box.results.size = parseInt(val);
+      if (key === 'maxResults' && val) box.results.size = parseInt(val);
       if (key === 'templatesFile' && val) options[k] = !val.match(/^[a-zA-Z]+:\/\//) ? Url.get(val, null, options['apiBase']) : val;
       if (key === 'trigger') {
         if (Box.triggers.indexOf(val) < 0) val = Box.triggers[0];
@@ -313,16 +313,16 @@
         var i, len, j, lenj;
         for (i = 0, len = facets.length; i < len; i++) {
           if (facets[i].unselectAllUrl && facets[i].selected) {
-            facets[i]['_url'] = box.options.searchUrl + facets[i].unselectAllUrl;
+            facets[i]['_url'] = Search.getUrl(box, facets[i].unselectAllUrl);
             facets[i]['_label'] = 'Clear all';
           }
           for (j = 0, lenj = facets[i].allValues.length; j < lenj; j++) {
-            facets[i].allValues[j]['_url'] = box.options.searchUrl + facets[i].allValues[j].toggleUrl;
+            facets[i].allValues[j]['_url'] = Search.getUrl(box, facets[i].allValues[j].toggleUrl);
           }
         }
 
         for (i = 0, len = processedData.length; i < len; i++) {
-          processedData[i]._url.self = Url.get('nodes', {liveUrl: processedData[i]._url.self, collection: data.question.collection.id, profile: data.question.profile}, box.options.apiBase);
+          processedData[i]._url.self = Api.getUrl(box, processedData[i]._url.self);
         }
       }
 
@@ -341,7 +341,7 @@
     getItem: function(key) {
       var data = Storage.data[key];
       if (data && data.list && !$.isObject(data.list[0])) { // To not duplicate entries in storage, for list view only IDs are saved so data need to be retrieved first
-        for (var i = 0, len = data.list.length; i < len; i++) data.list[i] = Storage.getItem('nodes' + data.list[i]).list[0];
+        for (var i = 0, len = data.list.length; i < len; i++) data.list[i] = Storage.getItem('fkgnodes' + data.list[i]).list[0];
       }
       return data;
     },
@@ -392,8 +392,9 @@
         var i, item, key, processedData = [];
         for (i = 0; i < leni; i++) {
           item = getItem(data[i], keys);
-          if (item._type) Model.icon(box, item);
           if ($.isFunction(Model[type])) Model[type](box, item, view);
+          if (item._fields) Model.fields(box, item);
+          if (item._type) Model.icon(box, item);
           processedData.push(item);
         }
         return processedData;
@@ -437,10 +438,10 @@
     },
 
     node: function(box, data, view) {
-      if (view === 'graph') {
-        if (data._fields) Model.fields(box, data);
+      if (view === 'graph') {}
+      if (view === 'search') {
+        if (data._type) data._type = data._type.toLowerCase();
       }
-      if (view === 'search') {}
     }
   }
 
@@ -943,8 +944,7 @@
   const Navigation = {
     go: function(box, $trigger, skip) {
       if (!$.isDefined(skip)) skip = false;
-      const type = $trigger.attr('data-fkg-nav');
-      var url = $trigger.attr('data-fkg-url');
+      var type = $trigger.attr('data-fkg-nav'), url = $trigger.attr('data-fkg-url');
 
       if (type === 'back') {
         Navigation.back(box, $trigger);
@@ -985,7 +985,11 @@
         const idx = parseInt(url);
         Breadcrumb.update(box, idx);
         url = box.stackUrl[idx]._url;
-        if (!Url.isNodeDetail(url)) renderCallback = View.nodesList;
+        if (Search.isUrl(box, url)) {
+          type = 'facet';
+        } else if (!Url.isNodeDetail(url)) {
+          renderCallback = View.nodesList;
+        }
         reloadAll = true;
       }
       if (type.indexOf('go') > -1) {
@@ -1012,6 +1016,7 @@
         renderCallback = View.searchList;
       }
       if (type === 'search') {
+        Breadcrumb.update(box);
         url = Url.get(url, Object.assign(box.options.searchParams || {}, {collection: box.options.collection, profile: box.options.profile, query: $trigger.closest('form').find('input[type="search"]').val() || ''}));
         box.results.url = url;
         proccessCallback = Data.processSearch;
@@ -1380,6 +1385,14 @@
         _page: url,
         _model: 'search',
       };
+    },
+
+    getUrl: function(box, path, params) {
+      return Url.get(path, params, box.options.apiBase);
+    },
+
+    isUrl: function(box, url) {
+      return url.match(box.options.searchUrl) ? true : false;
     }
   }
 
@@ -1651,7 +1664,7 @@
     },
 
     isNodeDetail: function(url) {
-      return url.match(/\/nodes\/[0-9]+/g);
+      return url.match(/\/nodes\/[0-9]+/g) ? true : false;
     },
 
     path: function(url, base) {
