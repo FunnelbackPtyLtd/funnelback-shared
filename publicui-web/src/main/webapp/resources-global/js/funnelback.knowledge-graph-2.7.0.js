@@ -35,7 +35,9 @@
     maxBreadcrumb: 5,
     maxPagination: 5,
     maxResults: 10,
-    searchUrl: null,
+    shareUrl: 's/knowledge-graph/index.html',
+    shareParams: {},
+    searchUrl: 's/search.json',
     searchParams: {
       SF: '[^(?i)(?!Fun).*,FUNfkgNodeLabel]',
     },
@@ -83,6 +85,8 @@
 		}
 
     for (var k in options) _setOption(k, options[k]);
+    options['shareUrl'] = Url.setUrl(options['shareUrl'], options['apiBase']);
+    options['searchUrl'] = Url.setUrl(options['searchUrl'], options['apiBase']);
     return options;
 
 		function _setOption(key, val) {
@@ -90,7 +94,6 @@
       if (key === 'contentFetcher') box.data = Api[val];
       if (key === 'contentSelector' && val) options[k] = $.isString(val) ? [val] : val || [];
       if (key === 'maxResults' && val) box.results.size = parseInt(val);
-      if (key === 'templatesFile' && val) options[k] = !val.match(/^[a-zA-Z]+:\/\//) ? Url.get(val, null, options['apiBase']) : val;
       if (key === 'trigger') {
         if (Box.triggers.indexOf(val) < 0) val = Box.triggers[0];
         options[k] = val;
@@ -1397,8 +1400,6 @@
   }
 
   const Share = {
-    urlPath: 's/knowledge-graph/index.html',
-
     copyToClipboard: function(box, link) {
       const el = document.createElement('textarea'), msg = 'Link was copied to the clickboard';
       el.value = link;
@@ -1411,7 +1412,7 @@
 
     getUrl: function(box, data) {
       const id = data['_fields'] && data['_fields']['id'] && data['_fields']['id'][0];
-      return id ? Url.get(this.urlPath, {collection: box.options.collection, profile: box.options.profile, targetUrl: id}, box.options.apiBase) : undefined;
+      return id && box.options.shareUrl ? Url.get(box.options.shareUrl, Object.assign(box.options.shareParams || {}, {collection: box.options.collection, profile: box.options.profile, targetUrl: id})) : undefined;
     }
   }
 
@@ -1636,10 +1637,6 @@
 
   // URL helper
   const Url = {
-    encode: function(params) {
-      return encodeURIComponent(params);
-    },
-
     get: function(path, params, base) {
       return (base ? base : '') + path + (params ? '?' + $.param(params) : '');
     },
@@ -1673,6 +1670,11 @@
 
     setBase: function(str) {
       return !str ? '' : (str.endsWithIndexOf('/') ? str : str + '/');
+    },
+
+    setUrl: function(url, base) {
+      if (!url) return url;
+      return url.match(/^[a-zA-Z]+:\/\//) ? url : this.get(url, null, base);
     },
 
     storageKey: function(url, base) {
