@@ -9,8 +9,6 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
-
 public class KnowledgeGraphLabelsTest {
 
     @Test
@@ -20,7 +18,7 @@ public class KnowledgeGraphLabelsTest {
                 + "  \"created\" : \"2018-09-12T12:04:22.519+10:00\",\n"
                 + "  \"lastModified\" : \"2018-10-22T16:35:49.379+11:00\",\n"
                 + "  \"id\" : \"cde16db2-8690-40fa-a172-0e0bca0fdf69\",\n"
-                + "  \"category\" : \"PROPERTY\",\n"
+                + "  \"category\" : \"METADATA\",\n"
                 + "  \"key\" : \"author\",\n"
                 + "  \"label\" : \"Author\",\n"
                 + "  \"type\" : \"doc\"\n"
@@ -28,7 +26,7 @@ public class KnowledgeGraphLabelsTest {
                 + "  \"created\" : \"2018-09-12T12:04:22.519+10:00\",\n"
                 + "  \"lastModified\" : \"2018-10-22T16:35:49.379+11:00\",\n"
                 + "  \"id\" : \"cde16db2-8690-40fa-a172-0e0bca0fdf69\",\n"
-                + "  \"category\" : \"PROPERTY\",\n"
+                + "  \"category\" : \"METADATA\",\n"
                 + "  \"key\" : \"keyValue\",\n"
                 + "  \"label\" : \"labelValue\",\n"
                 + "  \"type\" : \"typeValue\"\n"
