@@ -1679,7 +1679,13 @@
 
     storageKey: function(url, base) {
       const delimiter = '', pathParams = Url.getPathParams(url);
+      removeParams('collection');
+      removeParams('profile');
       return Url.getPathParts(url, base).join(delimiter) + Object.keys(pathParams).map(function(key) { return key + pathParams[key]; }).join(delimiter);
+
+      function removeParams(name) {
+        delete pathParams[name];
+      }
     },
   };
 
