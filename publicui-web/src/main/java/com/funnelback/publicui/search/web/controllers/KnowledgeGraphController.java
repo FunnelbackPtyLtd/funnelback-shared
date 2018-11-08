@@ -1,60 +1,34 @@
 package com.funnelback.publicui.search.web.controllers;
 
-import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.profile.ProfileAndView;
-import com.funnelback.common.profile.ProfileId;
-import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.publicui.knowledgegraph.exception.InvalidInputException;
 import com.funnelback.publicui.knowledgegraph.model.KnowledgeGraphLabels;
 import com.funnelback.publicui.knowledgegraph.model.KnowledgeGraphTemplate;
-import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.padre.Result;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.SampleCollectionUrlService;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
-import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
 import com.funnelback.publicui.utils.web.ProfilePicker;
-import com.google.common.net.UrlEscapers;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpUtils;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
-import static com.funnelback.config.keys.Keys.ServerKeys;
-import static com.funnelback.publicui.search.web.controllers.SearchController.GLOBAL_RESOURCES_LOCATION;
 
 /**
  * Provides the basic knowledge-graph endpoints for presenting the

@@ -30,7 +30,7 @@ public class KnowledgeGraphLabels {
         List<KnowledgeGraphLabelModel> configLabels = mapper.readValue(is, new TypeReference<List<KnowledgeGraphLabelModel>>(){});
 
         for (KnowledgeGraphLabelModel configLabel : configLabels) {
-            if (configLabel.getCategory().equals(KnowledgeGraphLabelModel.CategoryEnum.PROPERTY)) {
+            if (configLabel.getCategory().equals(KnowledgeGraphLabelModel.CategoryEnum.METADATA)) {
                 result.getProperty().putIfAbsent(configLabel.getType(), new HashMap<>());
                 result.getProperty().get(configLabel.getType()).put(configLabel.getKey(), configLabel.getLabel());
             } else if (configLabel.getCategory().equals(KnowledgeGraphLabelModel.CategoryEnum.RELATIONSHIP)) {

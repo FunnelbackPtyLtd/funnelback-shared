@@ -3,15 +3,12 @@ package com.funnelback.publicui.knowledgegraph.model;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.funnelback.publicui.knowledgegraph.exception.InvalidInputException;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class KnowledgeGraphTemplateTest {
 
