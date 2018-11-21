@@ -367,7 +367,7 @@
    */
   const Model = {
     _badges: ['resolution', 'status'],
-    _fields: {title: 'title', subtitle: 'subtitle', desc: 'desc', img: 'img', viewUrl: 'url', list: {primary: [], secondary: []}, detail: {primary: [], secondary: []}},
+    _fields: {title: 'title', subtitle: 'subtitle', desc: 'desc', image: 'image', viewUrl: 'url', list: {primary: [], secondary: []}, detail: {primary: [], secondary: []}},
 
     graph: {
       node: {_id: 'node.id', _url: {self: 'links.0.href', types: 'links.1.href', typesLeaf: 'links.2.href'}, _type: 'node.labels.0', _labels: 'node.labels', _fields: 'node.propertyList'},
@@ -828,7 +828,7 @@
       phone: '{{#if val}}<a class="{{_classes}}" href="tel:{{val}}">{{>icon-block _classes="" _icon=_icon}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}',
       url: '{{#if _viewUrl}}<a class="{{_classes}}" href="#" data-fkg-nav="external" data-fkg-url="{{_viewUrl}}" target="_blank">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{_viewUrl}}{{/if}}</a>{{/if}}',
       icon: '{{#if _icon}}<span class="{{_icon}} {{_classes}}"></span> {{/if}}',
-      img: '{{#if _img}}<img class="' + _prefix + 'rounded-circle {{_classes}}" src="{{_img}}" />{{/if}}',
+      img: '{{#if _image}}<img class="' + _prefix + 'rounded-circle {{_classes}}" src="{{_image}}" />{{/if}}',
       primary: '{{#if primary}}<div class="{{_classes}}">{{#each primary}}<span class="' + _prefix + 'mr-2">{{> (item)}}</span>{{/each}}</div>{{/if}}',
       breadcrumbItem: '<a class="{{#if _classes}}{{_classes}}{{else}}' + _prefix + 'nav-item ' + _prefix + 'nav-link{{/if}} ' + _prefix + 'text-truncate" href="#" data-fkg-nav="{{_nav}}" data-fkg-url="{{_url}}" title="{{_title}}">{{>icon-block}}{{{_label}}}</a>',
       list: '<div class="' + _prefix + 'card-list ' + _prefix + 'mb-2">{{#each list}}{{#if group}}{{>listGroup-block}}{{else}}{{>listItem-block collapseId=@index}}{{/if}}{{/each}}</div>',
@@ -891,10 +891,6 @@
 
     isEmailField: function(val) {
       return /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(val);
-    },
-
-    isImageField: function(field) {
-      return field.indexOf('photo') > -1 || field.indexOf('image') > -1 || field.indexOf('img') > -1;
     },
 
     isPathField: function(field) {
