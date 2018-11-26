@@ -22,10 +22,11 @@ import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.utils.web.ProfilePicker;
-import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 
+import lombok.extern.log4j.Log4j2;
 import waffle.servlet.WindowsPrincipal;
 
+@Log4j2
 public class SearchQuestionBinder {
     
     /**
@@ -51,6 +52,7 @@ public class SearchQuestionBinder {
         to.getCnPreviousClusters().addAll(from.getCnPreviousClusters());
         to.setClive(from.getClive());
         to.getCustomData().putAll(from.getCustomData());
+        to.setPrincipal(from.getPrincipal());
         to.setCurrentProfile(from.getCurrentProfile());
     }
     
