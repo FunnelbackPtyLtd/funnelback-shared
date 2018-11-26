@@ -23,10 +23,8 @@ import com.funnelback.publicui.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.utils.web.ProfilePicker;
 
-import lombok.extern.log4j.Log4j2;
 import waffle.servlet.WindowsPrincipal;
 
-@Log4j2
 public class SearchQuestionBinder {
     
     /**
