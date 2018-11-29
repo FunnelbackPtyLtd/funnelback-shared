@@ -1863,5 +1863,21 @@
   String.prototype.capitalize = function() { return this.charAt(0).toUpperCase() + this.slice(1); }
   String.prototype.endsWithIndexOf = function(suffix) { return this.indexOf(suffix, this.length - suffix.length) !== -1; }
 
+  if (typeof Object.assign != 'function') { // polyfill of Object.assign to work in IE
+    Object.defineProperty(Object, "assign", {
+      writable: true, configurable: true,
+      value: function assign(target) {
+        'use strict';
+        if (target == null) throw new TypeError('Cannot convert undefined or null to object');
+        var to = Object(target);
+        for (var index = 1; index < arguments.length; index++) {
+          var nextSource = arguments[index];
+          if (nextSource != null) for (var nextKey in nextSource) if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) to[nextKey] = nextSource[nextKey];
+        }
+        return to;
+      },
+    });
+  }
+
   return KnowledgeGraph;
 }($));
