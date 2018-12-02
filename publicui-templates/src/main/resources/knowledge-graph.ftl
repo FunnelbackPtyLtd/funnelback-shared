@@ -5,10 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="nofollow">
-  <!--[if IE]>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/es6-promise-4.2.5/es6-promise.auto.min.js"></script>
-  <![endif]-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <script src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/es6-promise-4.2.5/es6-promise.auto.min.js"></script>
   <title>Funnelback Knowledge Graph</title>
   <link rel="stylesheet" href="${ContextPath}/${GlobalResourcesPrefix}thirdparty/font-awesome-4.7.0/css/font-awesome.min.css" />
   <link rel="stylesheet" href="${ContextPath}/${GlobalResourcesPrefix}thirdparty/nprogress-0.2.0/nprogress.min.css" />
