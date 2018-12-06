@@ -59,15 +59,19 @@ import net.sf.ehcache.Element;
  * - timeout: Time to wait in seconds for the remote resource
  * - convertrelative: wether we should attempt to convert relative links to absolute ones.
  * - cssSelector: CSS selector to use to select the HTML which should be included. The
- * selected elemement will be the first to match the selector. The HTML used will include 
- * the element and its attributes. When this is enabled The document may be slightly modified
+ * selected element will be the first one to match the selector. The HTML returned will include 
+ * the element and its attributes. When this is option is enabled the document may be slightly modified
  * to be a valid HTML document before the cssSelector is applied this includes wrapping in
- * <pre>html</pre> tags and <pre>body</pre> tags. This is run before regex modifications and before removeByCssSelector.
+ * <pre>html</pre> tags and <pre>body</pre> tags. This may need to be taken into account when
+ * creating the selector. The resulting HTML will only include the <pre>html</pre> if that element 
+ * is selected. This is run before regex modifications and before removeByCssSelector.
  * - removeByCssSelectors: A list of CSS selectors which match elements which should be removed
- * from the included HTML. The HTML may be slightly modified to be a valid HTML document this includes
- * wrapping in <pre>html</pre> tags and <pre>body</pre> tags. This modification will happen even if 
- * <pre>cssSelector</pre> is used. The HTML returned after elements are removed will be the HTML 
- * that is inside of the <pre>body</pre> tag.
+ * from the included HTML. The HTML may be slightly modified to be a valid HTML document before elements are
+ * removed. The modification includes wrapping in <pre>html</pre> tags and adding <pre>body</pre> as well as
+ *  <pre>header</pre> tags. As this runs after <pre>cssSelector</pre>, the modification will still be applied
+ *  before elements are removed. The resulting HTML that will be returned, to be possible modified by <pre>regex</pre>
+ *  or <pre>convertrelative</pre>, will by default be the HTML that is in inside of the <pre>body</pre> tag. See
+ *  <pre>keepBodyAndHeader</pre> for how to modify this behaviour.
  * - keepBodyAndHeader: When <pre>removeByCssSelectors</pre> is used, the included HTML will be from
  * the HTML that is within the <pre>body</pre>, which may be automatically added. To instead return
  * the <pre>header</pre> and <pre>body</pre> tags and their contents this should be set to <pre>true</pre>.
