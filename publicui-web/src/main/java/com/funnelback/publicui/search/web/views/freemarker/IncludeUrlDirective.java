@@ -1,11 +1,11 @@
 package com.funnelback.publicui.search.web.views.freemarker;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -49,7 +49,6 @@ import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-
 /**
  * Includes an external URL.
  * Replacement for NickScript's IncludeUrl plugin
@@ -82,6 +81,7 @@ import net.sf.ehcache.Element;
  * the HTML that is within the <pre>body</pre>, which may be automatically added. To instead return
  * the <pre>header</pre> and <pre>body</pre> tags and their contents this should be set to <pre>true</pre>.
  * 
+ * <p>Note that the css selectors supported are only those that are supported by Jsoup.</p>
  */
 @Log4j2
 public class IncludeUrlDirective implements TemplateDirectiveModel {
@@ -111,7 +111,13 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
     @Override
     public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body)
         throws TemplateException, IOException {
-
+        
+        if(log.isDebugEnabled()) {
+            // Java is having trouble with the types if we don't set it to a variable :(
+            Set<Map.Entry> s = params.entrySet();
+            s.stream().forEach(e -> log.debug("IncludeUrl was given: " + e.getKey().toString() + "=" + e.getValue().toString()));
+        }
+        
         TemplateModel param = (TemplateModel) params.get(Parameters.url.toString());
         if (param == null) {
             env.getOut().write("<!-- " + i18n.tr("parameter.missing", "url") + " -->");
@@ -248,7 +254,6 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
     }
     
     protected String fetchContentWithJsoup(String url, String content, Map<String, TemplateModel> params) throws TemplateModelException {
-        
         TemplateModel param = params.get(Parameters.cssSelector.toString());
         if (param == null) {
             return content;
