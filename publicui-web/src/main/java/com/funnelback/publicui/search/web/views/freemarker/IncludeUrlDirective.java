@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +27,12 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import org.jsoup.select.Evaluator;
+import org.jsoup.select.QueryParser;
+import org.jsoup.select.Selector;
 
+import com.funnelback.common.utils.exception.ExceptionUtils;
 import com.funnelback.publicui.i18n.I18n;
 
 import freemarker.core.Environment;
@@ -250,9 +256,25 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
         
         String cssSelector = ((TemplateScalarModel) param).getAsString();
         
+        Evaluator parsedCssSelector;
+        try {
+            parsedCssSelector = QueryParser.parse(cssSelector);
+        } catch (Exception e) {
+            log.warn("Could not parse css selector '{}' error message was: '{}'",
+                cssSelector, new ExceptionUtils().getAllMessages(e));
+            return content;
+        }
+        
         Document doc = Jsoup.parse(content);
-        // TODO Should we try catch the css selector rather than let the exception bubble up?
-        String out = doc.select(cssSelector).stream().findFirst()
+        
+        if(log.isDebugEnabled()) {
+            log.debug("cssSelector '{}' will be used to find an element on modified document '{}'", cssSelector, doc.html());
+        }
+        
+        String out = Optional.ofNullable(Selector.select(parsedCssSelector, doc))
+            .map(List::stream)
+            .orElse(Stream.empty())
+            .findFirst()
             .map(e -> e.outerHtml())
             .orElse(null);
         
@@ -283,9 +305,21 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
         
         Document doc = Jsoup.parse(content);
         
+        if(log.isDebugEnabled()) {
+            log.debug("Css selectors in '{}' will remove elements from modified document '{}'", 
+                Parameters.removeByCssSelectors.toString(), doc.html());
+        }
         
         for(String cssSelector : cssSelectors.get()) {
-            for(org.jsoup.nodes.Element e : doc.select(cssSelector)) {
+            Evaluator parsedCssSelector;
+            try {
+                parsedCssSelector = QueryParser.parse(cssSelector);
+            } catch (Exception e) {
+                log.warn("Could not parse css selector '{}' from {} error message was: '{}'.",
+                    cssSelector, Parameters.removeByCssSelectors.toString(), new ExceptionUtils().getAllMessages(e));
+                continue;
+            }
+            for(org.jsoup.nodes.Element e : Optional.of(Selector.select(parsedCssSelector, doc)).orElse(new Elements())) {
                 e.remove();
             }
             

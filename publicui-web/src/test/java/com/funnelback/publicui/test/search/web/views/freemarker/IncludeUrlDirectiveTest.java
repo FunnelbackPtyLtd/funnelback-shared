@@ -112,10 +112,27 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
     }
     
     @Test
+    public void testSelectByCssSelector_bad_selector() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.cssSelector.toString(), new SimpleScalar("%^&*&^%$#$%^&^"));
+        
+        String content = "<html>"
+            + "<div id='a'><p>nope</p></div>"
+            + "<div id='b'><p>yep</p></div>"
+            + "</html>";
+        String actual = this.transformContent("http://server.com/folder/file.html",
+            content,
+            params);
+        
+        
+        Assert.assertEquals(content, actual.replace("\n", ""));        
+    }
+    
+    @Test
     public void testRemoveBySelector() throws TemplateModelException {
         Map<String, TemplateModel> params = new HashMap<>();
         params.put(Parameters.removeByCssSelectors.toString(), 
-            simpleSequenceOf("#a", "#b"));
+            simpleSequenceOf("$%^$^%^badselectortoignore", "#a", "#b"));
         
         String actual = this.transformContent("http://server.com/folder/file.html",
             "<html>"
