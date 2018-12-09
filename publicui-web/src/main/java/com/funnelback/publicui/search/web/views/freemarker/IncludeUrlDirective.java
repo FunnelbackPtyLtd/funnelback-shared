@@ -1,11 +1,18 @@
 package com.funnelback.publicui.search.web.views.freemarker;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -18,10 +25,18 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import org.jsoup.select.Evaluator;
+import org.jsoup.select.QueryParser;
+import org.jsoup.select.Selector;
 
+import com.funnelback.common.utils.exception.ExceptionUtils;
 import com.funnelback.publicui.i18n.I18n;
 
 import freemarker.core.Environment;
+import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateDirectiveModel;
@@ -34,7 +49,6 @@ import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-
 /**
  * Includes an external URL.
  * Replacement for NickScript's IncludeUrl plugin
@@ -49,6 +63,25 @@ import net.sf.ehcache.Element;
  * - useragent: Override default user agent
  * - timeout: Time to wait in seconds for the remote resource
  * - convertrelative: wether we should attempt to convert relative links to absolute ones.
+ * - cssSelector: CSS selector to use to select the HTML which should be included. The
+ * selected element will be the first one to match the selector. The HTML returned will include 
+ * the element and its attributes. When this is option is enabled the document may be slightly modified
+ * to be a valid HTML document before the cssSelector is applied this includes wrapping in
+ * <pre>html</pre> tags and <pre>body</pre> tags. This may need to be taken into account when
+ * creating the selector. The resulting HTML will only include the <pre>html</pre> if that element 
+ * is selected. This is run before regex modifications and before removeByCssSelector.
+ * - removeByCssSelectors: A list of CSS selectors which match elements which should be removed
+ * from the included HTML. The HTML may be slightly modified to be a valid HTML document before elements are
+ * removed. The modification includes wrapping in <pre>html</pre> tags and adding <pre>body</pre> as well as
+ *  <pre>header</pre> tags. As this runs after <pre>cssSelector</pre>, the modification will still be applied
+ *  before elements are removed. The resulting HTML that will be returned, to be possible modified by <pre>regex</pre>
+ *  or <pre>convertrelative</pre>, will by default be the HTML that is in inside of the <pre>body</pre> tag. See
+ *  <pre>keepBodyAndHeader</pre> for how to modify this behaviour.
+ * - keepBodyAndHeader: When <pre>removeByCssSelectors</pre> is used, the included HTML will be from
+ * the HTML that is within the <pre>body</pre>, which may be automatically added. To instead return
+ * the <pre>header</pre> and <pre>body</pre> tags and their contents this should be set to <pre>true</pre>.
+ * 
+ * <p>Note that the css selectors supported are only those that are supported by Jsoup.</p>
  */
 @Log4j2
 public class IncludeUrlDirective implements TemplateDirectiveModel {
@@ -62,7 +95,8 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
     public static final Pattern CONVERT_RELATIVE_PATTERN = Pattern.compile("<([^!>\\.]*?)(href|src|action|background)\\s*=\\s*([\"|']?)(.*?)\\3((\\s+.*?)*)>", Pattern.DOTALL);
     
     protected enum Parameters {
-        url, expiry, start, end, username, password, useragent, timeout, convertrelative, convertRelative
+        url, expiry, start, end, username, password, useragent, timeout, convertrelative, convertRelative, 
+        cssSelector,removeByCssSelectors, keepBodyAndHeader
     }
     
     private CacheManager appCacheManager;
@@ -77,7 +111,13 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
     @Override
     public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body)
         throws TemplateException, IOException {
-
+        
+        if(log.isDebugEnabled()) {
+            // Java is having trouble with the types if we don't set it to a variable :(
+            Set<Map.Entry> s = params.entrySet();
+            s.stream().forEach(e -> log.debug("IncludeUrl was given: " + e.getKey().toString() + "=" + e.getValue().toString()));
+        }
+        
         TemplateModel param = (TemplateModel) params.get(Parameters.url.toString());
         if (param == null) {
             env.getOut().write("<!-- " + i18n.tr("parameter.missing", "url") + " -->");
@@ -213,6 +253,106 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
         return null;
     }
     
+    protected String fetchContentWithJsoup(String url, String content, Map<String, TemplateModel> params) throws TemplateModelException {
+        TemplateModel param = params.get(Parameters.cssSelector.toString());
+        if (param == null) {
+            return content;
+        }
+        
+        String cssSelector = ((TemplateScalarModel) param).getAsString();
+        
+        Evaluator parsedCssSelector;
+        try {
+            parsedCssSelector = QueryParser.parse(cssSelector);
+        } catch (Exception e) {
+            log.warn("Could not parse css selector '{}' error message was: '{}'",
+                cssSelector, new ExceptionUtils().getAllMessages(e));
+            return content;
+        }
+        
+        Document doc = Jsoup.parse(content);
+        
+        if(log.isDebugEnabled()) {
+            log.debug("cssSelector '{}' will be used to find an element on modified document '{}'", cssSelector, doc.html());
+        }
+        
+        String out = Optional.ofNullable(Selector.select(parsedCssSelector, doc))
+            .map(List::stream)
+            .orElse(Stream.empty())
+            .findFirst()
+            .map(e -> e.outerHtml())
+            .orElse(null);
+        
+        if(out == null) {
+            log.warn("No elements found matching css selector {}", cssSelector);
+            return "";
+        }
+        
+        return out;
+    }
+    
+    protected String removeContentWithJsoup(String url, String content, Map<String, TemplateModel> params) 
+            throws TemplateModelException {
+        
+        TemplateModel param = params.get(Parameters.removeByCssSelectors.toString());
+        if (param == null) {
+            return content;
+        }
+        
+        Optional<List<String>> cssSelectors = getListFromSingleStringOrSequence(param);
+        
+        if(!cssSelectors.isPresent()) {
+            log.warn("Could not understand argument for '{}'", Parameters.removeByCssSelectors.toString());
+            return content;
+        }
+        
+        if(cssSelectors.get().isEmpty()) return content;
+        
+        Document doc = Jsoup.parse(content);
+        
+        if(log.isDebugEnabled()) {
+            log.debug("Css selectors in '{}' will remove elements from modified document '{}'", 
+                Parameters.removeByCssSelectors.toString(), doc.html());
+        }
+        
+        for(String cssSelector : cssSelectors.get()) {
+            Evaluator parsedCssSelector;
+            try {
+                parsedCssSelector = QueryParser.parse(cssSelector);
+            } catch (Exception e) {
+                log.warn("Could not parse css selector '{}' from {} error message was: '{}'.",
+                    cssSelector, Parameters.removeByCssSelectors.toString(), new ExceptionUtils().getAllMessages(e));
+                continue;
+            }
+            for(org.jsoup.nodes.Element e : Optional.of(Selector.select(parsedCssSelector, doc)).orElse(new Elements())) {
+                e.remove();
+            }
+            
+        }
+        
+        // Do we have a <html>
+        if(doc.childNodeSize() == 0) {
+            return "";
+        }
+        
+        boolean keepHeaderAndBody = getBoolean(params.get(Parameters.keepBodyAndHeader.toString()), false);
+        
+        if(keepHeaderAndBody) {
+            return doc.children().get(0).html();
+        }
+        
+        // Just extract what is in the body
+        for(org.jsoup.nodes.Element e : doc.children().get(0).children()) {
+            if("body".equals(e.tagName())) {
+                return e.html();
+            }
+        }
+        
+        log.debug("Could not find body tag in html, was it excluded by a selector?");
+        
+        return "";
+    }
+    
     /**
      * Transforms content if required: Extracts the relevant part and convert relative links
      * @param url
@@ -224,6 +364,8 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
      protected String transformContent(String url, String content, Map<String, TemplateModel> params) throws TemplateModelException {
         String out = content;
         
+        out = fetchContentWithJsoup(url, out, params);
+        out = removeContentWithJsoup(url, out, params);
         // Extract start-pattern
         TemplateModel param = params.get(Parameters.start.toString());
         if (param != null) {
@@ -279,6 +421,32 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
         }
 
         return out;
+    }
+     
+    private Optional<List<String>> getListFromSingleStringOrSequence(TemplateModel singleStringOrSequence) throws TemplateModelException {
+        if(singleStringOrSequence == null) return Optional.of(Collections.emptyList());
+        if(singleStringOrSequence instanceof TemplateScalarModel) {
+            return Optional.of(Arrays.asList(((TemplateScalarModel) singleStringOrSequence).getAsString()));
+        }
+        if(singleStringOrSequence instanceof SimpleSequence) {
+            SimpleSequence seq = (SimpleSequence) singleStringOrSequence;
+            List<String> values = new ArrayList<>();
+            for(int i = 0; i < seq.size(); i++) {
+                String facetsWanted = ((TemplateScalarModel) seq.get(i)).getAsString();
+                values.add(facetsWanted);
+            }
+            return Optional.of(values);
+        }
+        
+        return Optional.empty();
+        
+    }
+    
+    private boolean getBoolean(TemplateModel booleanValue, boolean defaultValue) throws TemplateModelException {
+        if (booleanValue == null) {
+            return defaultValue;
+        }
+        return ((TemplateBooleanModel) booleanValue).getAsBoolean();
     }
 
 }

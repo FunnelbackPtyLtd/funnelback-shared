@@ -84,7 +84,7 @@ public class GetFacetsMethodTest {
         Assert.assertEquals("country", result.get(1).getName());
     }
     
-    private SimpleSequence simpleSequenceOf(String ... strings) {
+    public static SimpleSequence simpleSequenceOf(String ... strings) {
         SimpleSequence simpleSequence = new SimpleSequence(Arrays.asList(strings)
                 .stream()
                 .map(SimpleScalar::newInstanceOrNull)

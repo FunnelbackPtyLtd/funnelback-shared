@@ -1,14 +1,18 @@
 package com.funnelback.publicui.test.search.web.views.freemarker;
 
-import java.io.IOException;
+import static com.funnelback.publicui.test.search.web.views.freemarker.GetFacetsMethodTest.simpleSequenceOf;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective;
 
+import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -89,4 +93,120 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
             actual);        
     }
     
+    
+    @Test
+    public void testSelectByCssSelector() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.cssSelector.toString(), new SimpleScalar("#b"));
+        
+        String actual = this.transformContent("http://server.com/folder/file.html",
+            "<html>"
+            + "<div id='a'><p>nope</p></div>"
+            + "<div id='b'><p>yep</p></div>"
+            + "</html>",
+            params);
+        
+        
+        Assert.assertEquals("<div id=\"b\"> <p>yep</p></div>",
+            actual.replace("\n", "").replace("\r", ""));        
+    }
+    
+    @Test
+    public void testSelectByCssSelector_bad_selector() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.cssSelector.toString(), new SimpleScalar("%^&*&^%$#$%^&^"));
+        
+        String content = "<html>"
+            + "<div id='a'><p>nope</p></div>"
+            + "<div id='b'><p>yep</p></div>"
+            + "</html>";
+        String actual = this.transformContent("http://server.com/folder/file.html",
+            content,
+            params);
+        
+        
+        Assert.assertEquals(content, actual.replace("\n", ""));        
+    }
+    
+    @Test
+    public void testRemoveBySelector() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.removeByCssSelectors.toString(), 
+            simpleSequenceOf("$%^$^%^badselectortoignore", "#a", "#b"));
+        
+        String actual = this.transformContent("http://server.com/folder/file.html",
+            "<html>"
+            + "<head></head>"
+            + "<body>"
+            + "<div id='important'>"
+            + "<div id='a'><p>nope</p>"
+            + "<div id='b'><p>yep</p></div>"
+            + "</div>"
+            + "<p>foo</p>"
+            + "</div>"
+            + "</body>"
+            + "</html>",
+            params);
+        
+        
+        Assert.assertEquals("<div id=\"important\">" + 
+            " <p>foo</p>" + 
+            "</div>",
+            actual.replace("\n", "").replace("\r", ""));        
+    }
+    
+    @Test
+    public void testRemoveBySelector_keep_head_and_body() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.removeByCssSelectors.toString(), simpleSequenceOf("#a", "#b"));
+        params.put(Parameters.keepBodyAndHeader.toString(), TemplateBooleanModel.TRUE);
+        
+        String actual = this.transformContent("http://server.com/folder/file.html",
+            "<html>"
+            + "<head>"
+            + "<script>important script</script>"
+            + "</head>"
+            + "<body>"
+            + "<div id='important'>"
+            + "<div id='a'><p>nope</p>"
+            + "<div id='b'><p>yep</p></div>"
+            + "</div>"
+            + "<p>foo</p>"
+            + "</div>"
+            + "</body>"
+            + "</html>",
+            params);
+        
+        Assert.assertEquals("<head>" + 
+            " <script>important script</script>" + 
+            "</head>" + 
+            "<body>" + 
+            " <div id=\"important\">" + 
+            "  <p>foo</p>" + 
+            " </div>" + 
+            "</body>",
+            actual.replace("\n", "").replace("\r", ""));        
+    }
+    
+    @Test
+    public void testRemoveBySelectorNoHtml() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.removeByCssSelectors.toString(), 
+            simpleSequenceOf("#a", "#b"));
+        
+        String actual = this.transformContent("http://server.com/folder/file.html",
+            
+            "<div id='important'>"
+            + "<div id='a'><p>nope</p></div>"
+            + "<div id='b'><p>yep</p></div>"
+            + "<p>foo</p>"
+            + "</div>",
+            params);
+        
+        
+        Assert.assertEquals("<div id=\"important\">" + 
+            " <p>foo</p>" + 
+            "</div>",
+            actual.replace("\n", "").replace("\r", ""));        
+    }
 }

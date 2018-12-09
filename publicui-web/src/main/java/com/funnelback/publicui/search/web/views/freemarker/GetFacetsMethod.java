@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.web.views.freemarker;
 
+import static com.funnelback.common.function.Predicates.not;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +17,6 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.utility.DeepUnwrap;
-import static com.funnelback.common.function.Predicates.not;
 
 /**
  * Returns facets with the given names in the order given, If the second argument is missing

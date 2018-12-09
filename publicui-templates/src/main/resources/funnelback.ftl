@@ -502,6 +502,23 @@
     @param useragent User-Agent string to use.
     @param timeout Time to wait, in seconds, for the remote content to be returned (default = 50 since v15.10.0).
     @param convertrelative: Boolean, whether relative links in the included content should be converted to absolute ones.
+    @param cssSelector: CSS selector to use to select the HTML which should be included. The
+    selected element will be the first one to match the selector. The HTML returned will include 
+    the element and its attributes. When this is option is enabled the document may be slightly modified
+    to be a valid HTML document before the cssSelector is applied this includes wrapping in
+    <pre>html</pre> tags and <pre>body</pre> tags. This may need to be taken into account when
+    creating the selector. The resulting HTML will only include the <pre>html</pre> if that element 
+    is selected. This is run before regex modifications and before removeByCssSelector.
+    @param removeByCssSelectors: A list of CSS selectors which match elements which should be removed
+    from the included HTML. The HTML may be slightly modified to be a valid HTML document before elements are
+    removed. The modification includes wrapping in <pre>html</pre> tags and adding <pre>body</pre> as well as
+     <pre>header</pre> tags. As this runs after <pre>cssSelector</pre>, the modification will still be applied
+     before elements are removed. The resulting HTML that will be returned, to be possible modified by <pre>regex</pre>
+     or <pre>convertrelative</pre>, will by default be the HTML that is in inside of the <pre>body</pre> tag. See
+     <pre>keepBodyAndHeader</pre> for how to modify this behaviour.
+    @param keepBodyAndHeader: When <pre>removeByCssSelectors</pre> is used, the included HTML will be from
+    the HTML that is within the <pre>body</pre>, which may be automatically added. To instead return
+    the <pre>header</pre> and <pre>body</pre> tags and their contents this should be set to <pre>true</pre>.
 -->
 <#macro IncludeUrl url params...>
     <@IncludeUrlInternal url=url
@@ -513,7 +530,11 @@
         useragent=params.useragent
         timeout=params.timeout
         convertRelative=params.convertRelative
-        convertrelative=params.convertrelative />
+        convertrelative=params.convertrelative
+        cssSelector = params.cssSelector
+        removeByCssSelectors = params.removeByCssSelectors
+        keepBodyAndHeader = params.keepBodyAndHeader
+        />
 </#macro>
 
 <#---
