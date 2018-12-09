@@ -159,7 +159,7 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
     public void testRemoveBySelector_keep_head_and_body() throws TemplateModelException {
         Map<String, TemplateModel> params = new HashMap<>();
         params.put(Parameters.removeByCssSelectors.toString(), simpleSequenceOf("#a", "#b"));
-        params.put(Parameters.keepBodyAndHeader.toString(), TemplateBooleanModel.TRUE);
+        params.put(Parameters.keepBodyAndhead.toString(), TemplateBooleanModel.TRUE);
         
         String actual = this.transformContent("http://server.com/folder/file.html",
             "<html>"

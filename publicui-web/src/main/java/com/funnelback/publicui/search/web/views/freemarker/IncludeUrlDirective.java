@@ -50,9 +50,43 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 /**
- * Includes an external URL.
+ * Includes content from an an external URL.
  * Replacement for NickScript's IncludeUrl plugin
  * Supports HTTP redirects, however 'meta-refresh' tags/redirects within the included url are not supported.
+ * 
+ * <p>Note that the CSS selectors supported are only those that are supported by Jsoup.</p>
+ * 
+ * <p>An example of Jsoup modifying HTML:</p>
+ * <p>When `cssSelector` or `removeByCssSelectors` is used Jsoup will 
+ * first parse the document slightly modifying it. For example when given:</p>
+ * <pre>&#x3C;div&#x3E;&#x3C;p&#x3E;foo&#x3C;/p&#x3E;&#x3C;/div&#x3E;</pre>
+ * <p>It will produce:</p>
+ * <pre>
+ * &#x3C;html&#x3E;
+ * &#x3C;head&#x3E;
+ * &#x3C;/head&#x3E;
+ * &#x3C;body&#x3E;
+ * &#x3C;div&#x3E;&#x3C;p&#x3E;foo&#x3C;/p&#x3E;&#x3C;/div&#x3E;
+ * &#x3C;/body&#x3E;
+ * &#x3C;/html&#x3E;
+ * </pre>
+ * <p>Typically this will not be an issue when using 'cssSelector'. However when using
+ * 'removeByCssSelectors' as it is only removing elements, the added tags may be left 
+ * over. To account for this by default the added tags are removed. The above by default would 
+ * produce:</p>
+ * <pre>&#x3C;div&#x3E;&#x3C;p&#x3E;foo&#x3C;/p&#x3E;&#x3C;/div&#x3E;</pre>
+ * <p>If the '&#x3C;body&#x3E;' and '&#x3C;head&#x3E;' tags are important the 'keepBodyAndhead'
+ * option can be set true producing:</p>
+ * <pre>
+ * &#x3C;head&#x3E;
+ * &#x3C;/head&#x3E;
+ * &#x3C;body&#x3E;
+ * &#x3C;div&#x3E;&#x3C;p&#x3E;foo&#x3C;/p&#x3E;&#x3C;/div&#x3E;
+ * &#x3C;/body&#x3E;
+ * </pre>
+ * <p>The head tag, and its contents, may be removed by specifying '&#x3C;head&#x3E;' as
+ * one of the values in 'removeByCssSelectors'.</p>
+ * 
  * Parameters:
  * - url: Absolute URL to include
  * - expiry: Cache TTL, in seconds
@@ -67,21 +101,23 @@ import net.sf.ehcache.Element;
  * selected element will be the first one to match the selector. The HTML returned will include 
  * the element and its attributes. When this is option is enabled the document may be slightly modified
  * to be a valid HTML document before the cssSelector is applied this includes wrapping in
- * <pre>html</pre> tags and <pre>body</pre> tags. This may need to be taken into account when
- * creating the selector. The resulting HTML will only include the <pre>html</pre> if that element 
+ * '&#x3C;html&#x3E;' tags and '&#x3C;body&#x3E;' tags. See above for more information about Jsoup modification. 
+ * This may need to be taken into account when
+ * creating the selector. The resulting HTML will only include the '&#x3C;html&#x3E;' if that element 
  * is selected. This is run before regex modifications and before removeByCssSelector.
  * - removeByCssSelectors: A list of CSS selectors which match elements which should be removed
  * from the included HTML. The HTML may be slightly modified to be a valid HTML document before elements are
- * removed. The modification includes wrapping in <pre>html</pre> tags and adding <pre>body</pre> as well as
- *  <pre>header</pre> tags. As this runs after <pre>cssSelector</pre>, the modification will still be applied
- *  before elements are removed. The resulting HTML that will be returned, to be possible modified by <pre>regex</pre>
- *  or <pre>convertrelative</pre>, will by default be the HTML that is in inside of the <pre>body</pre> tag. See
- *  <pre>keepBodyAndHeader</pre> for how to modify this behaviour.
- * - keepBodyAndHeader: When <pre>removeByCssSelectors</pre> is used, the included HTML will be from
- * the HTML that is within the <pre>body</pre>, which may be automatically added. To instead return
- * the <pre>header</pre> and <pre>body</pre> tags and their contents this should be set to <pre>true</pre>.
+ * removed. The modification includes wrapping in '&#x3C;html&#x3E;' tags and adding '&#x3C;body&#x3E;' as well as
+ *  '&#x3C;head&#x3E;' tags. See below for more information about Jsoup modification As this 
+ *  runs after 'cssSelector', the modification will still be applied
+ *  before elements are removed. The resulting HTML that will be returned, to be possible modified by 'regex'
+ *  or 'convertrelative', will by default be the HTML that is in inside of the '&#x3C;body&#x3E;' tag. See
+ *  'keepBodyAndhead' for how to modify this behaviour.
+ * - keepBodyAndhead: When 'removeByCssSelectors' is used, the included HTML will be from
+ * the HTML that is within the '&#x3C;body&#x3E;', which may be automatically added. To instead return
+ * the '&#x3C;head&#x3E;' and '&#x3C;body&#x3E;' tags and their contents this should be set to 'true'.
  * 
- * <p>Note that the css selectors supported are only those that are supported by Jsoup.</p>
+ * 
  */
 @Log4j2
 public class IncludeUrlDirective implements TemplateDirectiveModel {
@@ -96,7 +132,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
     
     protected enum Parameters {
         url, expiry, start, end, username, password, useragent, timeout, convertrelative, convertRelative, 
-        cssSelector,removeByCssSelectors, keepBodyAndHeader
+        cssSelector,removeByCssSelectors, keepBodyAndhead
     }
     
     private CacheManager appCacheManager;
@@ -335,9 +371,9 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
             return "";
         }
         
-        boolean keepHeaderAndBody = getBoolean(params.get(Parameters.keepBodyAndHeader.toString()), false);
+        boolean keepheadAndBody = getBoolean(params.get(Parameters.keepBodyAndhead.toString()), false);
         
-        if(keepHeaderAndBody) {
+        if(keepheadAndBody) {
             return doc.children().get(0).html();
         }
         
