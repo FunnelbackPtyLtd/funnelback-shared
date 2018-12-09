@@ -75,7 +75,7 @@ import net.sf.ehcache.Element;
  * over. To account for this by default the added tags are removed. The above by default would 
  * produce:</p>
  * <pre>&#x3C;div&#x3E;&#x3C;p&#x3E;foo&#x3C;/p&#x3E;&#x3C;/div&#x3E;</pre>
- * <p>If the '&#x3C;body&#x3E;' and '&#x3C;head&#x3E;' tags are important the 'keepBodyAndhead'
+ * <p>If the '&#x3C;body&#x3E;' and '&#x3C;head&#x3E;' tags are important the 'keepBodyAndHead'
  * option can be set true producing:</p>
  * <pre>
  * &#x3C;head&#x3E;
@@ -112,8 +112,8 @@ import net.sf.ehcache.Element;
  *  runs after 'cssSelector', the modification will still be applied
  *  before elements are removed. The resulting HTML that will be returned, to be possible modified by 'regex'
  *  or 'convertrelative', will by default be the HTML that is in inside of the '&#x3C;body&#x3E;' tag. See
- *  'keepBodyAndhead' for how to modify this behaviour.
- * - keepBodyAndhead: When 'removeByCssSelectors' is used, the included HTML will be from
+ *  'keepBodyAndHead' for how to modify this behaviour.
+ * - keepBodyAndHead: When 'removeByCssSelectors' is used, the included HTML will be from
  * the HTML that is within the '&#x3C;body&#x3E;', which may be automatically added. To instead return
  * the '&#x3C;head&#x3E;' and '&#x3C;body&#x3E;' tags and their contents this should be set to 'true'.
  * 
@@ -132,7 +132,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
     
     protected enum Parameters {
         url, expiry, start, end, username, password, useragent, timeout, convertrelative, convertRelative, 
-        cssSelector,removeByCssSelectors, keepBodyAndhead
+        cssSelector,removeByCssSelectors, keepBodyAndHead
     }
     
     private CacheManager appCacheManager;
@@ -371,9 +371,9 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
             return "";
         }
         
-        boolean keepBodyAndhead = getBoolean(params.get(Parameters.keepBodyAndhead.toString()), false);
+        boolean keepBodyAndHead = getBoolean(params.get(Parameters.keepBodyAndHead.toString()), false);
         
-        if(keepBodyAndhead) {
+        if(keepBodyAndHead) {
             return doc.children().get(0).html();
         }
         
