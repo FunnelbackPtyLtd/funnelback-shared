@@ -371,9 +371,9 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
             return "";
         }
         
-        boolean keepheadAndBody = getBoolean(params.get(Parameters.keepBodyAndhead.toString()), false);
+        boolean keepBodyAndhead = getBoolean(params.get(Parameters.keepBodyAndhead.toString()), false);
         
-        if(keepheadAndBody) {
+        if(keepBodyAndhead) {
             return doc.children().get(0).html();
         }
         
