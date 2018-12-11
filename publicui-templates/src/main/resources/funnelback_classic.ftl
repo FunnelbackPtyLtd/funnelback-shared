@@ -965,7 +965,7 @@
 <#---
     Displays the current date and time.
 -->
-<#macro CurrentDate><p class="date">${currentDate()?datetime?string}</p></#macro>
+<#macro CurrentDate><p class="date">${currentDate()?datetime?string["MMM d, yyyy h:mm:ss aa"]}</p></#macro>
 
 <#---
     Displays the last updated date of the collection being searched.
