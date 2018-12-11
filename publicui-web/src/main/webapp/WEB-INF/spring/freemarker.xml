@@ -149,6 +149,13 @@
            <property name="configuration" ref="freemarkerConfiguration" />
     </bean>
 
+    <!-- Disable 'new'ing objects from a class name in Freemarker (security risk - See SUPPORT-2838) -->
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="freemarkerConfiguration" />
+        <property name="targetMethod" value="setNewBuiltinClassResolver" />
+        <property name="arguments" value="#{T(freemarker.core.TemplateClassResolver).ALLOWS_NOTHING_RESOLVER}" />
+    </bean>
+
     <!-- Customise FreeMarker Exception handling -->
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="targetObject" ref="freemarkerConfiguration" />
