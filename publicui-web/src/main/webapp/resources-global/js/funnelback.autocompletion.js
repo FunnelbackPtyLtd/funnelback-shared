@@ -1,9 +1,9 @@
 /*
  * Funnelback auto-completion plugin
- * version 2.6.0
+ * version 2.6.1
  *
  * author: Liliana Nowak
- * Copyright Funnelback, 2015-2017
+ * Copyright Funnelback, 2015-2019
  *
  * @requires jQuery https://jquery.com@1.10.2
  * @requires Typeahead https://twitter.github.io/typeahead.js@0.11.1
@@ -38,8 +38,9 @@
 		},
 		*/
 		callback 		: null,			// function(set, suggestions); callback function applied to suggestions before returning them to typeahead plugin
+		debounceDelay	: 300,	  		// integer; the debounce delay in milliseconds between the time the user stops typing a letter and the time the request is done\
 		group 			: false,		// true|false; enable grouping suggestions based on parameter itemGroup
-		groupOrder 		: [],			// []; list of group headers used to sort grouped suggestions in that order
+		groupOrder		: [],			// []; list of group headers used to sort grouped suggestions in that order
 		facets 			: {				// {}; list of parameters applied when default search-based auto-completion is enabled
 			blacklist	: [],	// []; list of facet categories names not to displayed
 			whitelist	: [],	// []; list of facet categories names to display
@@ -223,7 +224,7 @@
 
 	/* Private variables */
 	var _debug = false,
-	_mapKeys = ['collection', 'callback', 'dataType', 'alpha', 'facets', 'transform', 'format', 'group', 'groupOrder', 'itemGroup', 'itemLabel', 'params', 'profile', 'program', 'show', 'sort', 'queryKey', 'queryVal', 'template', 'templateMerge'],
+	_mapKeys = ['collection', 'callback', 'dataType', 'alpha', 'facets', 'transform', 'format', 'group', 'groupOrder', 'itemGroup', 'itemLabel', 'params', 'profile', 'program', 'show', 'sort', 'queryKey', 'queryVal', 'template', 'templateMerge', 'debounceDelay'],
 	_navCols = {cursor : null, query  : ''};
 
 	/* Private methods */
@@ -276,7 +277,8 @@
 				filter : function (response) {
 					var query = getQuery($(this).get(0).transport.lastReq);
 					return _handleSetData(set, $.map(response, function(suggestion, i) { return set.transform(set, suggestion, i, name, query) }));
-				}
+				},
+				rateLimitWait: set.debounceDelay
 			};
 			if (set.dataType === 'jsonp') {
 				remote['prepare'] = function(query, settings) {
