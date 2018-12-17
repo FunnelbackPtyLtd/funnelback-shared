@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -45,6 +46,8 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -56,11 +59,10 @@ import net.sf.ehcache.Element;
  * 
  * <p>Note that the CSS selectors supported are only those that are supported by Jsoup.</p>
  * 
- * <p>An example of Jsoup modifying HTML:</p>
- * <p>When `cssSelector` or `removeByCssSelectors` is used Jsoup will 
- * first parse the document slightly modifying it. For example when given:</p>
+ * <p>when CSS selectors are used the document will be modified by Jsoup.
+ * For example when given:</p>
  * <pre>&#x3C;div&#x3E;&#x3C;p&#x3E;foo&#x3C;/p&#x3E;&#x3C;/div&#x3E;</pre>
- * <p>It will produce:</p>
+ * <p>Jsoup will transform that to:</p>
  * <pre>
  * &#x3C;html&#x3E;
  * &#x3C;head&#x3E;
@@ -70,22 +72,7 @@ import net.sf.ehcache.Element;
  * &#x3C;/body&#x3E;
  * &#x3C;/html&#x3E;
  * </pre>
- * <p>Typically this will not be an issue when using 'cssSelector'. However when using
- * 'removeByCssSelectors' as it is only removing elements, the added tags may be left 
- * over. To account for this by default the added tags are removed. The above by default would 
- * produce:</p>
- * <pre>&#x3C;div&#x3E;&#x3C;p&#x3E;foo&#x3C;/p&#x3E;&#x3C;/div&#x3E;</pre>
- * <p>If the '&#x3C;body&#x3E;' and '&#x3C;head&#x3E;' tags are important the 'keepBodyAndHead'
- * option can be set true producing:</p>
- * <pre>
- * &#x3C;head&#x3E;
- * &#x3C;/head&#x3E;
- * &#x3C;body&#x3E;
- * &#x3C;div&#x3E;&#x3C;p&#x3E;foo&#x3C;/p&#x3E;&#x3C;/div&#x3E;
- * &#x3C;/body&#x3E;
- * </pre>
- * <p>The head tag, and its contents, may be removed by specifying '&#x3C;head&#x3E;' as
- * one of the values in 'removeByCssSelectors'.</p>
+ * 
  * 
  * Parameters:
  * - url: Absolute URL to include
@@ -99,24 +86,14 @@ import net.sf.ehcache.Element;
  * - convertrelative: wether we should attempt to convert relative links to absolute ones.
  * - cssSelector: CSS selector to use to select the HTML which should be included. The
  * selected element will be the first one to match the selector. The HTML returned will include 
- * the element and its attributes. When this is option is enabled the document may be slightly modified
+ * the element and its attributes. When this option is enabled the document may be slightly modified
  * to be a valid HTML document before the cssSelector is applied this includes wrapping in
- * '&#x3C;html&#x3E;' tags and '&#x3C;body&#x3E;' tags. See above for more information about Jsoup modification. 
- * This may need to be taken into account when
- * creating the selector. The resulting HTML will only include the '&#x3C;html&#x3E;' if that element 
- * is selected. This is run before regex modifications and before removeByCssSelector.
- * - removeByCssSelectors: A list of CSS selectors which match elements which should be removed
- * from the included HTML. The HTML may be slightly modified to be a valid HTML document before elements are
- * removed. The modification includes wrapping in '&#x3C;html&#x3E;' tags and adding '&#x3C;body&#x3E;' as well as
- *  '&#x3C;head&#x3E;' tags. See below for more information about Jsoup modification As this 
- *  runs after 'cssSelector', the modification will still be applied
- *  before elements are removed. The resulting HTML that will be returned, to be possible modified by 'regex'
- *  or 'convertrelative', will by default be the HTML that is in inside of the '&#x3C;body&#x3E;' tag. See
- *  'keepBodyAndHead' for how to modify this behaviour.
- * - keepBodyAndHead: When 'removeByCssSelectors' is used, the included HTML will be from
- * the HTML that is within the '&#x3C;body&#x3E;', which may be automatically added. To instead return
- * the '&#x3C;head&#x3E;' and '&#x3C;body&#x3E;' tags and their contents this should be set to 'true'.
- * 
+ * '&#x3C;html&#x3E;' tags and '&#x3C;body&#x3E;' tags. See above for more information about Jsoup modification.
+ * - removeByCssSelectors: A list of CSS selectors which match elements to be removed
+ * from the included HTML. This is run after 'cssSelector', and so if 'cssSelector' is used
+ * the CSS selectors must be relative to the previously selected element. If 'cssSelector' is not
+ * used the HTML may be slightly modified to be a valid HTML document before elements are
+ * removed. See above for more information about Jsoup modification.
  * 
  */
 @Log4j2
@@ -132,7 +109,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
     
     protected enum Parameters {
         url, expiry, start, end, username, password, useragent, timeout, convertrelative, convertRelative, 
-        cssSelector,removeByCssSelectors, keepBodyAndHead
+        cssSelector,removeByCssSelectors
     }
     
     private CacheManager appCacheManager;
@@ -289,10 +266,10 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
         return null;
     }
     
-    protected String fetchContentWithJsoup(String url, String content, Map<String, TemplateModel> params) throws TemplateModelException {
+    protected Optional<ProcessedElement> fetchContentWithJsoup(String url, String content, Map<String, TemplateModel> params) throws TemplateModelException {
         TemplateModel param = params.get(Parameters.cssSelector.toString());
         if (param == null) {
-            return content;
+            return Optional.empty();
         }
         
         String cssSelector = ((TemplateScalarModel) param).getAsString();
@@ -303,7 +280,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
         } catch (Exception e) {
             log.warn("Could not parse css selector '{}' error message was: '{}'",
                 cssSelector, new ExceptionUtils().getAllMessages(e));
-            return content;
+            return Optional.empty();
         }
         
         Document doc = Jsoup.parse(content);
@@ -312,43 +289,70 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
             log.debug("cssSelector '{}' will be used to find an element on modified document '{}'", cssSelector, doc.html());
         }
         
-        String out = Optional.ofNullable(Selector.select(parsedCssSelector, doc))
+        Optional<org.jsoup.nodes.Element> res = Optional.ofNullable(Selector.select(parsedCssSelector, doc))
             .map(List::stream)
             .orElse(Stream.empty())
-            .findFirst()
-            .map(e -> e.outerHtml())
-            .orElse(null);
+            .findFirst();
         
-        if(out == null) {
+        if(!res.isPresent()) {
             log.warn("No elements found matching css selector {}", cssSelector);
-            return "";
         }
         
-        return out;
+        return Optional.of(new ProcessedElement(res));
     }
     
-    protected String removeContentWithJsoup(String url, String content, Map<String, TemplateModel> params) 
+    @AllArgsConstructor
+    @Getter
+    public static class ProcessedElement {
+        public Optional<org.jsoup.nodes.Element> element;
+    }
+    
+    protected Optional<ProcessedElement> removeContentWithJsoup(String url, 
+                                String originalContent,
+                                Optional<ProcessedElement> processedElement, 
+                                Map<String, TemplateModel> params) 
+            throws TemplateModelException {
+        // If we already processed the document (say selecting an element) and 
+        // we ended up with nothing then don't nother attempting to remove elements from nothing
+        if(processedElement.isPresent() && (!processedElement.get().getElement().isPresent())) {
+            return processedElement;
+        }
+        Optional<ProcessedElement> result = removeContentWithJsoup(url, 
+            () -> {
+                    if(processedElement.isPresent()) return processedElement.get().getElement().get();
+                    return Jsoup.parse(originalContent);
+                }, 
+            params);
+        
+        // Handle the case that the user did not ask to remove any elements 
+        if((!result.isPresent()) && processedElement.isPresent()) return processedElement;
+        return result;
+    }
+    
+    protected Optional<ProcessedElement> removeContentWithJsoup(String url, 
+                                Supplier<org.jsoup.nodes.Element> baseElementSupplier, 
+                                Map<String, TemplateModel> params) 
             throws TemplateModelException {
         
         TemplateModel param = params.get(Parameters.removeByCssSelectors.toString());
         if (param == null) {
-            return content;
+            return Optional.empty();
         }
         
         Optional<List<String>> cssSelectors = getListFromSingleStringOrSequence(param);
         
         if(!cssSelectors.isPresent()) {
             log.warn("Could not understand argument for '{}'", Parameters.removeByCssSelectors.toString());
-            return content;
+            return Optional.empty();
         }
         
-        if(cssSelectors.get().isEmpty()) return content;
+        if(cssSelectors.get().isEmpty()) return Optional.empty();
         
-        Document doc = Jsoup.parse(content);
+        org.jsoup.nodes.Element baseElement = baseElementSupplier.get();
         
         if(log.isDebugEnabled()) {
             log.debug("Css selectors in '{}' will remove elements from modified document '{}'", 
-                Parameters.removeByCssSelectors.toString(), doc.html());
+                Parameters.removeByCssSelectors.toString(), baseElement.outerHtml());
         }
         
         for(String cssSelector : cssSelectors.get()) {
@@ -360,33 +364,12 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
                     cssSelector, Parameters.removeByCssSelectors.toString(), new ExceptionUtils().getAllMessages(e));
                 continue;
             }
-            for(org.jsoup.nodes.Element e : Optional.of(Selector.select(parsedCssSelector, doc)).orElse(new Elements())) {
+            for(org.jsoup.nodes.Element e : Optional.of(Selector.select(parsedCssSelector, baseElement)).orElse(new Elements())) {
                 e.remove();
             }
             
         }
-        
-        // Do we have a <html>
-        if(doc.childNodeSize() == 0) {
-            return "";
-        }
-        
-        boolean keepBodyAndHead = getBoolean(params.get(Parameters.keepBodyAndHead.toString()), false);
-        
-        if(keepBodyAndHead) {
-            return doc.children().get(0).html();
-        }
-        
-        // Just extract what is in the body
-        for(org.jsoup.nodes.Element e : doc.children().get(0).children()) {
-            if("body".equals(e.tagName())) {
-                return e.html();
-            }
-        }
-        
-        log.debug("Could not find body tag in html, was it excluded by a selector?");
-        
-        return "";
+        return Optional.of(new ProcessedElement(Optional.of(baseElement)));
     }
     
     /**
@@ -400,8 +383,12 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
      protected String transformContent(String url, String content, Map<String, TemplateModel> params) throws TemplateModelException {
         String out = content;
         
-        out = fetchContentWithJsoup(url, out, params);
-        out = removeContentWithJsoup(url, out, params);
+        Optional<ProcessedElement> result = fetchContentWithJsoup(url, out, params);
+        result = removeContentWithJsoup(url, out, result, params);
+        
+        out = result.map(processedElement -> processedElement.getElement().map(e -> e.outerHtml()).orElse(""))
+                .orElse(out);
+        
         // Extract start-pattern
         TemplateModel param = params.get(Parameters.start.toString());
         if (param != null) {
