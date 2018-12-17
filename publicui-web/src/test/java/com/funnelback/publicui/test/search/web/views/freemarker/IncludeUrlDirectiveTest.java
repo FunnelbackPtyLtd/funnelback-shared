@@ -22,7 +22,7 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
     public IncludeUrlDirectiveTest() {
         super(null, null);
     }
-
+    
     @Test
     public void testConvertRelative() throws TemplateModelException, IOException {
         Map<String, TemplateModel> params = new HashMap<>();
@@ -129,6 +129,23 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
     }
     
     @Test
+    public void testSelectByCssSelector_matches_nothing() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.cssSelector.toString(), new SimpleScalar("#doesnotexist"));
+        
+        String content = "<html>"
+            + "<div id='a'><p>nope</p></div>"
+            + "<div id='b'><p>yep</p></div>"
+            + "</html>";
+        String actual = this.transformContent("http://server.com/folder/file.html",
+            content,
+            params);
+        
+        
+        Assert.assertEquals("", "");        
+    }
+    
+    @Test
     public void testRemoveBySelector() throws TemplateModelException {
         Map<String, TemplateModel> params = new HashMap<>();
         params.put(Parameters.removeByCssSelectors.toString(), 
@@ -148,24 +165,27 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
             + "</html>",
             params);
         
-        
-        Assert.assertEquals("<div id=\"important\">" + 
-            " <p>foo</p>" + 
-            "</div>",
+        Assert.assertEquals("<html>"
+                 + " <head></head>"
+                 + " <body>"
+                 + "  <div id=\"important\">"
+                 + "   <p>foo</p>"
+                 + "  </div>"
+                 + " </body>"
+                 + "</html>",
             actual.replace("\n", "").replace("\r", ""));        
     }
     
     @Test
-    public void testRemoveBySelector_keep_head_and_body() throws TemplateModelException {
+    public void testSelectThenRemove() throws TemplateModelException {
         Map<String, TemplateModel> params = new HashMap<>();
-        params.put(Parameters.removeByCssSelectors.toString(), simpleSequenceOf("#a", "#b"));
-        params.put(Parameters.keepBodyAndHead.toString(), TemplateBooleanModel.TRUE);
+        params.put(Parameters.cssSelector.toString(), new SimpleScalar("#important"));
+        params.put(Parameters.removeByCssSelectors.toString(), 
+            simpleSequenceOf("#a", "#b"));
         
         String actual = this.transformContent("http://server.com/folder/file.html",
             "<html>"
-            + "<head>"
-            + "<script>important script</script>"
-            + "</head>"
+            + "<head></head>"
             + "<body>"
             + "<div id='important'>"
             + "<div id='a'><p>nope</p>"
@@ -177,36 +197,85 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
             + "</html>",
             params);
         
-        Assert.assertEquals("<head>" + 
-            " <script>important script</script>" + 
-            "</head>" + 
-            "<body>" + 
-            " <div id=\"important\">" + 
-            "  <p>foo</p>" + 
-            " </div>" + 
-            "</body>",
+        Assert.assertEquals(
+                 "<div id=\"important\">"
+                 + " <p>foo</p>"
+                 + "</div>",
             actual.replace("\n", "").replace("\r", ""));        
     }
     
     @Test
-    public void testRemoveBySelectorNoHtml() throws TemplateModelException {
+    public void test_remove_selected_element() throws TemplateModelException {
         Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.cssSelector.toString(), new SimpleScalar("#important"));
         params.put(Parameters.removeByCssSelectors.toString(), 
-            simpleSequenceOf("#a", "#b"));
+            simpleSequenceOf("#important"));
         
         String actual = this.transformContent("http://server.com/folder/file.html",
-            
-            "<div id='important'>"
-            + "<div id='a'><p>nope</p></div>"
-            + "<div id='b'><p>yep</p></div>"
-            + "<p>foo</p>"
-            + "</div>",
+            "<html>"
+            + "<head></head>"
+            + "<body>"
+            + "<div id='important'>"
+            + "<p>a</p>"
+            + "</div>"
+            + "</body>"
+            + "</html>",
             params);
         
+        // I guess it is impossible to remove the selected element
+        // perhaos that makes sense. This behaviour shall be documented.
+        Assert.assertEquals(
+                 "<div id=\"important\"> <p>a</p></div>",
+            actual.replace("\n", "").replace("\r", ""));        
+    }
+    
+    @Test
+    public void test_removeByCssSelectors_is_set_empty() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.cssSelector.toString(), new SimpleScalar("#important"));
+        params.put(Parameters.removeByCssSelectors.toString(), 
+            simpleSequenceOf());
         
-        Assert.assertEquals("<div id=\"important\">" + 
-            " <p>foo</p>" + 
-            "</div>",
+        String actual = this.transformContent("http://server.com/folder/file.html",
+            "<html>"
+            + "<head></head>"
+            + "<body>"
+            + "<div id='important'>"
+            + "<p>a</p>"
+            + "</div>"
+            + "</body>"
+            + "</html>",
+            params);
+        
+        // I guess it is impossible to remove the selected element
+        // perhaos that makes sense. This behaviour shall be documented.
+        Assert.assertEquals(
+                 "<div id=\"important\"> <p>a</p></div>",
+            actual.replace("\n", "").replace("\r", ""));        
+    }
+    
+    @Test
+    public void testRemoveCssSelectorIsRelativeToSelectedElement() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.cssSelector.toString(), new SimpleScalar("#important"));
+        params.put(Parameters.removeByCssSelectors.toString(), 
+            simpleSequenceOf("p:nth-of-type(1)"));
+        
+        String actual = this.transformContent("http://server.com/folder/file.html",
+            "<html>"
+            + "<head></head>"
+            + "<body>"
+            + "<p>a</p>"
+            + "<div id='important'>"
+            + "<p>b</p>"
+            + "<p>c</p>"
+            + "</div>"
+            + "</body>"
+            + "</html>",
+            params);
+        
+        Assert.assertEquals(
+                 "<div id=\"important\"> <p>c</p></div>",
             actual.replace("\n", "").replace("\r", ""));        
     }
 }
