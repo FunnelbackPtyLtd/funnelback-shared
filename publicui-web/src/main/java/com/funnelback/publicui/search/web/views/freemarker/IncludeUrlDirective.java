@@ -57,6 +57,8 @@ import net.sf.ehcache.Element;
  * Replacement for NickScript's IncludeUrl plugin
  * Supports HTTP redirects, however 'meta-refresh' tags/redirects within the included url are not supported.
  * 
+ * <p>Content is cached to avoid firing an HTTP request for each search results page.</p>
+ * 
  * <p>Note that the CSS selectors supported are only those that are supported by Jsoup.</p>
  * 
  * <p>when CSS selectors are used the document will be modified by Jsoup.

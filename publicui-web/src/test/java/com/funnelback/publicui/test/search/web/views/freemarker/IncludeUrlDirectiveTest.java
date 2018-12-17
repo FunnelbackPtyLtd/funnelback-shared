@@ -230,6 +230,31 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
     }
     
     @Test
+    public void test_removeByCssSelectors_is_set_empty() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.cssSelector.toString(), new SimpleScalar("#important"));
+        params.put(Parameters.removeByCssSelectors.toString(), 
+            simpleSequenceOf());
+        
+        String actual = this.transformContent("http://server.com/folder/file.html",
+            "<html>"
+            + "<head></head>"
+            + "<body>"
+            + "<div id='important'>"
+            + "<p>a</p>"
+            + "</div>"
+            + "</body>"
+            + "</html>",
+            params);
+        
+        // I guess it is impossible to remove the selected element
+        // perhaos that makes sense. This behaviour shall be documented.
+        Assert.assertEquals(
+                 "<div id=\"important\"> <p>a</p></div>",
+            actual.replace("\n", "").replace("\r", ""));        
+    }
+    
+    @Test
     public void testRemoveCssSelectorIsRelativeToSelectedElement() throws TemplateModelException {
         Map<String, TemplateModel> params = new HashMap<>();
         params.put(Parameters.cssSelector.toString(), new SimpleScalar("#important"));
