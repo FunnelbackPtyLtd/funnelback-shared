@@ -315,7 +315,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
                                 Map<String, TemplateModel> params) 
             throws TemplateModelException {
         // If we already processed the document (say selecting an element) and 
-        // we ended up with nothing then don't nother attempting to remove elements from nothing
+        // we ended up with nothing then don't bother attempting to remove elements from nothing
         if(processedElement.isPresent() && (!processedElement.get().getElement().isPresent())) {
             return processedElement;
         }
