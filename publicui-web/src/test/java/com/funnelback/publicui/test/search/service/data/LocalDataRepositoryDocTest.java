@@ -1,16 +1,5 @@
 package com.funnelback.publicui.test.search.service.data;
 
-import com.funnelback.common.views.StoreView;
-import com.funnelback.common.utils.XMLUtils;
-import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.common.io.store.RawBytesRecord;
-import com.funnelback.common.io.store.Record;
-import com.funnelback.common.io.store.Store.RecordAndMetadata;
-import com.funnelback.common.io.store.XmlRecord;
-import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.service.data.LocalDataRepository;
-import org.apache.commons.exec.OS;
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +7,19 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import org.apache.commons.exec.OS;
+import org.apache.commons.io.FileUtils;
+
+import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.io.store.RawBytesRecord;
+import com.funnelback.common.io.store.Record;
+import com.funnelback.common.io.store.Store.RecordAndMetadata;
+import com.funnelback.common.io.store.XmlRecord;
+import com.funnelback.common.utils.XMLUtils;
+import com.funnelback.common.views.StoreView;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.service.data.LocalDataRepository;
 
 public class LocalDataRepositoryDocTest {
 
@@ -62,9 +64,11 @@ public class LocalDataRepositoryDocTest {
         
         Assert.assertEquals(
             FileUtils.readFileToString(new File(SEARCH_HOME, "data/data-repository/live/data/sub-folder/cached-doc.xml"))
-                .replace("\r", ""),
+                .replace("\r", "")
+                .replaceAll("\n\\s*", "\n"),
             XMLUtils.toString(((XmlRecord) rmd.record).getContent())
-                .replace("\r", ""));
+                .replace("\r", "")
+                .replaceAll("\n\\s*", "\n"));
         Assert.assertEquals(0, rmd.metadata.size());
     }
     

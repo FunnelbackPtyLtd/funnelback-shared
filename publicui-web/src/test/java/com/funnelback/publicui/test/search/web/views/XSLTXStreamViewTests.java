@@ -1,20 +1,22 @@
 package com.funnelback.publicui.test.search.web.views;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -66,6 +68,7 @@ public class XSLTXStreamViewTests {
         // Spaces at the beginning of the line
         Pattern p = Pattern.compile("^\\s*", Pattern.MULTILINE);
         oldXml = p.matcher(oldXml).replaceAll("");
+        actual = p.matcher(actual).replaceAll("");
         
         // line ends
         oldXml = oldXml.replaceAll("\r?\n", "\n");
@@ -168,7 +171,18 @@ public class XSLTXStreamViewTests {
         // Year only dates (e.g. "1991") get parsed as 1st of Jan
         // and serialized back as dd MMM yyyy
         oldXml = oldXml.replaceAll("<date>1991</date>", "<date>1 Jan 1991</date>");
+        
+        // Saxon does not preserve the extra new line between <results> and <result>
+        oldXml = oldXml.replaceAll("<results>\r\n\r\n<result>", "<results>\r\n<result>");
+        oldXml = oldXml.replaceAll("<results>\n\n<result>", "<results>\n<result>");
+        
+        // Saxon seems to add a new line just before  along attribute.
+        actual = actual.replaceAll("<cluster_nav level=\"0\"\r?\nurl=", "<cluster_nav level=\"0\" url=");
 
+        // Saxon seems to add a new line after a long attribute
+        p = Pattern.compile("<cluster href=\"(.*)\"\n");
+        actual = p.matcher(actual).replaceAll("<cluster href=\"$1\" ");
+        
         // Ensure we're not comparing empty or very small strings
         Assert.assertTrue(oldXml.length() > 50000);
         Assert.assertTrue(actual.length() > 50000);
