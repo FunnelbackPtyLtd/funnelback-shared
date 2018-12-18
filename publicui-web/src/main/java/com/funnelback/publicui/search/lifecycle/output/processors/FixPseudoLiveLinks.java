@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import static com.funnelback.config.keys.Keys.ServerKeys;
+
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +17,6 @@ import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.utils.ResultUtils;
-import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -137,18 +138,21 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
         switch (resultCollectionType) {
         
         case database:
-            if(result.getLiveUrl().startsWith(ResultUtils.DATABASE_URL) && result.getCacheUrl() != null) {
+            if((result.getLiveUrl().startsWith(ResultUtils.DATABASE_URL)
+                || result.getLiveUrl().startsWith(ResultUtils.OLD_DATABASE_URL)) && result.getCacheUrl() != null) {
                 return result.getCacheUrl();
             }
             break;
         
         case directory:
-            if(result.getLiveUrl().startsWith(ResultUtils.DIRECTORY_URL) && result.getCacheUrl() != null) {
+            if((result.getLiveUrl().startsWith(ResultUtils.DIRECTORY_URL)
+                || result.getLiveUrl().startsWith(ResultUtils.OLD_DIRECTORY_URL)) && result.getCacheUrl() != null) {
                 return result.getCacheUrl();
             }
             break;
         case connector:
-            if(result.getLiveUrl().startsWith(ResultUtils.CONNECTOR_URL) && result.getCacheUrl() != null) {
+            if((result.getLiveUrl().startsWith(ResultUtils.CONNECTOR_URL)
+                || result.getLiveUrl().startsWith(ResultUtils.OLD_CONNECTOR_URL)) && result.getCacheUrl() != null) {
                 return result.getCacheUrl();
             }
             break;

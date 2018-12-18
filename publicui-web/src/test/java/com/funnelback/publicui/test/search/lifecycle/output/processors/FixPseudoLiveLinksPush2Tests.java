@@ -1,6 +1,7 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import static com.funnelback.config.keys.Keys.FrontEndKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,7 +25,6 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
-import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixPseudoLiveLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -184,6 +184,26 @@ public class FixPseudoLiveLinksPush2Tests {
                 "Web collection should have unchanged URL",
                 "http://www.site.com/folder/result.html",
                 rp.getResults().get(6).getLiveUrl());
+
+    }
+    
+    @Test
+    public void test_local_with_tripple_slash() throws UnsupportedEncodingException, OutputProcessorException {
+
+        configRepository.getCollection("collection-push")
+            .getConfiguration()
+            .setValue(FrontEndKeys.ModernUi.Serve.FILECOPY_LINK.getKey(), "/search/serve-filecopy-document.cgi")
+            .setValue(FrontEndKeys.ModernUi.Serve.TRIM_LINK_PREFIX.getKey(), "serve-trim-");
+
+        ResultPacket rp = st.getResponse().getResultPacket();
+        rp.getResults().get(0).setLiveUrl("local:///serve-db-document.tcgi?collection=collection-db&record_id=1234/");
+        rp.getResults().get(0).setCacheUrl("http://cache-link-1");
+        processor.processOutput(st);
+        
+        Assert.assertEquals(
+                "http://cache-link-1",
+                rp.getResults().get(0).getLiveUrl());
+        
 
     }
     
