@@ -1,6 +1,9 @@
 package com.funnelback.publicui.search.model.padre;
 
 import java.util.Date;
+import java.util.Locale;
+
+import java.text.SimpleDateFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +25,15 @@ import lombok.ToString;
 public class Details {
 
     /** Pattern to use to parse the updated date of the index. */
-    public static final String UPDATED_DATE_PATTERN = "EEE MMM dd HH:mm:ss yyyy";
+    private static final String UPDATED_DATE_PATTERN = "EEE MMM dd HH:mm:ss yyyy";
+    
+    public static final String getUpdateDatePatternWithoutLocal() {
+        return UPDATED_DATE_PATTERN;
+    }
+    
+    public static final SimpleDateFormat getUpdateDateFormat() {
+        return new SimpleDateFormat(UPDATED_DATE_PATTERN, Locale.ENGLISH);
+    }
 
     /** Version of the PADRE query processor. */
     @Getter @Setter private String padreVersion;

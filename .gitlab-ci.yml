@@ -2,6 +2,6 @@ image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:base-jdk11
 
 build:
     script:
-        - mvn -B -U -Djava.locale.providers=COMPAT,CLDR -Dmaven.test.failure.ignore=false clean verify
+        - mvn -B -U -Dmaven.test.failure.ignore=false clean verify
     tags:
         - docker

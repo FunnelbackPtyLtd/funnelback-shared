@@ -1,11 +1,12 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import java.util.Date;
+import java.util.TimeZone;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.TimeZone;
 
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +100,7 @@ public class FixMetaCollectionUpdateDate extends AbstractOutputProcessor {
     public /* for testing */ long componentUpdateTime(String indexStem) throws IOException {
         // Using the same type of date converter as SearchXStreamMarshaller for consistency
         // It's not clear if it's thread safe on its own, so I guess I have to assume not
-        DateConverter dateConverter = new DateConverter(Details.UPDATED_DATE_PATTERN, new String[] {Details.UPDATED_DATE_PATTERN}, TimeZone.getDefault());
+        DateConverter dateConverter = new DateConverter(Details.getUpdateDatePatternWithoutLocal(), new String[] {Details.getUpdateDatePatternWithoutLocal()}, TimeZone.getDefault());
         File componentUpdateTimeFile = new File(new File(indexStem).getParentFile(), "index_time");
         String componentUpdateTime = Files.readFirstLine(componentUpdateTimeFile, StandardCharsets.UTF_8);
         

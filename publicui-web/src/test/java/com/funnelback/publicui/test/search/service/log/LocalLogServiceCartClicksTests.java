@@ -3,15 +3,18 @@ package com.funnelback.publicui.test.search.service.log;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
+import java.util.Locale;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-import org.junit.Test;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
@@ -50,7 +53,7 @@ public class LocalLogServiceCartClicksTests extends AbstractLocalLogServiceTests
             Assert.assertTrue(cartLogFileNoHostname.delete());
         }
 
-        date = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy").parse("Wed Feb 20 14:37:19 2013");
+        date = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy", Locale.ENGLISH).parse("Wed Feb 20 14:37:19 2013");
     }
 
     @Test
