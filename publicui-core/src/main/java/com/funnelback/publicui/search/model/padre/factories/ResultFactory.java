@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -70,7 +71,7 @@ public class ResultFactory {
         Date date = null;
         if (dateString != null && !"".equals(dateString) && !Result.NO_DATE.equals(dateString)) {
             try {
-                date = DateUtils.parseDate(dateString, Result.DATE_PATTERNS_IN);
+                date = DateUtils.parseDate(dateString, Locale.ENGLISH, Result.DATE_PATTERNS_IN);
             } catch (Exception e) {
                 log.debug("Unparseable date: '" + dateString + "'");
             }

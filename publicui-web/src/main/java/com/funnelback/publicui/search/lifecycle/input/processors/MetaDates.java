@@ -1,14 +1,15 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,9 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
+
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Processes meta_* parameters related to date:
@@ -35,7 +39,7 @@ public class MetaDates extends AbstractInputProcessor {
     private static final String DAY = "day";
     
     /** Using Apache Commons date formatter. It's thread safe */
-    private static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance("dMMMyyyy");
+    private static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance("dMMMyyyy", Locale.ENGLISH);
     
     /** Parameters for date search */
     private enum Dates {
@@ -175,7 +179,7 @@ public class MetaDates extends AbstractInputProcessor {
      * @throws ParseException
      */
     public Date parseDate(String date) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat();
+        SimpleDateFormat sdf = new SimpleDateFormat("", Locale.ENGLISH);
         sdf.setLenient(false);
         for (String pattern: DATE_PATTERNS) {
             sdf.applyPattern(pattern);
@@ -223,7 +227,9 @@ public class MetaDates extends AbstractInputProcessor {
 
         "MMM  d  yyyy", "MMM  d HH:mm",
         "MM-dd-yy  HH:mmaa"
-    };    
+    };
+    
+    private static final Map<String, FastDateFormat> DATE_FORMATS = Stream.of(DATE_PATTERNS).collect(Collectors.toMap(p -> p, p -> FastDateFormat.getInstance(p, Locale.ENGLISH)));
 }
 
 

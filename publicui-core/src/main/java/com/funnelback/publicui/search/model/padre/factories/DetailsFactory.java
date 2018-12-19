@@ -1,19 +1,19 @@
 package com.funnelback.publicui.search.model.padre.factories;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+
+import java.text.SimpleDateFormat;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.xml.XmlStreamUtils;
+
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class DetailsFactory {
@@ -22,7 +22,7 @@ public class DetailsFactory {
     private static ThreadLocal<SimpleDateFormat> dateFormatters = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat(Details.UPDATED_DATE_PATTERN);
+            return Details.getUpdateDateFormat();
         }
     };
     

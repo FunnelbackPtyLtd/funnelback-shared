@@ -6,7 +6,6 @@ import java.util.Map;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.text.SimpleDateFormat;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +59,7 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
             if (indexTimeFile.canRead()) {
                 String time = FileUtils.readFileToString(indexTimeFile);
                 try {
-                    return new SimpleDateFormat(Details.UPDATED_DATE_PATTERN).parse(time);
+                    return Details.getUpdateDateFormat().parse(time);
                 } catch (Exception e) {
                     log.warn("Could not parse last update date string '" + time + "' from '" + indexTimeFile.getAbsolutePath() + "'.", e);
                 }
