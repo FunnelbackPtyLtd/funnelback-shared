@@ -1,7 +1,9 @@
-image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:base-jdk11
+image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:base
 
 build:
     script:
         - mvn -B -U -Dmaven.test.failure.ignore=false clean verify
     tags:
         - docker
+        - shared
+
