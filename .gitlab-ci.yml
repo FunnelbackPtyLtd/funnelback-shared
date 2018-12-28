@@ -1,4 +1,4 @@
-image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:base
+image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:base-jdk11
 
 build:
     script:
