@@ -268,24 +268,15 @@
                         jQuery("#publish_link").load("${SearchPrefix}admin/ajax_publish_link.cgi?collection=${question.collection.id}&amp;dir=profile-folder-${question.profile}&amp;f=${question.form}.ftl&amp;mode=publish&amp;return_to=${returnTo?url}");
                     });
                 }
-
-                if (typeof jQuery === 'undefined') {
-                
-                    // We need to load jQuery first.
-                    // Slam a script tag into the head. Based on
-                    // http://stackoverflow.com/questions/4523263#4523417
-                    
-                    var head=document.getElementsByTagName('head')[0];
-                    var script= document.createElement('script');
-                    script.type= 'text/javascript';
-                    script.onreadystatechange = function () {
-                        if (this.readyState == 'complete' || this.readyState == 'loaded') {
-                            loadPublishLink();
-                        }
-                    }
-                    script.onload = loadPublishLink;
-                    script.src = "${GlobalResourcesPrefix}js/jquery/jquery-1.10.2.min.js";
-                    head.appendChild(script);
+                function loadScript(url, c) {
+                    var s = document.createElement('script');
+                    s.type = 'text/javascript';
+                    s.src = url;
+                    if (c) s.onload=c;
+                    document.getElementsByTagName('head')[0].appendChild(s);
+                }
+                if (!($ = window.jQuery)) {
+                    loadScript("${GlobalResourcesPrefix}thirdparty/jquery-3.3.1/jquery.min.js", loadPublishLink);
                 } else {
                     loadPublishLink();
                 }
