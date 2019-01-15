@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,9 +12,6 @@ import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
 
-import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
-import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
-import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,8 +21,9 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
-
-import static com.funnelback.config.keys.Keys.FrontEndKeys;
+import com.funnelback.config.configtypes.service.ServiceConfigOption;
+import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.config.marshallers.Marshallers;
 import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
@@ -309,7 +309,7 @@ public class ContentAuditor extends AbstractInputProcessor {
     public List<ServiceConfigOptionDefinition<String>> keysStartingWith(String keyPrefix, ServiceConfigReadOnly serviceConfig) {
         return serviceConfig.getRawKeys().stream()
             .filter((k) -> k.startsWith(keyPrefix))
-            .map(k -> new ProfileAndCollectionConfigOption<String>(k, Marshallers.STRING_MARSHALLER, Validators.acceptAll(), ""))
+            .map(k -> new ServiceConfigOption<String>(k, Marshallers.STRING_MARSHALLER, Validators.acceptAll(), ""))
             .collect(Collectors.toList());
     }
 

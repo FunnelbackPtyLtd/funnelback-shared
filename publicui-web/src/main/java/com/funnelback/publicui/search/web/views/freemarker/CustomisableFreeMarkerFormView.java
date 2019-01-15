@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.ServiceConfigOption;
 import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.config.marshallers.Marshallers;
@@ -122,7 +122,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
     
     private void manipulateHeaders(ServiceConfigReadOnly serviceConfig, 
                                     HttpServletResponse response, 
-                                    ProfileAndCollectionConfigOption<Optional<String>> contentTypeConfigOption,
+                                    ServiceConfigOptionDefinition<Optional<String>> contentTypeConfigOption,
                                     String customHeadersPrefix,
                                     ServiceConfigOptionDefinition<List<String>> headerToRemoveKey) {
 
@@ -179,7 +179,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
     private List<ServiceConfigOptionDefinition<String>> keysStartingWith(String keyprefix, ServiceConfigReadOnly serviceConfig) {
         return serviceConfig.getRawKeys().stream()
             .filter((k) -> k.startsWith(keyprefix))
-            .map(k -> new ProfileAndCollectionConfigOption<String>(k, Marshallers.STRING_MARSHALLER, Validators.acceptAll(), ""))
+            .map(k -> new ServiceConfigOption<String>(k, Marshallers.STRING_MARSHALLER, Validators.acceptAll(), ""))
             .collect(Collectors.toList());
     }
     
@@ -189,7 +189,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
      * @param serviceConfig Frontend configuration.
      * @param response Response object to add custom headers to.
      */
-    private void setCustomContentType(ProfileAndCollectionConfigOption<Optional<String>> configOption, ServiceConfigReadOnly serviceConfig, HttpServletResponse response) {
+    private void setCustomContentType(ServiceConfigOptionDefinition<Optional<String>> configOption, ServiceConfigReadOnly serviceConfig, HttpServletResponse response) {
         Optional<String> customContentType = serviceConfig.get(configOption);
         
         customContentType.ifPresent((contentType) -> {

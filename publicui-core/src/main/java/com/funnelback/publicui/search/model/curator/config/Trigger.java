@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
-import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -61,7 +61,7 @@ public interface Trigger {
         // them seemed like it would be useful sometimes, and would likely still work for anyone
         // assuming the values were matched individually. Using the key sort order because
         // nothing else seems like it would be easy to explain to users. -- Matt
-        ProfileAndCollectionConfigOption<String> queryParameterPatternKey = FrontEndKeys.ModernUi.CURATOR.QUERY_PARAMETER_PATTERN;
+        ServiceConfigOptionDefinition<String> queryParameterPatternKey = FrontEndKeys.ModernUi.CURATOR.QUERY_PARAMETER_PATTERN;
         String queryParameterPatternString = searchTransaction.getQuestion().getCurrentProfileConfig().get(queryParameterPatternKey);
 
         Pattern p;
