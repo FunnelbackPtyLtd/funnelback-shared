@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import java.net.URI;
@@ -17,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Config;
-import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.config.keys.Keys;
 import com.funnelback.config.keys.types.RelatedDocumentFetchConfig;
@@ -35,7 +34,6 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.related.RelatedDocument;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.search.service.IndexRepository;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 
@@ -123,7 +121,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     /* private if not for testing */ public List<RelationToExpand> findRelationsToExpand(ServiceConfigReadOnly config) {
         List<RelationToExpand> relationsToExpand = new ArrayList<>();
         for (String relatedDocumentKey : findRelatedDocumentKeys(config)) {
-            ProfileAndCollectionConfigOption<RelatedDocumentFetchConfig> key = Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey(relatedDocumentKey);
+            ServiceConfigOptionDefinition<RelatedDocumentFetchConfig> key = Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey(relatedDocumentKey);
             RelatedDocumentFetchConfig rdfc = config.get(key);
             
             if (rdfc == null) {

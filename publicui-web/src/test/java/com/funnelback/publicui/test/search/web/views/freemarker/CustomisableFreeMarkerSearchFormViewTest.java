@@ -1,6 +1,7 @@
 package com.funnelback.publicui.test.search.web.views.freemarker;
 
-import java.io.File;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -8,24 +9,20 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import com.funnelback.common.config.Config;
-import com.funnelback.common.config.Keys;
-import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
 import com.funnelback.config.configtypes.service.DefaultServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfigOption;
 import com.funnelback.config.data.InMemoryConfigData;
 import com.funnelback.config.data.environment.NoConfigEnvironment;
-import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.config.marshallers.Marshallers;
 import com.funnelback.config.validators.Validators;
-import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.search.web.views.freemarker.CustomisableFreeMarkerFormView;
 import com.google.common.collect.Maps;
 
@@ -73,9 +70,9 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
     
     @Test
     public void testCustomHeaders() {
-        serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.form.simple.headers.1", Marshallers.STRING_MARSHALLER,
+        serviceConfig.set(new ServiceConfigOption<String>("ui.modern.form.simple.headers.1", Marshallers.STRING_MARSHALLER,
             Validators.acceptAll(), ""), "First-Header: Value 1   ");
-        serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.form.simple.headers.2", Marshallers.STRING_MARSHALLER,
+        serviceConfig.set(new ServiceConfigOption<String>("ui.modern.form.simple.headers.2", Marshallers.STRING_MARSHALLER,
             Validators.acceptAll(), ""), "Second-Header     :second value...");
         
         customiseOutput("conf/dummy/_default/simple.ftl", model, response);
@@ -89,7 +86,7 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
     
     @Test
     public void testCustomHeaderColon() {
-        serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.form.simple.headers.99", Marshallers.STRING_MARSHALLER,
+        serviceConfig.set(new ServiceConfigOption<String>("ui.modern.form.simple.headers.99", Marshallers.STRING_MARSHALLER,
             Validators.acceptAll(), ""), "Access-Control-Allow-Origin: http://server.com/");
         
         customiseOutput("conf/dummy/_default/simple.ftl", model, response);
@@ -102,7 +99,7 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
     @Test
     public void testBoth() {
         serviceConfig.set(FrontEndKeys.ModernUi.getCustomContentTypeOptionForForm("simple"), Optional.of("text/csv"));
-        serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.form.simple.headers.1", Marshallers.STRING_MARSHALLER,
+        serviceConfig.set(new ServiceConfigOption<String>("ui.modern.form.simple.headers.1", Marshallers.STRING_MARSHALLER,
             Validators.acceptAll(), ""), "Content-Disposition: attachment");
 
         customiseOutput("conf/dummy/_default/simple.ftl", model, response);
