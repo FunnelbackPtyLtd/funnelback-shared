@@ -10,7 +10,7 @@ import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.profile.ProfileNotFoundException;
-import com.funnelback.config.configtypes.index.IndexConfigReadOnly;
+import com.funnelback.config.configtypes.collection.CollectionConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -116,6 +116,6 @@ public interface ConfigRepository {
      * @return
      * @throws CollectionNotFoundException
      */
-    public IndexConfigReadOnly getIndexConfig(String collectionId) throws CollectionNotFoundException;
+    public CollectionConfigReadOnly getCollectionConfig(String collectionId) throws CollectionNotFoundException;
 
 }

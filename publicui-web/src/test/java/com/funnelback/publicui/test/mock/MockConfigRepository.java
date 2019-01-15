@@ -15,7 +15,7 @@ import java.io.File;
 import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.profile.ProfileNotFoundException;
-import com.funnelback.config.configtypes.index.IndexConfigReadOnly;
+import com.funnelback.config.configtypes.collection.CollectionConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -38,7 +38,7 @@ public class MockConfigRepository implements ConfigRepository {
 
     @Getter private Map<String, Map<String, ServiceConfigReadOnly>> serviceConfigs = new HashMap<>();
 
-    @Getter @Setter private IndexConfigReadOnly indexConfig;
+    @Getter @Setter private CollectionConfigReadOnly collectionConfig;
 
     @Override
     public Collection getCollection(String collectionId) {
@@ -148,8 +148,8 @@ public class MockConfigRepository implements ConfigRepository {
     }
 
     @Override
-    public IndexConfigReadOnly getIndexConfig(String collectionId) throws CollectionNotFoundException {
-        return indexConfig;
+    public CollectionConfigReadOnly getCollectionConfig(String collectionId) throws CollectionNotFoundException {
+        return collectionConfig;
     }
 
 }

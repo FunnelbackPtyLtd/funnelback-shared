@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.funnelback.config.configtypes.component.ComponentConfigOptionDefinition;
 import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.config.generic.GenericConfigReadCalls;
@@ -28,11 +27,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ServerConfigReadOnlyWhichAlsoHasAStringGetMethod implements ServiceConfigReadOnly {
     @NonNull private final ServiceConfigReadOnly underylingServiceConfigReadOnly;
-    
-    @Override
-    public <T> T get(ComponentConfigOptionDefinition<T> configOption) {
-        return underylingServiceConfigReadOnly.get(configOption);
-    }
 
     @Override
     public <T> T get(ServiceConfigOptionDefinition<T> configOption) {
