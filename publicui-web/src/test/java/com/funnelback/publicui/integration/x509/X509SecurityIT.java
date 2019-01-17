@@ -8,6 +8,7 @@ import java.security.KeyStore;
 import java.util.Optional;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 
 import org.apache.commons.io.IOUtils;
@@ -53,7 +54,7 @@ public class X509SecurityIT {
     public void testX509AuthUntrusted() throws Exception {
         try {
             performTestRequest(Optional.of(UNTRUSTED_KEYSTORE_PATH));
-        } catch (SSLHandshakeException|SocketException e) {
+        } catch (SSLException|SocketException e) {
             return; // That's what we want to happen
         }
         Assert.fail("Expected to get an SSLHandshakeException or SocketException when connecting ");
