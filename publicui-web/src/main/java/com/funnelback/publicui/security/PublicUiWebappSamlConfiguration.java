@@ -2,10 +2,11 @@ package com.funnelback.publicui.security;
 
 import static com.funnelback.config.keys.Keys.ServerKeys;
 
+import java.util.Optional;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Optional;
 
 import javax.servlet.ServletContext;
 
@@ -14,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigOptionDefinition;
-import com.funnelback.config.data.file.server.FileServerConfigDataReadOnly;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.factory.ReadOnlyConfigFactory;
 import com.funnelback.config.types.ConfigPassword;
 import com.funnelback.publicui.search.model.transaction.ExecutionContext;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
@@ -26,14 +27,14 @@ import com.funnelback.springmvc.api.config.security.saml.WebappSamlConfiguration
 @Primary // We want to win over the default, admin configuration
 public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration {
 
-    private DefaultServerConfigReadOnly config;
+    private ServerConfigReadOnly config;
     private ServletContext servletContext;
 
     private ExecutionContextHolder executionContextHolder;
 
     @Autowired
     public PublicUiWebappSamlConfiguration(File searchHome, ServletContext servletContext, ExecutionContextHolder executionContextHolder) {
-        config = new DefaultServerConfigReadOnly(new FileServerConfigDataReadOnly(searchHome));
+        config = new ReadOnlyConfigFactory(searchHome).serverConfig();
         this.executionContextHolder = executionContextHolder;
         this.servletContext = servletContext;
     }
