@@ -1,13 +1,13 @@
 package com.funnelback.publicui.test.search.service.config;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import net.sf.ehcache.CacheManager;
+import org.junit.Before;
+
+import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
@@ -15,6 +15,9 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.xml.DefaultFacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.AutoRefreshResourceManager;
+import com.funnelback.springmvc.utils.ConfFileService;
+
+import net.sf.ehcache.CacheManager;
 
 public abstract class DefaultConfigRepositoryTestBase {
 
@@ -27,6 +30,9 @@ public abstract class DefaultConfigRepositoryTestBase {
     
     @Autowired
     private CacheManager appCacheManager;
+    
+    @Autowired
+    private ConfFileService fileService;
     
     @Autowired
     private AutowireCapableBeanFactory autowireCapableBeanFactory;
@@ -64,6 +70,7 @@ public abstract class DefaultConfigRepositoryTestBase {
         configRepository.setSearchHome(SEARCH_HOME);
         configRepository.setCacheTtlSeconds(0);
         configRepository.setAutowireCapableBeanFactory(autowireCapableBeanFactory);
+        configRepository.setFileService(fileService);
         
     }
     
