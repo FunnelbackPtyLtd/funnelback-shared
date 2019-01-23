@@ -163,6 +163,7 @@
     <bean class="com.funnelback.publicui.test.mock.MockLogService" />
     <bean class="com.funnelback.springmvc.utils.web.LocalHostnameHolder" />
     <bean class="com.funnelback.publicui.utils.web.ExecutionContextHolder" />
+    <bean class="com.funnelback.publicui.utils.PublicUIFileService" />
     
     <bean class="com.funnelback.common.Environment.FunnelbackVersion">
         <constructor-arg value="1" />

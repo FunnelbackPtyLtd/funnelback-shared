@@ -75,6 +75,7 @@ import com.funnelback.springmvc.service.resource.impl.config.CollectionDataReadO
 import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataReadOnlyResource;
 import com.funnelback.springmvc.service.resource.impl.config.ServiceConfigDataReadOnlyResource;
+import com.funnelback.springmvc.utils.ConfFileService;
 
 import groovy.lang.Script;
 import groovy.util.ResourceException;
@@ -146,6 +147,10 @@ public class DefaultConfigRepository implements ConfigRepository {
     @Autowired
     @Setter
     private AutowireCapableBeanFactory autowireCapableBeanFactory;
+    
+    @Autowired
+    @Setter
+    private ConfFileService fileService;
 
     /**
      * <p>This implementation will cache collection objects for a short period
@@ -626,7 +631,7 @@ public class DefaultConfigRepository implements ConfigRepository {
 
     @Override
     public ServerConfigReadOnly getServerConfig() {
-        ServerConfigDataReadOnly serverConfigData = resourceManager.loadResource(new ServerConfigDataReadOnlyResource(searchHome));
+        ServerConfigDataReadOnly serverConfigData = resourceManager.loadResource(new ServerConfigDataReadOnlyResource(searchHome, fileService));
         return new DefaultServerConfigReadOnly(serverConfigData);
     }
 
@@ -640,7 +645,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         }
         
         ServiceConfigDataReadOnly serviceConfigData = resourceManager.loadResource(new ServiceConfigDataReadOnlyResource(searchHome,
-                new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView), null);
+                new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView, fileService), null);
         
         if (serviceConfigData == null) {
             throw new ProfileNotFoundException(new CollectionId(collectionId), new ProfileId(profileId), profileView);
@@ -652,7 +657,7 @@ public class DefaultConfigRepository implements ConfigRepository {
     @Override
     public CollectionConfigReadOnly getCollectionConfig(String collectionId) throws CollectionNotFoundException {
         
-        CollectionConfigDataReadOnly indexConfigData = resourceManager.loadResource(new CollectionDataReadOnlyResource(searchHome, collectionId));
+        CollectionConfigDataReadOnly indexConfigData = resourceManager.loadResource(new CollectionDataReadOnlyResource(searchHome, collectionId, fileService));
         
         return new DefaultCollectionConfigReadOnly(indexConfigData, getServerConfig().get(ServerKeys.ENV));
     }
