@@ -88,11 +88,11 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
      * This method forks padre-i4u once to load all the necessary related-document for this pass.
      */
     /* private if not for testing */ public void performActions(Config config, SetMultimap<URI, RelatedDataTarget> actionsForThisPass) {
-        List<String> urlsForPadre = actionsForThisPass.keySet().stream().map((uri) -> uri.toString()).collect(Collectors.toList());
-        
+        List<URI> urisForPadre = new ArrayList<>(actionsForThisPass.keySet());;
+
         // Load up all the URLs we need in a single call to padre-i4u
         // (since it will take multiple URL arguments, and forking it is expensive-ish)
-        DocInfoResult docInfoResult = dataAPIConnectorPADRE.getDocInfoResult(urlsForPadre, config);
+        DocInfoResult docInfoResult = dataAPIConnectorPADRE.getDocInfoResult(urisForPadre, config);
         Map<URI, DocInfo> relatedData = docInfoResult.asMap();
         
         for (Entry<URI, RelatedDataTarget> action : actionsForThisPass.entries()) {

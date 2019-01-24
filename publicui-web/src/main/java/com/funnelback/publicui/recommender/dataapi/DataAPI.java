@@ -6,6 +6,7 @@ import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +18,12 @@ import java.util.Map;
 public interface DataAPI {
     /**
      * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
-     * @param urls               list of URL strings to decorate
+     * @param uris               list of URIs to decorate
      * @param confidenceMap      Optional map of urls to confidence scores (can be null if not available).
      * @param collectionConfig   collection config object
      * @return list of decorated URL recommendations (which may be empty)
      */
-    List<Recommendation> decorateURLRecommendations(List<String> urls,
+    List<Recommendation> decorateURLRecommendations(List<URI> uris,
                                                     Map<String, ItemTuple> confidenceMap, Config collectionConfig);
 
     /**
@@ -30,11 +31,11 @@ public interface DataAPI {
      * or asMap() on the result to get the data in the format they need.
      * Document information for any URLs which are not in the index will not be
      * present in the returned object.
-     * @param urls             list of URLs
+     * @param uris             list of URIs
      * @param collectionConfig collection config object
      * @return a DocInfoResult (which may be null).
      */
-    DocInfoResult getDocInfoResult(List<String> urls, Config collectionConfig);
+    DocInfoResult getDocInfoResult(List<URI> uris, Config collectionConfig);
 
     /**
      * Return a DocInfo object for a single URL.

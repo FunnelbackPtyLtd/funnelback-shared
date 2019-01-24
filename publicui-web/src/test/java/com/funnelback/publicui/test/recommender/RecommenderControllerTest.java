@@ -4,6 +4,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +77,7 @@ public class RecommenderControllerTest {
 
     private MockHttpServletRequest request;
     private ModelAndView modelAndView;
-    private List<String> indexURLs;
+    private List<URI> indexURLs;
     private List<String> indexURLTitles;
 
     /**
@@ -199,11 +200,11 @@ public class RecommenderControllerTest {
     /**
      * Build and return a list of ItemTuples based on the given list of item IDs and associated titles.
      */
-    private List<ItemTuple> getItemTuples(List<String> itemIDs) {
+    private List<ItemTuple> getItemTuples(List<URI> itemIDs) {
         List<ItemTuple> itemTuples = new ArrayList<>();
 
         for (int i=0; i < itemIDs.size(); i++) {
-            ItemTuple itemTuple = new ItemTuple(itemIDs.get(i), ItemTuple.Source.CO_CLICKS);
+            ItemTuple itemTuple = new ItemTuple(itemIDs.get(i).toString(), ItemTuple.Source.CO_CLICKS);
             itemTuples.add(itemTuple);
         }
 
@@ -241,7 +242,7 @@ public class RecommenderControllerTest {
         modelAndView = new ModelAndView("json", model);
 
         indexURLs = new ArrayList<>();
-        indexURLs.add(DEFAULT_RECOMMENDATION);
+        indexURLs.add(URI.create(DEFAULT_RECOMMENDATION));
 
         indexURLTitles = new ArrayList<>();
         indexURLTitles.add(DEFAULT_RECOMMENDATION_TITLE);
@@ -376,7 +377,7 @@ public class RecommenderControllerTest {
 
         // Include an item that is out of scope in the list of cached itemIDs, and generate a "scoped itemIDs"
         // list that does not include this so a synthetic list of scoped recommendations can be generated.
-        indexURLs.add(OUTSIDE_SCOPE);
+        indexURLs.add(URI.create(OUTSIDE_SCOPE));
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
 
         List<ItemTuple> cachedItems = getItemTuples(indexURLs);
@@ -413,7 +414,7 @@ public class RecommenderControllerTest {
 
         // Include an item that is out of scope in the list of cached itemIDs, and generate a "scoped itemIDs"
         // list that does not include this so a synthetic list of scoped recommendations can be generated.
-        indexURLs.add(OUTSIDE_SCOPE);
+        indexURLs.add(URI.create(OUTSIDE_SCOPE));
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
 
         List<ItemTuple> cachedItems = getItemTuples(indexURLs);
@@ -448,7 +449,7 @@ public class RecommenderControllerTest {
         Config collectionConfig = collection.getConfiguration();
         int maxRecommendations = 1;
 
-        indexURLs.add(OUTSIDE_SCOPE);
+        indexURLs.add(URI.create(OUTSIDE_SCOPE));
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
 
         List<ItemTuple> cachedItems = getItemTuples(indexURLs);
@@ -484,7 +485,7 @@ public class RecommenderControllerTest {
         Config collectionConfig = collection.getConfiguration();
         String scope = "";
 
-        indexURLs.add(OUTSIDE_SCOPE);
+        indexURLs.add(URI.create(OUTSIDE_SCOPE));
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
 
         List<ItemTuple> cachedItems = getItemTuples(indexURLs);
