@@ -148,6 +148,29 @@ public class RelatedDocumentFetcherTests {
     }
 
     @Test
+    public void testCreateActionsWithInvalidUris() throws Exception {
+        List<RelationToExpand> relationsToExpand = Lists.newArrayList(
+            new RelationToExpand(new MetadataRelationSource("parent"), "parent"),
+            new RelationToExpand(new RelatedDataRelationSource("cousin", "likes"), "peopleLikedByCousin")
+        );
+
+        Result result = new Result();
+        result.setCollection("collection");
+        result.getListMetadata().putAll("parent", Lists.newArrayList("http://example.com/1%","http://example.com/2"));
+
+        List<Result> results = Lists.newArrayList(result);
+
+        RelatedDocumentFetcher rdf = new RelatedDocumentFetcher();
+
+        SetMultimap<URI, RelatedDataTarget> actualResult = rdf.createActionsForThisPass(results, relationsToExpand);
+
+        SetMultimap<URI, RelatedDataTarget> expected = MultimapBuilder.hashKeys().hashSetValues().build();
+        expected.put(new URI("http://example.com/2"), new RelatedDataTarget(result, "parent"));
+
+        Assert.assertEquals(actualResult, expected);
+    }
+
+    @Test
     public void testPerformActions() throws Exception {
         Result result = new Result();
         

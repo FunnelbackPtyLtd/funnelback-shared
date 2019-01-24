@@ -183,19 +183,19 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
         List<RelationToExpand> relationsToExpand) {
         SetMultimap<URI, RelatedDataTarget> actionsForThisPass = MultimapBuilder.hashKeys().hashSetValues().build();
 
-        try {
-            for(Result r: results) {
-                for (RelationToExpand relationToExpand : relationsToExpand) {
-                    if (!r.getRelatedDocuments().containsKey(relationToExpand.getRelationTargetKey())) {
-                        Set<String> relationSourceValues = relationToExpand.getRelationSource().getValuesForResult(r);
-                        for (String url : relationSourceValues) {
+        for(Result r: results) {
+            for (RelationToExpand relationToExpand : relationsToExpand) {
+                if (!r.getRelatedDocuments().containsKey(relationToExpand.getRelationTargetKey())) {
+                    Set<String> relationSourceValues = relationToExpand.getRelationSource().getValuesForResult(r);
+                    for (String url : relationSourceValues) {
+                        try {
                             actionsForThisPass.put(new URI(url), new RelatedDataTarget(r, relationToExpand.getRelationTargetKey()));
+                        } catch (URISyntaxException e) {
+                            log.warn("Ignoring invalid URL for related data expansion - " + url, e);
                         }
                     }
                 }
             }
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
         }
         return actionsForThisPass;
     }
