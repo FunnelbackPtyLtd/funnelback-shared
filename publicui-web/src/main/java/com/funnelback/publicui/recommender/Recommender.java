@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
+import java.net.URI;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -144,12 +145,12 @@ public class Recommender {
             }
 
             if (scopedList.size() > 0) {
-                List<String> indexURLs = new ArrayList<>();
+                List<URI> indexURLs = new ArrayList<>();
                 Map<String, ItemTuple> confidenceMap = new HashMap<>();
 
                 for (ItemTuple item : scopedList) {
                     String indexURL = item.getItemID();
-                    indexURLs.add(indexURL);
+                    indexURLs.add(URI.create(indexURL));
                     confidenceMap.put(indexURL, item);
                 }
 

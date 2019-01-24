@@ -204,9 +204,9 @@ public class DevRecommenderController {
 
                         stringBuffer.append("<h2>Session: " + sessionID + " Host: " + host + "</h2><ul>\n");
 
-                        List<String> urls = new ArrayList<>();
+                        List<URI> urls = new ArrayList<>();
                         for (PreferenceTuple preference : session) {
-                            urls.add(preference.getItemID());
+                            urls.add(URI.create(preference.getItemID()));
                         }
 
                         Map<URI, DocInfo> docInfoMap = dataAPI.getDocInfoResult(urls, collectionConfig).asMap();

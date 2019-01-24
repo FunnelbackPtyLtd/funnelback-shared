@@ -37,26 +37,25 @@ public class DataAPIConnectorPADRE implements DataAPI {
     
     /**
      * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
-     * @param urls             list of URL strings to decorate
+     * @param uris             list of URIs to decorate
      * @param confidenceMap    Optional map of urls to confidence scores (can be null if not available).
      * @param collectionConfig collection configuration object
      * @return list of decorated URL recommendations (which may be empty)
      */
-    public List<Recommendation> decorateURLRecommendations(List<String> urls,
+    public List<Recommendation> decorateURLRecommendations(List<URI> uris,
             Map<String, ItemTuple> confidenceMap, Config collectionConfig) {
         List<Recommendation> recommendations = new ArrayList<>();
         List<DocInfo> dis = null;
-        DocInfoResult dir = getDocInfoResult(urls, collectionConfig);
+        DocInfoResult dir = getDocInfoResult(uris, collectionConfig);
 
         if (dir != null) {
             dis = new ArrayList<>();
             Map<URI, DocInfo> docInfoResultMap = dir.asMap();
-            for (String url : urls) {
-                URI uri = URI.create(url);
+            for (URI uri : uris) {
                 if (docInfoResultMap.containsKey(uri)) {
                     dis.add(docInfoResultMap.get(uri));
                 } else {
-                    log.error("url " + url + " unexpectedly absent from i4u results");
+                    log.error("uri " + uri + " unexpectedly absent from i4u results");
                 }
             }
         }
@@ -90,14 +89,14 @@ public class DataAPIConnectorPADRE implements DataAPI {
      * or asMap() on the result to get the data in the format they need.
      * Document information for any URLs which are not in the index will not be
      * present in the returned object.
-     * @param urls             list of URLs
+     * @param uris             list of URIs
      * @param collectionConfig collection config object
      * @return a DocInfoResult (which may be null).
      */
-    public DocInfoResult getDocInfoResult(List<String> urls, Config collectionConfig) {
+    public DocInfoResult getDocInfoResult(List<URI> uris, Config collectionConfig) {
         File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + View.live
                 + File.separator + "idx" + File.separator + "index");
-        return new DocInfoAccess().getDocInfoResult(urls, searchHome, indexStem, collectionConfig.getCollectionName());
+        return new DocInfoAccess().getDocInfoForUris(uris, searchHome, indexStem, collectionConfig.getCollectionName());
     }
 
     /**
