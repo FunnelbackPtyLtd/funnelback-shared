@@ -3,7 +3,6 @@ package com.funnelback.publicui.search.model.profile;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
@@ -17,6 +16,7 @@ import com.funnelback.config.validators.ConfigOptionValidationException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Delegate;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -26,17 +26,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 @Log4j2
 public class ServerConfigReadOnlyWhichAlsoHasAStringGetMethod implements ServiceConfigReadOnly {
-    @NonNull private final ServiceConfigReadOnly underylingServiceConfigReadOnly;
-
-    @Override
-    public <T> T get(ServiceConfigOptionDefinition<T> configOption) {
-        return underylingServiceConfigReadOnly.get(configOption);
-    }
-
-    @Override
-    public Set<String> getRawKeys() {
-        return underylingServiceConfigReadOnly.getRawKeys();
-    }
+    @NonNull @Delegate private final ServiceConfigReadOnly underylingServiceConfigReadOnly;
 
     public String get(String key) {
         ServiceConfigOptionDefinition<Object> option = (ServiceConfigOptionDefinition<Object>) getConfigOptionDefinition(key);
