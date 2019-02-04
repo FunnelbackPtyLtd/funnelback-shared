@@ -2,6 +2,7 @@ package com.funnelback.publicui.security;
 
 import java.util.Arrays;
 
+import com.funnelback.springmvc.api.config.security.FunnelbackAuthenticationDetailsSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -78,7 +79,8 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
             // off to the IdP's login process rather than returning 401).
             http
                 .httpBasic()
-                    .authenticationEntryPoint(samlEntryPoint);
+                    .authenticationEntryPoint(samlEntryPoint)
+                    .authenticationDetailsSource(funnelbackAuthenticationDetailsSource);
 
             http
                 .addFilterBefore(metadataGeneratorFilter, ChannelProcessingFilter.class)
@@ -148,7 +150,10 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
      */
     @Autowired(required=false)
     SAMLEntryPoint samlEntryPoint;
-    
+
+    @Autowired
+    FunnelbackAuthenticationDetailsSource funnelbackAuthenticationDetailsSource;
+
     @Autowired(required=false)
     MetadataGeneratorFilter metadataGeneratorFilter;
     
