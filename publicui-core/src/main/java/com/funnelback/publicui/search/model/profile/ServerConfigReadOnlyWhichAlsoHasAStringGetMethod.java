@@ -1,23 +1,14 @@
 package com.funnelback.publicui.search.model.profile;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
+import com.funnelback.config.keys.StringKey;
 import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.generic.GenericConfigReadCalls;
-import com.funnelback.config.keys.AllKeysMap;
-import com.funnelback.config.level.ConfigLevels;
-import com.funnelback.config.marshallers.Marshaller;
-import com.funnelback.config.marshallers.Marshallers;
-import com.funnelback.config.option.ConfigOptionDefinition;
-import com.funnelback.config.validators.ConfigOptionValidationException;
+import com.funnelback.config.keys.ConfigKeyFinder;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Delegate;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -37,7 +28,7 @@ public class ServerConfigReadOnlyWhichAlsoHasAStringGetMethod implements Service
         return option.getMarshaller().marshal(value);
     }
 
-    @Setter(AccessLevel.PACKAGE) private AllKeysMap allKeysMap = new AllKeysMap();
+    @Setter(AccessLevel.PACKAGE) private ConfigKeyFinder keyFinder = new ConfigKeyFinder();
     
     /**
      * Creates a ConfigOptionDefintion for a given key.
@@ -50,44 +41,11 @@ public class ServerConfigReadOnlyWhichAlsoHasAStringGetMethod implements Service
      * @return
      */
     private ServiceConfigOptionDefinition<?> getConfigOptionDefinition(String name) {
-        //Try to see if the key is already known, if it is use the newest name for that key.
-        ServiceConfigOptionDefinition<?> keyToUse = Optional.ofNullable((ServiceConfigOptionDefinition)allKeysMap.getMap().get(name))
-                .orElse(new StringKey(name, Optional.empty()));
-        if(!name.equals(keyToUse.getKey())) {
-            log.debug("The key {} is deprecated, will automatically use {}", name, keyToUse.getKey());
-        }
-        return keyToUse;
+        // Try to see if the key is already known, if it is use that key.
+        return keyFinder.findCurrentConfigKey(name)
+            .map(c -> c.getConfigOption())
+            .filter(configOption -> configOption instanceof ServiceConfigOptionDefinition)
+            .map(configOption -> (ServiceConfigOptionDefinition) configOption)
+            .orElse(new StringKey(name, Optional.empty()));
     }
-    
-    @AllArgsConstructor
-    public class StringKey implements ServiceConfigOptionDefinition<String> {
-        
-        @Getter public String key;
-        @Getter public Optional<ConfigOptionDefinition<String>> oldOption;
-        
-        @Override
-        public void validate(GenericConfigReadCalls config, String value) throws ConfigOptionValidationException {
-            //Always valid
-        }
-
-        @Override
-        public Marshaller<String> getMarshaller() {
-            return Marshallers.STRING_MARSHALLER;
-        }
-
-        @Override
-        public String getDefault(GenericConfigReadCalls config) throws IllegalStateException {
-            //Default is null.
-            return null;
-        }
-
-        @Override
-        public List<ConfigLevels> getConfigLevels() {
-            //Support all configs.
-            return Arrays.asList(ConfigLevels.values());
-        }
-    }
-
-    
-
 }
