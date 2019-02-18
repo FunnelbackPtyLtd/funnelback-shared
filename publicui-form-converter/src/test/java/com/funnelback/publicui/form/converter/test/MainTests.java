@@ -32,8 +32,8 @@ public class MainTests {
         Main.main(args);
         
         Assert.assertEquals(
-                FileUtils.readFileToString(expectedFile).replaceAll("\r?\n", "\n"),
-                FileUtils.readFileToString(out).replaceAll("\r?\n", "\n")
+                FileUtils.readFileToString(expectedFile).replaceAll("\r?\n", ""),
+                FileUtils.readFileToString(out).replaceAll("\r?\n", "")
                 );
     }
 
