@@ -33,6 +33,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Matchers;
 
 public class X509SecurityIT {
     private static X509ConfiguredJettyServer server;
@@ -47,7 +48,7 @@ public class X509SecurityIT {
     @Test
     public void testX509Auth() throws Exception {
         String responseText = performTestRequest(Optional.of(KEYSTORE_PATH));
-        Assert.assertEquals("Expected access to be granted", "Access granted!\n", responseText);
+        Assert.assertTrue("Expected access to be granted, but got: " + responseText, responseText.startsWith("Access granted!"));
     }
 
     @Test
