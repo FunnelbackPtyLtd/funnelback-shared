@@ -118,7 +118,7 @@ public class KnowledgeGraphController {
         HttpServletResponse response) throws IOException {
 
         File jsonTemplatesFile = new File(searchHome,
-            DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + com.funnelback.common.config.Files.FKG_TEMPLATES);
+            DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + com.funnelback.common.config.Files.KG_TEMPLATES);
 
         try (FileInputStream fis = new FileInputStream(jsonTemplatesFile)) {
             Map<String, KnowledgeGraphTemplate> result = KnowledgeGraphTemplate.fromConfigFile(fis);
@@ -137,7 +137,7 @@ public class KnowledgeGraphController {
         HttpServletResponse response) throws IOException {
 
         File jsonLabelsFile = new File(searchHome,
-            DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + com.funnelback.common.config.Files.FKG_LABELS);
+            DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + com.funnelback.common.config.Files.KG_LABELS);
 
         try (FileInputStream fis = new FileInputStream(jsonLabelsFile)) {
             KnowledgeGraphLabels result = KnowledgeGraphLabels.fromConfigFile(fis);
