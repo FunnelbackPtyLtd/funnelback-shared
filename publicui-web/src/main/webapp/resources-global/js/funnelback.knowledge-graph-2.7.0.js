@@ -39,7 +39,7 @@
     shareParams: {},
     searchUrl: 's/search.json',
     searchParams: {
-      SF: '[^(?i)(?!Fun).*,FUNfkgNodeLabel]',
+      SF: '[^(?i)(?!Fun).*,FUNkgNodeLabel]',
     },
     iconPrefix: 'fa fa-fw fa-',
     trigger: 'button', // [button|fixed|full]
@@ -114,7 +114,7 @@
 
   // Handle API request and responses
   const Api = {
-    urlPrefix: 'fkg/nodes',
+    urlPrefix: 'kg/nodes',
 
     keywordsV: 1,
     keywords: function() {
@@ -344,7 +344,7 @@
     getItem: function(key) {
       var data = Storage.data[key];
       if (data && data.list && !$.isObject(data.list[0])) { // To not duplicate entries in storage, for list view only IDs are saved so data need to be retrieved first
-        for (var i = 0, len = data.list.length; i < len; i++) data.list[i] = Storage.getItem('fkgnodes' + data.list[i]).list[0];
+        for (var i = 0, len = data.list.length; i < len; i++) data.list[i] = Storage.getItem('kgnodes' + data.list[i]).list[0];
       }
       return data;
     },
@@ -377,7 +377,7 @@
     },
 
     search: {
-      node: {_id: 'liveUrl', _url: {self: 'liveUrl'}, _type: 'listMetadata.FUNfkgNodeLabel.0', _labels: 'listMetadata.FUNfkgNodeLabel', _fields: 'listMetadata', _title: 'title', _desc: 'summary'},
+      node: {_id: 'liveUrl', _url: {self: 'liveUrl'}, _type: 'listMetadata.FUNkgNodeLabel.0', _labels: 'listMetadata.FUNkgNodeLabel', _fields: 'listMetadata', _title: 'title', _desc: 'summary'},
       pagination: {start: 'start_rank', size: 'num_ranks'},
       summary: {_start: 'resultsSummary.currStart', _end: 'resultsSummary.currEnd', _query: 'query', _total: 'resultsSummary.totalMatching', _rank: 'resultsSummary.numRanks'}
     },
@@ -480,11 +480,11 @@
     },
 
     openAutoFromFixed: function(instance, $trigger) {
-      instance.container.attr('data-fkg-context', 'auto');
+      instance.container.attr('data-kg-context', 'auto');
       Utils.getElement(_prefix + 'modal', instance.container).removeClass(_prefix + 'modal-fixed').addClass(_prefix + 'modal-auto');
       var partial = true;
-      if($trigger.attr('data-fkg-nav') === 'go') {
-        $trigger.attr('data-fkg-nav', 'init-go');
+      if($trigger.attr('data-kg-nav') === 'go') {
+        $trigger.attr('data-kg-nav', 'init-go');
         partial = false;
       }
       View.init(instance, $trigger, partial);
@@ -528,7 +528,7 @@
         });
       } else if (this.listWrapper[0].offsetHeight) Box.fullToFixed(this, 'detail');
 
-      this.container.attr('data-fkg-context', 'fixed');
+      this.container.attr('data-kg-context', 'fixed');
       Utils.getElement(_prefix + 'modal', this.container).removeClass(_prefix + 'modal-auto').addClass(_prefix + 'modal-fixed');
       Modal.hideBackdrop(this);
       Modal.destroy(this);
@@ -563,7 +563,7 @@
   };
 
   const Events = {
-    eventSuffix: '.fkg',
+    eventSuffix: '.kg',
 
     name: function(eventName) {
       return eventName + this.eventSuffix;
@@ -599,19 +599,19 @@
     },
 
     destroy: function(box) {
-      if (box.view !== 'fixed') $('.fkg-trigger').remove();
+      if (box.view !== 'fixed') $('.kg-trigger').remove();
       box.container.remove();
     },
 
     configure: function(box) {
-      box.loader = Utils.createElement('fkg-loader', null, 'div', Template.onceRender.loading);
-      box.container = Utils.createElement('fkg-box', $(box.view === 'auto' ? 'body' : box.context), 'div', Template.getOnce(box, 'modal'), {'data-fkg-id': box.id, id: 'fkg' + box.id, 'data-fkg-context': box.view});
+      box.loader = Utils.createElement('kg-loader', null, 'div', Template.onceRender.loading);
+      box.container = Utils.createElement('kg-box', $(box.view === 'auto' ? 'body' : box.context), 'div', Template.getOnce(box, 'modal'), {'data-kg-id': box.id, id: 'kg' + box.id, 'data-kg-context': box.view});
       Utils.getElement(_prefix + 'modal-body', box.container).html(Template.getOnce(box, 'layout'));
 
       const selectors = ['viewGraph', 'viewSearch', 'nav', 'back', 'breadcrumb', 'searchBox', 'searchHeader', 'searchList', 'facets', 'detailWrapper', 'detail', 'types', 'header', 'tabsWrapper', 'tabs', 'listWrapper', 'list', 'pagination', 'paginationList', 'paginationPrev', 'paginationNext', 'scroller', 'scrollerLeft', 'scrollerRight', 'snackbar'], len = selectors.length;
-      for (var i = 0; i < len; i++) box[selectors[i]] = Utils.getElement('fkg-' + selectors[i], box.container);
+      for (var i = 0; i < len; i++) box[selectors[i]] = Utils.getElement('kg-' + selectors[i], box.container);
 
-      box.container.on('click', '[data-fkg-nav]', function(e) {
+      box.container.on('click', '[data-kg-nav]', function(e) {
         return Navigation.go(box, $(this));
       });
 
@@ -662,8 +662,8 @@
 
     // Render views
     nodesButton: function(box, url, data) {
-      $(box.context).attr({'data-fkg-nav': 'init', 'data-fkg-url': url, title: _title, style: 'cursor: pointer'}).on('click', function() { return View.init(box, this); });
-      box.container.trigger('fkg:render', [box, url, data]);
+      $(box.context).attr({'data-kg-nav': 'init', 'data-kg-url': url, title: _title, style: 'cursor: pointer'}).on('click', function() { return View.init(box, this); });
+      box.container.trigger('kg:render', [box, url, data]);
     },
 
     nodesDetails: function(box, url, data, context) {
@@ -672,7 +672,7 @@
       Box.fixedToFull(box);
       View.loaderShow(box, box.tabs);
       View.details(box, url, data, context);
-      box.container.trigger('fkg:render', [box, url, data, context]);
+      box.container.trigger('kg:render', [box, url, data, context]);
     },
 
     nodesList: function(box, url, data) {
@@ -689,7 +689,7 @@
         Box.fullToFixed(box, 'list');
 
         const tmp = Navigation.current;
-        Navigation.current = function(box) { return {_label: 'FKG list', _url: url} };
+        Navigation.current = function(box) { return {_label: 'KG list', _url: url} };
         Navigation.push(box);
         Navigation.current = tmp;
 
@@ -699,7 +699,7 @@
       }
 
       Back.hide(box);
-      box.container.trigger('fkg:render', [box, url, data]);
+      box.container.trigger('kg:render', [box, url, data]);
     },
 
     searchList: function(box, url, data, context) {
@@ -734,8 +734,8 @@
         Api.error(error);
       });
       box.detail.html(Template.render(box, 'detail', data));
-      const longPathWrapper = box.detail.find('.fkg-long-path').parent();
-      if (longPathWrapper && longPathWrapper.get(0) && longPathWrapper.get(0).nodeName === 'TD') box.detail.find('.fkg-long-path').parent().addClass('fkg-long-path');
+      const longPathWrapper = box.detail.find('.kg-long-path').parent();
+      if (longPathWrapper && longPathWrapper.get(0) && longPathWrapper.get(0).nodeName === 'TD') box.detail.find('.kg-long-path').parent().addClass('kg-long-path');
     },
 
     typesList: function(box, url, data, context) {
@@ -767,7 +767,7 @@
     },
 
     tabsNav: function(box, url, data, context) {
-      if (box.container.attr('data-fkg-context') != 'fixed') Box.fixedToFull(box);
+      if (box.container.attr('data-kg-context') != 'fixed') Box.fixedToFull(box);
 
       if (!context) context = {};
       View.loaderShow(box, box.list);
@@ -801,43 +801,43 @@
       fix: _prefix + 'col-12'
     },
     onceRender: {
-      modal: '<div class="' + _prefix + 'modal ' + _prefix + 'modal-{{view}}" tabindex="-1" role="dialog"><div class="' + _prefix + 'modal-dialog" role="document"><div class="' + _prefix + 'modal-content ' + _prefix + 'bg-light"><div class="' + _prefix + 'modal-body"></div></div><div class="fkg-snackbar ' + _prefix + 'snackbar ' + _prefix + 'alert ' + _prefix + 'alert-primary" role="alert"></div></div></div>',
-      layout: '<nav class="' + _prefix + 'navbar ' + _prefix + 'sticky-top ' + _prefix + 'navbar-expand-sm ' + _prefix + 'navbar-dark ' + _prefix + 'bg-dark"><a class="' + _prefix + 'navbar-brand"><img src="{{options.apiBase}}s/resources-global/images/funnelback_logo.png"/><span>knowledge graph</span></a><a class="' + _prefix + 'navbar-toggler ' + _prefix + 'collapsed ' + _prefix + 'ml-auto" href="#navbarNav" data-fkg-nav="collapse" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="fa fa-fw fa-bars fa-2x"></span></a><div class="' + _prefix + 'collapse ' + _prefix + 'navbar-collapse" id="navbarNav"><div class="' + _prefix + 'navbar-nav"><div class="fkg-back"></div><div class="fkg-breadcrumb"></div></div><form class="fkg-searchBox ' + _prefix + 'form-inline ' + _prefix + 'ml-auto"><div class="' + _prefix + 'input-group"><input type="search" class="' + _prefix + 'form-control ' + _prefix + 'border-0 ' + _prefix + 'bg-dark ' + _prefix + 'text-white" placeholder="Discover with KnowledgeGraph" aria-describedby="button-search"><div class="' + _prefix + 'input-group-append"><button class="' + _prefix + 'btn ' + _prefix + 'btn-dark" type="button" data-fkg-nav="search"><span class="fa fa-fw fa-search"></span></button></div></div></form></div>{{#if (eq view "auto")}}<a class="' + _prefix + 'btn ' + _prefix + 'btn-close" data-fkg-nav="close" aria-label="Close"><span aria-hidden="true">&times;</span></a>{{/if}}</nav><main><div class="' + _prefix + 'row fkg-viewGraph"><div class="fkg-detailWrapper ' + _prefix + 'col-12 ' + _prefix + 'col-sm-5 ' + _prefix + 'col-md-5 ' + _prefix + 'col-lg-5"><div class="' + _prefix + 'row ' + _prefix + 'no-gutters"><div class="' + _prefix + 'col-12 ' + _prefix + 'col-sm-9 ' + _prefix + 'col-md-8 ' + _prefix + 'col-lg-9 ' + _prefix + 'modal-scroll ' + _prefix + 'bg-navy ' + _prefix + 'text-white"><section class="fkg-detail ' + _prefix + 'card ' + _prefix + 'h-100 ' + _prefix + 'border-0 ' + _prefix + 'rounded-0 ' + _prefix + 'bg-transparent"></section></div><div class="' + _prefix + 'col-12 ' + _prefix + 'col-sm-3 ' + _prefix + 'col-md-4 ' + _prefix + 'col-lg-3 ' + _prefix + 'modal-scroll ' + _prefix + 'bg-white"><div class="fkg-types ' + _prefix + 'list-group ' + _prefix + 'list-group-xs ' + _prefix + 'list-group-flush"></div></div></div></div><div class="fkg-listWrapper ' + _prefix + 'col-12 ' + _prefix + 'col-sm-7 ' + _prefix + 'col-md-7 ' + _prefix + 'col-lg-7 ' + _prefix + 'col-py"><section class="fkg-header ' + _prefix + 'mt-3 ' + _prefix + 'mb-4"></section><section class="fkg-tabsWrapper ' + _prefix + 'border-bottom ' + _prefix + 'mb-3"><div class="' + _prefix + 'nav-scroller"><a class="' + _prefix + 'scroller-nav ' + _prefix + 'scroller-left fkg-scrollerLeft ' + _prefix + 'btn ' + _prefix + 'py-0 ' + _prefix + 'px-2"><span class="fa fa-fw fa-chevron-left"></span></a><a class="' + _prefix + 'scroller-nav ' + _prefix + 'scroller-right fkg-scrollerRight ' + _prefix + 'btn ' + _prefix + 'py-0 ' + _prefix + 'px-2"><span class="fa fa-fw fa-chevron-right"></span></a><div class="' + _prefix + 'scroller-wrapper fkg-scroller"><div class="fkg-tabs ' + _prefix + 'nav ' + _prefix + 'nav-underscore" role="tablist"></div></div></div></section><div class="' + _prefix + 'list-scroll ' + _prefix + 'mt-1"><section class="fkg-list ' + _prefix + 'tab-content"></section>{{>pagination-block}}</div></div></div><div class="' + _prefix + 'row fkg-viewSearch"><div class="' + _prefix + 'col-12 ' + _prefix + 'col-sm-3 ' + _prefix + 'col-md-3 ' + _prefix + 'col-lg-3 ' + _prefix + 'col-py"><div class="fkg-facets ' + _prefix + 'search-scroll"></div></div><div class="' + _prefix + 'col-12 ' + _prefix + 'col-sm-9 ' + _prefix + 'col-md-9 ' + _prefix + 'col-lg-9 ' + _prefix + 'col-py"><div class="fkg-searchHeader ' + _prefix + 'border-bottom ' + _prefix + 'my-2 ' + _prefix + 'py-2 ' + _prefix + 'px-3"></div><div class="' + _prefix + 'search-scroll ' + _prefix + 'mt-1"><div class="fkg-searchList"></div>{{>pagination-block}}</div></div></div></main>',
+      modal: '<div class="' + _prefix + 'modal ' + _prefix + 'modal-{{view}}" tabindex="-1" role="dialog"><div class="' + _prefix + 'modal-dialog" role="document"><div class="' + _prefix + 'modal-content ' + _prefix + 'bg-light"><div class="' + _prefix + 'modal-body"></div></div><div class="kg-snackbar ' + _prefix + 'snackbar ' + _prefix + 'alert ' + _prefix + 'alert-primary" role="alert"></div></div></div>',
+      layout: '<nav class="' + _prefix + 'navbar ' + _prefix + 'sticky-top ' + _prefix + 'navbar-expand-sm ' + _prefix + 'navbar-dark ' + _prefix + 'bg-dark"><a class="' + _prefix + 'navbar-brand"><img src="{{options.apiBase}}s/resources-global/images/funnelback_logo.png"/><span>knowledge graph</span></a><a class="' + _prefix + 'navbar-toggler ' + _prefix + 'collapsed ' + _prefix + 'ml-auto" href="#navbarNav" data-kg-nav="collapse" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="fa fa-fw fa-bars fa-2x"></span></a><div class="' + _prefix + 'collapse ' + _prefix + 'navbar-collapse" id="navbarNav"><div class="' + _prefix + 'navbar-nav"><div class="kg-back"></div><div class="kg-breadcrumb"></div></div><form class="kg-searchBox ' + _prefix + 'form-inline ' + _prefix + 'ml-auto"><div class="' + _prefix + 'input-group"><input type="search" class="' + _prefix + 'form-control ' + _prefix + 'border-0 ' + _prefix + 'bg-dark ' + _prefix + 'text-white" placeholder="Discover with KnowledgeGraph" aria-describedby="button-search"><div class="' + _prefix + 'input-group-append"><button class="' + _prefix + 'btn ' + _prefix + 'btn-dark" type="button" data-kg-nav="search"><span class="fa fa-fw fa-search"></span></button></div></div></form></div>{{#if (eq view "auto")}}<a class="' + _prefix + 'btn ' + _prefix + 'btn-close" data-kg-nav="close" aria-label="Close"><span aria-hidden="true">&times;</span></a>{{/if}}</nav><main><div class="' + _prefix + 'row kg-viewGraph"><div class="kg-detailWrapper ' + _prefix + 'col-12 ' + _prefix + 'col-sm-5 ' + _prefix + 'col-md-5 ' + _prefix + 'col-lg-5"><div class="' + _prefix + 'row ' + _prefix + 'no-gutters"><div class="' + _prefix + 'col-12 ' + _prefix + 'col-sm-9 ' + _prefix + 'col-md-8 ' + _prefix + 'col-lg-9 ' + _prefix + 'modal-scroll ' + _prefix + 'bg-navy ' + _prefix + 'text-white"><section class="kg-detail ' + _prefix + 'card ' + _prefix + 'h-100 ' + _prefix + 'border-0 ' + _prefix + 'rounded-0 ' + _prefix + 'bg-transparent"></section></div><div class="' + _prefix + 'col-12 ' + _prefix + 'col-sm-3 ' + _prefix + 'col-md-4 ' + _prefix + 'col-lg-3 ' + _prefix + 'modal-scroll ' + _prefix + 'bg-white"><div class="kg-types ' + _prefix + 'list-group ' + _prefix + 'list-group-xs ' + _prefix + 'list-group-flush"></div></div></div></div><div class="kg-listWrapper ' + _prefix + 'col-12 ' + _prefix + 'col-sm-7 ' + _prefix + 'col-md-7 ' + _prefix + 'col-lg-7 ' + _prefix + 'col-py"><section class="kg-header ' + _prefix + 'mt-3 ' + _prefix + 'mb-4"></section><section class="kg-tabsWrapper ' + _prefix + 'border-bottom ' + _prefix + 'mb-3"><div class="' + _prefix + 'nav-scroller"><a class="' + _prefix + 'scroller-nav ' + _prefix + 'scroller-left kg-scrollerLeft ' + _prefix + 'btn ' + _prefix + 'py-0 ' + _prefix + 'px-2"><span class="fa fa-fw fa-chevron-left"></span></a><a class="' + _prefix + 'scroller-nav ' + _prefix + 'scroller-right kg-scrollerRight ' + _prefix + 'btn ' + _prefix + 'py-0 ' + _prefix + 'px-2"><span class="fa fa-fw fa-chevron-right"></span></a><div class="' + _prefix + 'scroller-wrapper kg-scroller"><div class="kg-tabs ' + _prefix + 'nav ' + _prefix + 'nav-underscore" role="tablist"></div></div></div></section><div class="' + _prefix + 'list-scroll ' + _prefix + 'mt-1"><section class="kg-list ' + _prefix + 'tab-content"></section>{{>pagination-block}}</div></div></div><div class="' + _prefix + 'row kg-viewSearch"><div class="' + _prefix + 'col-12 ' + _prefix + 'col-sm-3 ' + _prefix + 'col-md-3 ' + _prefix + 'col-lg-3 ' + _prefix + 'col-py"><div class="kg-facets ' + _prefix + 'search-scroll"></div></div><div class="' + _prefix + 'col-12 ' + _prefix + 'col-sm-9 ' + _prefix + 'col-md-9 ' + _prefix + 'col-lg-9 ' + _prefix + 'col-py"><div class="kg-searchHeader ' + _prefix + 'border-bottom ' + _prefix + 'my-2 ' + _prefix + 'py-2 ' + _prefix + 'px-3"></div><div class="' + _prefix + 'search-scroll ' + _prefix + 'mt-1"><div class="kg-searchList"></div>{{>pagination-block}}</div></div></div></main>',
       loading: '<div class="' + _prefix + 'text-navy ' + _prefix + 'text-center"><span class="fa fa-fw fa-2x fa-spinner fa-pulse"></span><span class="' + _prefix + 'text">Loading...</span></div>'
     },
     notpartial: {
       alert: '<div class="' + _prefix + 'alert ' + _prefix + 'alert-{{type}}" role="alert">{{#if status}}<h5>Error code: <b>{{status}}</b></h5>{{/if}}{{{msg}}}</div>',
       back: '{{> breadcrumbItem-block _nav="back" _title="Go back one page" _icon="fa fa-fw fa-arrow-left"}}',
       breadcrumb: '{{#each list}}{{#if @index}}{{#if _sub}}<div class="' + _prefix + 'btn-group ' + _prefix + 'ml-auto"><a class="' + _prefix + 'btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{_label}}">... <span class="' + _prefix + 'dropdown-toggle"></span></a><div class="' + _prefix + 'dropdown-menu ' + _prefix + 'bg-dark">{{#each _sub}}{{> breadcrumbItem-block _nav="breadcrumb" _label=_label _title=_label _url=_idx _classes="' + _prefix + 'dropdown-item"}}{{/each}}</div></div>{{else}}{{> breadcrumbItem-block _nav="breadcrumb" _label=_label _title=_label _url=_idx}}{{/if}}{{else}}{{> breadcrumbItem-block _nav="breadcrumb" _label=_label _title="Go to first page" _url=_idx _icon="fa fa-fw fa-home"}}{{/if}}{{/each}}',
-      detail: '<div class="' + _prefix + 'card-body ' + _prefix + 'd-flex ' + _prefix + 'flex-column fkg-content" data-fkg-url="{{_url.self}}"><div class="' + _prefix + 'd-block"><span class="' + _prefix + 'd-inline-flex ' + _prefix + 'mb-2 ' + _prefix + 'align-items-center ' + _prefix + 'text-gray-light fkg-detail-type">{{>icon-block}}{{translate @root._translate.type _type}}</span>{{>img-block _classes="' + _prefix + 'float-right ' + _prefix + 'card-image-lg"}}<h4 class="fkg-title ' + _prefix + 'card-title">{{{_title}}}</h4><h5 class="fkg-subtitle ' + _prefix + 'card-subtitle ' + _prefix + 'text-gray-light">{{{_subtitle}}}</h5>{{> primary-block _classes="' + _prefix + 'mt-3 ' + _prefix + 'mb-4"}}<hr>{{#if secondary}}<table class="fkg-secondary-table ' + _prefix + 'table ' + _prefix + 'table-backgroundless ' + _prefix + 'table-borderless ' + _prefix + 'table-sm">{{#each secondary}}<tr><th class="' + _prefix + 'text-gray-light ' + _prefix + 'text-bold" scope="row">{{translate @root._translate.property ../_type key}}</th><td>{{> (item)}}</td></tr>{{/each}}</table>{{/if}}{{#if _desc}}<p class="' + _prefix + 'mb-4">{{_desc}}</p>{{/if}}</div><div class="' + _prefix + 'mt-auto">{{>url-block _classes="' + _prefix + 'btn ' + _prefix + 'btn-block ' + _prefix + 'btn-dark" _label="View" _icon="fa fa-fw fa-external-link"}}{{>phone-block _classes="' + _prefix + 'btn ' + _prefix + 'btn-block ' + _prefix + 'btn-dark" _label="Call now" _icon="icon-Phone"}}{{#if _shareUrl}}<a class="' + _prefix + 'btn ' + _prefix + 'btn-block ' + _prefix + 'btn-dark" href="#" data-fkg-nav="share" data-fkg-url="{{_shareUrl}}" title="Click to copy link to the clickboard">Share</a>{{/if}}</div></div>',
-      facets: '{{#each this as |facet facetId|}}<div class="' + _prefix + 'card ' + _prefix + 'my-2 ' + _prefix + 'border-0 ' + _prefix + 'bg-transparent"><div class="' + _prefix + 'card-header ' + _prefix + 'bg-transparent ' + _prefix + 'py-2 ' + _prefix + 'px-3">{{facet.name}}{{#if facet._url}}<a href="" data-fkg-nav="facet" data-fkg-url="{{facet._url}}"><small class="' + _prefix + 'pl-1">{{facet._label}}</small></a>{{/if}}</div><div><div class="' + _prefix + 'card-body ' + _prefix + 'py-0 ' + _prefix + 'px-3"><ul class="' + _prefix + 'list-unstyled ' + _prefix + 'list-link ' + _prefix + 'mb-0 ' + _prefix + 'text-size-09 ' + _prefix + 'line-h-2">{{#each facet.allValues as |category|}}<li class="' + _prefix + 'my-1 {{#if (gte @index 8)}}' + _prefix + 'collapse collapsedFacet{{facetId}}{{/if}}"><a class="{{#if category.selected}}' + _prefix + 'active{{/if}}" href="#" data-fkg-nav="facet" data-fkg-url="{{category._url}}">{{#if (and category.selected (eq facet.guessedDisplayType "SINGLE_DRILL_DOWN") (ne @index 0))}}&#8627;{{/if}}{{category.label}}{{#unless category.selected}}<span class="' + _prefix + 'float-right ' + _prefix + 'text-bold">{{category.count}}</span>{{/unless}}</a></li>{{/each}}{{#if (gt facet.allValues.length 9)}}<li><a class="' + _prefix + 'collapsed" data-fkg-nav="collapse" data-toggle="collapse" data-target="collapsedFacet{{facetId}}" href="#" role="button" aria-expanded="false"><span class="fa fa-fw fa-chevron-up"></span></a></li>{{/if}}</ul></div></div></div>{{/each}}',
+      detail: '<div class="' + _prefix + 'card-body ' + _prefix + 'd-flex ' + _prefix + 'flex-column kg-content" data-kg-url="{{_url.self}}"><div class="' + _prefix + 'd-block"><span class="' + _prefix + 'd-inline-flex ' + _prefix + 'mb-2 ' + _prefix + 'align-items-center ' + _prefix + 'text-gray-light kg-detail-type">{{>icon-block}}{{translate @root._translate.type _type}}</span>{{>img-block _classes="' + _prefix + 'float-right ' + _prefix + 'card-image-lg"}}<h4 class="kg-title ' + _prefix + 'card-title">{{{_title}}}</h4><h5 class="kg-subtitle ' + _prefix + 'card-subtitle ' + _prefix + 'text-gray-light">{{{_subtitle}}}</h5>{{> primary-block _classes="' + _prefix + 'mt-3 ' + _prefix + 'mb-4"}}<hr>{{#if secondary}}<table class="kg-secondary-table ' + _prefix + 'table ' + _prefix + 'table-backgroundless ' + _prefix + 'table-borderless ' + _prefix + 'table-sm">{{#each secondary}}<tr><th class="' + _prefix + 'text-gray-light ' + _prefix + 'text-bold" scope="row">{{translate @root._translate.property ../_type key}}</th><td>{{> (item)}}</td></tr>{{/each}}</table>{{/if}}{{#if _desc}}<p class="' + _prefix + 'mb-4">{{_desc}}</p>{{/if}}</div><div class="' + _prefix + 'mt-auto">{{>url-block _classes="' + _prefix + 'btn ' + _prefix + 'btn-block ' + _prefix + 'btn-dark" _label="View" _icon="fa fa-fw fa-external-link"}}{{>phone-block _classes="' + _prefix + 'btn ' + _prefix + 'btn-block ' + _prefix + 'btn-dark" _label="Call now" _icon="icon-Phone"}}{{#if _shareUrl}}<a class="' + _prefix + 'btn ' + _prefix + 'btn-block ' + _prefix + 'btn-dark" href="#" data-kg-nav="share" data-kg-url="{{_shareUrl}}" title="Click to copy link to the clickboard">Share</a>{{/if}}</div></div>',
+      facets: '{{#each this as |facet facetId|}}<div class="' + _prefix + 'card ' + _prefix + 'my-2 ' + _prefix + 'border-0 ' + _prefix + 'bg-transparent"><div class="' + _prefix + 'card-header ' + _prefix + 'bg-transparent ' + _prefix + 'py-2 ' + _prefix + 'px-3">{{facet.name}}{{#if facet._url}}<a href="" data-kg-nav="facet" data-kg-url="{{facet._url}}"><small class="' + _prefix + 'pl-1">{{facet._label}}</small></a>{{/if}}</div><div><div class="' + _prefix + 'card-body ' + _prefix + 'py-0 ' + _prefix + 'px-3"><ul class="' + _prefix + 'list-unstyled ' + _prefix + 'list-link ' + _prefix + 'mb-0 ' + _prefix + 'text-size-09 ' + _prefix + 'line-h-2">{{#each facet.allValues as |category|}}<li class="' + _prefix + 'my-1 {{#if (gte @index 8)}}' + _prefix + 'collapse collapsedFacet{{facetId}}{{/if}}"><a class="{{#if category.selected}}' + _prefix + 'active{{/if}}" href="#" data-kg-nav="facet" data-kg-url="{{category._url}}">{{#if (and category.selected (eq facet.guessedDisplayType "SINGLE_DRILL_DOWN") (ne @index 0))}}&#8627;{{/if}}{{category.label}}{{#unless category.selected}}<span class="' + _prefix + 'float-right ' + _prefix + 'text-bold">{{category.count}}</span>{{/unless}}</a></li>{{/each}}{{#if (gt facet.allValues.length 9)}}<li><a class="' + _prefix + 'collapsed" data-kg-nav="collapse" data-toggle="collapse" data-target="collapsedFacet{{facetId}}" href="#" role="button" aria-expanded="false"><span class="fa fa-fw fa-chevron-up"></span></a></li>{{/if}}</ul></div></div></div>{{/each}}',
       list: '{{>list-block}}',
       tab: '{{#each this}}{{>tabItem-block}}{{/each}}',
       tabList: '<div class="' + _prefix + 'tab-pane" id="{{_id}}" role="tabpanel" aria-labelledby="{{_id}}-tab">{{>list-block}}</div>',
       type: '{{#each this}}{{>typeItem-block}}{{/each}}',
       listHeader: '<h3 class="' + _prefix + 'text-bold">{{title}}</h3><p class="' + _prefix + 'text-truncate">{{desc}}</p>',
       searchHeader: 'Showing results <strong>{{_start}}</strong>-<strong>{{_end}}</strong> of <strong>{{_total}}</strong> for <em>{{_query}}</em>',
-      paginationItem: '<span class="' + _prefix + 'page-item{{#if _isActive}} ' + _prefix + 'active{{/if}}"><a class="' + _prefix + 'page-link" href="#" data-fkg-nav="page" data-fkg-url="{{_url}}">{{_label}}</a></span>'
+      paginationItem: '<span class="' + _prefix + 'page-item{{#if _isActive}} ' + _prefix + 'active{{/if}}"><a class="' + _prefix + 'page-link" href="#" data-kg-nav="page" data-kg-url="{{_url}}">{{_label}}</a></span>'
     },
     partial: {
       text: '{{val}}',
       date: '{{#dateFormat @root._options.dateFormat}}{{val}}{{/dateFormat}}',
       badge: '<span class="' + _prefix + 'badge ' + _prefix + 'badge-{{key}} ' + _prefix + 'badge-{{badgeType val}}">{{translate @root._translate.type _type key}}: {{val}}</span>',
       email: '{{#if val}}<a class="{{_classes}}" href="mailto:{{val}}">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}',
-      path: '<span class="fkg-long-path">{{val}}</span>',
+      path: '<span class="kg-long-path">{{val}}</span>',
       phone: '{{#if val}}<a class="{{_classes}}" href="tel:{{val}}">{{>icon-block _classes="" _icon=_icon}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}',
-      url: '{{#if _viewUrl}}<a class="{{_classes}}" href="#" data-fkg-nav="external" data-fkg-url="{{_viewUrl}}" target="_blank">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{_viewUrl}}{{/if}}</a>{{/if}}',
+      url: '{{#if _viewUrl}}<a class="{{_classes}}" href="#" data-kg-nav="external" data-kg-url="{{_viewUrl}}" target="_blank">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{_viewUrl}}{{/if}}</a>{{/if}}',
       icon: '{{#if _icon}}<span class="{{_icon}} {{_classes}}"></span> {{/if}}',
       img: '{{#if _image}}<img class="' + _prefix + 'rounded-circle {{_classes}}" src="{{_image}}" />{{/if}}',
       primary: '{{#if primary}}<div class="{{_classes}}">{{#each primary}}<span class="' + _prefix + 'mr-2">{{> (item)}}</span>{{/each}}</div>{{/if}}',
-      breadcrumbItem: '<a class="{{#if _classes}}{{_classes}}{{else}}' + _prefix + 'nav-item ' + _prefix + 'nav-link{{/if}} ' + _prefix + 'text-truncate" href="#" data-fkg-nav="{{_nav}}" data-fkg-url="{{_url}}" title="{{_title}}">{{>icon-block}}{{{_label}}}</a>',
+      breadcrumbItem: '<a class="{{#if _classes}}{{_classes}}{{else}}' + _prefix + 'nav-item ' + _prefix + 'nav-link{{/if}} ' + _prefix + 'text-truncate" href="#" data-kg-nav="{{_nav}}" data-kg-url="{{_url}}" title="{{_title}}">{{>icon-block}}{{{_label}}}</a>',
       list: '<div class="' + _prefix + 'card-list ' + _prefix + 'mb-2">{{#each list}}{{#if group}}{{>listGroup-block}}{{else}}{{>listItem-block collapseId=@index}}{{/if}}{{/each}}</div>',
       listGroup: '<div class="' + _prefix + 'card-group ' + _prefix + 'pt-3 ' + _prefix + 'pb-2 ' + _prefix + 'px-3">{{group}}</div>',
-      listItem: '<div class="' + _prefix + 'card ' + _prefix + 'py-1"><div class="' + _prefix + 'd-flex ' + _prefix + 'align-items-center ' + _prefix + 'my-2"><a class="' + _prefix + 'align-self-center ' + _prefix + 'px-2 ' + _prefix + 'py-3 ' + _prefix + 'mr-2 ' + _prefix + 'border-right ' + _prefix + 'collapsed {{#unless secondary}}' + _prefix + 'invisible{{/unless}}" data-fkg-nav="collapse" data-toggle="collapse" href="#collapsed{{_id}}{{collapseId}}" role="button" aria-expanded="false" aria-controls="{{collapseId}}"><span class="fa fa-fw fa-chevron-up"></span></a>{{>img-block _classes="' + _prefix + 'card-image ' + _prefix + 'ml-2 ' + _prefix + 'mr-3"}}<div class="' + _prefix + 'd-flex ' + _prefix + 'flex-fill ' + _prefix + 'align-items-center"><div class="' + _prefix + 'd-flex ' + _prefix + 'flex-column{{#if primary}} ' + _prefix + 'col-7{{/if}}">{{#if _viewUrl}}{{>url-block _classes="" _label=_title _icon=""}}{{else}}{{{_title}}}{{/if}}<span class="' + _prefix + 'd-inline-flex ' + _prefix + 'text-muted">{{{_subtitle}}}</span></div>{{>primary-block}}</div><a href="#" data-fkg-nav="{{#if _nav}}{{_nav}}{{else}}go{{/if}}" data-fkg-url="{{_url.self}}" class="' + _prefix + 'card-link ' + _prefix + 'btn"><span class="fa fa-fw fa-arrow-circle-right"></span></a></div>{{>listItemSecondary-block}}</div>',
-      listItemSecondary: '{{#if secondary}}<div id="collapsed{{_id}}{{collapseId}}" class="' + _prefix + 'collapse fkg-secondary"><div class="' + _prefix + 'd-flex ' + _prefix + 'flex-wrap ' + _prefix + 'py-2 ' + _prefix + 'ml-475 ' + _prefix + 'mr-2 ' + _prefix + 'border-top">{{#each secondary}}<span class="' + _prefix + 'd-flex ' + _prefix + 'flex-fill ' + _prefix + 'mt-1 ' + _prefix + 'mb-2"><span class="' + _prefix + 'text-bold ' + _prefix + 'mr-1">{{translate @root._translate.property ../_type key}}</span><span class="' + _prefix + 'd-inline-block ' + _prefix + 'text-width ' + _prefix + 'text-muted ' + _prefix + 'text-truncate" title="{{val}}">{{>(item) _type=../_type}}</span></span>{{/each}}</div></div>{{/if}}',
-      pagination: '<nav class="fkg-pagination ' + _prefix + 'my-3 ' + _prefix + 'pagination ' + _prefix + 'justify-content-center"><span class="fkg-paginationPrev ' + _prefix + 'page-item ' + _prefix + 'pagination-nav ' + _prefix + 'disabled"><a class="' + _prefix + 'page-link" href="#" data-fkg-nav="prev" tabindex="-1"><span class="fa fa-fw fa-chevron-left"></span> Prev</a></span><span class="fkg-paginationList ' + _prefix + 'pagination-pages ' + _prefix + 'd-flex"></span><span class="fkg-paginationNext ' + _prefix + 'page-item ' + _prefix + 'pagination-nav"><a class="' + _prefix + 'page-link" href="#" data-fkg-nav="next">Next <span class="fa fa-fw fa-chevron-right"></span></a></span></nav>',
-      tabItem: '<a class="' + _prefix + 'nav-link" id="{{_id}}-tab" href="#{{_id}}" data-fkg-nav="tab" data-fkg-url="{{_url}}" data-fkg-total="{{_total}}" data-toggle="tab" role="tab" aria-controls="{{_id}}" aria-selected="false">{{translate @root._translate.relationship _label}} <small class="' + _prefix + 'text-muted">{{_count}}</small></a>',
-      typeItem: '<a href="#" class="' + _prefix + 'list-group-item ' + _prefix + 'd-flex ' + _prefix + 'pb-4 ' + _prefix + 'flex-wrap ' + _prefix + 'flex-column ' + _prefix + 'justify-content-center ' + _prefix + 'align-items-center ' + _prefix + 'text-center" data-fkg-nav="rel" data-fkg-url="{{_url}}" data-fkg-label="{{translate @root._translate.type _label}}"><small class="' + _prefix + 'badge ' + _prefix + 'badge-gray-light ' + _prefix + 'badge-pill ' + _prefix + 'ml-auto ' + _prefix + 'mb-2">{{_count}}</small>{{>icon-block _classes="' + _prefix + 'mb-1 ' + _prefix + 'text-gray-light"}}{{translate @root._translate.type _label}}</a>'
+      listItem: '<div class="' + _prefix + 'card ' + _prefix + 'py-1"><div class="' + _prefix + 'd-flex ' + _prefix + 'align-items-center ' + _prefix + 'my-2"><a class="' + _prefix + 'align-self-center ' + _prefix + 'px-2 ' + _prefix + 'py-3 ' + _prefix + 'mr-2 ' + _prefix + 'border-right ' + _prefix + 'collapsed {{#unless secondary}}' + _prefix + 'invisible{{/unless}}" data-kg-nav="collapse" data-toggle="collapse" href="#collapsed{{_id}}{{collapseId}}" role="button" aria-expanded="false" aria-controls="{{collapseId}}"><span class="fa fa-fw fa-chevron-up"></span></a>{{>img-block _classes="' + _prefix + 'card-image ' + _prefix + 'ml-2 ' + _prefix + 'mr-3"}}<div class="' + _prefix + 'd-flex ' + _prefix + 'flex-fill ' + _prefix + 'align-items-center"><div class="' + _prefix + 'd-flex ' + _prefix + 'flex-column{{#if primary}} ' + _prefix + 'col-7{{/if}}">{{#if _viewUrl}}{{>url-block _classes="" _label=_title _icon=""}}{{else}}{{{_title}}}{{/if}}<span class="' + _prefix + 'd-inline-flex ' + _prefix + 'text-muted">{{{_subtitle}}}</span></div>{{>primary-block}}</div><a href="#" data-kg-nav="{{#if _nav}}{{_nav}}{{else}}go{{/if}}" data-kg-url="{{_url.self}}" class="' + _prefix + 'card-link ' + _prefix + 'btn"><span class="fa fa-fw fa-arrow-circle-right"></span></a></div>{{>listItemSecondary-block}}</div>',
+      listItemSecondary: '{{#if secondary}}<div id="collapsed{{_id}}{{collapseId}}" class="' + _prefix + 'collapse kg-secondary"><div class="' + _prefix + 'd-flex ' + _prefix + 'flex-wrap ' + _prefix + 'py-2 ' + _prefix + 'ml-475 ' + _prefix + 'mr-2 ' + _prefix + 'border-top">{{#each secondary}}<span class="' + _prefix + 'd-flex ' + _prefix + 'flex-fill ' + _prefix + 'mt-1 ' + _prefix + 'mb-2"><span class="' + _prefix + 'text-bold ' + _prefix + 'mr-1">{{translate @root._translate.property ../_type key}}</span><span class="' + _prefix + 'd-inline-block ' + _prefix + 'text-width ' + _prefix + 'text-muted ' + _prefix + 'text-truncate" title="{{val}}">{{>(item) _type=../_type}}</span></span>{{/each}}</div></div>{{/if}}',
+      pagination: '<nav class="kg-pagination ' + _prefix + 'my-3 ' + _prefix + 'pagination ' + _prefix + 'justify-content-center"><span class="kg-paginationPrev ' + _prefix + 'page-item ' + _prefix + 'pagination-nav ' + _prefix + 'disabled"><a class="' + _prefix + 'page-link" href="#" data-kg-nav="prev" tabindex="-1"><span class="fa fa-fw fa-chevron-left"></span> Prev</a></span><span class="kg-paginationList ' + _prefix + 'pagination-pages ' + _prefix + 'd-flex"></span><span class="kg-paginationNext ' + _prefix + 'page-item ' + _prefix + 'pagination-nav"><a class="' + _prefix + 'page-link" href="#" data-kg-nav="next">Next <span class="fa fa-fw fa-chevron-right"></span></a></span></nav>',
+      tabItem: '<a class="' + _prefix + 'nav-link" id="{{_id}}-tab" href="#{{_id}}" data-kg-nav="tab" data-kg-url="{{_url}}" data-kg-total="{{_total}}" data-toggle="tab" role="tab" aria-controls="{{_id}}" aria-selected="false">{{translate @root._translate.relationship _label}} <small class="' + _prefix + 'text-muted">{{_count}}</small></a>',
+      typeItem: '<a href="#" class="' + _prefix + 'list-group-item ' + _prefix + 'd-flex ' + _prefix + 'pb-4 ' + _prefix + 'flex-wrap ' + _prefix + 'flex-column ' + _prefix + 'justify-content-center ' + _prefix + 'align-items-center ' + _prefix + 'text-center" data-kg-nav="rel" data-kg-url="{{_url}}" data-kg-label="{{translate @root._translate.type _label}}"><small class="' + _prefix + 'badge ' + _prefix + 'badge-gray-light ' + _prefix + 'badge-pill ' + _prefix + 'ml-auto ' + _prefix + 'mb-2">{{_count}}</small>{{>icon-block _classes="' + _prefix + 'mb-1 ' + _prefix + 'text-gray-light"}}{{translate @root._translate.type _label}}</a>'
     },
 
     _default: '_defaultTemplate',
@@ -936,7 +936,7 @@
   const Navigation = {
     go: function(box, $trigger, skip) {
       if (!$.isDefined(skip)) skip = false;
-      var type = $trigger.attr('data-fkg-nav'), url = $trigger.attr('data-fkg-url');
+      var type = $trigger.attr('data-kg-nav'), url = $trigger.attr('data-kg-url');
 
       if (type === 'back') {
         Navigation.back(box, $trigger);
@@ -968,7 +968,7 @@
         return false;
       }
 
-      if (box.container.attr('data-fkg-context') === 'fixed') {
+      if (box.container.attr('data-kg-context') === 'fixed') {
         Box.openAutoFromFixed(box, $trigger);
         return;
       }
@@ -1043,17 +1043,17 @@
       if (!last) return;
 
       if (last._url != current._url) {
-        $trigger.attr({'data-fkg-nav': last._model === 'search' ? 'facet' : 'go', 'data-fkg-url': last._url});
+        $trigger.attr({'data-kg-nav': last._model === 'search' ? 'facet' : 'go', 'data-kg-url': last._url});
         Navigation.go(box, $trigger, true);
         Breadcrumb.update(box, box.stackUrl.length);
       } else if (last._type != current._type) {
-        $trigger.attr({'data-fkg-nav': 'rel', 'data-fkg-url': last._type});
+        $trigger.attr({'data-kg-nav': 'rel', 'data-kg-url': last._type});
         Navigation.go(box, $trigger, true);
       } else if (last._tab != current._tab) {
         Tabs.set(box, last._tab);
         $trigger.trigger(Events.name('nav'), [box, Tabs.getUrl(box), 'tab']);
       } else if (last._page != current._page) {
-        $trigger.attr({'data-fkg-nav': 'page', 'data-fkg-url': last._page});
+        $trigger.attr({'data-kg-nav': 'page', 'data-kg-url': last._page});
         Navigation.go(box, $trigger, true);
       }
     },
@@ -1070,7 +1070,7 @@
     },
 
     init: function(box, obj) {
-      box.stackUrl = obj && $(obj).attr('data-fkg-nav') === 'init-go' && box.stackUrl.length ? [box.stackUrl[0]] : [];
+      box.stackUrl = obj && $(obj).attr('data-kg-nav') === 'init-go' && box.stackUrl.length ? [box.stackUrl[0]] : [];
       Breadcrumb.update(box);
     },
 
@@ -1133,7 +1133,7 @@
       const current = parseInt(Url.getPathParams(box.results.url)[Model[box.results.model].pagination.start] || 1), prev = current - box.results.size;
       if (prev > -1) {
         box.paginationPrev.removeClass(_prefix + 'disabled');
-        box.paginationPrev.find('a').attr('data-fkg-url', this.url(box, prev)).removeAttr('disabled');
+        box.paginationPrev.find('a').attr('data-kg-url', this.url(box, prev)).removeAttr('disabled');
       } else {
         box.paginationPrev.addClass(_prefix + 'disabled');
         box.paginationPrev.find('a').attr('disabled', 'disabled');
@@ -1142,7 +1142,7 @@
       const next = current + box.results.size;
       if (next < box.results.total) {
         box.paginationNext.removeClass(_prefix + 'disabled');
-        box.paginationNext.find('a').attr('data-fkg-url', this.url(box, next)).removeAttr('disabled');
+        box.paginationNext.find('a').attr('data-kg-url', this.url(box, next)).removeAttr('disabled');
       } else {
         box.paginationNext.addClass(_prefix + 'disabled');
         box.paginationNext.find('a').attr('disabled', 'disabled');
@@ -1292,7 +1292,7 @@
     backdropShow: _prefix + 'show',
     opened: _prefix + 'modal-open',
     selector: _prefix + 'modal',
-    eventSuffix: 'fkg-modal',
+    eventSuffix: 'kg-modal',
 
     init: function(box) {
       Utils.getElement(this.selector, box.container).on('mouseup.' + this.eventSuffix, function(e) {
@@ -1351,13 +1351,13 @@
   };
 
   const Search = {
-    eventSuffix: 'fkg-search',
+    eventSuffix: 'kg-search',
 
     init: function(box) {
       box.viewSearch.hide();
       if (!box.options.searchUrl) box.searchBox.hide();
       else {
-        box.searchBox.find('[type="button"]').attr('data-fkg-url', box.options.searchUrl);
+        box.searchBox.find('[type="button"]').attr('data-kg-url', box.options.searchUrl);
         box.searchBox.find('input').on('focus', function() {
           $(document).on('keydown.' + Search.eventSuffix, function(e) {
             if ((e.keyCode || e.which) === 13) { // enter
@@ -1439,7 +1439,7 @@
 
       $trigger.addClass(this.active);
       box.list.find($trigger.attr('href')).addClass(this.active).show();
-      Pagination.set(box, $trigger.attr('data-fkg-url'), $trigger.attr('data-fkg-total'), 'graph');
+      Pagination.set(box, $trigger.attr('data-kg-url'), $trigger.attr('data-kg-total'), 'graph');
     },
 
     hide: function(box) {
@@ -1470,7 +1470,7 @@
     },
 
     setData: function(box, url, data) {
-      box.tabs.find('[href="' + url + '"]').attr({'data-fkg-url': data._url, 'data-fkg-total': data._total});
+      box.tabs.find('[href="' + url + '"]').attr({'data-kg-url': data._url, 'data-kg-total': data._total});
     }
   };
 
@@ -1571,7 +1571,7 @@
   };
 
   const Types = {
-    selector: '[data-fkg-nav="rel"]',
+    selector: '[data-kg-nav="rel"]',
     active: _prefix + 'active',
 
     get: function(box) {
@@ -1587,7 +1587,7 @@
     },
 
     set: function(box, url) {
-      const sel = url ? '[data-fkg-url="' + url + '"]' : this.selector + ':first-child';
+      const sel = url ? '[data-kg-url="' + url + '"]' : this.selector + ':first-child';
       this.get(box).removeClass(this.active);
       box.types.find(sel).addClass(this.active);
       box.header.html(Template.render(box, 'listHeader', {title: Types.getLabel(box), desc: 'Discover ' + Types.getLabel(box).toLowerCase() + ' related to "' + Utils.getDetailsTitle(box) + '"'}));
@@ -1690,12 +1690,12 @@
 
     getElementLabel: function(id, $context) {
       const $element = Utils.getElement(id, $context);
-      return $element.attr('data-fkg-label') ? $element.attr('data-fkg-label') : $element.text();
+      return $element.attr('data-kg-label') ? $element.attr('data-kg-label') : $element.text();
     },
 
     getElementUrl: function(id, $context) {
       const $element = Utils.getElement(id, $context);
-      return $element.attr('data-fkg-url') ? $element.attr('data-fkg-url') : $element.attr('href');
+      return $element.attr('data-kg-url') ? $element.attr('data-kg-url') : $element.attr('href');
     },
 
     createElement: function(id, $context, tag, content, attrs, events, forced) {
@@ -1725,11 +1725,11 @@
 
     // -----
     getDetailsTitle: function(box) {
-      return Utils.getElementLabel('fkg-title', box.detail);
+      return Utils.getElementLabel('kg-title', box.detail);
     },
 
     getDetailsUrl: function(box) {
-      return Utils.getElementUrl('fkg-content', box.detail);
+      return Utils.getElementUrl('kg-content', box.detail);
     }
   };
 
