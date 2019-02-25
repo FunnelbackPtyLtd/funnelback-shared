@@ -44,6 +44,16 @@ public class KnowledgeGraphController {
     @Autowired
     private ConfigRepository configRepository;
 
+    private String NAMES_METADATA_CLASS = "FUNkgNodeNames";
+    private String LABEL_METADATA_CLASS = "FUNkgNodeLabel";
+    /**
+     * This query finds all documents which satisfy the most basic criteria for being nodes in
+     * the knowledge graph (i.e. have a label and a name). It's possible that knowledge graph
+     * will later reject them for another reason (in which case you'll be sent to a non-existant
+     * node), but this should suffice for 99+% of cases.
+     */
+    private String KG_NODES_QUERY = NAMES_METADATA_CLASS + ":$++ " + LABEL_METADATA_CLASS + ":$++";
+
     /**
      * <p>Configures the binder to:</p>
      * <ul>
@@ -83,7 +93,7 @@ public class KnowledgeGraphController {
         if (targetUrl == null) {
             // We select some URL from the collection.
             try {
-                targetUrl = sampleCollectionUrlService.getSampleUrl(collection, profileAndView);
+                targetUrl = sampleCollectionUrlService.getSampleUrl(collection, profileAndView, KG_NODES_QUERY);
             } catch (SampleCollectionUrlService.CouldNotFindAnyUrlException e) {
                 response.setContentType("text/plain");
                 response.setStatus(404);
