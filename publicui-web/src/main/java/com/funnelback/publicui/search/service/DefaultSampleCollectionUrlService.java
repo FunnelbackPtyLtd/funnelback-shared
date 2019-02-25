@@ -26,12 +26,12 @@ public class DefaultSampleCollectionUrlService implements SampleCollectionUrlSer
     @Setter(AccessLevel.PACKAGE)
     SearchTransactionProcessor searchTransactionProcessor;
 
-    @Override public String getSampleUrl(Collection collection, ProfileAndView profileAndView) throws CouldNotFindAnyUrlException {
+    @Override public String getSampleUrl(Collection collection, ProfileAndView profileAndView, String query) throws CouldNotFindAnyUrlException {
         SearchQuestion question = new SearchQuestion();
         question.setCollection(collection);
         question.setProfile(profileAndView.asFolderName());
         question.setCurrentProfile(profileAndView.asFolderName());
-        question.setQuery("!" + DefaultSampleCollectionUrlService.class.getSimpleName() + "NullQuery");
+        question.setQuery(query);
         question.getDynamicQueryProcessorOptions().add("-num_ranks=1");
         question.getDynamicQueryProcessorOptions().add("-daat=1");
         question.setLogQuery(Optional.ofNullable(false));

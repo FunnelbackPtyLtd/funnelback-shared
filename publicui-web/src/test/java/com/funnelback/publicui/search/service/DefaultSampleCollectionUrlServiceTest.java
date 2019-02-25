@@ -41,7 +41,7 @@ public class DefaultSampleCollectionUrlServiceTest {
 
         Collection collection = Mockito.mock(Collection.class);
 
-        String url = service.getSampleUrl(collection, new ProfileAndView(new ProfileId("foo"), ProfileView.live));
+        String url = service.getSampleUrl(collection, new ProfileAndView(new ProfileId("foo"), ProfileView.live), "");
 
         Assert.assertEquals("http://expected.com/", url);
     }
