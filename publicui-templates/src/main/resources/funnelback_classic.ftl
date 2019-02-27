@@ -119,16 +119,15 @@
 <#---
     Read a configuration parameter.
 
-    <p>Reads a <code>collection.cfg</code> parameter for the
-    current collection being searched and displays it.
+    <p>Reads a <code>profile.cfg</code> with fallback to read a <code>collection.cfg</code> 
+    parameter for the current collection being searched and displays it.
 
     @nested Name of the parameter.
 -->
 <#macro cfg><#compress>
     <#local key><#nested></#local>
-    <#if key?exists && key != ""
-        && question.collection.configuration.value(key)?exists>
-        ${question.collection.configuration.value(key)}
+    <#if key?? && key != "" && question.currentProfileConfig.get(key)??>
+        ${question.currentProfileConfig.get(key)}
     </#if>
 </#compress></#macro>
 
