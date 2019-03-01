@@ -8,7 +8,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <script src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/es6-promise-4.2.5/es6-promise.auto.min.js"></script>
   <title>Funnelback Knowledge Graph</title>
-  <link rel="stylesheet" href="${ContextPath}/${GlobalResourcesPrefix}thirdparty/font-awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="${ContextPath}/${GlobalResourcesPrefix}thirdparty/font-awesome-5.7.2/css/font-awesome.min.css" />
   <link rel="stylesheet" href="${ContextPath}/${GlobalResourcesPrefix}thirdparty/nprogress-0.2.0/nprogress.min.css" />
   <link rel="stylesheet" href="${ContextPath}/${GlobalResourcesPrefix}css/funnelback.knowledge-graph-2.7.0.min.css" />
   <!--[if lt IE 9]>
