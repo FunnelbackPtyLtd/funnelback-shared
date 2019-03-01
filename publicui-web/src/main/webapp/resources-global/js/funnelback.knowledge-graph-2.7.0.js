@@ -367,7 +367,7 @@
    */
   const Model = {
     _badges: ['resolution', 'status'],
-    _fields: {title: 'title', subtitle: 'subtitle', desc: 'desc', image: 'image', viewUrl: 'url', list: {primary: [], secondary: []}, detail: {primary: [], secondary: []}},
+    _fields: {title: 'title', subtitle: 'subtitle', desc: 'desc', image: 'image', viewUrl: 'id', list: {primary: [], secondary: []}, detail: {primary: [], secondary: []}},
 
     graph: {
       node: {_id: 'node.id', _url: {self: 'links.0.href', types: 'links.1.href', typesLeaf: 'links.2.href'}, _type: 'node.labels.0', _labels: 'node.labels', _fields: 'node.propertyList'},
