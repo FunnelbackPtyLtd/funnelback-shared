@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -8,12 +10,14 @@ import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.anchors.AnchorsFetcher;
 import com.funnelback.publicui.utils.MapUtils;
+import com.google.common.collect.HashMultimap;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -65,7 +69,15 @@ public class ContentOptimiser extends AbstractOutputProcessor {
                             searchTransaction.getQuestion().getCollection());
 
                     log.debug("obtaining content");                    
-                    filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getSelectedDocument(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());
+                    filler.obtainContentBreakdown(comparison, 
+                                                    searchTransaction, 
+                                                    comparison.getSelectedDocument(),
+                                                    anchors,
+                                                    Optional.of(searchTransaction)
+                                                        .map(SearchTransaction::getResponse)
+                                                        .map(SearchResponse::getResultPacket)
+                                                        .map(ResultPacket::getStemmedEquivs)
+                                                        .orElse(HashMultimap.create()));
                     optimiserUrl = comparison.getSelectedDocument().getDisplayUrl(); 
                 }
             } else {

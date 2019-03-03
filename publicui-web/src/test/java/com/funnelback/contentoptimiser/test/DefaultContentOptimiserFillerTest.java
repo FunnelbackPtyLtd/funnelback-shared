@@ -5,13 +5,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
 
 import com.funnelback.contentoptimiser.DefaultRankingFeatureFactory;
 import com.funnelback.contentoptimiser.RankingFeatureFactory;
@@ -19,9 +18,9 @@ import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.contentoptimiser.processors.impl.DefaultContentOptimiserFiller;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureMaxOther;
 import com.funnelback.publicui.xml.XmlParsingException;
@@ -192,6 +191,15 @@ public class DefaultContentOptimiserFillerTest {
         assertEquals(41,comparison.getWeights().get("content"),0.0001);
         assertEquals(14,comparison.getWeights().get("offlink"),0.0001);
         assertEquals(45,comparison.getWeights().get("urllen"),0.0001);
+    }
+    
+    @Test
+    public void consumeResultPacketTestNullResultPacket() {
+        DefaultContentOptimiserFiller f = new DefaultContentOptimiserFiller();
+        ContentOptimiserModel comparison = new ContentOptimiserModel();
+        RankingFeatureFactory hintFactory = new DefaultRankingFeatureFactory();
+        // Just expect no exception
+        f.consumeResultPacket(comparison, null, hintFactory);
     }
     
     private ResultPacket getDefaultTestResultPacket() throws IOException, XmlParsingException {
