@@ -208,6 +208,10 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
     @Override
     public void consumeResultPacket(ContentOptimiserModel comparison, ResultPacket rp,RankingFeatureFactory hintFactory) {
         
+        if(rp == null) {
+            return;
+        }
+        
         // Add weights, create hint objects
         for (Entry<CoolerWeighting, Float> weightEntry :  rp.getCoolerWeights().entrySet()) {
             comparison.getWeights().put(weightEntry.getKey().getName(), weightEntry.getValue() * 100);
