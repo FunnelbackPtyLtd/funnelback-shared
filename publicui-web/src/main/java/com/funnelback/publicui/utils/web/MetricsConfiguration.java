@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
-import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.jmx.JmxReporter;
 import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.funnelback.common.metric.MetricRegistryReporter;
 import com.funnelback.publicui.search.service.ConfigRepository;
