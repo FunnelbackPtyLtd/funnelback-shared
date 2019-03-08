@@ -257,30 +257,10 @@
         <#local returnTo=ContextPath+"/"+question.collection.configuration.value("ui.modern.search_link")+"?"+QueryString />
         <#if question.profile?ends_with("_preview")>
             <div id="funnelback_form_mode" style="background-color: lightblue; ${style}">
-                <span id="publish_link"></span>
-                &middot; <a href="${SearchPrefix}admin/edit-form.cgi?collection=${question.collection.id}&amp;profile=${question.profile}&amp;f=${question.form}.ftl&amp;return_to=${returnTo?url}" title="Edit this form">edit form</a>
+                &middot; <a href="${SearchPrefix}../d/manage/${question.collection.id}:${question.profile?replace("_preview", "")}/files/detail?path=preview%2Ftemplates%2F${question.form}.ftl" title="Edit this form">edit form</a>
                 &middot; <a href="?${changeParam(QueryString, 'profile', question.profile?replace("_preview", ""))?html}" title="View this search with the current live form">switch to live mode</a>
                 | <span title="This form file may be edited before publishing to external search users">preview mode</span> 
             </div>
-            <script>
-                function loadPublishLink() {
-                    jQuery(function() {
-                        jQuery("#publish_link").load("${SearchPrefix}admin/ajax_publish_link.cgi?collection=${question.collection.id}&amp;dir=profile-folder-${question.profile}&amp;f=${question.form}.ftl&amp;mode=publish&amp;return_to=${returnTo?url}");
-                    });
-                }
-                function loadScript(url, c) {
-                    var s = document.createElement('script');
-                    s.type = 'text/javascript';
-                    s.src = url;
-                    if (c) s.onload=c;
-                    document.getElementsByTagName('head')[0].appendChild(s);
-                }
-                if (!($ = window.jQuery)) {
-                    loadScript("${GlobalResourcesPrefix}thirdparty/jquery-3.3.1/jquery.min.js", loadPublishLink);
-                } else {
-                    loadPublishLink();
-                }
-            </script>
         <#else>
             <div id="funnelback_form_mode" style="background-color: lightgreen; ${style}">
                 <a href="?${changeParam(QueryString, 'profile', question.profile+'_preview')?html}" title="View this search with the current preview form">switch to preview mode</a>
