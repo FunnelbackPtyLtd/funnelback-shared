@@ -258,7 +258,7 @@
         <#if question.profile?ends_with("_preview")>
             <div id="funnelback_form_mode" style="background-color: lightblue; ${style}">
                 <span id="publish_link"></span>
-                &middot; <a href="${SearchPrefix}admin/edit-form.cgi?collection=${question.collection.id}&amp;profile=${question.profile}&amp;f=${question.form}.ftl&amp;return_to=${returnTo?url}" title="Edit this form">edit form</a>
+                &middot; <a href="${SearchPrefix}../d/manage/${question.collection.id}:${question.profile?replace("_preview", "")}/files/detail?path=preview%2Ftemplates%2F${question.form}.ftl" title="Edit this form">edit form</a>
                 &middot; <a href="?${changeParam(QueryString, 'profile', question.profile?replace("_preview", ""))?html}" title="View this search with the current live form">switch to live mode</a>
                 | <span title="This form file may be edited before publishing to external search users">preview mode</span> 
             </div>
