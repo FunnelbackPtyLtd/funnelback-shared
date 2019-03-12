@@ -12,7 +12,7 @@ public class TransactionFacetedNavigationConfigHelper {
     /**
      * Updates the search transaction so that the given faceted nav config is used.
      * 
-     * This is usefull as it does it such that:
+     * This is useful as it does it such that:
      * * you don't edit the cached version of config.
      * * you update faceted nav in all places.
      * 

@@ -1,16 +1,17 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation;
 
-import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
 import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_ALL_VALUES;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetValues;
@@ -178,7 +179,7 @@ public abstract class CategoryDefinition {
     public abstract boolean matches(String value, String extraParams);
     
     /**
-     * Tests if the facetSelectionDetails matches this category defintion.
+     * Tests if the facetSelectionDetails matches this category definition.
      * @param facetSelectionDetails
      * @param facetDef The facet definition that this category definition is in.
      * @return

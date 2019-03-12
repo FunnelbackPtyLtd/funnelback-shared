@@ -100,7 +100,7 @@ public class SearchTransaction {
     
     /**
      * Set true when at least one extra search was unable to complete.
-     * <p>This can happen if extra searches take too long to run or if an error occured within
+     * <p>This can happen if extra searches take too long to run or if an error occurred within
      * the extra search.</p>
      */
     @Getter @Setter
