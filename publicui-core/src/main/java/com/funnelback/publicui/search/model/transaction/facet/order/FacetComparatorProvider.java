@@ -69,7 +69,7 @@ public class FacetComparatorProvider {
      * Gets the comparator to use when we are sorting on ALL category values.
      * 
      * This comparator is expected to be able to sort values from all sources
-     * (ie all category definitions). In this case we need to be carefull 
+     * (ie all category definitions). In this case we need to be careful 
      * to ensure that sorting by CATEGORY_DEFINITION_ORDER still works.
      * 
      * @param ordersToSortBy
