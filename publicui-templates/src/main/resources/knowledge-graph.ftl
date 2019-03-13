@@ -33,7 +33,7 @@
       apiBase: window.location.origin,
       collection: '${collectionId}',
       profile: '${profileId}',
-      targetUrl: '${targetUrl?js_string}',
+      <#noautoesc>targetUrl: '${targetUrl?js_string}',</#noautoesc>
       trigger: 'full',
       searchUrl: window.location.origin + '/s/search.json',
     });
