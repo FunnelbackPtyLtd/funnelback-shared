@@ -1,14 +1,11 @@
 package com.funnelback.publicui.security;
 
+import java.security.Permission;
+
 import lombok.Getter;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.security.Permission;
-import java.util.stream.Stream;
-
 /**
+ * NOT USED SEE FUN-12442
  * A security manager which prevents implementation groovy scripts from
  * doing certain things which could cause problems.
  *
@@ -20,6 +17,7 @@ import java.util.stream.Stream;
  * * Accessing the network
  * * Executing other processes
  * * Running for too long (though it's not to clear how we'll achieve that)
+ * 
  */
 public class GroovyScriptSecurityManager  extends SecurityManager {
     @Getter

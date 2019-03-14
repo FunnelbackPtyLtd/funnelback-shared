@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.lifecycle;
 
 import static com.funnelback.config.keys.Keys.FrontEndKeys;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import com.funnelback.publicui.security.GroovyScriptSecurityManager;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
@@ -141,26 +139,11 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
         for (Map.Entry<String, ?> entry: data.entrySet()) {
             binding.setVariable(entry.getKey(), entry.getValue());
         }
+        
         s.setBinding(binding);
-
-        SecurityManager parentSecurityManager = System.getSecurityManager();
-        GroovyScriptSecurityManager groovyScriptSecurityManager = new GroovyScriptSecurityManager(parentSecurityManager);
-
         Object result;
-        try {
-            System.setSecurityManager(groovyScriptSecurityManager);
-
-            result = s.run();
-
-        } catch (SecurityException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            System.setSecurityManager(parentSecurityManager);
-        }
-
-        return result;
+        
+        return s.run();
     }
 
     
