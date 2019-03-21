@@ -194,11 +194,10 @@ public class DefaultConfigRepository implements ConfigRepository {
      */
     private Collection loadCollection(String collectionId) throws IOException {
         log.debug("Loading collection configuration for '"+collectionId+"'");
-        
-        // Sanity check the layout - The parent of the collection's directory should be $SEARCH_HOME/conf
+
         File configFolder = new File(searchHome+File.separator+DefaultValues.FOLDER_CONF).getCanonicalFile();
         File collectionConfigFolder = new File(configFolder, collectionId).getCanonicalFile();
-        if (!(collectionConfigFolder.getParentFile().equals(configFolder))) {
+        if (!isValidCollectionConfigFolder(searchHome, collectionConfigFolder)) {
             log.debug("Collection directory parent '"+collectionConfigFolder.getParentFile()+
                 "' is not Funnelback config directory '"+configFolder+
                 "' for collectionId '"+collectionId+"'");
@@ -257,7 +256,29 @@ public class DefaultConfigRepository implements ConfigRepository {
         
         return c;
     }
-    
+
+    /**
+     * Sanity check the collectionConfigFolder.
+     *
+     * The parent of the collection's directory should be $SEARCH_HOME/conf or it should live under
+     * $SEARCH_HOME/local
+     */
+    public static boolean isValidCollectionConfigFolder(File searchHome, File collectionConfigFolder) throws IOException {
+        File configFolder = new File(searchHome+File.separator+DefaultValues.FOLDER_CONF).getCanonicalFile();
+        if (collectionConfigFolder.getParentFile().equals(configFolder)) {
+            // it's like /opt/funnelback/conf/collection_name
+            return true;
+        }
+
+        File localFolder = new File(searchHome+File.separator+DefaultValues.FOLDER_LOCAL).getCanonicalFile();
+        if (collectionConfigFolder.toPath().startsWith(searchHome+File.separator+DefaultValues.FOLDER_LOCAL)) {
+            // It's like /opt/funnelback/local/implementations/implementation_name/configuration/collections/Se2-WarcRefreshTest
+            return true;
+        }
+
+        return false;
+    }
+
     @RequiredArgsConstructor
     public class SupplyAndCache<T, X extends Exception> {
         private final SupplierWithCE<T, X> objectCreator;
