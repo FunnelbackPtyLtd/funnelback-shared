@@ -1,41 +1,33 @@
 package com.funnelback.publicui.integration;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.hamcrest.core.AllOf;
-import org.hamcrest.core.StringContains;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestName;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.hamcrest.core.StringContains;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.funnelback.common.system.Security;
 import com.funnelback.common.testutils.SearchHomeConfigs;
 import com.funnelback.common.testutils.SearchHomeProvider;
-import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
+import com.funnelback.springmvc.api.config.SharedBetweenContainersHelper;
+import com.funnelback.springmvc.api.config.security.SecurityConfigBase;
 import com.funnelback.springmvc.utils.saml.TokenUtils;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
 import com.google.common.io.Files;
@@ -184,6 +176,10 @@ public class DefaultAdminSecurityIT {
     @Test
     public void testTokenAuth() throws Exception {
         CloseableHttpClient httpclient = HttpClients.custom().build();
+        
+        new SharedBetweenContainersHelper()
+            .getSharedConcurrentHashMap(SecurityConfigBase.USER_SALT_MAP_KEY)
+                .put("admin", "dummyHash");
 
         String token = TokenUtils.makeToken(searchHome, DefaultAdminSecurityIT.SERVER_SECRET, "admin", "dummyHash");
         

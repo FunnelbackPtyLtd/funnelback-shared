@@ -1,7 +1,8 @@
 package com.funnelback.publicui.integration.x509;
 
-import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
+
+import java.io.File;
 
 import javax.naming.NamingException;
 
@@ -17,6 +18,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.springmvc.api.config.SharedBetweenContainersHelper;
 
 /**
  * Starts and stops a Jetty server configured for X.509 client certificate authentication.
@@ -83,7 +85,7 @@ public class X509ConfiguredJettyServer {
         context.setParentLoaderPriority(true);
         context.setServer(server);
         
-        new Resource(null, "java:comp/env/userSaltMap", new ConcurrentHashMap());
+        new Resource(null, SharedBetweenContainersHelper.SHARED_MAP_NAME, new ConcurrentHashMap());
         // Just creating that magically shoves it into some global context
 
         server.setHandler(context);
