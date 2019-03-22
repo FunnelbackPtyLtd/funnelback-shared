@@ -1,16 +1,16 @@
 package com.funnelback.publicui.test.spring;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.naming.InitialContext;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.nio.file.Paths;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,7 +22,6 @@ import com.funnelback.common.config.Files;
 import com.funnelback.common.testutils.SearchHomeConfigs;
 import com.funnelback.common.testutils.SearchHomeFolders;
 import com.funnelback.common.testutils.SearchHomeProvider;
-import com.funnelback.springmvc.api.config.security.SecurityConfigBase;
 
 /**
  * A test intended to ensure that the public UI's spring context (the real one, not the test one)
@@ -62,11 +61,9 @@ public class SpringContextTests {
             modernUIProps.getParentFile().mkdirs();
             modernUIProps.createNewFile();
             
-            InitialContext ic = new InitialContext();
-            ic.createSubcontext("java:/comp/env");
-            new InitialContext().bind(SecurityConfigBase.USER_SALT_MAP_NAME, new ConcurrentHashMap<>());
+            new org.eclipse.jetty.plus.jndi.Resource(null, "java:comp/env/sharedObjectHolder", new ConcurrentHashMap<>());
             
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             throw new RuntimeException("test setup failure, because search home could not be created", e);
         }

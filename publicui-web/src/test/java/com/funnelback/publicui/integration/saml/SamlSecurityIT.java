@@ -1,12 +1,16 @@
 package com.funnelback.publicui.integration.saml;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -23,21 +27,16 @@ import org.hamcrest.core.AllOf;
 import org.hamcrest.core.StringContains;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.rules.TestName;
 import org.springframework.util.SocketUtils;
 
 import com.funnelback.common.testutils.SearchHomeConfigs;
 import com.funnelback.common.testutils.SearchHomeProvider;
 import com.funnelback.publicui.integration.DefaultAdminSecurityIT;
+import com.funnelback.springmvc.api.config.SharedBetweenContainersHelper;
+import com.funnelback.springmvc.api.config.security.SecurityConfigBase;
 import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
 import com.funnelback.springmvc.utils.saml.TokenUtils;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
-import com.google.common.io.Files;
 
 public class SamlSecurityIT {
     protected static DefaultSecurityConfiguredJettyServer server;
@@ -114,7 +113,10 @@ public class SamlSecurityIT {
     @Test
     public void testTokenAuth() throws Exception {
         CloseableHttpClient httpclient = HttpClients.custom().build();
-
+        
+        new SharedBetweenContainersHelper()
+            .getSharedConcurrentHashMap(SecurityConfigBase.USER_SALT_MAP_KEY)
+                .put("admin", "dummyHash");
         String token = TokenUtils.makeToken(searchHome, "test", "admin", "dummyHash");
         
         HttpGet get = new HttpGet(server.getBaseUrl() + "search.html");
