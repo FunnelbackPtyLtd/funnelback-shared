@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.xml.DefaultFacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.AutoRefreshResourceManager;
+import com.funnelback.springmvc.utils.ConfFileService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -34,7 +35,9 @@ public class DefaultConfigRepositoryTranslationsTest {
     @Autowired
     private CacheManager appCacheManager;
     
-
+    @Autowired
+    private ConfFileService fileService;
+    
     /**
      * Create fake SEARCH_HOME in target/
      * as we'll be fiddling with files
@@ -48,6 +51,7 @@ public class DefaultConfigRepositoryTranslationsTest {
         
         resourceManager = new AutoRefreshResourceManager();
         resourceManager.setAppCacheManager(appCacheManager);
+        resourceManager.setConfFileService(fileService);
         // Ensure files are checked for freshness at every access
         resourceManager.setCheckingInterval(-1);
         

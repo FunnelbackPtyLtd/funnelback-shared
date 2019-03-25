@@ -16,6 +16,7 @@
 
     <context:component-scan base-package="com.funnelback.publicui.security,
             com.funnelback.springmvc.api.config.security,
+            com.funnelback.springmvc.api.config.cacheentry,
             com.funnelback.springmvc.service,
             com.funnelback.springmvc.utils,
             com.funnelback.publicui.i18n,
