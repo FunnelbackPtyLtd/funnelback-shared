@@ -1,18 +1,16 @@
 package com.funnelback.publicui.test.search.service.resource;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Properties;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,6 +19,11 @@ import com.funnelback.publicui.test.search.service.config.DefaultConfigRepositor
 import com.funnelback.springmvc.service.resource.AutoRefreshResourceManager;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
+import com.funnelback.springmvc.utils.ConfFileService;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -30,6 +33,9 @@ public class AutoRefreshResourceManagerTest {
     
     @Autowired
     protected CacheManager appCacheManager;
+    
+    @Autowired
+    private ConfFileService fileService;
     
     private Cache cache;
     private AutoRefreshResourceManager manager;
@@ -42,6 +48,7 @@ public class AutoRefreshResourceManagerTest {
         
         manager = new AutoRefreshResourceManager();
         manager.setAppCacheManager(appCacheManager);
+        manager.setConfFileService(fileService);
         // Ensure files are checked for freshness at every access
         manager.setCheckingInterval(-1);
         

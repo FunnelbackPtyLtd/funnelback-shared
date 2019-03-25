@@ -652,7 +652,7 @@ public class DefaultConfigRepository implements ConfigRepository {
 
     @Override
     public ServerConfigReadOnly getServerConfig() {
-        ServerConfigDataReadOnly serverConfigData = resourceManager.loadResource(new ServerConfigDataReadOnlyResource(searchHome, fileService));
+        ServerConfigDataReadOnly serverConfigData = resourceManager.loadResource(new ServerConfigDataReadOnlyResource(searchHome));
         return new DefaultServerConfigReadOnly(serverConfigData);
     }
 
@@ -666,7 +666,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         }
         
         ServiceConfigDataReadOnly serviceConfigData = resourceManager.loadResource(new ServiceConfigDataReadOnlyResource(searchHome,
-                new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView, fileService), null);
+                new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView), null);
         
         if (serviceConfigData == null) {
             throw new ProfileNotFoundException(new CollectionId(collectionId), new ProfileId(profileId), profileView);
@@ -678,7 +678,7 @@ public class DefaultConfigRepository implements ConfigRepository {
     @Override
     public CollectionConfigReadOnly getCollectionConfig(String collectionId) throws CollectionNotFoundException {
         
-        CollectionConfigDataReadOnly indexConfigData = resourceManager.loadResource(new CollectionDataReadOnlyResource(searchHome, collectionId, fileService));
+        CollectionConfigDataReadOnly indexConfigData = resourceManager.loadResource(new CollectionDataReadOnlyResource(searchHome, collectionId));
         
         return new DefaultCollectionConfigReadOnly(indexConfigData, getServerConfig().get(ServerKeys.ENV));
     }

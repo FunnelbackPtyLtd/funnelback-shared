@@ -59,6 +59,7 @@ public abstract class DefaultConfigRepositoryTestBase {
         new File(SEARCH_HOME ,"data/config-repository").mkdirs();
 
         resourceManager = new AutoRefreshResourceManager();
+        resourceManager.setConfFileService(fileService);
         resourceManager.setAppCacheManager(appCacheManager);
         // Ensure files are checked for freshness at every access
         resourceManager.setCheckingInterval(-1);
