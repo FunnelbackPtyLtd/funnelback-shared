@@ -1,13 +1,14 @@
 package com.funnelback.publicui.search.service.resource.impl;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
-import lombok.extern.log4j.Log4j2;
+import java.io.File;
+import java.io.IOException;
 
 import com.funnelback.common.config.ConfigReader;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Parses a Funnelback configuration file and returns the

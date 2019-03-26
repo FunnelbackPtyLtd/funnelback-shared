@@ -35,6 +35,9 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.ServiceId;
+import com.funnelback.common.file.FileService;
+import com.funnelback.common.file.FunnelbackFilePath;
+import com.funnelback.common.file.RestrictedCharactersRelativeDownwardPath;
 import com.funnelback.common.function.SupplierWithCE;
 import com.funnelback.common.groovy.GroovyLoader;
 import com.funnelback.common.profile.ProfileId;
@@ -68,6 +71,7 @@ import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.ResourceManager;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFunnelbackFileResource;
 import com.funnelback.springmvc.service.resource.impl.GroovyCollectionLoaderResource;
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
@@ -493,20 +497,25 @@ public class DefaultConfigRepository implements ConfigRepository {
         return collections;
     }
 
+    private static final RestrictedCharactersRelativeDownwardPath EXECUTABLES_CFG_PATH = 
+        new RestrictedCharactersRelativeDownwardPath(DefaultValues.FOLDER_CONF, Files.EXECUTABLES_CONFIG_FILENAME);
+    
+    /* Key prefix used in caching */
+    private static final String EXECUTABLES_KEY_PREFIX = DefaultConfigRepository.class.getCanonicalName() + "ExecutablesCfg";
+    
     /**
      * Loads the executables config file
      */
-    
     public String getExecutablePath(String exeName) {
-        File executablesCfg = new File(new File(searchHome, DefaultValues.FOLDER_CONF), Files.EXECUTABLES_CONFIG_FILENAME);
+        FunnelbackFilePath executablesCfg = new FunnelbackFilePath(searchHome, EXECUTABLES_CFG_PATH);
         try {
             Map<String, String> m = resourceManager.load(
-                new AbstractSingleFileResource<Map<String, String>>(executablesCfg) {
+                new AbstractSingleFunnelbackFileResource<Map<String, String>>(executablesCfg) {
 
                     @Override
-                    public Map<String, String> parseResourceOnly() throws IOException {
+                    public Map<String, String> parseResourceOnly(FileService fileService) throws IOException {
                         Map<String, String> out = new HashMap<String, String>();
-                        Map<String, String> uncleanMap = ConfigReader.readConfig(file, searchHome);
+                        Map<String, String> uncleanMap = ConfigReader.readConfig(file.toFile(), searchHome);
                         
                         // replace quotes at the ends of the executable names (if any)
                         for(Entry<String,String> entry : uncleanMap.entrySet()) {
@@ -522,8 +531,13 @@ public class DefaultConfigRepository implements ConfigRepository {
                         return out;
                     }
 
+                    @Override
+                    public String keyPrefix() {
+                        return EXECUTABLES_KEY_PREFIX;
+                    }
+
                     
-                }, AbstractSingleFileResource.wrapDefault(null)).getResource();
+                }, AbstractSingleFunnelbackFileResource.wrapDefault(null)).getResource();
             return m.get(exeName);
         } catch (Exception ioe) {
             log.error("Could not load executables config from '"+executablesCfg+"'", ioe);
@@ -566,11 +580,11 @@ public class DefaultConfigRepository implements ConfigRepository {
     }
     
     public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId) {
-        File config = new File(collection.getConfiguration().getConfigDirectory(),
-                EXTRA_SEARCHES_PREFIX + "." + extraSearchId + CFG_SUFFIX);
+        FunnelbackFilePath config = new FunnelbackFilePath(searchHome, 
+            DefaultValues.FOLDER_CONF, collection.getId(), EXTRA_SEARCHES_PREFIX + "." + extraSearchId + CFG_SUFFIX);
         
         try {
-            Properties p = resourceManager.load(new PropertiesResource(config), AbstractSingleFileResource.wrapDefault(null)).getResource();
+            Properties p = resourceManager.load(new PropertiesResource(config), AbstractSingleFunnelbackFileResource.wrapDefault(null)).getResource();
             if (p != null) {
                 return MapUtils.fromProperties(p);
             } else {
