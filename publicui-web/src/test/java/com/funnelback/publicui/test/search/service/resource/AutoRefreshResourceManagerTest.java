@@ -15,9 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.funnelback.common.file.FunnelbackFilePath;
 import com.funnelback.publicui.test.search.service.config.DefaultConfigRepositoryTestBase;
 import com.funnelback.springmvc.service.resource.AutoRefreshResourceManager;
-import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFunnelbackFileResource;
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.utils.ConfFileService;
 
@@ -59,16 +60,16 @@ public class AutoRefreshResourceManagerTest {
     
     @Test
     public void test() throws IOException {
-        File testFile = new File(TEST_DIR, "test.properties");
+        FunnelbackFilePath testFile = new FunnelbackFilePath(TEST_DIR, "test.properties");
         PropertiesResource parser = new PropertiesResource(testFile);
-        Properties props = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
+        Properties props = manager.load(parser, AbstractSingleFunnelbackFileResource.wrapDefault(null)).getResource();
         
         Assert.assertNotNull(props);
         Assert.assertEquals(2, props.size());
         Assert.assertEquals("Test properties file", props.get("title"));
         Assert.assertEquals("42", props.get("value"));
         Assert.assertEquals(1, cache.getSize());
-        Element elt = cache.get(testFile.getAbsolutePath());
+        Element elt = cache.get(parser.getCacheKey());
         Assert.assertNotNull(elt);
         long timestamp = elt.getLatestOfCreationAndUpdateTime();
         
@@ -80,16 +81,16 @@ public class AutoRefreshResourceManagerTest {
         // Second retrieval should yield the same object
         // retrieved from the cache
         manager.load(parser);
-        Assert.assertEquals(elt,  cache.get(testFile.getAbsolutePath()));
+        Assert.assertEquals(elt,  cache.get(parser.getCacheKey()));
         
         // Modifying the properties
-        DefaultConfigRepositoryTestBase.writeAndTouchFuture(testFile,
+        DefaultConfigRepositoryTestBase.writeAndTouchFuture(testFile.toFile(),
                 "title=Updated title" + System.getProperty("line.separator") +
                 "value=42" + System.getProperty("line.separator") +
                 "second.value=678" + System.getProperty("line.separator"));
         
-        Properties updated = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
-        Element newElt = cache.get(testFile.getAbsolutePath());
+        Properties updated = manager.load(parser, AbstractSingleFunnelbackFileResource.wrapDefault(null)).getResource();
+        Element newElt = cache.get(parser.getCacheKey());
         Assert.assertNotNull(newElt);
         Assert.assertTrue(newElt.getLatestOfCreationAndUpdateTime() + " should be > " + timestamp, newElt.getLatestOfCreationAndUpdateTime() > timestamp);
         Assert.assertEquals(elt,  newElt);
@@ -102,68 +103,68 @@ public class AutoRefreshResourceManagerTest {
     
     @Test
     public void testDeleteFile() throws IOException {
-        File testFile = new File(TEST_DIR, "test.properties");
+        FunnelbackFilePath testFile = new FunnelbackFilePath(TEST_DIR, "test.properties");
         PropertiesResource parser = new PropertiesResource(testFile);
-        Properties props = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
+        Properties props = manager.load(parser, AbstractSingleFunnelbackFileResource.wrapDefault(null)).getResource();
         
         Assert.assertNotNull(props);
         Assert.assertEquals(2, props.size());
         Assert.assertEquals("Test properties file", props.get("title"));
         Assert.assertEquals("42", props.get("value"));
         
-        testFile.delete();
+        testFile.toFile().delete();
         
         try { Thread.sleep(25); }
         catch (InterruptedException ie) { }
         
-        props = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
+        props = manager.load(parser, AbstractSingleFunnelbackFileResource.wrapDefault(null)).getResource();
         
         Assert.assertNull(props);
         Assert.assertEquals(0, cache.getSize());
         
-        DefaultConfigRepositoryTestBase.writeAndTouchFuture(testFile,
+        DefaultConfigRepositoryTestBase.writeAndTouchFuture(testFile.toFile(),
                 "title=New title" + System.getProperty("line.separator") +
                 "value=42" + System.getProperty("line.separator") +
                 "new.value=123" + System.getProperty("line.separator"));
         
-        Properties updated = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
+        Properties updated = manager.load(parser, AbstractSingleFunnelbackFileResource.wrapDefault(null)).getResource();
         Assert.assertNotSame(props, updated);
         Assert.assertEquals(3, updated.size());
         Assert.assertEquals("New title", updated.get("title"));
         Assert.assertEquals("42", updated.get("value"));
         Assert.assertEquals("123", updated.get("new.value"));
         Assert.assertEquals(1, cache.getSize());
-        Assert.assertNotNull(cache.get(testFile.getAbsolutePath()));
+        Assert.assertNotNull(cache.get(parser.getCacheKey()));
     }
     
     @Test
     public void testNonExistentFile() throws IOException {
-        File testFile = new File("non", "existent");
+        FunnelbackFilePath testFile = new FunnelbackFilePath(TEST_DIR, "non", "existent");
         Assert.assertNull(manager.load(new PropertiesResource(testFile)));
     }
     
     @Test
     public void testCreateFile() throws IOException {
-        File sourceFile = new File(TEST_DIR, "test.properties");
-        File testFile = new File(TEST_DIR, "test-new.properties");
-        
+        FunnelbackFilePath sourceFile = new FunnelbackFilePath(TEST_DIR, "test.properties");
+        FunnelbackFilePath testFile = new FunnelbackFilePath(TEST_DIR, "test-new.properties");
+       
         PropertiesResource parser = new PropertiesResource(testFile);
-        Properties props = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
+        Properties props = manager.load(parser, AbstractSingleFunnelbackFileResource.wrapDefault(null)).getResource();
         
         Assert.assertNull(props);
         Assert.assertEquals(0, cache.getSize());
         
         // Create the file
-        FileUtils.copyFile(sourceFile, testFile);
+        FileUtils.copyFile(sourceFile.toFile(), testFile.toFile());
         
-        props = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
+        props = manager.load(parser, AbstractSingleFunnelbackFileResource.wrapDefault(null)).getResource();
         
         Assert.assertNotNull(props);
         Assert.assertEquals(2, props.size());
         Assert.assertEquals("Test properties file", props.get("title"));
         Assert.assertEquals("42", props.get("value"));
         Assert.assertEquals(1, cache.getSize());
-        Element elt = cache.get(testFile.getAbsolutePath());
+        Element elt = cache.get(parser.getCacheKey());
         Assert.assertNotNull(elt);
     }
 }
