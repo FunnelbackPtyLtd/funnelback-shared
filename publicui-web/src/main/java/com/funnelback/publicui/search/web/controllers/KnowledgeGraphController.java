@@ -52,7 +52,7 @@ public class KnowledgeGraphController {
      * will later reject them for another reason (in which case you'll be sent to a non-existant
      * node), but this should suffice for 99+% of cases.
      */
-    private String KG_NODES_QUERY = NAMES_METADATA_CLASS + ":$++ " + LABEL_METADATA_CLASS + ":$++";
+    private String KG_NODES_QUERY = "|" + NAMES_METADATA_CLASS + ":$++ |" + LABEL_METADATA_CLASS + ":$++";
 
     /**
      * <p>Configures the binder to:</p>
