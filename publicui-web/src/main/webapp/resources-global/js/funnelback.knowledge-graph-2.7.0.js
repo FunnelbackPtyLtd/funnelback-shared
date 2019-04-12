@@ -40,6 +40,7 @@
     searchUrl: 's/search.json',
     searchParams: {
       SF: '[^(?i)(?!Fun).*,FUNkgNodeLabel]',
+      query_sand: '|FUNkgNodeLabel:$++ |FUNkgNodeNames:$++',
     },
     iconPrefix: 'fa fa-fw fa-',
     trigger: 'button', // [button|fixed|full]
@@ -445,6 +446,10 @@
       if (view === 'search') {
         if (data._type) data._type = data._type.toLowerCase();
       }
+    },
+
+    summary: function(box, data, view) {
+      if (data._query) data._query = data._query.replace(box.options.searchParams.query_sand, '');
     }
   }
 
@@ -616,6 +621,7 @@
       });
 
       Dropdown.init(box);
+      Search.init(box);
       TabsScroller.init(box);
 
       if (box.view === 'auto') Modal.init(box);
