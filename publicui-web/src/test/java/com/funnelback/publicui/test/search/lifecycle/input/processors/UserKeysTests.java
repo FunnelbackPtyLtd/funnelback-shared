@@ -1,24 +1,26 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import net.sf.ehcache.CacheManager;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.system.EnvironmentVariableException;
+import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.UserKeys;
@@ -28,6 +30,8 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockUserKeysMapper;
+
+import net.sf.ehcache.CacheManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -44,12 +48,18 @@ public class UserKeysTests {
     
     private UserKeys processor;
     
+    File searchHome = new File("src/test/resources/dummy-search_home/");
+    
     @Before
     public void before() {
         processor = new UserKeys();
         processor.setI18n(i18n);
         processor.setBeanFactory(beanFactory);
         processor.setAppCacheManager(appCacheManager);
+        
+        if(System.getProperty(Config.SYSPROP_INSTALL_DIR) == null) {
+            System.setProperty(Config.SYSPROP_INSTALL_DIR, searchHome.getAbsolutePath());
+        }
     }
     
     @Test
@@ -62,12 +72,12 @@ public class UserKeysTests {
         
         // No collection
         SearchQuestion question = new SearchQuestion();
-        processor.processInput(new SearchTransaction(question, null));        
+        processor.processInput(new SearchTransaction(question, null)); 
     }
 
     @Test
     public void testCustomMockPlugin() throws InputProcessorException, FileNotFoundException, EnvironmentVariableException {
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy")
+        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")
             .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER,
                     MockUserKeysMapper.class.getName()));
         
@@ -84,7 +94,7 @@ public class UserKeysTests {
     
     @Test
     public void testShippedPlugin() throws InputProcessorException, FileNotFoundException, EnvironmentVariableException {
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy").setValue(
+        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy").setValue(
                 Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "MasterKey"));
 
         SearchQuestion question = new SearchQuestion();
@@ -100,7 +110,7 @@ public class UserKeysTests {
     @Test
     public void testNoSecurityPlugin() throws FileNotFoundException, EnvironmentVariableException,
             InputProcessorException {
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy").setValue(
+        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy").setValue(
                 Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, null));
 
         SearchQuestion question = new SearchQuestion();
@@ -120,7 +130,7 @@ public class UserKeysTests {
     @Test
     public void testInvalidClass() throws FileNotFoundException, EnvironmentVariableException,
             InputProcessorException {
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy").setValue(
+        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy").setValue(
                 Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "InvalidPlugin"));
 
         SearchQuestion question = new SearchQuestion();
@@ -136,8 +146,8 @@ public class UserKeysTests {
     }
     
     @Test
-    public void testCacheDisabledByDefault() throws InputProcessorException {
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy").setValue(
+    public void testCacheDisabledByDefault() throws Exception {
+        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy").setValue(
             Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, RandomMapper.class.getName()));
 
         SearchQuestion question = new SearchQuestion();
@@ -166,8 +176,8 @@ public class UserKeysTests {
     }
     
     @Test
-    public void testCache() throws InputProcessorException {
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy")
+    public void testCache() throws Exception {
+        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")
             .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, RandomMapper.class.getName())
             .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER_CACHE_SECONDS, "3600"));
 

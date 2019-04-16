@@ -6,6 +6,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
@@ -45,7 +47,8 @@ public class FacetedNavigationWhiteBlackListTest {
         sr.getFacets().add(f);
         
         SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        File searchHome = new File("src/test/resources/dummy-search_home/");
+        sq.setCollection(new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")));
         st = new SearchTransaction(sq, sr);
         
         processor = new FacetedNavigationWhiteBlackList();
