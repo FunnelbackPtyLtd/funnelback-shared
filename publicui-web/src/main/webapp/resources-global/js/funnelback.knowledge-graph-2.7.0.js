@@ -1645,7 +1645,7 @@
       var i, len, pathParams = {};
       for (i = 0, len = params.length; i < len; i++) {
         const pair = params[i].split('=', 2);
-        pathParams[pair[0]] = pair.length == 1 ? '' : decodeURIComponent(pair[1].replace(/\+/g, ' '));
+        pathParams[decodeURIComponent(pair[0])] = pair.length == 1 ? '' : decodeURIComponent(pair[1].replace(/\+/g, ' '));
       }
       return pathParams;
     },
