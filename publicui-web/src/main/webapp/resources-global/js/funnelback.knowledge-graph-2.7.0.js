@@ -1645,7 +1645,7 @@
       var i, len, pathParams = {};
       for (i = 0, len = params.length; i < len; i++) {
         const pair = params[i].split('=', 2);
-        pathParams[decodeURIComponent(pair[0])] = pair.length == 1 ? '' : decodeURIComponent(pair[1].replace(/\+/g, ' '));
+        pathParams[pair[0].decodeUriParam()] = pair.length == 1 ? '' : pair[1].decodeUriParam();
       }
       return pathParams;
     },
@@ -1867,6 +1867,7 @@
   $.dataVals  = function(obj, key) { var parts = key.split('.'), key = parts.shift(); if (parts.length) { for (var i = 0, len = parts.length; i < len; i++) { obj = obj[key] || {}; key = parts[i]; } } return obj[key]; }
 
   String.prototype.capitalize = function() { return this.charAt(0).toUpperCase() + this.slice(1); }
+  String.prototype.decodeUriParam = function() { return decodeURIComponent((this + '').replace(/\+/g, '%20')); }
   String.prototype.endsWithIndexOf = function(suffix) { return this.indexOf(suffix, this.length - suffix.length) !== -1; }
 
   if (typeof Object.assign != 'function') { // polyfill of Object.assign to work in IE
