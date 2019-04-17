@@ -1,14 +1,9 @@
 package com.funnelback.publicui.search.lifecycle.input.processors.userkeys;
 
-import groovy.lang.Script;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,6 +14,10 @@ import com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
+import groovy.lang.Script;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * {@link UserKeysMapper} that delegates fetching the keys to
@@ -37,7 +36,7 @@ public class GroovyMapper implements UserKeysMapper {
     public List<String> getUserKeys(Collection collection, SearchTransaction transaction) {
         String className = transaction.getQuestion().getCollection()
             .getConfiguration().value(Keys.SecurityEarlyBinding.GROOVY_CLASS);
-        if (className == null) {
+        if (className == null || className.isEmpty()) {
             throw new IllegalArgumentException(i18n.tr("inputprocessor.userkeys.groovy.undefined",
                 Keys.SecurityEarlyBinding.GROOVY_CLASS));
         }

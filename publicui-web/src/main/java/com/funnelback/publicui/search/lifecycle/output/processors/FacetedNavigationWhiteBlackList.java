@@ -2,8 +2,6 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.util.List;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang3.ArrayUtils;
@@ -19,6 +17,8 @@ import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * <p>Applies white and black list to faceted navigation categories.</p>
@@ -61,11 +61,13 @@ public class FacetedNavigationWhiteBlackList extends AbstractOutputProcessor {
     }
 
     private String[] getCombinedList(final String list1, final String list2) {
-        if (list1 == null && list2 == null) {
+        boolean list1NullOrEmpty = list1 == null || list1.isEmpty();
+        boolean list2NullOrEmpty = list2 == null || list2.isEmpty();
+        if (list1NullOrEmpty && list2NullOrEmpty) {
             return new String[0];
-        } else if (list1 == null) {
+        } else if (list1NullOrEmpty) {
             return list2.toLowerCase().split(SEP);
-        } else if (list2 == null) {
+        } else if (list2NullOrEmpty) {
             return list1.toLowerCase().split(SEP);
         } else {
             return (String[]) ArrayUtils.addAll(

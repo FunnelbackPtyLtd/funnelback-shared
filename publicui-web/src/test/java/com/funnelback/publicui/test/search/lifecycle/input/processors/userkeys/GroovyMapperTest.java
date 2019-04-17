@@ -1,16 +1,20 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors.userkeys;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.i18n.I18n;
@@ -19,6 +23,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
+// This test needs search home to be defined on the environment.
 public class GroovyMapperTest {
 
     private static final File script = new File("src/test/resources/dummy-search_home/lib/java/groovy/com/funnelback/test/GroovyMapper.groovy");
@@ -27,7 +32,7 @@ public class GroovyMapperTest {
     private SearchTransaction transaction;
     
     @Before
-    public void before() {
+    public void before() throws FileNotFoundException {
         ResourceBundleMessageSource messages = new ResourceBundleMessageSource();
         messages.setUseCodeAsDefaultMessage(true);
         
@@ -37,11 +42,16 @@ public class GroovyMapperTest {
         mapper.setI18n(i18n);
         
         transaction = new SearchTransaction(new SearchQuestion(), null);
+        File searchHome = new File("src/test/resources/dummy-search_home/");
         transaction.getQuestion().setCollection(new Collection("dummy",
-            new NoOptionsConfig("dummy")
+            new NoOptionsConfig(searchHome, "dummy")
                 .setValue(Keys.SecurityEarlyBinding.GROOVY_CLASS, "com.funnelback.test.GroovyMapper")));
         
         script.getParentFile().mkdirs();
+        
+        if(System.getProperty(Config.SYSPROP_INSTALL_DIR) == null) {
+            System.setProperty(Config.SYSPROP_INSTALL_DIR, searchHome.getAbsolutePath());
+        }
     }
     
     @After
