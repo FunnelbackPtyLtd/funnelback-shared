@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -102,7 +103,7 @@ public class AccessRestrictionInterceptorTests {
 
     @Test
     public void testNoRestriction() throws Exception {
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of(DefaultValues.NO_RESTRICTION));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, DefaultValues.NO_RESTRICTION);
         Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Response status should be unchanged", -1, response.getStatus());
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
@@ -110,7 +111,7 @@ public class AccessRestrictionInterceptorTests {
 
     @Test
     public void testNoAccessNoAlternate() throws Exception {
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of(DefaultValues.NO_ACCESS));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, DefaultValues.NO_ACCESS);
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.empty());
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
@@ -131,7 +132,7 @@ public class AccessRestrictionInterceptorTests {
         
         Mockito.when(configRepository.getServiceConfig(COLLECTION_ID, "_default")).thenReturn(testServiceConfig);
         
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of(DefaultValues.NO_ACCESS));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, DefaultValues.NO_ACCESS);
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.empty());
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
@@ -142,7 +143,7 @@ public class AccessRestrictionInterceptorTests {
     @Test
     public void testEmptyAccessNoAlternate() throws Exception {
         // This is what currently actually happens, as access_alternate is set to blank in collection.cfg.default
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of(DefaultValues.NO_ACCESS));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, DefaultValues.NO_ACCESS);
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.of(""));
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
@@ -152,7 +153,7 @@ public class AccessRestrictionInterceptorTests {
 
     @Test
     public void testNoAccessAccessAlternate() throws Exception {
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of(DefaultValues.NO_ACCESS));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, DefaultValues.NO_ACCESS);
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.of("alternate_collection"));
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertTrue("Redirect URL should point to alternate collection", response.getRedirectedUrl().contains(RequestParameters.COLLECTION + "=alternate_collection"));
@@ -161,7 +162,7 @@ public class AccessRestrictionInterceptorTests {
 
     @Test
     public void testIPBasedRestrictionAllowedIp() throws Exception {
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of("1.2.3.4/8"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, "1.2.3.4/8");
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.empty());
         Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
@@ -169,7 +170,7 @@ public class AccessRestrictionInterceptorTests {
 
     @Test
     public void testIPBasedRestrictionNotAllowedIp() throws Exception {
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of("10.7.6.5/8"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, "10.7.6.5/8");
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
         Assert.assertEquals("access.profile.denied", response.getContentAsString());
@@ -179,20 +180,20 @@ public class AccessRestrictionInterceptorTests {
 
     @Test
     public void testHostnameBasedRestriction() throws Exception {
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of("host.com"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, "host.com");
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.empty());
         Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
         response = new MockHttpServletResponse();
 
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of("bad.com"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, "bad.com");
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
         Assert.assertEquals("access.profile.denied", response.getContentAsString());
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
         response = new MockHttpServletResponse();
 
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of("remote"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, "remote");
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
         Assert.assertEquals("access.profile.denied", response.getContentAsString());
@@ -218,7 +219,7 @@ public class AccessRestrictionInterceptorTests {
      */
     @Test
     public void testOldIPRangeStyleUsed() throws Exception{
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of("1.2.3.4"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, "1.2.3.4");
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
         Assert.assertEquals("access.profile.denied", response.getContentAsString());
@@ -229,7 +230,7 @@ public class AccessRestrictionInterceptorTests {
     public void testGetConnectingIp() throws Exception {
         request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "127.0.0.1,150.203.239.15,10.7.6.17");
         testServiceConfig.set(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR, true);
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Optional.of("10.7.6.0/24"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Arrays.asList("10.7.6.0/24"));
         Assert.assertEquals("150.203.239.15", 
                 interceptor.getConnectingIp(request, testServiceConfig));
         
@@ -239,7 +240,7 @@ public class AccessRestrictionInterceptorTests {
     public void testGetConnectingIpUseConnectingIP() throws Exception {
         request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "10.7.6.17");
         testServiceConfig.set(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR, true);
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Optional.of("10.7.6.0/24"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Arrays.asList("10.7.6.0/24"));
         Assert.assertEquals("1.2.3.4", 
                 interceptor.getConnectingIp(request, testServiceConfig));
     }
@@ -248,7 +249,7 @@ public class AccessRestrictionInterceptorTests {
     public void testGetConnectingIpPreferConnecxtingIP() throws Exception {
         request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "10.7.6.17,150.203.239.15");
         testServiceConfig.set(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR, false);
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Optional.of("10.7.6.0/24"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Arrays.asList("10.7.6.0/24"));
         Assert.assertEquals("1.2.3.4", 
                 interceptor.getConnectingIp(request, testServiceConfig));
     }
@@ -257,9 +258,9 @@ public class AccessRestrictionInterceptorTests {
     public void testXForwardedForAllowed() throws Exception {
         request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "127.0.0.1,150.203.239.15,10.7.6.17");
         testServiceConfig.set(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR, true);
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Optional.of("10.7.6.0/24"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Arrays.asList("10.7.6.0/24"));
         
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of("150.203.239.0/24"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, "150.203.239.0/24");
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.empty());
         Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
@@ -270,9 +271,9 @@ public class AccessRestrictionInterceptorTests {
     public void testXForwardedForBlocked() throws Exception {
         request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "127.0.0.1,150.203.239.15,10.7.6.17");
         testServiceConfig.set(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR, true);
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Optional.of("10.7.6.0/24"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Arrays.asList("10.7.6.0/24"));
         
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of("100.100.239.0/24"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, "100.100.239.0/24");
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
         Assert.assertEquals("access.profile.denied", response.getContentAsString());
@@ -283,7 +284,7 @@ public class AccessRestrictionInterceptorTests {
     public void testGetConnectingIpXForwardedForEmpty() throws Exception {
         request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "");
         testServiceConfig.set(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR, false);
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Optional.of("10.7.6.0/24"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Arrays.asList("10.7.6.0/24"));
         Assert.assertEquals("1.2.3.4", 
                 interceptor.getConnectingIp(request, testServiceConfig));
     }
@@ -292,9 +293,9 @@ public class AccessRestrictionInterceptorTests {
     public void testXForwardedAllowedButUsedConnectingIP() throws Exception {
         request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "127.0.0.1,150.203.239.15,10.7.6.17");
         testServiceConfig.set(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR, true);
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Optional.of("10.7.6.0/24,127.0.0.1/8,150.203.239.15/8"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Arrays.asList("10.7.6.0/24,127.0.0.1/8,150.203.239.15/8".split(",")));
         
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of("1.2.3.4/24"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, "1.2.3.4/24");
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.empty());
         Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
@@ -304,9 +305,9 @@ public class AccessRestrictionInterceptorTests {
     public void testXForwardedAllowedButUsedConnectingIP2() throws Exception {
         request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "150.203.238.14,150.203.239.15");
         testServiceConfig.set(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR, true);
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Optional.of("150.203.239.0/24,150.203.238.0/24"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES, Arrays.asList("150.203.239.0/24,150.203.238.0/24".split(",")));
         
-        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, Optional.of("150.203.238.0/24"));
+        testServiceConfig.set(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION, "150.203.238.0/24");
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.empty());
         request.setRemoteAddr("127.0.0.1");
         Assert.assertFalse("Intercepter should block", interceptor.preHandle(request, response, null));

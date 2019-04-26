@@ -1,30 +1,30 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.DefaultServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.config.data.InMemoryConfigData;
 import com.funnelback.config.data.environment.NoConfigEnvironment;
-import static com.funnelback.config.keys.Keys.FrontEndKeys;
-import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixCacheAndClickLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -54,7 +54,7 @@ public class FixCacheAndClickLinksTests {
     @SneakyThrows
     private SearchTransaction getTestSearchTransaction(Boolean clickTracking) {
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
-        serviceConfig.set(FrontEndKeys.ModernUi.CLICK_LINK, Optional.of("CLICK_LINK"));
+        serviceConfig.set(FrontEndKeys.ModernUi.CLICK_LINK, "CLICK_LINK");
         serviceConfig.set(FrontEndKeys.CLICK_TRACKING, clickTracking);
 
         Profile profile = new Profile();

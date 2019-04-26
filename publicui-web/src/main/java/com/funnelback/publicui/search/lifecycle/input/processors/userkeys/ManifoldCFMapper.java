@@ -27,7 +27,7 @@ public class ManifoldCFMapper extends AbstractManifoldCFMapper {
      * I'm not sure if there is some more principled way to do this, but if there is we should
      * do that instead.
      */
-    protected String getFullUsername(SearchTransaction transaction) {
+    public String getFullUsername(SearchTransaction transaction) {
         String remoteUser = transaction.getQuestion().getInputParameterMap().get("REMOTE_USER");
         
         String[] domainAndUser = remoteUser.split("\\\\");

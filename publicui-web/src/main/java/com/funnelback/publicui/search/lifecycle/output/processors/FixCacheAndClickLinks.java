@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import static com.funnelback.config.keys.Keys.FrontEndKeys;
+import static com.funnelback.config.keys.Keys.ServerKeys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,6 @@ import java.net.URLEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
@@ -177,7 +177,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
     @SneakyThrows(UnsupportedEncodingException.class)
     private StringBuffer buildGenericClickTrackingUrl(SearchQuestion question, String url, String indexUrl) {
         StringBuffer out = new StringBuffer()
-        .append(question.getCurrentProfileConfig().get(FrontEndKeys.ModernUi.CLICK_LINK).get())
+        .append(question.getCurrentProfileConfig().get(FrontEndKeys.ModernUi.CLICK_LINK))
         .append("?").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
         .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(url, "UTF-8"));
         
