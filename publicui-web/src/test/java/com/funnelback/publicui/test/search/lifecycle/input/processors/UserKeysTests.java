@@ -48,7 +48,7 @@ public class UserKeysTests {
     
     private UserKeys processor;
     
-    File searchHome = new File("src/test/resources/dummy-search_home/");
+    private final File searchHome = new File("src/test/resources/dummy-search_home/");
     
     @Before
     public void before() {
@@ -78,8 +78,9 @@ public class UserKeysTests {
     @Test
     public void testCustomMockPlugin() throws InputProcessorException, FileNotFoundException, EnvironmentVariableException {
         Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")
-            .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER,
-                    MockUserKeysMapper.class.getName()));
+            .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "Groovy")
+            .setValue(Keys.SecurityEarlyBinding.GROOVY_CLASS,MockUserKeysMapper.class.getName())
+            );
         
     
         SearchQuestion question = new SearchQuestion();
@@ -130,8 +131,10 @@ public class UserKeysTests {
     @Test
     public void testInvalidClass() throws FileNotFoundException, EnvironmentVariableException,
             InputProcessorException {
-        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "InvalidPlugin"));
+        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")
+            .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "Groovy")
+            .setValue(Keys.SecurityEarlyBinding.GROOVY_CLASS, "InvalidPlugin")
+            );
 
         SearchQuestion question = new SearchQuestion();
         question.setCollection(c);
@@ -147,8 +150,10 @@ public class UserKeysTests {
     
     @Test
     public void testCacheDisabledByDefault() throws Exception {
-        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy").setValue(
-            Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, RandomMapper.class.getName()));
+        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")
+            .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "Groovy")
+            .setValue(Keys.SecurityEarlyBinding.GROOVY_CLASS, RandomMapper.class.getName())
+            );
 
         SearchQuestion question = new SearchQuestion();
         // Need a user to use as a cache key
@@ -178,7 +183,8 @@ public class UserKeysTests {
     @Test
     public void testCache() throws Exception {
         Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")
-            .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, RandomMapper.class.getName())
+            .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "Groovy")
+            .setValue(Keys.SecurityEarlyBinding.GROOVY_CLASS, RandomMapper.class.getName())
             .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER_CACHE_SECONDS, "3600"));
 
         SearchQuestion question = new SearchQuestion();

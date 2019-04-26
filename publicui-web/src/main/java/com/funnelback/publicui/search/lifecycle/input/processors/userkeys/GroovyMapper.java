@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.utils.ClassUtils;
@@ -30,6 +31,8 @@ public class GroovyMapper implements UserKeysMapper {
     @Autowired
     @Setter private I18n i18n;
     
+    @Autowired
+    @Setter private AutowireCapableBeanFactory beanFactory;
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
@@ -41,14 +44,19 @@ public class GroovyMapper implements UserKeysMapper {
                 Keys.SecurityEarlyBinding.GROOVY_CLASS));
         }
         
-        Class<Script> scriptClass = (Class<Script>) ClassUtils.forName(className, this.getClass());
-
+        Class<?> scriptClass = (Class<?>) ClassUtils.forName(className, this.getClass());
+        
+        if(UserKeysMapper.class.isAssignableFrom(scriptClass)) {
+            UserKeysMapper mapper = (UserKeysMapper) beanFactory.createBean(scriptClass);
+            return mapper.getUserKeys(collection, transaction);
+        }
+        
         try {
             Map<String, Object> data = new HashMap<>();
             data.put(Hook.SEARCH_TRANSACTION_KEY, transaction);
             data.put(Hook.COLLECTION_KEY, collection);
             
-            Object o = GenericHookScriptRunner.runScript(scriptClass, data);
+            Object o = GenericHookScriptRunner.runScript((Class<Script>) scriptClass, data);
             
             if (o == null) {
                 // No keys
@@ -71,6 +79,7 @@ public class GroovyMapper implements UserKeysMapper {
             log.error("Error while executing Groovy user to key mapper", t);
             return new ArrayList<String>();
         }
+        
     }
 
 }

@@ -1,31 +1,32 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors.userkeys;
 
-import java.io.FileNotFoundException;
-
-import net.sf.ehcache.CacheManager;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.UserKeys;
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.MasterKeyMapper;
-import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.MetaMapper;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
+
+import net.sf.ehcache.CacheManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -45,6 +46,8 @@ public class MetaMapperTests {
     
     private UserKeys processor;
     
+    private final File searchHome = new File("src/test/resources/dummy-search_home");
+    
     @Before
     public void before() throws FileNotFoundException, EnvironmentVariableException {
         processor = new UserKeys();
@@ -52,18 +55,21 @@ public class MetaMapperTests {
         processor.setBeanFactory(beanFactory);
         processor.setAppCacheManager(appCacheManager);
         
-        configRepository.addCollection(new Collection("sub1", new NoOptionsConfig("dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MasterKeyMapper.class.getName())));
-        configRepository.addCollection(new Collection("sub2", new NoOptionsConfig("dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MasterKeyMapper.class.getName())));
+        configRepository.addCollection(new Collection("sub1", new NoOptionsConfig(searchHome, "dummy")
+                .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "MasterKey")
+            ));
+        configRepository.addCollection(new Collection("sub2", new NoOptionsConfig(searchHome, "dummy")
+                .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "MasterKey")
+                ));
 
 
     }
 
     @Test
     public void testNotSetToMeta() throws InputProcessorException, FileNotFoundException, EnvironmentVariableException {
-        Collection meta = new Collection("meta", new NoOptionsConfig("dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MasterKeyMapper.class.getName()));
+        Collection meta = new Collection("meta", new NoOptionsConfig(searchHome, "dummy")
+                .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "MasterKey")
+                );
         meta.setMetaComponents(new String[] {"sub1", "sub2"});
         
         SearchQuestion question = new SearchQuestion();
@@ -78,9 +84,9 @@ public class MetaMapperTests {
     
     @Test
     public void testSetToMeta() throws InputProcessorException, FileNotFoundException, EnvironmentVariableException {
-        Collection meta = new Collection("meta", new NoOptionsConfig("dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MetaMapper.class.getName())
-                .setValue(Keys.COLLECTION_TYPE, Type.meta.toString()));
+        Collection meta = new Collection("meta", new NoOptionsConfig(searchHome, "dummy")
+            .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "Meta")
+            .setValue(Keys.COLLECTION_TYPE, Type.meta.toString()));
         meta.setMetaComponents(new String[] {"sub1", "sub2"});
         configRepository.addCollection(meta);
         
