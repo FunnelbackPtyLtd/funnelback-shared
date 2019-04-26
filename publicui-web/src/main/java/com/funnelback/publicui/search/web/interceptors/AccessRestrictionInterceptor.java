@@ -113,47 +113,43 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
                                                         + profileId + "' profile which is expected to exist.");
             }
             
-            if (serviceConfig.get(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION).isPresent()) {
-                String accessRestriction = serviceConfig.get(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION).get();
-                log.trace(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction + "' for collection '" + collectionId + ":" + profileId + "'");
-                if (DefaultValues.NO_RESTRICTION.equals(accessRestriction)) {
-                    log.debug("Access restriction explicitely disabled. Granting access to " + collectionId + ":" + profileId);
-                    return true;
-                } else if (DefaultValues.NO_ACCESS.equals(accessRestriction)) {
-                    log.debug("Access restriction expliciltely set to " + DefaultValues.NO_ACCESS + "for " + collectionId + ":" + profileId + ". Denying access");
-                    denyAccess(request, response, serviceConfig, collectionId + ":" + profileId);
-                    return false;
-                } else {
-                    String ip = getConnectingIp(request, serviceConfig);
-                    String hostName = request.getRemoteHost();
-                    
-                    String[] authorized = StringUtils.split(accessRestriction, ",");
-                    for (String range : authorized) {
-                        if (NetUtils.isCIDR(range)) {
-                            if (NetUtils.isIPv4AddressinCIDR(ip, range)){
-                                return true;
-                            }
-                        }else if (OLD_IP_PATTERN.matcher(range).matches()) {
-                            //Catch IPs that don't have a slash, ie someone has entered a IP range  in the old 
-                            //unsupported format
-                            log.warn("Access will be denied because: '" + Keys.ACCESS_RESTRICTION + 
-                                "' in " + collectionId + ":" + profileId + " is misconfigured, IP ranges must be in CIDR format.");
-                            denyAccess(request, response, serviceConfig, collectionId + ":" + profileId);
-                            return false;
-                        } else {
-                            // It's a hostname
-                            if (hostName.matches("^.*" + range + "$")) {
-                                log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + collectionId + ":" + profileId + "'");
-                                return true;
-                            }
+            String accessRestriction = serviceConfig.get(FrontEndKeys.AccessRestriction.ACCESS_RESTRICTION);
+            log.trace(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction + "' for collection '" + collectionId + ":" + profileId + "'");
+            if (DefaultValues.NO_RESTRICTION.equals(accessRestriction)) {
+                log.debug("Access restriction explicitely disabled. Granting access to " + collectionId + ":" + profileId);
+                return true;
+            } else if (DefaultValues.NO_ACCESS.equals(accessRestriction)) {
+                log.debug("Access restriction expliciltely set to " + DefaultValues.NO_ACCESS + "for " + collectionId + ":" + profileId + ". Denying access");
+                denyAccess(request, response, serviceConfig, collectionId + ":" + profileId);
+                return false;
+            } else {
+                String ip = getConnectingIp(request, serviceConfig);
+                String hostName = request.getRemoteHost();
+                
+                String[] authorized = StringUtils.split(accessRestriction, ",");
+                for (String range : authorized) {
+                    if (NetUtils.isCIDR(range)) {
+                        if (NetUtils.isIPv4AddressinCIDR(ip, range)){
+                            return true;
+                        }
+                    }else if (OLD_IP_PATTERN.matcher(range).matches()) {
+                        //Catch IPs that don't have a slash, ie someone has entered a IP range  in the old 
+                        //unsupported format
+                        log.warn("Access will be denied because: '" + Keys.ACCESS_RESTRICTION + 
+                            "' in " + collectionId + ":" + profileId + " is misconfigured, IP ranges must be in CIDR format.");
+                        denyAccess(request, response, serviceConfig, collectionId + ":" + profileId);
+                        return false;
+                    } else {
+                        // It's a hostname
+                        if (hostName.matches("^.*" + range + "$")) {
+                            log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + collectionId + ":" + profileId + "'");
+                            return true;
                         }
                     }
-                    log.debug("Neither IP '" + ip + "' or hostname '" + hostName + "' matched. Denying access to '" + collectionId + ":" + profileId + "'");
-                    denyAccess(request, response, serviceConfig, collectionId + ":" + profileId);
-                    return false;
                 }
-            } else {
-                log.debug("No " + Keys.ACCESS_RESTRICTION + " setting for " + collectionId + ":" + profileId + "'");
+                log.debug("Neither IP '" + ip + "' or hostname '" + hostName + "' matched. Denying access to '" + collectionId + ":" + profileId + "'");
+                denyAccess(request, response, serviceConfig, collectionId + ":" + profileId);
+                return false;
             }
         }
         return true;
@@ -204,7 +200,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
         if (serviceConfig.get(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR)) {
             ip = NetUtils.getIpPreferingXForwardedFor(ip
                     , request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR)
-                    , serviceConfig.get(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES).get());
+                    , serviceConfig.get(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES));
         }
         log.trace("Connecting IP (pseudonymised for logging) is: " + IpPseudonymisationFilter.pseudonymiseRemoteAddress(ip));
         return ip;

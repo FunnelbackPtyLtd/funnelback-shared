@@ -1,15 +1,14 @@
 package com.funnelback.publicui.search.service.log;
 
+import java.util.Date;
+
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
-
-import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -22,6 +21,8 @@ import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Utilities for queries / click logging
