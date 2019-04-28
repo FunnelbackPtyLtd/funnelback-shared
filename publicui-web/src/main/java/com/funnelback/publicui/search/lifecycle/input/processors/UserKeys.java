@@ -1,14 +1,9 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
+import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -23,6 +18,12 @@ import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.UserKe
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 /**
  * Fetches user keys for early binding DLS. Will cache them in memory
@@ -164,6 +165,12 @@ public class UserKeys extends AbstractInputProcessor {
             return result;
         } catch (ClassNotFoundException cnfe) {
             throw new InputProcessorException(i18n.tr("inputprocessor.userkeys.plugin.invalid", securityPlugin), cnfe);
+        } catch (IllegalArgumentException e) {
+            if(e.getCause() != null && e.getCause() instanceof ClassNotFoundException) {
+                log.debug("Unwrapping exception", e);
+                throw new InputProcessorException(i18n.tr("inputprocessor.userkeys.plugin.invalid", securityPlugin), e.getCause());
+            }
+            throw e;
         }
     }
 
