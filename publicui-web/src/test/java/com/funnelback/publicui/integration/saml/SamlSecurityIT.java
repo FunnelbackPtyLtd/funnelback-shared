@@ -48,6 +48,8 @@ public class SamlSecurityIT {
         SamlSecurityIT.mujina = new MujinaIdentityProviderServer();
         SamlSecurityIT.mujina.start();
 
+//        SamlSecurityIT.mujina.getBaseUrl()
+
         Integer port = SocketUtils.findAvailableTcpPort();
         searchHome = createSearchHome(port);
 

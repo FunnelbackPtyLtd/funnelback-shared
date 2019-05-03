@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 
 import javax.servlet.ServletContext;
 
+import com.funnelback.config.keys.types.SAMLAlgorithm;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -126,6 +127,14 @@ public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration 
         } else {
             return config.get(ServerKeys.Urls.SEARCH_PROTOCOL) + "://" + config.get(ServerKeys.Urls.SEARCH_HOSTNAME) + ":"
                 + config.get(ServerKeys.Urls.SEARCH_PORT) + servletContext.getContextPath();
+        }
+    }
+
+    @Override public SAMLAlgorithm getSamlAlgorithm() {
+        if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
+            return config.get(ServerKeys.Auth.Admin.SAML.ALGORITHM);
+        } else {
+            return config.get(ServerKeys.Auth.PublicUI.SAML.ALGORITHM);
         }
     }
 
