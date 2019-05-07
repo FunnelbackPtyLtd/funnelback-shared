@@ -130,14 +130,6 @@ public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration 
         }
     }
 
-    @Override public SAMLAlgorithm getSamlAlgorithm() {
-        if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
-            return config.get(ServerKeys.Auth.Admin.SAML.ALGORITHM);
-        } else {
-            return config.get(ServerKeys.Auth.PublicUI.SAML.ALGORITHM);
-        }
-    }
-
     @Override
     public Optional<String> getDefaultLoginRedirect() {
         String url;
