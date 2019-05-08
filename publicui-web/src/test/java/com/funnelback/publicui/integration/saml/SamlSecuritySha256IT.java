@@ -1,18 +1,6 @@
 package com.funnelback.publicui.integration.saml;
 
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.util.ArrayList;
-import java.util.List;
-
-import okhttp3.FormBody;
-import okhttp3.JavaNetCookieJar;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -21,31 +9,13 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.hamcrest.core.AllOf;
 import org.hamcrest.core.StringContains;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.springframework.util.SocketUtils;
 
 import com.funnelback.common.testutils.SearchHomeConfigs;
 import com.funnelback.common.testutils.SearchHomeProvider;
 import com.funnelback.publicui.integration.DefaultAdminSecurityIT;
-import com.funnelback.springmvc.api.config.SharedBetweenContainersHelper;
-import com.funnelback.springmvc.api.config.security.SecurityConfigBase;
 import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
-import com.funnelback.springmvc.utils.saml.TokenUtils;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
 
 public class SamlSecuritySha256IT {
