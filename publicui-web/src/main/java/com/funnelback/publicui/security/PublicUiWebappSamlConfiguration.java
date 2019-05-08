@@ -10,7 +10,6 @@ import java.net.URISyntaxException;
 
 import javax.servlet.ServletContext;
 
-import com.funnelback.config.keys.types.SAMLAlgorithm;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
