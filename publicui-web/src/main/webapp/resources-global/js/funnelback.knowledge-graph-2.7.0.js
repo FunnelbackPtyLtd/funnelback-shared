@@ -1641,12 +1641,9 @@
     },
 
     getPathParams: function(url, base) {
-      const paramsQuery = Url.path(url, base).split('?')[1], params = paramsQuery ? paramsQuery.split('&') : [];
-      var i, len, pathParams = {};
-      for (i = 0, len = params.length; i < len; i++) {
-        const pair = params[i].split('=', 2);
-        pathParams[pair[0].decodeUriParam()] = pair.length == 1 ? '' : pair[1].decodeUriParam();
-      }
+      const path = Url.path(url, base), paramsQuery = path.substring(path.indexOf('?') + 1), searchRegex = /([^&=]+)=?([^&]*)/g;
+      var match, pathParams = {};
+      while (match = searchRegex.exec(paramsQuery)) pathParams[match[1].decodeUriParam()] = match[2].decodeUriParam();
       return pathParams;
     },
 
