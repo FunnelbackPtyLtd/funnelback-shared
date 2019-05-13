@@ -2,18 +2,19 @@ package com.funnelback.publicui.search.service.location;
 
 import java.io.IOException;
 
-import lombok.extern.log4j.Log4j2;
-import lombok.Setter;
-
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.cache.MaxMindInMemoryCacheHelper;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.maxmind.geoip.Location;
 import com.maxmind.geoip.LookupService;
+
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Provide a service which determines the user's location based on the IP
@@ -74,6 +75,7 @@ public class DefaultGeolocator implements Geolocator {
                         LookupService.GEOIP_MEMORY_CACHE
                                 | LookupService.GEOIP_CHECK_CACHE);
                 
+                new MaxMindInMemoryCacheHelper().useSharedBackingArrayIfPossible(lookupService);
                 s.stop();
                 log.debug("LookupService recreated. Took " + s);
             }
