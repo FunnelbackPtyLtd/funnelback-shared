@@ -40,7 +40,7 @@ public class NumRanksLimitCheck {
     
     public void verifyNumRanksLimitIsNotExceeded(HttpServletRequest request, ServiceConfigReadOnly serviceConfig, I18n i18n) 
             throws NumRanksExceededException {
-        NumRanks numRanksLimit = serviceConfig.get(Keys.FrontEndKeys.ModernUi.NUM_RAMKS_LIMIT);
+        NumRanks numRanksLimit = new NumRanks(serviceConfig.get(Keys.FrontEndKeys.ModernUi.NUM_RAMKS_LIMIT));
         for(String numRanksParam : Optional.ofNullable(request.getParameterMap().get(RequestParameters.NUM_RANKS)).orElse(new String[0])) {
             if(numRanksExceeded(numRanksParam, numRanksLimit)) {
                 throw new NumRanksExceededException(numRanksLimit, i18n);
