@@ -13,13 +13,10 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.profile.ProfileNotFoundException;
-import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.keys.frontend.modernui.ModernUI;
+import com.funnelback.config.keys.Keys;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.filters.utils.FilterParameterHandling;
-import com.funnelback.publicui.utils.web.ProfilePicker;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -59,7 +56,7 @@ public class IpPseudonymisationFilter implements Filter {
             try {
                 shouldPseudonymise = configRepository
                     .getServiceConfig(collectionId, profileAndViewId)
-                    .get(new ModernUI().PSEUDONYMISE_CLIENT_IPS);
+                    .get(Keys.FrontEndKeys.ModernUi.PSEUDONYMISE_CLIENT_IPS);
             } catch (ProfileNotFoundException e) {
                 // Ok - We'll assume we as we did above should then
             }
