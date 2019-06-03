@@ -1,9 +1,9 @@
 /*
  * Funnelback Knowledge Graph plugin
- * version 2.7
+ * version 2.8
  *
  * author: Liliana Nowak
- * Copyright Funnelback, 2017-2018
+ * Copyright Funnelback, 2017-2019
  *
  * @requires jQuery https://jquery.com@1.10.2
  * @requires Handlebars http://handlebarsjs.com@4.0.10
@@ -436,7 +436,7 @@
       var params = Url.getPathParams(data._url);
       if (sortField) {
         params['sort'] = sortField;
-        data['_url'] = Url.get(url, params);
+        data['_url'] = Url.get(url, params, box.options.apiBase);
       }
       if (data['_label']) data['_label'] = data['_label'].replace('-', '.');
     },
@@ -1390,7 +1390,7 @@
     },
 
     getUrl: function(box, path, params) {
-      return Url.get(box.options.searchUrl + path, params);
+      return Url.get(box.options.searchUrl + path, params, box.options.apiBase);
     },
 
     isUrl: function(box, url) {
@@ -1411,7 +1411,7 @@
 
     getUrl: function(box, data) {
       const id = data['_fields'] && data['_fields']['id'] && data['_fields']['id'][0];
-      return id && box.options.shareUrl ? Url.get(box.options.shareUrl, Object.assign(box.options.shareParams || {}, {collection: box.options.collection, profile: box.options.profile, targetUrl: id})) : undefined;
+      return id && box.options.shareUrl ? Url.get(box.options.shareUrl, Object.assign(box.options.shareParams || {}, {collection: box.options.collection, profile: box.options.profile, targetUrl: id}), box.options.apiBase) : undefined;
     }
   }
 
@@ -1641,27 +1641,23 @@
     },
 
     getPathParams: function(url, base) {
-      const path = Url.path(url, base), paramsQuery = path.substring(path.indexOf('?') + 1), searchRegex = /([^&=]+)=?([^&]*)/g;
+      const path = url, paramsQuery = path.substring(path.indexOf('?') + 1), searchRegex = /([^&=]+)=?([^&]*)/g;
       var match, pathParams = {};
       while (match = searchRegex.exec(paramsQuery)) pathParams[match[1].decodeUriParam()] = match[2].decodeUriParam();
       return pathParams;
     },
 
     getPathParts: function(url, base, index) {
-      const parts = Url.path(url, base).split('?')[0].split('/') || [];
+      const parts = url.split('?')[0].split('/') || [];
       return index && parts[index] ? parts[index] : parts;
     },
 
     getUrl: function(url, base) {
-      return Url.path(url, base).split('?')[0];
+      return url.split('?')[0];
     },
 
     isNodeDetail: function(url) {
       return url.match(/\/nodes\/[0-9]+/g) ? true : false;
-    },
-
-    path: function(url, base) {
-      return base ? url.slice(base.length) : url;
     },
 
     setBase: function(str) {
