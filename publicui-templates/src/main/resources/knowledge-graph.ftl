@@ -10,7 +10,7 @@
   <title>Funnelback Knowledge Graph</title>
   <link rel="stylesheet" href="${ContextPath}/${GlobalResourcesPrefix}thirdparty/font-awesome-5.7.2/css/font-awesome.min.css" />
   <link rel="stylesheet" href="${ContextPath}/${GlobalResourcesPrefix}thirdparty/nprogress-0.2.0/nprogress.min.css" />
-  <link rel="stylesheet" href="${ContextPath}/${GlobalResourcesPrefix}css/funnelback.knowledge-graph-2.7.0.min.css" />
+  <link rel="stylesheet" href="${ContextPath}/${GlobalResourcesPrefix}css/funnelback.knowledge-graph-2.8.min.css" />
   <!--[if lt IE 9]>
     <script src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/html5shiv.js"></script>
     <script src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/respond.min.js"></script>
@@ -26,7 +26,7 @@
 <script type="text/javascript" src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/nprogress-0.2.0/nprogress.min.js"></script>
 <script type="text/javascript" src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/momentjs-2.22.2/moment.min.js"></script>
 <script type="text/javascript" src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/handlebars-4.0.12/handlebars.min.js"></script>
-<script type="text/javascript" src="${ContextPath}/${GlobalResourcesPrefix}js/funnelback.knowledge-graph-2.7.0.min.js"></script>
+<script type="text/javascript" src="${ContextPath}/${GlobalResourcesPrefix}js/funnelback.knowledge-graph-2.8.min.js"></script>
 <script type="text/javascript">
   jQuery(document).ready(function() {
     jQuery(document).knowledgeGraph({
