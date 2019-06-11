@@ -20,7 +20,7 @@
     <bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
     
     <bean name="recommenderJsonView"
-        class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+        class="com.funnelback.publicui.search.web.views.FunnelbackMappingJackson2JsonView">
         <property name="modelKeys" value="RecommendationResponse" />
     </bean>
 
@@ -144,9 +144,10 @@
         </property>
         <property name="defaultViews">
             <list>
-                <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+                <bean id="jsonView" class="com.funnelback.publicui.search.web.views.FunnelbackMappingJackson2JsonView">
                     <property name="modelKeys" value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).getNames()}" />
                     <property name="objectMapper" ref="jackson2ObjectMapper" />
+                    <property name="jsonpParameterNames" value="callback" />
                 </bean>
 
                 <bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
