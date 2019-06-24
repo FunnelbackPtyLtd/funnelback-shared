@@ -87,7 +87,7 @@ public class SuggestControllerTest {
     @Test
     public void testJsonp() throws Exception {
         Config config = mock(Config.class);
-        when(config.value(any())).thenReturn("");
+        when(config.value(anyString())).thenReturn("");
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
