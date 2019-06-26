@@ -1,6 +1,6 @@
 /*
  * Funnelback Knowledge Graph plugin
- * version 2.8
+ * version 2.8.1
  *
  * author: Liliana Nowak
  * Copyright Funnelback, 2017-2019
@@ -32,6 +32,7 @@
     contentAttr: null,
     targetUrl: true,
     dateFormat: 'DD MMMM YYYY, HH:mm', // moment.js date formatting
+    iconPrefix: 'fa fa-fw fa-',
     maxBreadcrumb: 5,
     maxPagination: 5,
     maxResults: 10,
@@ -42,8 +43,8 @@
       SF: '[^(?i)(?!Fun).*,FUNkgNodeLabel]',
       query_sand: '|FUNkgNodeLabel:$++ |FUNkgNodeNames:$++',
     },
-    iconPrefix: 'fa fa-fw fa-',
     trigger: 'button', // [button|fixed|full]
+    urlPrefix: '/s/' // path to prefix result URL with relative URL
   };
 
   KnowledgeGraph.Handlebars = Handlebars.noConflict();
@@ -423,7 +424,7 @@
       var i, len, field;
       for (i = 0, len = fields.length; i < len; i++) {
         field = Template.get(box, 'fields', '_' + fields[i], data._type);
-        if (field && $.isString(field) && data._fields[field]) data['_' + fields[i]] = data._fields[field];
+        if (field && $.isString(field) && data._fields[field]) data['_' + fields[i]] = fields[i] === 'viewUrl' ? Model.viewUrl(box, data._fields[field]) : data._fields[field];
       }
     },
 
@@ -450,6 +451,12 @@
 
     summary: function(box, data, view) {
       if (data._query) data._query = data._query.replace(box.options.searchParams.query_sand, '');
+    },
+
+    viewUrl: function(box, data) {
+      var i, len;
+      for (i = 0, len = data.length; i < len; i++) data[i] = Url.setUrl(data[i], box.options.urlPrefix);
+      return data;
     }
   }
 
@@ -1411,7 +1418,7 @@
 
     getUrl: function(box, data) {
       const id = data['_fields'] && data['_fields']['id'] && data['_fields']['id'][0];
-      return id && box.options.shareUrl ? Url.get(box.options.shareUrl, Object.assign(box.options.shareParams || {}, {collection: box.options.collection, profile: box.options.profile, targetUrl: id}), box.options.apiBase) : undefined;
+      return id && box.options.shareUrl ? Url.setUrl(box.options.shareUrl, box.options.apiBase, Object.assign(box.options.shareParams || {}, {collection: box.options.collection, profile: box.options.profile, targetUrl: id})) : undefined;
     }
   }
 
@@ -1656,6 +1663,11 @@
       return url.split('?')[0];
     },
 
+    isAbsoluteUrl: function(url) {
+      const protocolRegex = /^(?:[a-zA-Z]+:\/\/)?/, match = protocolRegex.exec(url);
+      return match.length && match[0].length ? true : false;
+    },
+
     isNodeDetail: function(url) {
       return url.match(/\/nodes\/[0-9]+/g) ? true : false;
     },
@@ -1664,9 +1676,9 @@
       return !str ? '' : (str.endsWithIndexOf('/') ? str : str + '/');
     },
 
-    setUrl: function(url, base) {
+    setUrl: function(url, base, params) {
       if (!url) return url;
-      return url.match(/^[a-zA-Z]+:\/\//) ? url : this.get(url, null, base);
+      return Url.get(url, params, Url.isAbsoluteUrl(url) ? null : base);
     },
 
     storageKey: function(url, base) {
