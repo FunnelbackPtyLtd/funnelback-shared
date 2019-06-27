@@ -424,7 +424,7 @@
       var i, len, field;
       for (i = 0, len = fields.length; i < len; i++) {
         field = Template.get(box, 'fields', '_' + fields[i], data._type);
-        if (field && $.isString(field) && data._fields[field]) data['_' + fields[i]] = fields[i] === 'viewUrl' ? Model.viewUrl(box, data._fields[field]) : data._fields[field];
+        if (field && $.isString(field) && data._fields[field]) data['_' + fields[i]] = data._fields[field];
       }
     },
 
@@ -446,6 +446,9 @@
       if (view === 'graph') {}
       if (view === 'search') {
         if (data._type) data._type = data._type.toLowerCase();
+      }
+      if (data['_viewUrl']) {
+        data['_viewUrl'] = Model.viewUrl(box, data['_viewUrl']);
       }
     },
 
