@@ -1,6 +1,6 @@
 # funnelback-publicui
 
-> `funnelback-publicui` is the API endpoint that exposes search, it's endpoint path is `/s/`.
+> Funnelback PublicUI is the Java web application responsible for receiving search requests, processing them, forking padre-sw to perform the underlying index searching and ranking, and then returning the results to the user in html (templated with Freemarker), JSON, XML etc.
 
 ## Install
 
