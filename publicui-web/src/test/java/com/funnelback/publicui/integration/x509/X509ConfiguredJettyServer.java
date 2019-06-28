@@ -65,8 +65,9 @@ public class X509ConfiguredJettyServer {
         sslContextFactory.setKeyManagerPassword("funnelback");
         sslContextFactory.setTrustStorePath(new File("src/test/resources/x509/keystores/server-truststore.jks").getAbsolutePath());
         sslContextFactory.setTrustStorePassword("funnelback");
-        sslContextFactory.setWantClientAuth(true);
-        sslContextFactory.setNeedClientAuth(false);
+        // Setting this to resolve a X509 related problem when we upgraded to 9.4.19
+        // @see https://github.com/eclipse/jetty.project/issues/3656
+        sslContextFactory.setEndpointIdentificationAlgorithm(null);
 
         HttpConfiguration https_config = new HttpConfiguration(new HttpConfiguration());
         https_config.addCustomizer(new SecureRequestCustomizer());
