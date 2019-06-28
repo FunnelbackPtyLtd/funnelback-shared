@@ -1,6 +1,6 @@
 # funnelback-publicui
 
-> `funnelback-publicui` is the <DESCRIPTION HERE>
+> `funnelback-publicui` is the API endpoint that exposes search, it's endpoint path is `/s/`.
 
 ## Install
 
