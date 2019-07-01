@@ -12,8 +12,6 @@
     <Set name="KeyManagerPassword"><Property name="jetty.keymanager.password" default="funnelback"/></Set>
     <Set name="TrustStorePath"><Property name="jetty.truststore"/></Set>
     <Set name="TrustStorePassword"><Property name="jetty.truststore.password" default="funnelback"/></Set>
-    <Set name="WantClientAuth">true</Set>
-    <Set name="EndpointIdentificationAlgorithm"></Set>
     <Set name="ExcludeCipherSuites">
           <Array type="String">
               <Item>SSL_RSA_WITH_DES_CBC_SHA</Item>
