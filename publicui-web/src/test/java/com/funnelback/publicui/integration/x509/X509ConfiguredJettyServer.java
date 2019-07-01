@@ -74,6 +74,7 @@ public class X509ConfiguredJettyServer {
 
         HttpConfiguration https_config = new HttpConfiguration(new HttpConfiguration());
         https_config.addCustomizer(new SecureRequestCustomizer());
+        https_config.setSendServerVersion(false);
 
         // SSL Connector
         sslConnector = new ServerConnector(server,
