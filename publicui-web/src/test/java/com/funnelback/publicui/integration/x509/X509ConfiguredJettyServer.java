@@ -59,13 +59,16 @@ public class X509ConfiguredJettyServer {
     private Server createServer() throws NamingException {
         final Server server = new Server();
 
-        SslContextFactory sslContextFactory = new SslContextFactory();
+        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
         sslContextFactory.setKeyStorePath(new File("src/test/resources/x509/keystores/server-keystore.jks").getAbsolutePath());
         sslContextFactory.setKeyStorePassword("funnelback");
         sslContextFactory.setKeyManagerPassword("funnelback");
         sslContextFactory.setTrustStorePath(new File("src/test/resources/x509/keystores/server-truststore.jks").getAbsolutePath());
         sslContextFactory.setTrustStorePassword("funnelback");
-        // Setting this to resolve a X509 related problem when we upgraded to 9.4.19
+        sslContextFactory.setWantClientAuth(true);
+        sslContextFactory.setNeedClientAuth(false);
+        // Setting this to 'null' resolves a X509 related problem when we upgraded to 9.4.19
+        // As of .19 this flag is enabled by default which forces hostname checking
         // @see https://github.com/eclipse/jetty.project/issues/3656
         sslContextFactory.setEndpointIdentificationAlgorithm(null);
 
