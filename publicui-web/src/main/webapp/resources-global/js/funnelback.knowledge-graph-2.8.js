@@ -842,7 +842,7 @@
       email: '{{#if val}}<a class="{{_classes}}" href="mailto:{{val}}">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}',
       path: '<span class="kg-long-path">{{val}}</span>',
       phone: '{{#if val}}<a class="{{_classes}}" href="tel:{{val}}">{{>icon-block _classes="" _icon=_icon}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}',
-      url: '{{#if _viewUrl}}<a class="{{_classes}}" href="#" data-kg-nav="external" data-kg-url="{{_viewUrl}}" target="_blank">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{_viewUrl}}{{/if}}</a>{{/if}}',
+      url: '{{#if _viewUrl}}<a class="{{_classes}}" href="{{_viewUrl}}" data-kg-nav="external" data-kg-url="{{_viewUrl}}" target="_blank">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{_viewUrl}}{{/if}}</a>{{/if}}',
       icon: '{{#if _icon}}<span class="{{_icon}} {{_classes}}"></span> {{/if}}',
       img: '{{#if _image}}<img class="' + _prefix + 'rounded-circle {{_classes}}" src="{{_image}}" />{{/if}}',
       primary: '{{#if primary}}<div class="{{_classes}}">{{#each primary}}<span class="' + _prefix + 'mr-2">{{> (item)}}</span>{{/each}}</div>{{/if}}',
@@ -967,8 +967,6 @@
         return false;
       }
       if (type === 'external') {
-        $trigger.trigger(Events.name('nav'), [box, url, type]);
-        $trigger.attr('href', url);
         return true;
       }
       if (type === 'share') {
