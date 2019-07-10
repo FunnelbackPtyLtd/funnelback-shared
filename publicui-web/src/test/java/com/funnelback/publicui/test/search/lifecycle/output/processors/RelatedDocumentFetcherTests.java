@@ -26,7 +26,6 @@ import com.funnelback.publicui.relateddocuments.RelationToExpand;
 import com.funnelback.publicui.search.lifecycle.output.processors.RelatedDocumentFetcher;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.related.RelatedDocument;
-import com.funnelback.publicui.search.service.IndexRepository;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -52,14 +51,38 @@ public class RelatedDocumentFetcherTests {
         
         ServiceConfigReadOnly config = Mockito.mock(ServiceConfigReadOnly.class);
         Mockito.when(config.getRawKeys()).thenReturn(Sets.newHashSet(
+            "ui.modern.related-document-fetch.parent.type", 
+            "ui.modern.related-document-fetch.peopleLikedByParent.type"
+        ));
+        
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.RelatedDocumentsFetch.getConfigForKey("parent")))
+            .thenReturn(Optional.of(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.METADATA, "parent", Optional.empty())));
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.RelatedDocumentsFetch.getConfigForKey("peopleLikedByParent")))
+            .thenReturn(Optional.of(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.RELATED, "likes", Optional.of("parent"))));
+        
+        List<RelationToExpand> relationsToExpand = new RelatedDocumentFetcher().findRelationsToExpand(config);
+        
+        List<RelationToExpand> expectedRelations = Lists.newArrayList(
+            new RelationToExpand(new MetadataRelationSource("parent"), "parent"),
+            new RelationToExpand(new RelatedDataRelationSource("parent", "likes"), "peopleLikedByParent")
+        );
+        
+        Assert.assertEquals(expectedRelations, relationsToExpand);
+    }
+    
+    @Test
+    public void testConfigReadingOldKeys() throws Exception {
+        
+        ServiceConfigReadOnly config = Mockito.mock(ServiceConfigReadOnly.class);
+        Mockito.when(config.getRawKeys()).thenReturn(Sets.newHashSet(
             "ui.modern.related-document-fetch.parent", 
             "ui.modern.related-document-fetch.peopleLikedByParent"
         ));
         
-        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey("parent")))
-            .thenReturn(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.METADATA, "parent", Optional.empty()));
-        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey("peopleLikedByParent")))
-            .thenReturn(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.RELATED, "likes", Optional.of("parent")));
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.RelatedDocumentsFetch.getConfigForKey("parent")))
+            .thenReturn(Optional.of(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.METADATA, "parent", Optional.empty())));
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.RelatedDocumentsFetch.getConfigForKey("peopleLikedByParent")))
+            .thenReturn(Optional.of(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.RELATED, "likes", Optional.of("parent"))));
         
         List<RelationToExpand> relationsToExpand = new RelatedDocumentFetcher().findRelationsToExpand(config);
         
@@ -80,9 +103,9 @@ public class RelatedDocumentFetcherTests {
             "ui.modern.related-document-fetch.test.depth"
         ));
         
-        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey("test")))
-            .thenReturn(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.RELATED, "metadataKey", Optional.of("relatedKey")));
-        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchDepthForKey("test")))
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.RelatedDocumentsFetch.getConfigForKey("test")))
+            .thenReturn(Optional.of(new RelatedDocumentFetchConfig(RelatedDocumentFetchSourceType.RELATED, "metadataKey", Optional.of("relatedKey"))));
+        Mockito.when(config.get(Keys.FrontEndKeys.ModernUi.RelatedDocumentsFetch.getDepthForKey("test")))
             .thenReturn(5);
         
         List<RelationToExpand> relationsToExpand = new RelatedDocumentFetcher().findRelationsToExpand(config);

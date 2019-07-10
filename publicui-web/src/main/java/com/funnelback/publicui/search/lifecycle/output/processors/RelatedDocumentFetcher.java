@@ -1,10 +1,12 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,11 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.common.function.Flattener;
 import com.funnelback.config.configtypes.service.ServiceConfigOptionDefinition;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.config.data.environment.ConfigEnvironmentHelper;
 import com.funnelback.config.keys.Keys;
+import com.funnelback.config.keys.WildCardKeyMatcher;
+import com.funnelback.config.keys.frontend.modernui.RelatedDocumentFetchKeys;
 import com.funnelback.config.keys.types.RelatedDocumentFetchConfig;
 import com.funnelback.config.keys.types.RelatedDocumentFetchConfig.RelatedDocumentFetchSourceType;
+import com.funnelback.config.option.ConfigOptionDefinition;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.recommender.dataapi.DataAPIConnectorPADRE;
@@ -121,8 +128,8 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
     /* private if not for testing */ public List<RelationToExpand> findRelationsToExpand(ServiceConfigReadOnly config) {
         List<RelationToExpand> relationsToExpand = new ArrayList<>();
         for (String relatedDocumentKey : findRelatedDocumentKeys(config)) {
-            ServiceConfigOptionDefinition<RelatedDocumentFetchConfig> key = Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchConfigForKey(relatedDocumentKey);
-            RelatedDocumentFetchConfig rdfc = config.get(key);
+            ServiceConfigOptionDefinition<Optional<RelatedDocumentFetchConfig>> key = Keys.FrontEndKeys.ModernUi.RelatedDocumentsFetch.getConfigForKey(relatedDocumentKey);
+            RelatedDocumentFetchConfig rdfc = config.get(key).orElse(null);
             
             if (rdfc == null) {
                 Log.warn("Missing expected related document fetch config at " + key.getKey() + ". Other settings for this relatedDocumentKey will be ignored.");
@@ -132,7 +139,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
             if (rdfc.getRelatedDocumentFetchSourceType().equals(RelatedDocumentFetchSourceType.METADATA)) {
                 relationsToExpand.add(new RelationToExpand(new MetadataRelationSource(rdfc.getMetadataKey()), relatedDocumentKey));
             } else if (rdfc.getRelatedDocumentFetchSourceType().equals(RelatedDocumentFetchSourceType.RELATED)) {
-                Integer depth = config.get(Keys.FrontEndKeys.ModernUi.getRelatedDocumentFetchDepthForKey(relatedDocumentKey));
+                Integer depth = config.get(Keys.FrontEndKeys.ModernUi.RelatedDocumentsFetch.getDepthForKey(relatedDocumentKey));
                 
                 if (depth != null && depth > 1) {
                     // They specified a depth for this config, so we expand that out into individual steps here
@@ -153,23 +160,51 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
         return relationsToExpand;
     }
 
-    /*
-     * Return all the config keys with the RELATED_DOCUMENT_FETCH_CONFIG_PREFIX prefix
+    /**
+     * Return all the keys used in the related document config options.
+     * 
+     * The key in this case is what is used as the argument for
+     *  {@link RelatedDocumentFetchKeys#getConfigForKey(String)} and its friends.
      */
     private Set<String> findRelatedDocumentKeys(ServiceConfigReadOnly config) {
-        String prefix = Keys.FrontEndKeys.ModernUi.RELATED_DOCUMENT_FETCH_CONFIG_PREFIX;
+        
+        WildCardKeyMatcher matcher = new WildCardKeyMatcher();
+        
+        Set<String> allRelatedDocKeys = new HashSet<>();
+        
+        // Remove the environment, to make it easier for matching.
+        List<String> allConfigKeys = config.getRawKeys().stream().map(ConfigEnvironmentHelper::removeEnvironmentFromKey).collect(Collectors.toList());
+        
+        // Using "*" makes it a wild card pattern.
+        for(ServiceConfigOptionDefinition<?> option : Arrays.asList(Keys.FrontEndKeys.ModernUi.RelatedDocumentsFetch.getConfigForKey("*"),
+                                                                        Keys.FrontEndKeys.ModernUi.RelatedDocumentsFetch.getDepthForKey("*"))) {
+            // Perhaps we have old definitions as well. 
+            Flattener.flattenOptional((ConfigOptionDefinition<?>) option, ConfigOptionDefinition::getOldOption)
+                .map(o -> ((ConfigOptionDefinition<?>) o).getKey()) // hold java's hand
+                .forEach(key -> matcher.getAllKeysMatchingPattern((String) key, allConfigKeys).forEach((k, v) -> allRelatedDocKeys.add(stripSuffix(v.get(0)))));
+        }
+        
+        return allRelatedDocKeys;
+    }
+    
+    /**
+     * We have to do this for these keys because one key matches the other key.
+     * 
+     * if we want to support related document keys in which the user can specify keys that
+     * contain dots we could only strip if the key is an old one e.g. it starts with:
+     * 
+     * ui.modern.related-document-fetch.
+     * 
+     * @param key
+     * @return
+     */
+    private String stripSuffix(String key) {
+        // Strip any suffix
+        if (key.indexOf('.') != -1) {
+            key = key.substring(0, key.indexOf('.'));
+        }
+        return key;
 
-        return config.getRawKeys().stream()
-            .filter((key) -> key.startsWith(prefix))
-            .map((key) -> key.substring(prefix.length()))
-            .map((key) -> {
-                // Strip any suffix
-                if (key.indexOf('.') != -1) {
-                    key = key.substring(0, key.indexOf('.'));
-                }
-                return key;
-            })
-            .collect(Collectors.toSet());
     }
 
     /**
