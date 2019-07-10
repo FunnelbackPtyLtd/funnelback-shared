@@ -73,7 +73,6 @@
     }).then(function() {
       if (instance.data) instance.data();
     });
-
     return this;
   };
 
@@ -424,7 +423,7 @@
       var i, len, field;
       for (i = 0, len = fields.length; i < len; i++) {
         field = Template.get(box, 'fields', '_' + fields[i], data._type);
-        if (field && $.isString(field) && data._fields[field]) data['_' + fields[i]] = Object.create(data._fields[field]);
+        if (field && $.isString(field) && data._fields[field]) data['_' + fields[i]] = JSON.parse(JSON.stringify(data._fields[field]));
         if (fields[i] === 'viewUrl') data['_viewUrl'] = Model.viewUrl(box, data['_viewUrl']);
       }
     },
@@ -455,8 +454,10 @@
     },
 
     viewUrl: function(box, data) {
-      var i, len;
-      for (i = 0, len = data.length; i < len; i++) data[i] = Url.setUrl(data[i], box.options.urlPrefix);
+      if (data) {
+        var i, len;
+        for (i = 0, len = data.length; i < len; i++) data[i] = Url.setUrl(data[i], box.options.urlPrefix);
+      }
       return data;
     }
   }
@@ -1396,7 +1397,7 @@
     },
 
     getUrl: function(box, path, params) {
-      return Url.get(box.options.searchUrl + path, params, box.options.apiBase);
+      return Url.setUrl(box.options.searchUrl + path, box.options.apiBase, params);
     },
 
     isUrl: function(box, url) {
