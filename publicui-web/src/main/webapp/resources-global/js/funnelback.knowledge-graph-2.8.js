@@ -443,14 +443,26 @@
     },
 
     node: function(box, data, view) {
-      if (view === 'graph') {}
+      if (view === 'graph') {
+        if (data['self']) data['self'] = Model.absoluteApiUrl(box, data['self']);
+        if (data['types']) data['types'] = Model.absoluteApiUrl(box, data['types']);
+        if (data['typesLeaf']) data['typesLeaf'] = Model.absoluteApiUrl(box, data['typesLeaf']);
+      }
       if (view === 'search') {
         if (data._type) data._type = data._type.toLowerCase();
       }
     },
 
+    rel: function(box, data) {
+      if (data['_url']) data['_url'] = Model.absoluteApiUrl(box, data['_url']);
+    },
+
     summary: function(box, data, view) {
       if (data._query) data._query = data._query.replace(box.options.searchParams.query_sand, '');
+    },
+
+    type: function(box, data) {
+      if (data['_url']) data['_url'] = Model.absoluteApiUrl(box, data['_url']);
     },
 
     viewUrl: function(box, data) {
@@ -459,6 +471,10 @@
         for (i = 0, len = data.length; i < len; i++) data[i] = Url.setUrl(data[i], box.options.urlPrefix);
       }
       return data;
+    },
+
+    absoluteApiUrl: function(box, url) {
+      return Url.get(url, null, box.options.apiBase);
     }
   }
 
@@ -1644,7 +1660,15 @@
   // URL helper
   const Url = {
     get: function(path, params, base) {
-      return (base ? base : '') + path + (params ? '?' + $.param(params) : '');
+      return Url.getBaseBasedOnPath(base, path) + path + (params ? '?' + $.param(params) : '');
+    },
+
+    getBaseBasedOnPath: function(base, path) {
+      if (base) {
+        if (path.charAt(0) === '/') return base.slice(0, -1);
+        return base;
+      }
+      return '';
     },
 
     getPathParams: function(url, base) {
@@ -1655,7 +1679,7 @@
     },
 
     getPathParts: function(url, base, index) {
-      const parts = url.split('?')[0].split('/') || [];
+      const parts = Url.path(url, base).split('?')[0].split('/') || [];
       return index && parts[index] ? parts[index] : parts;
     },
 
@@ -1670,6 +1694,10 @@
 
     isNodeDetail: function(url) {
       return url.match(/\/nodes\/[0-9]+/g) ? true : false;
+    },
+
+    path: function(url, base) {
+      return base ? url.slice(base.length) : url;
     },
 
     setBase: function(str) {
