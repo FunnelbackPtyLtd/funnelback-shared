@@ -29,10 +29,10 @@ public class CartResultDBModel extends SessionResult {
     public static final String TABLE_NAME = "CartResult";
     
     public CartResultDBModel(String userId, String collection, String indexUrl, String title, String summary,
-        Date addedDate, String collectionForIndexUrl, Map<String, String> metadata) {
+        Date addedDate, String collectionIdForIndexUrl, Map<String, String> metadata) {
         super(userId, collection, indexUrl, title, summary);
         this.addedDate = addedDate;
-        this.collectionForIndexUrl = collectionForIndexUrl;
+        this.collectionIdForIndexUrl = collectionIdForIndexUrl;
         this.metaData.putAll(metadata);
     }
 
@@ -45,7 +45,7 @@ public class CartResultDBModel extends SessionResult {
      */
     // probably should be on the parent but I am doing the minimum
     @Getter @Setter
-    private String collectionForIndexUrl;
+    private String collectionIdForIndexUrl;
     
     /**
      * Metadata values for the result

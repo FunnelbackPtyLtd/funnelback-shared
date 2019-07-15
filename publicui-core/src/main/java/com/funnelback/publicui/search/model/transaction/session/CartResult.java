@@ -59,7 +59,7 @@ public class CartResult extends SessionResult {
     
     public static CartResult from(CartResultDBModel dbmodel) {
         return new CartResult(dbmodel.getUserId(), 
-            dbmodel.getCollectionForIndexUrl(), 
+            dbmodel.getCollectionIdForIndexUrl(), 
             dbmodel.getIndexUrl().toString(), 
             dbmodel.getTitle(), 
             dbmodel.getSummary(), 
