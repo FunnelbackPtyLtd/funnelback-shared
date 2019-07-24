@@ -1,15 +1,13 @@
 package com.funnelback.publicui.search.model.curator.config;
 
-import lombok.EqualsAndHashCode;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.funnelback.api.core.models.AbstractIdentifiableDated;
-import com.funnelback.api.core.models.Dated;
-import com.funnelback.api.core.models.Identifiable;
+import com.funnelback.publicui.search.model.curator.trigger.AndTrigger;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -59,7 +57,6 @@ public class TriggerActions extends AbstractIdentifiableDated {
     /**
      * {@link Trigger} associated to the {@link ActionSet}
      */
-    @Getter
     @Setter
     private Trigger trigger;
     
@@ -85,12 +82,17 @@ public class TriggerActions extends AbstractIdentifiableDated {
             return result;
         }
     }
+    
+    public Trigger getTrigger() {
+        if(trigger == null) trigger = new AndTrigger();
+        return trigger;
+    }
 
     /** Configure this object and Triggers/Actions below */
     public void configure(Configurer configurer) {
         configurer.configure(this);
         getActionSet().configure(configurer);
-        trigger.configure(configurer);
+        getTrigger().configure(configurer);
     }
 
 }
