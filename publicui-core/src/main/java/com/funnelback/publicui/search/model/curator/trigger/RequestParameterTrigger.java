@@ -1,15 +1,15 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
+import com.funnelback.publicui.search.model.curator.config.Configurer;
+import com.funnelback.publicui.search.model.curator.config.Trigger;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import com.funnelback.publicui.search.model.curator.config.Configurer;
-import com.funnelback.publicui.search.model.curator.config.Trigger;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * <p>
@@ -53,6 +53,7 @@ public class RequestParameterTrigger implements Trigger {
      */
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction) {
+        if(parameter == null || value == null) return false;
         if (searchTransaction.getQuestion().getRawInputParameters().containsKey(parameter)) {
             for (String haystack : searchTransaction.getQuestion().getRawInputParameters().get(parameter)) {
                 if (matchType.matches(value,  haystack)) {

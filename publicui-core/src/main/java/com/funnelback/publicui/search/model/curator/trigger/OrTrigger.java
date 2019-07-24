@@ -1,19 +1,17 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
-import lombok.EqualsAndHashCode;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>
@@ -36,9 +34,13 @@ public class OrTrigger implements Trigger {
      * The list of 'sub' triggers one of which must activate for this trigger to
      * activate.
      */
-    @Getter
     @Setter
     private List<Trigger> triggers = new ArrayList<Trigger>();
+    
+    public List<Trigger> getTriggers() {
+        if(triggers == null) triggers = new ArrayList<>();
+        return triggers;
+    }
 
     /**
      * Check each 'sub' trigger in turn to see if it activates on the given
@@ -47,7 +49,7 @@ public class OrTrigger implements Trigger {
      */
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction) {
-        for (Trigger trigger : triggers) {
+        for (Trigger trigger : getTriggers()) {
             if (trigger.activatesOn(searchTransaction)) {
                 return true;
             }
@@ -59,7 +61,7 @@ public class OrTrigger implements Trigger {
     @Override
     public void configure(Configurer configurer) {
         configurer.configure(this);
-        for (Trigger trigger : triggers) {
+        for (Trigger trigger : getTriggers()) {
             trigger.configure(configurer);
         }
     }

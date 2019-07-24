@@ -1,20 +1,19 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
-import lombok.EqualsAndHashCode;
-
 import java.util.HashSet;
 import java.util.Set;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.geolocation.Location;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>

@@ -1,24 +1,20 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
-import lombok.EqualsAndHashCode;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>
@@ -41,9 +37,13 @@ public class AllQueryWordsTrigger implements Trigger {
      * The list of words required to be found within the query for this trigger
      * to activate.
      */
-    @Getter
     @Setter
-    private List<String> triggerWords;
+    private List<String> triggerWords = new ArrayList<>();
+    
+    public List<String> getTriggerWords() {
+        if(triggerWords == null) triggerWords = new ArrayList<>();
+        return triggerWords;
+    }
 
     /**
      * Check the given searchTransaction to see if the query contains all the
@@ -56,7 +56,7 @@ public class AllQueryWordsTrigger implements Trigger {
         queryWords.addAll(Arrays.asList(Trigger.queryToMatchAgainst(searchTransaction).toLowerCase().split("\\b")));
         
         List<String> lowercasedTriggerWords = new ArrayList<String>();
-        for (String triggerWord : triggerWords) {
+        for (String triggerWord : getTriggerWords()) {
             // Skip any 'empty' words - FUN-8734
             String triggerWordTrimmed = triggerWord.trim();
             if (triggerWordTrimmed.length() > 0) {
