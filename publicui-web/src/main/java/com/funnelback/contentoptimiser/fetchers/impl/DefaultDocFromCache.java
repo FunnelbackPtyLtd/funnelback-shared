@@ -1,5 +1,12 @@
 package com.funnelback.contentoptimiser.fetchers.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,15 +15,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -40,7 +38,6 @@ import com.funnelback.common.utils.DocHdrUtils;
 import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.common.views.StoreView;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
-import com.funnelback.contentoptimiser.utils.CgiRunnerFactory;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.ConfigRepository;
@@ -48,6 +45,9 @@ import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.service.IndexRepository;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Component
@@ -69,8 +69,6 @@ public class DefaultDocFromCache implements DocFromCache {
     @Autowired
     @Setter private IndexRepository indexRepository;
     
-    @Autowired @Setter
-    private CgiRunnerFactory cgiRunnerFactory;
     
     private final String ignoreIndexerOptionPrefixes[] = {
         "-forcexml",
