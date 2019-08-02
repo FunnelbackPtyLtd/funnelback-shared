@@ -433,11 +433,13 @@
     },
 
     rel: function(box, data) {
-      const sortField = box.template.sort[Url.getPathParts(data._url, box.options.apiBase, 2)], url = Url.getUrl(data._url);
+      const sortField = box.template.sort[Url.getPathParts(data._url, '/', 2)], url = Url.getUrl(data._url);
       var params = Url.getPathParams(data._url);
       if (sortField) {
         params['sort'] = sortField;
         data['_url'] = Url.get(url, params, box.options.apiBase);
+      } else {
+        data['_url'] = Model.absoluteApiUrl(box, data['_url']);
       }
       if (data['_label']) data['_label'] = data['_label'].replace('-', '.');
     },
@@ -451,10 +453,6 @@
       if (view === 'search') {
         if (data._type) data._type = data._type.toLowerCase();
       }
-    },
-
-    rel: function(box, data) {
-      if (data['_url']) data['_url'] = Model.absoluteApiUrl(box, data['_url']);
     },
 
     summary: function(box, data, view) {
