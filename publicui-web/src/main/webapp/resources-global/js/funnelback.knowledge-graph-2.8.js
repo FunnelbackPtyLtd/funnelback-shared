@@ -1,6 +1,6 @@
 /*
  * Funnelback Knowledge Graph plugin
- * version 2.8.1
+ * version 2.8.2
  *
  * author: Liliana Nowak
  * Copyright Funnelback, 2017-2019
@@ -618,7 +618,7 @@
     init: function(box, obj, partial) {
       if (!partial) {
         this.load(box, 'all');
-        Search.init(box);
+        Search.reset(box);
       }
       Navigation.init(box, obj);
       if (obj) Navigation.go(box, $(obj));
@@ -1388,6 +1388,7 @@
         box.searchBox.find('input').on('focus', function() {
           $(document).on('keydown.' + Search.eventSuffix, function(e) {
             if ((e.keyCode || e.which) === 13) { // enter
+              e.preventDefault();
               box.searchBox.find('[type="button"]').click();
               return false;
             }
@@ -1396,6 +1397,10 @@
           $(document).off('keydown.' + Search.eventSuffix);
         });
       }
+    },
+
+    reset: function(box) {
+      box.searchBox.find('input').val('');
     },
 
     current: function(box) {
