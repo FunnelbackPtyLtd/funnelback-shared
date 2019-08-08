@@ -221,6 +221,7 @@ public class StreamResultsController {
                 response.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
 
+            // If the request includes a &fileName param. 
             if (!fileName.isEmpty()) {
                 response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
             }
