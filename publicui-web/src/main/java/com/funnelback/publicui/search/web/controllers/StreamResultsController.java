@@ -150,11 +150,12 @@ public class StreamResultsController {
             @RequestParam(required=false) CommaSeparatedList fields,
             @RequestParam(required=false) CommaSeparatedList fieldnames,
             @RequestParam(required=false, defaultValue="true") boolean optimisations,
+            @RequestParam(required=false) String fileName,
             @Valid SearchQuestion question,
             @ModelAttribute SearchUser user,
             @RequestParam(required=false) JsonPCallbackParam callback) throws Exception {
         
-        getAllResults(request, response, fields, fieldnames, optimisations, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS,
+        getAllResults(request, response, fields, fieldnames, fileName, optimisations, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS,
             callback);
         
     }
@@ -164,6 +165,7 @@ public class StreamResultsController {
         HttpServletResponse response,
         CommaSeparatedList fields,
         CommaSeparatedList fieldnames,
+        String fileName,
         boolean optimisations,
         @Valid SearchQuestion question,
         @ModelAttribute SearchUser user,
