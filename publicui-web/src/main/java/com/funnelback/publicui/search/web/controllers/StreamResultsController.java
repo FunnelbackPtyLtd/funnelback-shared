@@ -220,8 +220,11 @@ public class StreamResultsController {
             } catch (Exception e) {
                 response.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
-            
-            
+
+            if (!fileName.isEmpty()) {
+                response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
+            }
+
             response.getOutputStream().close();
             
         } else {

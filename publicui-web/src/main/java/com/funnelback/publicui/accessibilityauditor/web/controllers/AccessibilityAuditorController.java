@@ -83,11 +83,12 @@ public class AccessibilityAuditorController {
         @RequestParam(required=false) CommaSeparatedList fields,
         @RequestParam(required=false) CommaSeparatedList fieldnames,
         @RequestParam(required=false, defaultValue="true") boolean optimisations,
+        @RequestParam(required=false) String fileName,
         @Valid SearchQuestion question,
         @ModelAttribute SearchUser user,
         @RequestParam(required=false) JsonPCallbackParam callback) throws Exception {
         
-        streamResultsController.getAllResults(request, response, fields, fieldnames, optimisations, question, user,
+        streamResultsController.getAllResults(request, response, fields, fieldnames, fileName, optimisations, question, user,
             SearchQuestionType.ACCESSIBILITY_AUDITOR_GET_ALL_RESULTS, callback);
     }
     
