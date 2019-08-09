@@ -204,7 +204,15 @@ public class StreamResultsController {
                 response.sendError(HttpStatus.SC_BAD_REQUEST, "Unable to parse the xPath fields: " + e.getMessage());
                 return;
             }
-            
+
+            /*
+             * If the request includes a &fileName param.
+             * @see https://jira.squiz.net/browse/FUN-12913
+             */
+            if(fileName != null && !fileName.isEmpty()) {
+                response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
+            }
+
             // Now execute our query using the Paged searcher which takes care of making smaller request
             // then pass the result of each search the TransactionToResults class which will convert
             // the SearchTransaction to the data type expected e.g. CSV.
@@ -219,11 +227,6 @@ public class StreamResultsController {
                 }
             } catch (Exception e) {
                 response.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            }
-
-            // If the request includes a &fileName param. 
-            if (!fileName.isEmpty()) {
-                response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
             }
 
             response.getOutputStream().close();
