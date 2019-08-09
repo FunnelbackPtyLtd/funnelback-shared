@@ -205,13 +205,8 @@ public class StreamResultsController {
                 return;
             }
 
-            /*
-             * If the request includes a &fileName param.
-             * @see https://jira.squiz.net/browse/FUN-12913
-             */
-            if(fileName != null && !fileName.isEmpty()) {
-                response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
-            }
+            // Set the result file name if provided.
+            addContentDispositionHeader(response, fileName);
 
             // Now execute our query using the Paged searcher which takes care of making smaller request
             // then pass the result of each search the TransactionToResults class which will convert
@@ -236,5 +231,18 @@ public class StreamResultsController {
             response.getOutputStream().close();
         }
         
+    }
+
+    /**
+     * Set the 'Content-Disposition' header on a given response. 
+     * 
+     * @see https://jira.squiz.net/browse/FUN-12913
+     * @param response - Response object whose header to set
+     * @param fileName - File name, e,g 'cats.csv'
+     */
+    public void addContentDispositionHeader(HttpServletResponse response, String fileName) {
+        if(fileName != null && !fileName.isEmpty()) {
+            response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
+        }
     }
 }
