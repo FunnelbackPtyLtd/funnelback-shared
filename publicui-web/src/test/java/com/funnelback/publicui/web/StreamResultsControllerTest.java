@@ -33,4 +33,34 @@ public class StreamResultsControllerTest {
             headerResult
         );
     }
+
+    @Test
+    public void testAddContentDispositionHeaderWithNoFilename() {
+        this.controller.addContentDispositionHeader(this.resp, "");
+
+        Mockito.when(this.resp.getHeader("Content-Disposition"))
+            .thenReturn("");
+
+        String headerResult = this.resp.getHeader("Content-Disposition");
+        Assert.assertEquals(
+            "Content-Disposition header shouldn't exist",
+            "",
+            headerResult
+        );
+    }
+
+    @Test
+    public void testAddContentDispositionHeaderWithInvalidFilename() {
+        this.controller.addContentDispositionHeader(this.resp, null);
+
+        Mockito.when(this.resp.getHeader("Content-Disposition"))
+            .thenReturn("");
+
+        String headerResult = this.resp.getHeader("Content-Disposition");
+        Assert.assertEquals(
+            "Content-Disposition header shouldn't exist",
+            "",
+            headerResult
+        );
+    }
 }
