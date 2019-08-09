@@ -23,7 +23,7 @@ public class StreamResultsControllerTest {
         this.controller.addContentDispositionHeader(this.resp, fileName);
 
         Mockito.verify(this.resp, Mockito.times(1))
-            .setHeader("Content-Disposition", fileName);
+            .setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
     }
 
     @Test
