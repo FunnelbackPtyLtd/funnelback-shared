@@ -19,11 +19,10 @@ public class StreamResultsControllerTest {
 
     @Test
     public void testAddContentDispositionHeader() {
-        String fileName = "cats.csv";
-        this.controller.addContentDispositionHeader(this.resp, fileName);
+        this.controller.addContentDispositionHeader(this.resp, "cats.csv");
 
         Mockito.verify(this.resp, Mockito.times(1))
-            .setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
+            .setHeader("Content-Disposition", "attachment; filename=\"cats.csv\"");
     }
 
     @Test
