@@ -150,11 +150,12 @@ public class StreamResultsController {
             @RequestParam(required=false) CommaSeparatedList fields,
             @RequestParam(required=false) CommaSeparatedList fieldnames,
             @RequestParam(required=false, defaultValue="true") boolean optimisations,
+            @RequestParam(required=false) String fileName,
             @Valid SearchQuestion question,
             @ModelAttribute SearchUser user,
             @RequestParam(required=false) JsonPCallbackParam callback) throws Exception {
         
-        getAllResults(request, response, fields, fieldnames, optimisations, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS,
+        getAllResults(request, response, fields, fieldnames, fileName, optimisations, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS,
             callback);
         
     }
@@ -164,6 +165,7 @@ public class StreamResultsController {
         HttpServletResponse response,
         CommaSeparatedList fields,
         CommaSeparatedList fieldnames,
+        String fileName,
         boolean optimisations,
         @Valid SearchQuestion question,
         @ModelAttribute SearchUser user,
@@ -202,7 +204,10 @@ public class StreamResultsController {
                 response.sendError(HttpStatus.SC_BAD_REQUEST, "Unable to parse the xPath fields: " + e.getMessage());
                 return;
             }
-            
+
+            // Set the result file name if provided.
+            addContentDispositionHeader(response, fileName);
+
             // Now execute our query using the Paged searcher which takes care of making smaller request
             // then pass the result of each search the TransactionToResults class which will convert
             // the SearchTransaction to the data type expected e.g. CSV.
@@ -218,8 +223,7 @@ public class StreamResultsController {
             } catch (Exception e) {
                 response.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
-            
-            
+
             response.getOutputStream().close();
             
         } else {
@@ -227,5 +231,18 @@ public class StreamResultsController {
             response.getOutputStream().close();
         }
         
+    }
+
+    /**
+     * Set the 'Content-Disposition' header on a given response. 
+     * 
+     * @see https://jira.squiz.net/browse/FUN-12913
+     * @param response - Response object whose header to set
+     * @param fileName - File name, e,g 'cats.csv'
+     */
+    public void addContentDispositionHeader(HttpServletResponse response, String fileName) {
+        if(fileName != null && !fileName.isEmpty()) {
+            response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
+        }
     }
 }
