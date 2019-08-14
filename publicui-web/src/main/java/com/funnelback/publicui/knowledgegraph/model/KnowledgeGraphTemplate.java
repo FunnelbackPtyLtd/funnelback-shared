@@ -45,6 +45,7 @@ public class KnowledgeGraphTemplate {
     public static class SortList {
         private final String field;
         private final SortOrder order;
+        private final Boolean group;
     }
 
     public enum SortOrder {
@@ -71,7 +72,8 @@ public class KnowledgeGraphTemplate {
             template.setSort(
                 new SortList(
                     configTemplate.getSort().getField(),
-                    SortOrder.valueOf(configTemplate.getSort().getOrder().getValue())
+                    SortOrder.valueOf(configTemplate.getSort().getOrder().getValue()),
+                    configTemplate.getSort().isGroup()
                 )
             );
 
