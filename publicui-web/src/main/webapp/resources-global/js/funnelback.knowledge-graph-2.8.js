@@ -947,7 +947,7 @@
     },
 
     setGrouping: function(box, type, config) {
-      box.template.group[type] = config.field ? config.field : '';
+      box.template.group[type] = config.field && config.group ? config.field : '';
     },
 
     setIcon: function(box, type, config) {
