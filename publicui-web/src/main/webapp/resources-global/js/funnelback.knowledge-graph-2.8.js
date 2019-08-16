@@ -738,6 +738,7 @@
       if (data.list && data.list.length) {
         box.searchHeader.html(Template.render(box, 'searchHeader', data.summary));
         box.searchList.html(Template.render(box, 'list', {list: Data.convertToView(box, data.list, '_list')}));
+        box.searchList[0].parentNode.scrollTop = 0;
         box.facets.html(Template.render(box, 'facets', data.facets));
       } else {
         box.searchHeader.html('');
@@ -793,6 +794,7 @@
         Tabs.getPanel(box, context._tab).html(Template.render(box, 'list', {list: related}));
         Pagination.set(box, url);
       }
+      box.list[0].parentNode.scrollTop = 0;
     },
 
     tabsNav: function(box, url, data, context) {
