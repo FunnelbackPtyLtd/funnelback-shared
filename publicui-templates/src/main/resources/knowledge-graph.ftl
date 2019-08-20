@@ -24,7 +24,7 @@
 <div class="loader"><span class="fa fa-fw fa-3x fa-spinner fa-pulse"></span><span class="text">Loading...</span></div>
 <script type="text/javascript" src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/nprogress-0.2.0/nprogress.min.js"></script>
-<script type="text/javascript" src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/momentjs-2.22.2/moment.min.js"></script>
+<script type="text/javascript" src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/momentjs-2.24/moment.min.js"></script>
 <script type="text/javascript" src="${ContextPath}/${GlobalResourcesPrefix}thirdparty/handlebars-4.1/handlebars.min.js"></script>
 <script type="text/javascript" src="${ContextPath}/${GlobalResourcesPrefix}js/funnelback.knowledge-graph-2.8.min.js"></script>
 <script type="text/javascript">

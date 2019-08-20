@@ -917,7 +917,7 @@
     },
 
     isDateField: function(field) {
-      return field.indexOf('date_') > -1 || field.indexOf('_date') > -1;
+      return field.indexOf('date') > -1 || field === 'd';
     },
 
     isEmailField: function(val) {
