@@ -1,6 +1,6 @@
 /*
  * Funnelback Knowledge Graph plugin
- * version 2.8.2
+ * version 2.8.4
  *
  * author: Liliana Nowak
  * Copyright Funnelback, 2017-2019
@@ -163,9 +163,17 @@
       if (targetUrlParam) id = targetUrlParam;
       else if (box.options.targetUrl && $.isString(box.options.targetUrl)) id = box.options.targetUrl;
       else if (box.options.contentSelector) {
-        const sel = document.querySelector(box.options.contentSelector);
+        const sel = document.querySelectorAll(box.options.contentSelector);
         id = undefined;
-        if (sel) id = (box.options.contentType === 'attr' ? sel.getAttribute(box.options.contentAttr) : sel.innerText).trim();
+        if (sel && sel.length) {
+          for (var i = 0, len = sel.length; i < len; i++) {
+            id = (box.options.contentType === 'attr' ? sel[i].getAttribute(box.options.contentAttr) : sel[i].innerText);
+            if (id) {
+              id = id.trim();
+              break;
+            }
+          }
+        }
         else Log.warn('Element "' + box.options.contentSelector + '" has not been found');
       }
       return id;
