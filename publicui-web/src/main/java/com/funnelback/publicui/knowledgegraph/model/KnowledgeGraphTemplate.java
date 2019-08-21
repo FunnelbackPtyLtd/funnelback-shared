@@ -1,27 +1,18 @@
 package com.funnelback.publicui.knowledgegraph.model;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.funnelback.adminapi.client.model.KnowledgeGraphTemplateModel;
 import com.funnelback.publicui.knowledgegraph.exception.InvalidInputException;
-import com.google.common.collect.ImmutableSet;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NonNull;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 @Data
 public class KnowledgeGraphTemplate {
@@ -30,6 +21,7 @@ public class KnowledgeGraphTemplate {
     private String subtitle = "";
     private String desc = "";
     private String image = "";
+    private ImageDefault imageDefault;
     private final PrimaryAndSecondaryLists list = new PrimaryAndSecondaryLists();
     private final PrimaryAndSecondaryLists detail = new PrimaryAndSecondaryLists();
 
@@ -42,10 +34,21 @@ public class KnowledgeGraphTemplate {
     }
 
     @Data
+    public static class ImageDefault {
+        private final String value;
+        private final ImageDefaultType type;
+    }
+
+    @Data
     public static class SortList {
         private final String field;
         private final SortOrder order;
         private final Boolean group;
+    }
+
+    public enum ImageDefaultType {
+        ICON,
+        URL;
     }
 
     public enum SortOrder {
@@ -68,6 +71,11 @@ public class KnowledgeGraphTemplate {
             template.setSubtitle(configTemplate.getSubtitle());
             template.setDesc(configTemplate.getDesc());
             template.setImage(configTemplate.getImage());
+
+            template.setImageDefault(new ImageDefault(
+                configTemplate.getImageDefault().getValue(),
+                ImageDefaultType.valueOf(configTemplate.getImageDefault().getType().getValue())
+            ));
 
             template.setSort(
                 new SortList(
