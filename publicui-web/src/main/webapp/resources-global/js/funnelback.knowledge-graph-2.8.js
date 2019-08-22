@@ -507,6 +507,7 @@
         fields: {},
         group: {},
         icon: {},
+        imageDefault: {},
         sort: {},
       },
     },
@@ -795,7 +796,6 @@
     tabsList: function(box, url, data, context) {
       const parts = Url.getPathParts(url, box.options.apiBase), type = parts[2], rels = parts[3], related = Data.groupNodes(box, Data.convertToView(box, data.list, '_list'), type, rels);
       Tabs.setData(box, context._id ? '#' + context._id : context._tab, {_url: url, _total: data.total});
-
       if (context._id) {
         box.list.append(Template.render(box, 'tabList', {list: related, _id: context._id}));
       } else { // list is paginating
@@ -867,7 +867,9 @@
       phone: '{{#if val}}<a class="{{_classes}}" href="tel:{{val}}">{{>icon-block _classes="" _icon=_icon}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}',
       url: '{{#if _viewUrl}}<a class="{{_classes}}" href="{{_viewUrl}}" data-kg-nav="external" data-kg-url="{{_viewUrl}}" target="_blank">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{_viewUrl}}{{/if}}</a>{{/if}}',
       icon: '{{#if _icon}}<span class="{{_icon}} {{_classes}}"></span> {{/if}}',
-      img: '{{#if _image}}<img class="' + _prefix + 'rounded-circle {{_classes}}" src="{{_image}}" />{{/if}}',
+      img: '{{#if _image}}{{>image-block _classes=_classes}}{{else}}{{>imgDefault-block _classes=_classes}}{{/if}}',
+      imgDefault: '{{#if (imageDefaultType)}}{{>(imageDefaultType) (imageDefaultContext) _classes=_classes}}{{/if}}',
+      image: '<img class="' + _prefix + 'rounded-circle {{_classes}}" src="{{_image}}" />',
       primary: '{{#if primary}}<div class="{{_classes}}">{{#each primary}}<span class="' + _prefix + 'mr-2">{{> (item)}}</span>{{/each}}</div>{{/if}}',
       breadcrumbItem: '<a class="{{#if _classes}}{{_classes}}{{else}}' + _prefix + 'nav-item ' + _prefix + 'nav-link{{/if}} ' + _prefix + 'text-truncate" href="#" data-kg-nav="{{_nav}}" data-kg-url="{{_url}}" title="{{_title}}">{{>icon-block}}{{{_label}}}</a>',
       list: '<div class="' + _prefix + 'card-list ' + _prefix + 'mb-2">{{#each list}}{{#if group}}{{>listGroup-block}}{{else}}{{>listItem-block collapseId=@index}}{{/if}}{{/each}}</div>',
@@ -898,6 +900,7 @@
             Template.setFields(box, type, templ);
             Template.setGrouping(box, type, templ.sort || '');
             Template.setIcon(box, type, templ.icon || '');
+            Template.setImageDefault(box, type, templ.imageDefault || '');
             Template.setSorting(box, type, templ.sort || '');
           }
         }
@@ -942,6 +945,7 @@
 
     render: function(box, name, data) {
       data._options = box.options;
+      data._options.imageDefault = box.template.imageDefault;
       data._translate = Translation.keys;
       return box.template[name](data);
     },
@@ -962,6 +966,13 @@
 
     setIcon: function(box, type, config) {
       box.template.icon[type] = (box.options.iconPrefix || '') + config;
+    },
+
+    setImageDefault: function(box, type, config) {
+      if (config.value) {
+        box.template.imageDefault[type] = config;
+        if (config.type === 'ICON') box.template.imageDefault[type].value = (box.options.iconPrefix || '') + config.value;
+      }
     },
 
     setSorting: function(box, type, config) {
@@ -1844,6 +1855,20 @@
     },
     dateFormat: function(format, options) {
       return Dates.format(options.fn(this), format);
+    },
+    imageDefaultType: function(options) {
+      const imgDefault = options.data.root._options.imageDefault[this._type];
+      if (imgDefault) {
+        return (imgDefault.type === 'ICON' ? 'icon' : 'image') + '-block';
+      }
+      return '';
+    },
+    imageDefaultContext: function(options) {
+      const imgDefault = options.data.root._options.imageDefault[this._type];
+      if (imgDefault) {
+        return imgDefault.type === 'ICON' ? {_icon: imgDefault.value} : {_image: imgDefault.value};
+      }
+      return '';
     },
     item: function() {
       var templ = 'text';
