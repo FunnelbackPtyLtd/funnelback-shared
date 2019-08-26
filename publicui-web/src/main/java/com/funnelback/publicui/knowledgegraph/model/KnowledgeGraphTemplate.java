@@ -21,6 +21,7 @@ public class KnowledgeGraphTemplate {
     private String subtitle = "";
     private String desc = "";
     private String image = "";
+    private Boolean url = true;
     private ImageDefault imageDefault;
     private final PrimaryAndSecondaryLists list = new PrimaryAndSecondaryLists();
     private final PrimaryAndSecondaryLists detail = new PrimaryAndSecondaryLists();
@@ -71,7 +72,7 @@ public class KnowledgeGraphTemplate {
             template.setSubtitle(configTemplate.getSubtitle());
             template.setDesc(configTemplate.getDesc());
             template.setImage(configTemplate.getImage());
-
+            template.setUrl(configTemplate.isUrl());
             template.setImageDefault(new ImageDefault(
                 configTemplate.getImageDefault().getValue(),
                 ImageDefaultType.valueOf(configTemplate.getImageDefault().getType().getValue())
