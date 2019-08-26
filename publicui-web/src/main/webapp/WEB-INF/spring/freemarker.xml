@@ -204,4 +204,9 @@
         <property name="contentType" value="text/html;charset=UTF-8" />
     </bean>
 
+    <!-- RNDSUPPORT-3041 -->
+    <bean class="org.springframework.beans.factory.config.MethodInvokingBean">
+        <property name="staticMethod" value="freemarker.core.HackHtmlEscapingBuiltIn.hackIt" />
+    </bean>
+
 </beans>
