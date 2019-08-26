@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import freemarker.core.HackHtmlEscapingBuiltIn;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -193,6 +194,9 @@ public class SearchController extends SessionController {
             HttpServletResponse response,
             @Valid SearchQuestion question,
             @ModelAttribute SearchUser user) {
+
+        // FIXME - We're re-hacking this every request. We should find a place to do this once instead.
+        HackHtmlEscapingBuiltIn.hackIt();
 
         // Put the relevant objects in the model, depending
         // of the view requested
