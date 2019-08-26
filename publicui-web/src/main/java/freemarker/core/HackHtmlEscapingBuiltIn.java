@@ -15,7 +15,6 @@ public class HackHtmlEscapingBuiltIn {
 
     private static String htmlEncodeCurlyBrackets(String result) {
         // Escape curly-brackets for angular xss (RNDSUPPORT-3041)
-        // FIXME - this is inefficient. if we're doing this we should make it faster
         result = result.replace("{", "&#123;");
         result = result.replace("}", "&#125;");
         return result;

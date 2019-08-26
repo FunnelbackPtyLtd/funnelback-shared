@@ -195,9 +195,6 @@ public class SearchController extends SessionController {
             @Valid SearchQuestion question,
             @ModelAttribute SearchUser user) {
 
-        // FIXME - We're re-hacking this every request. We should find a place to do this once instead.
-        HackHtmlEscapingBuiltIn.hackIt();
-
         // Put the relevant objects in the model, depending
         // of the view requested
         ViewTypes vt;
