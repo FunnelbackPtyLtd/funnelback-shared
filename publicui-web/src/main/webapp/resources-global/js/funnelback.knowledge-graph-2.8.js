@@ -476,7 +476,7 @@
         var i, len;
         for (i = 0, len = data.length; i < len; i++) data[i] = Url.setUrl(data[i], box.options.urlPrefix);
       }
-      return data;
+      return box.template.url ? data : undefined;
     },
 
     absoluteApiUrl: function(box, url) {
@@ -509,6 +509,7 @@
         icon: {},
         imageDefault: {},
         sort: {},
+        url: {},
       },
     },
 
@@ -902,6 +903,7 @@
             Template.setIcon(box, type, templ.icon || '');
             Template.setImageDefault(box, type, templ.imageDefault || '');
             Template.setSorting(box, type, templ.sort || '');
+            Template.setUrl(box, type, templ.url);
           }
         }
       }).catch(function(error) {
@@ -977,6 +979,10 @@
 
     setSorting: function(box, type, config) {
       box.template.sort[type] = (config.field && config.order) ? (config.order === 'DESC' ? '-' : '') + config.field : '';
+    },
+
+    setUrl: function(box, type, config) {
+      box.template.url[type] = $.isDefined(config) ? config : true;
     }
   }
 
