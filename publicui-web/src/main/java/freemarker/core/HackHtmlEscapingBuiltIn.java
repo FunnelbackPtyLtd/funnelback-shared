@@ -16,7 +16,7 @@ public class HackHtmlEscapingBuiltIn {
     private static String breakAngularInterpolation(String result) {
         // Insert a zero-width space between any pair of curly-brackets
         // to prevent angular xss (RNDSUPPORT-3041)
-        return result.replace("{{", "{\u200B{");
+        return result.replace("{{", "{&#8203;{");
     }
 
     private static class HackedHtmlEscapingBuiltIn extends BuiltInForLegacyEscaping {
