@@ -13,17 +13,16 @@ public class HackHtmlEscapingBuiltIn {
         BuiltIn.BUILT_INS_BY_NAME.put("xhtml", new HackedXhtmlEscapingBuiltIn());
     }
 
-    private static String htmlEncodeCurlyBrackets(String result) {
-        // Escape curly-brackets for angular xss (RNDSUPPORT-3041)
-        result = result.replace("{", "&#123;");
-        result = result.replace("}", "&#125;");
-        return result;
+    private static String breakAngularInterpolation(String result) {
+        // Insert a zero-width space between any pair of curly-brackets
+        // to prevent angular xss (RNDSUPPORT-3041)
+        return result.replace("{{", "{&#8203;{");
     }
 
     private static class HackedHtmlEscapingBuiltIn extends BuiltInForLegacyEscaping {
         @Override TemplateModel calculateResult(String s, Environment env) throws TemplateException {
             String result = StringUtil.HTMLEnc(s);
-            result = htmlEncodeCurlyBrackets(result);
+            result = breakAngularInterpolation(result);
             return new SimpleScalar(result);
         }
     }
@@ -32,7 +31,7 @@ public class HackHtmlEscapingBuiltIn {
         @Override
         TemplateModel calculateResult(String s, Environment env) {
             String result = StringUtil.XHTMLEnc(s);
-            result = htmlEncodeCurlyBrackets(result);
+            result = breakAngularInterpolation(result);
             return new SimpleScalar(result);
         }
     }
