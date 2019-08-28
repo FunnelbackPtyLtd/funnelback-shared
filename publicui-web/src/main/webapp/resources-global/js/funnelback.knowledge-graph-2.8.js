@@ -1,6 +1,6 @@
 /*
  * Funnelback Knowledge Graph plugin
- * version 2.8.4
+ * version 2.8.5
  *
  * author: Liliana Nowak
  * Copyright Funnelback, 2017-2019
@@ -460,6 +460,7 @@
       }
       if (view === 'search') {
         if (data._type) data._type = data._type.toLowerCase();
+        if (data._id) data['_viewUrl'] = Model.viewUrl(box, [data._id]);
       }
     },
 
@@ -476,7 +477,7 @@
         var i, len;
         for (i = 0, len = data.length; i < len; i++) data[i] = Url.setUrl(data[i], box.options.urlPrefix);
       }
-      return box.template.url ? data : undefined;
+      return data;
     },
 
     absoluteApiUrl: function(box, url) {
@@ -866,7 +867,7 @@
       email: '{{#if val}}<a class="{{_classes}}" href="mailto:{{val}}">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}',
       path: '<span class="kg-long-path">{{val}}</span>',
       phone: '{{#if val}}<a class="{{_classes}}" href="tel:{{val}}">{{>icon-block _classes="" _icon=_icon}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}',
-      url: '{{#if _viewUrl}}<a class="{{_classes}}" href="{{_viewUrl}}" data-kg-nav="external" data-kg-url="{{_viewUrl}}" target="_blank">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{_viewUrl}}{{/if}}</a>{{/if}}',
+      url: '{{#if (and _viewUrl (isUrl))}}<a class="{{_classes}}" href="{{_viewUrl}}" data-kg-nav="external" data-kg-url="{{_viewUrl}}" target="_blank">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{_viewUrl}}{{/if}}</a>{{/if}}',
       icon: '{{#if _icon}}<span class="{{_icon}} {{_classes}}"></span> {{/if}}',
       img: '{{#if _image}}{{>image-block _classes=_classes}}{{else}}{{>imgDefault-block _classes=_classes}}{{/if}}',
       imgDefault: '{{#if (imageDefaultType)}}{{>(imageDefaultType) (imageDefaultContext) _classes=_classes}}{{/if}}',
@@ -875,7 +876,7 @@
       breadcrumbItem: '<a class="{{#if _classes}}{{_classes}}{{else}}' + _prefix + 'nav-item ' + _prefix + 'nav-link{{/if}} ' + _prefix + 'text-truncate" href="#" data-kg-nav="{{_nav}}" data-kg-url="{{_url}}" title="{{_title}}">{{>icon-block}}{{{_label}}}</a>',
       list: '<div class="' + _prefix + 'card-list ' + _prefix + 'mb-2">{{#each list}}{{#if group}}{{>listGroup-block}}{{else}}{{>listItem-block collapseId=@index}}{{/if}}{{/each}}</div>',
       listGroup: '<div class="' + _prefix + 'card-group ' + _prefix + 'pt-3 ' + _prefix + 'pb-2 ' + _prefix + 'px-3">{{group}}</div>',
-      listItem: '<div class="' + _prefix + 'card ' + _prefix + 'py-1"><div class="' + _prefix + 'd-flex ' + _prefix + 'align-items-center ' + _prefix + 'my-2"><a class="' + _prefix + 'align-self-center ' + _prefix + 'px-2 ' + _prefix + 'py-3 ' + _prefix + 'mr-2 ' + _prefix + 'border-right ' + _prefix + 'collapsed {{#unless secondary}}' + _prefix + 'invisible{{/unless}}" data-kg-nav="collapse" data-toggle="collapse" href="#collapsed{{_id}}{{collapseId}}" role="button" aria-expanded="false" aria-controls="{{collapseId}}"><span class="fa fa-fw fa-chevron-up"></span></a>{{>img-block _classes="' + _prefix + 'card-image ' + _prefix + 'ml-2 ' + _prefix + 'mr-3"}}<div class="' + _prefix + 'd-flex ' + _prefix + 'flex-fill ' + _prefix + 'align-items-center"><div class="' + _prefix + 'd-flex ' + _prefix + 'flex-column{{#if primary}} ' + _prefix + 'col-7{{/if}}">{{#if _viewUrl}}{{>url-block _classes="" _label=_title _icon=""}}{{else}}{{{_title}}}{{/if}}<span class="' + _prefix + 'd-inline-flex ' + _prefix + 'text-muted">{{{_subtitle}}}</span></div>{{>primary-block}}</div><a href="#" data-kg-nav="{{#if _nav}}{{_nav}}{{else}}go{{/if}}" data-kg-url="{{_url.self}}" class="' + _prefix + 'card-link ' + _prefix + 'btn"><span class="fa fa-fw fa-arrow-circle-right"></span></a></div>{{>listItemSecondary-block}}</div>',
+      listItem: '<div class="' + _prefix + 'card ' + _prefix + 'py-1"><div class="' + _prefix + 'd-flex ' + _prefix + 'align-items-center ' + _prefix + 'my-2"><a class="' + _prefix + 'align-self-center ' + _prefix + 'px-2 ' + _prefix + 'py-3 ' + _prefix + 'mr-2 ' + _prefix + 'border-right ' + _prefix + 'collapsed {{#unless secondary}}' + _prefix + 'invisible{{/unless}}" data-kg-nav="collapse" data-toggle="collapse" href="#collapsed{{_id}}{{collapseId}}" role="button" aria-expanded="false" aria-controls="{{collapseId}}"><span class="fa fa-fw fa-chevron-up"></span></a>{{>img-block _classes="' + _prefix + 'card-image ' + _prefix + 'ml-2 ' + _prefix + 'mr-3"}}<div class="' + _prefix + 'd-flex ' + _prefix + 'flex-fill ' + _prefix + 'align-items-center"><div class="' + _prefix + 'd-flex ' + _prefix + 'flex-column{{#if primary}} ' + _prefix + 'col-7{{/if}}">{{#if (and _viewUrl (isUrl))}}{{>url-block _classes="" _label=_title _icon=""}}{{else}}{{{_title}}}{{/if}}<span class="' + _prefix + 'd-inline-flex ' + _prefix + 'text-muted">{{{_subtitle}}}</span></div>{{>primary-block}}</div><a href="#" data-kg-nav="{{#if _nav}}{{_nav}}{{else}}go{{/if}}" data-kg-url="{{_url.self}}" class="' + _prefix + 'card-link ' + _prefix + 'btn"><span class="fa fa-fw fa-arrow-circle-right"></span></a></div>{{>listItemSecondary-block}}</div>',
       listItemSecondary: '{{#if secondary}}<div id="collapsed{{_id}}{{collapseId}}" class="' + _prefix + 'collapse kg-secondary"><div class="' + _prefix + 'd-flex ' + _prefix + 'flex-wrap ' + _prefix + 'py-2 ' + _prefix + 'ml-475 ' + _prefix + 'mr-2 ' + _prefix + 'border-top">{{#each secondary}}<span class="' + _prefix + 'd-flex ' + _prefix + 'flex-fill ' + _prefix + 'mt-1 ' + _prefix + 'mb-2"><span class="' + _prefix + 'text-bold ' + _prefix + 'mr-1">{{translate @root._translate.property ../_type key}}</span><span class="' + _prefix + 'd-inline-block ' + _prefix + 'text-width ' + _prefix + 'text-muted ' + _prefix + 'text-truncate" title="{{val}}">{{>(item) _type=../_type}}</span></span>{{/each}}</div></div>{{/if}}',
       pagination: '<nav class="kg-pagination ' + _prefix + 'my-3 ' + _prefix + 'pagination ' + _prefix + 'justify-content-center"><span class="kg-paginationPrev ' + _prefix + 'page-item ' + _prefix + 'pagination-nav ' + _prefix + 'disabled"><a class="' + _prefix + 'page-link" href="#" data-kg-nav="prev" tabindex="-1"><span class="fa fa-fw fa-chevron-left"></span> Prev</a></span><span class="kg-paginationList ' + _prefix + 'pagination-pages ' + _prefix + 'd-flex"></span><span class="kg-paginationNext ' + _prefix + 'page-item ' + _prefix + 'pagination-nav"><a class="' + _prefix + 'page-link" href="#" data-kg-nav="next">Next <span class="fa fa-fw fa-chevron-right"></span></a></span></nav>',
       tabItem: '<a class="' + _prefix + 'nav-link" id="{{_id}}-tab" href="#{{_id}}" data-kg-nav="tab" data-kg-url="{{_url}}" data-kg-total="{{_total}}" data-toggle="tab" role="tab" aria-controls="{{_id}}" aria-selected="false">{{translate @root._translate.relationship _label}} <small class="' + _prefix + 'text-muted">{{_count}}</small></a>',
@@ -947,6 +948,7 @@
 
     render: function(box, name, data) {
       data._options = box.options;
+      data._options.viewUrl = box.template.url;
       data._options.imageDefault = box.template.imageDefault;
       data._translate = Translation.keys;
       return box.template[name](data);
@@ -1862,6 +1864,7 @@
     dateFormat: function(format, options) {
       return Dates.format(options.fn(this), format);
     },
+    // Get partial template to display based on type of default image
     imageDefaultType: function(options) {
       const imgDefault = options.data.root._options.imageDefault[this._type];
       if (imgDefault) {
@@ -1869,6 +1872,7 @@
       }
       return '';
     },
+    // Get value to display in partial template based on type of default image
     imageDefaultContext: function(options) {
       const imgDefault = options.data.root._options.imageDefault[this._type];
       if (imgDefault) {
@@ -1876,6 +1880,7 @@
       }
       return '';
     },
+    // Get partial template to display based on type of field
     item: function() {
       var templ = 'text';
       if (Template.isBadgeField(this.key)) templ = 'badge';
@@ -1884,6 +1889,10 @@
       if (Template.isPathField(this.key)) templ = 'path';
       if (Template.isPhoneField(this.key)) templ = 'phone';
       return templ + '-block';
+    },
+    // Check if entity/view URL should be displayed based on template setting
+    isUrl: function(options) {
+      return $.isDefined(options.data.root._options.viewUrl[this._type]) ? options.data.root._options.viewUrl[this._type] : true;
     },
     translate: function() {
       const args = [].slice.call(arguments);
