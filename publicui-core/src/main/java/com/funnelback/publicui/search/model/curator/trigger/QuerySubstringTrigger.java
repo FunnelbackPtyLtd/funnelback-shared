@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -26,7 +27,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class QuerySubstringTrigger implements Trigger {
+public final class QuerySubstringTrigger implements Trigger, HasNoBeans {
 
     /**
      * The substring to check for in the current query.

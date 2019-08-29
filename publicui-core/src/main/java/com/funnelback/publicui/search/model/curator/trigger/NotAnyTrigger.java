@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.model.curator.trigger;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -27,7 +28,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class NotAnyTrigger implements Trigger {
+public final class NotAnyTrigger implements Trigger, HasNoBeans {
 
     /**
      * The list of 'sub' triggers each of which must not activate for this trigger
@@ -60,8 +61,6 @@ public class NotAnyTrigger implements Trigger {
     @Override
     public void configure(Configurer configurer) {
         configurer.configure(this);
-        for (Trigger trigger : getTriggers()) {
-            trigger.configure(configurer);
-        }
+        getTriggers().forEach(t -> t.configure(configurer));
     }
 }

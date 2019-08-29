@@ -1,15 +1,16 @@
 package com.funnelback.publicui.search.model.curator.action;
 
-import lombok.EqualsAndHashCode;
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
+import com.funnelback.publicui.search.model.curator.config.Action;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import com.funnelback.publicui.search.model.curator.config.Action;
-import com.funnelback.publicui.search.model.curator.config.Configurer;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * <p>Action to set the query to the given value, replacing any previously specified by the user.</p>
@@ -20,7 +21,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class SetQuery implements Action {
+public final class SetQuery implements Action, HasNoBeans {
 
     /** The new query to be used. */
     @Getter @Setter private String query;

@@ -3,6 +3,11 @@ package com.funnelback.publicui.search.model.curator.trigger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
+import com.funnelback.publicui.search.model.curator.config.Trigger;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -10,10 +15,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
-
-import com.funnelback.publicui.search.model.curator.config.Configurer;
-import com.funnelback.publicui.search.model.curator.config.Trigger;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * A trigger which activates when the current query matches the given regular
@@ -24,7 +25,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @ToString
 @EqualsAndHashCode
 @Log4j2
-public class QueryRegularExpressionTrigger implements Trigger {
+public final class QueryRegularExpressionTrigger implements Trigger, HasNoBeans {
 
     /** The regular expression to run against the current query */
     @Getter

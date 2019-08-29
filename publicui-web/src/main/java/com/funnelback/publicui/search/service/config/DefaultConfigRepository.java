@@ -57,9 +57,11 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
+import com.funnelback.publicui.search.model.curator.config.AutowireCuratorConfigurer;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.funnelback.publicui.search.model.curator.config.CuratorYamlConfig;
+import com.funnelback.publicui.search.model.curator.config.DoNothingCuratorConfigurer;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.resource.impl.ConfigMapResource;
 import com.funnelback.publicui.search.service.resource.impl.CuratorJsonConfigResource;
@@ -368,16 +370,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             }
             
             // Autowire in anything the Curator objects depend on
-            config.configure(new Configurer() {
-                @Override
-                public void configure(Object objectToConfigure) {
-                    if (autowireCapableBeanFactory != null) {
-                        autowireCapableBeanFactory.autowireBean(objectToConfigure);
-                    } else {
-                        log.error("Expected AutowireBeanFactory bean to be available - Some curator rules may not function.");
-                    }
-                }
-            });
+            config.configure(getCuratorConfigurer());
             
             p.setCuratorConfig(config);
 
@@ -386,6 +379,15 @@ public class DefaultConfigRepository implements ConfigRepository {
         }
         
         return out;        
+    }
+    
+    private Configurer getCuratorConfigurer() {
+        if (autowireCapableBeanFactory != null) {
+            return new AutowireCuratorConfigurer(autowireCapableBeanFactory::autowireBean); 
+        } else {
+            log.error("Expected AutowireBeanFactory bean to be available - Some curator rules may not function.");
+            return new DoNothingCuratorConfigurer();
+        }
     }
 
     /**

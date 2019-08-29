@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -31,7 +32,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(of={"triggerWords"})
-public class AllQueryWordsTrigger implements Trigger {
+public final class AllQueryWordsTrigger implements Trigger, HasNoBeans {
 
     /**
      * The list of words required to be found within the query for this trigger

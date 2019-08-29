@@ -1,20 +1,20 @@
 package com.funnelback.publicui.search.model.curator.action;
 
-import lombok.EqualsAndHashCode;
-
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.google.common.base.Joiner;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>Action to promote a set of URLs within the search results, causing them to be
@@ -31,7 +31,7 @@ import com.google.common.base.Joiner;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class PromoteUrls implements Action {
+public final class PromoteUrls implements Action, HasNoBeans {
 
     /**
      * The list of URLs to promote (the first given URL will be returned at rank

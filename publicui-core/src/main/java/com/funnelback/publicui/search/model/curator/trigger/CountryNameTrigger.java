@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.model.curator.trigger;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.geolocation.Location;
@@ -30,7 +31,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class CountryNameTrigger implements Trigger {
+public final class CountryNameTrigger implements Trigger, HasNoBeans {
 
     /**
      * The list of country names (case sensitive) for which this trigger should
