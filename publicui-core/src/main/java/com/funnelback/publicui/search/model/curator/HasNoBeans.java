@@ -9,6 +9,9 @@ import com.funnelback.publicui.search.model.curator.config.Configurer;
  * annotation processing.
  * 
  * This saves a substantial amount of time, as annotation processing is relatively slow.
+ * 
+ * It is generally best to make a class that implements this to be final, to avoid the risk of
+ * sub classes needing beens. That could change though if we needed to.
  */
 public interface HasNoBeans {
 

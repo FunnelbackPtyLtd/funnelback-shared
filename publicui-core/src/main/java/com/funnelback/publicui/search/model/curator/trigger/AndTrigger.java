@@ -63,10 +63,6 @@ public final class AndTrigger implements Trigger, HasNoBeans {
     @Override
     public void configure(Configurer configurer) {
         configurer.configure(this);
-        getTriggers().forEach(t -> t.configure(configurer)); 
-        
-//        for (Trigger trigger : getTriggers()) {
-//            trigger.configure(configurer);
-//        }
+        getTriggers().forEach(t -> t.configure(configurer));
     }
 }
