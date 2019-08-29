@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -21,7 +22,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class RequestParameterTrigger implements Trigger {
+public final class RequestParameterTrigger implements Trigger, HasNoBeans {
     
     /**
      * The request parameter to check

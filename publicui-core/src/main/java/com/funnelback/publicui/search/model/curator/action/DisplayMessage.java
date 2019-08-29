@@ -1,17 +1,17 @@
 package com.funnelback.publicui.search.model.curator.action;
 
-import lombok.EqualsAndHashCode;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.data.Message;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Action to display the specified message within the search results.
@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class DisplayMessage implements Action {
+public final class DisplayMessage implements Action, HasNoBeans {
 
     /** The message to display when this action is performed. */
     @Getter

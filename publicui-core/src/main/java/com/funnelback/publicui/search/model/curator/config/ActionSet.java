@@ -1,16 +1,15 @@
 package com.funnelback.publicui.search.model.curator.config;
 
-import lombok.EqualsAndHashCode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.funnelback.publicui.search.model.curator.config.Action.Phase;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import com.funnelback.publicui.search.model.curator.config.Action.Phase;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * ActionSet defines a group of actions (which may share a single trigger) and
@@ -55,8 +54,8 @@ public class ActionSet {
      * Perform any configuration required (e.g. autowiring beans needed by each Action).
      */
     public void configure(Configurer configurer) {
-        for (Action action : actions) {
-            action.configure(configurer);
+        if(actions != null) {
+            actions.forEach(a -> a.configure(configurer));
         }
     }
 

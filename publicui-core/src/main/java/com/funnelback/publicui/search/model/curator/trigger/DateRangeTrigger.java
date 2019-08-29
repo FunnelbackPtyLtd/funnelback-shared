@@ -1,18 +1,18 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
-import lombok.EqualsAndHashCode;
-
 import java.util.Date;
 
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
+import com.funnelback.publicui.search.model.curator.config.Trigger;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import com.funnelback.publicui.search.model.curator.config.Configurer;
-import com.funnelback.publicui.search.model.curator.config.Trigger;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * <p>
@@ -43,7 +43,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class DateRangeTrigger implements Trigger {
+public final class DateRangeTrigger implements Trigger, HasNoBeans {
 
     /**
      * The date before which the trigger will never activate. If left as null

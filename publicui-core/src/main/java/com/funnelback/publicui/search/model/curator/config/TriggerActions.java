@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.funnelback.api.core.models.AbstractIdentifiableDated;
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
 import com.funnelback.publicui.search.model.curator.trigger.AndTrigger;
 
 import lombok.EqualsAndHashCode;
@@ -24,7 +25,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(of={"Id","name","enabled","actions","trigger"})
-public class TriggerActions extends AbstractIdentifiableDated {
+public final class TriggerActions extends AbstractIdentifiableDated implements HasNoBeans {
     
     /**
      * Name for the TriggerAction (a nice name to present to the user)

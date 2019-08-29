@@ -2,18 +2,19 @@ package com.funnelback.publicui.search.model.curator.trigger;
 
 import java.util.List;
 
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
+import com.funnelback.publicui.search.model.curator.config.Trigger;
+import com.funnelback.publicui.search.model.facetednavigation.FacetParameter;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import com.funnelback.publicui.search.model.curator.config.Configurer;
-import com.funnelback.publicui.search.model.curator.config.Trigger;
-import com.funnelback.publicui.search.model.facetednavigation.FacetParameter;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
 /**
  * <p>
@@ -24,7 +25,7 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class FacetSelectionTrigger implements Trigger {
+public final class FacetSelectionTrigger implements Trigger, HasNoBeans {
     
     /**
      * The name of the facet to check.

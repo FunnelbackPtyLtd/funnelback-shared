@@ -1,19 +1,19 @@
 package com.funnelback.publicui.search.model.curator.action;
 
-import lombok.EqualsAndHashCode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
+import com.funnelback.publicui.search.model.curator.config.Action;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import com.funnelback.publicui.search.model.curator.config.Action;
-import com.funnelback.publicui.search.model.curator.config.Configurer;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * <p>
@@ -27,7 +27,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class ReplaceQueryTerm implements Action {
+public final class ReplaceQueryTerm implements Action, HasNoBeans {
 
     /** The term to be replaced. */
     @Getter @Setter private String target;

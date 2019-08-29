@@ -1,19 +1,19 @@
 package com.funnelback.publicui.search.model.curator.action;
 
-import lombok.EqualsAndHashCode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.funnelback.publicui.search.model.curator.HasNoBeans;
+import com.funnelback.publicui.search.model.curator.config.Action;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import com.funnelback.publicui.search.model.curator.config.Action;
-import com.funnelback.publicui.search.model.curator.config.Configurer;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * <p>Action to transform the user's query based on a regular expression replacement.</p>
@@ -22,7 +22,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class TransformQuery implements Action {
+public final class TransformQuery implements Action, HasNoBeans {
 
     /** The regular expression to match */
     @Getter @Setter private String match;
