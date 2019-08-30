@@ -439,13 +439,6 @@ public class DefaultConfigRepository implements ConfigRepository {
         File fnConfig = new File (c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
         try {
             p.setFacetedNavConfConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser), AbstractSingleFileResource.wrapDefault(null)).getResource());
-            
-            // Read config in live/idx/<profile>/
-            fnConfig = new File(c.getConfiguration().getCollectionRoot()
-                    + File.separator + View.live
-                    + File.separator + DefaultValues.FOLDER_IDX
-                    + File.separator + p.getId(),
-                    Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
         } catch (IOException ioe) {
             log.error("Unable to read faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", ioe);
         }
