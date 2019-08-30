@@ -130,7 +130,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
         if(log.isDebugEnabled()) {
             // Java is having trouble with the types if we don't set it to a variable :(
             Set<Map.Entry> s = params.entrySet();
-            s.stream().forEach(e -> log.debug("IncludeUrl was given: " + e.getKey().toString() + "=" + e.getValue().toString()));
+            s.stream().forEach(e -> log.debug("IncludeUrl was given: " + e.getKey() + "=" + e.getValue()));
         }
         
         TemplateModel param = (TemplateModel) params.get(Parameters.url.toString());
@@ -152,7 +152,12 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
                 expiry = ((TemplateNumberModel) param).getAsNumber().intValue();
             }
             
-            if ((elt.getLastUpdateTime() + (expiry*1000)) < System.currentTimeMillis()) {
+            long currentTime = System.currentTimeMillis();
+            
+            log.debug("expire for {} is {} Will get content again if {} + {} < {}", url, expiry,
+                elt.getLastUpdateTime(), (expiry*1000), currentTime);
+            
+            if ((elt.getLastUpdateTime() + (expiry*1000)) < currentTime) {
                 log.debug("Cache for URL '" + url + "' expired. Requesting content again");
                 try {
                     String content = getContent(env, url, params);
