@@ -124,7 +124,16 @@
        <filter-name>IpPseudonymisationFilter</filter-name>
        <servlet-name>publicui</servlet-name>
     </filter-mapping>
-    
+
+    <filter>
+        <filter-name>SetDefaultSecurityHeadersFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>SetDefaultSecurityHeadersFilter</filter-name>
+        <servlet-name>publicui</servlet-name>
+    </filter-mapping>
+
     <!-- CORS filter -->
     <filter>
      <filter-name>ConfigurableCorsFilter</filter-name>

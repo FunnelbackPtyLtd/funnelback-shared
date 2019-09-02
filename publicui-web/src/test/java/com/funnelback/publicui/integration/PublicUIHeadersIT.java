@@ -2,11 +2,15 @@ package com.funnelback.publicui.integration;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.funnelback.common.testutils.CollectionProvider;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -55,14 +59,14 @@ public class PublicUIHeadersIT {
         Map<String, Pattern> expectedHeaders = new HashMap<>();
 
         /*
-         * Before you change or add something to this list (e.g. because you upgraded 
-         * spring-security and it started producing some new security headers), think
-         * about the impact on existing implementations, and what could be done to get 
-         * back to the old behavior if needed.
+         * Before you change or add something to this list (e.g. because Funnelback
+         * started returning some new header by default), think about the impact on
+         * existing implementations, and what could be done to get back to the old
+         * behavior if needed.
          * 
          * In the past, "Strict-Transport-Security" got added and started sending things
          * to https that should not have been, and when "X-Frame-Options"  was added it
-         * caused trouble for some implementation upgrades (See FUN-11249).
+         * caused trouble for some implementation upgrades (See FUN-11249, RNDSUPPORT-3048).
          * 
          * At a minimum, a new type of header being produced by default probably warrants
          * something in the release notes!
@@ -95,6 +99,27 @@ public class PublicUIHeadersIT {
                         pattern.matcher(headerValue).matches());
                 }
             }
+        }
+    }
+
+    @Test
+    public void testIframeConfigurable() throws Exception {
+        CollectionProvider.createCollection(searchHome, "iframe-test",
+            Map.of("ui.modern.form.simple.remove-headers", "X-Frame-Options"));
+
+        Path ftlPath = CollectionProvider.getConfigDir(searchHome, "iframe-test").toPath().resolve("_default/simple.ftl");
+        Files.createDirectories(ftlPath.getParent());
+        Files.write(ftlPath, "I am a test ftl template".getBytes(StandardCharsets.UTF_8));
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder().url(server.getBaseUrl() + "search.html?collection=iframe-test").build();
+
+        try (Response response = client.newCall(request).execute()) {
+            Headers responseHeaders = response.headers();
+
+            Assert.assertFalse("Expected X-Frame-Options header to be removed",
+                responseHeaders.names().contains("X-Frame-Options"));
         }
     }
 
