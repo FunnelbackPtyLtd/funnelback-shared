@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * We don't let spring set security headers by default in publicui because
- * we can't then override them on a request-by-request basis reliably (see
- * RNDSUPPORT-3048) but we do (mostly) still want to have these headers, so
- * we set them as default early on here, allowing them to be swapped out
- * later as needed.
+ * We don't let spring set security headers by default in publicui (see
+ * SecurityConfig) because we can't then override them on a request-by-request
+ * basis reliably (see RNDSUPPORT-3048) but we do (mostly) still want to have
+ * these headers, so we set them as default early on here, allowing them to be
+ * swapped out later as needed.
  */
 @Log4j2
 public class SetDefaultSecurityHeadersFilter implements Filter {
