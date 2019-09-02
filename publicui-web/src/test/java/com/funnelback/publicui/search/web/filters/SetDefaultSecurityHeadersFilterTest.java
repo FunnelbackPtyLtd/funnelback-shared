@@ -25,10 +25,11 @@ public class SetDefaultSecurityHeadersFilterTest {
 
     /**
      * This test is intended to check what default headers spring-security is setting
-     * on responses so that we notice if they change over time.
+     * in our current version so that we learn about any new ones they think are
+     * good defaults (so we can consider using them ourselves).
      *
-     * We do this because we need to turn them all off and reintroduce them ourselves
-     * when we want to (see RNDSUPPORT-3048) as some can't be overridden per-request.
+     * We do this because we need to turn them all off by default and reintroduce them
+     * ourselves as some can't be overridden per-request otherwise (see RNDSUPPORT-3048).
      */
     @Test
     public void test() throws Exception {
@@ -37,7 +38,7 @@ public class SetDefaultSecurityHeadersFilterTest {
 
         Assert.assertEquals("Spring Security is not sending the response headers we expected - maybe an upgrade changed them?"
                 + " Consider whether publicui ought to be returning any new headers (or removing old ones), and if so add them to "
-                + SetDefaultSecurityHeadersFilter.class.getName() + " before updating this test's expected list.",
+                + SetDefaultSecurityHeadersFilter.class.getName() + " and PublicUIHeadersIT before updating this test's expected list.",
             funnelbackHeaders, springDefaultHeaders);
     }
 

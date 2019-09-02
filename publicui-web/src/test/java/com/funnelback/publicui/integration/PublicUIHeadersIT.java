@@ -59,14 +59,14 @@ public class PublicUIHeadersIT {
         Map<String, Pattern> expectedHeaders = new HashMap<>();
 
         /*
-         * Before you change or add something to this list (e.g. because you upgraded 
-         * spring-security and it started producing some new security headers), think
-         * about the impact on existing implementations, and what could be done to get 
-         * back to the old behavior if needed.
+         * Before you change or add something to this list (e.g. because Funnelback
+         * started returning some new header by default), think about the impact on
+         * existing implementations, and what could be done to get back to the old
+         * behavior if needed.
          * 
          * In the past, "Strict-Transport-Security" got added and started sending things
          * to https that should not have been, and when "X-Frame-Options"  was added it
-         * caused trouble for some implementation upgrades (See FUN-11249).
+         * caused trouble for some implementation upgrades (See FUN-11249, RNDSUPPORT-3048).
          * 
          * At a minimum, a new type of header being produced by default probably warrants
          * something in the release notes!
