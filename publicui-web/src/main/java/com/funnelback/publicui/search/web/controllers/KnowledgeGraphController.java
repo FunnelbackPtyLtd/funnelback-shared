@@ -1,15 +1,19 @@
 package com.funnelback.publicui.search.web.controllers;
 
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.knowledgegraph.templates.GenericKnowledgeGraphTemplatesMarshaller;
+import com.funnelback.common.knowledgegraph.templates.KnowledgeGraphTemplate;
 import com.funnelback.common.profile.ProfileAndView;
+import com.funnelback.common.utils.MissingDateSupplier;
 import com.funnelback.publicui.knowledgegraph.exception.InvalidInputException;
 import com.funnelback.publicui.knowledgegraph.model.KnowledgeGraphLabels;
-import com.funnelback.publicui.knowledgegraph.model.KnowledgeGraphTemplate;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.SampleCollectionUrlService;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.utils.web.ProfilePicker;
+
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
@@ -28,7 +32,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Provides the basic knowledge-graph endpoints for presenting the
@@ -131,8 +138,13 @@ public class KnowledgeGraphController {
             DefaultValues.FOLDER_CONF + "/" + collection + "/" + profile + "/" + com.funnelback.common.config.Files.KG_TEMPLATES);
 
         try (FileInputStream fis = new FileInputStream(jsonTemplatesFile)) {
-            Map<String, KnowledgeGraphTemplate> result = KnowledgeGraphTemplate.fromConfigFile(fis);
-            return prepareJsonModelAndViewForSingleObject(result);
+            GenericKnowledgeGraphTemplatesMarshaller marshaller = new GenericKnowledgeGraphTemplatesMarshaller();
+            List<KnowledgeGraphTemplate> templates = marshaller.unMarshal(
+                Optional.of(FileUtils.readFileToByteArray(jsonTemplatesFile)),
+                MissingDateSupplier.lastModifiedDate(jsonTemplatesFile));
+            return prepareJsonModelAndViewForSingleObject(templates
+                .stream()
+                .collect(Collectors.groupingBy(KnowledgeGraphTemplate::getType)));
         } catch (InvalidInputException | FileNotFoundException e) {
             return prepareJsonModelAndViewForErrorMessage(response, e);
         }
