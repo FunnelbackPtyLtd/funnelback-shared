@@ -376,7 +376,7 @@
    */
   const Model = {
     _badges: ['resolution', 'status'],
-    _fields: {title: 'title', subtitle: 'subtitle', desc: 'desc', image: 'image', viewUrl: 'id', list: {primary: [], secondary: []}, detail: {primary: [], secondary: []}},
+    _fields: {title: 't', subtitle: 'subtitle', desc: 'c', image: 'image', viewUrl: 'id', list: {primary: [], secondary: []}, detail: {primary: [], secondary: []}},
 
     graph: {
       node: {_id: 'node.id', _url: {self: 'links.0.href', types: 'links.1.href', typesLeaf: 'links.2.href'}, _type: 'node.labels.0', _labels: 'node.labels', _fields: 'node.propertyList'},
@@ -883,7 +883,7 @@
       typeItem: '<a href="#" class="' + _prefix + 'list-group-item ' + _prefix + 'd-flex ' + _prefix + 'pb-4 ' + _prefix + 'flex-wrap ' + _prefix + 'flex-column ' + _prefix + 'justify-content-center ' + _prefix + 'align-items-center ' + _prefix + 'text-center" data-kg-nav="rel" data-kg-url="{{_url}}" data-kg-label="{{translate @root._translate.type _label}}"><small class="' + _prefix + 'badge ' + _prefix + 'badge-gray-light ' + _prefix + 'badge-pill ' + _prefix + 'ml-auto ' + _prefix + 'mb-2">{{_count}}</small>{{>icon-block _classes="' + _prefix + 'mb-1 ' + _prefix + 'text-gray-light"}}{{translate @root._translate.type _label}}</a>'
     },
 
-    _default: '_defaultTemplate',
+    _default: '_default',
 
     urlPath: 's/knowledge-graph/templates.json',
 
