@@ -1834,7 +1834,7 @@
           translation = (translations[keys[0]] && translations[keys[0]][keys[1]]) || undefined;
           if (keys[0] === Translation.keys.property && translation) {
             while($.isString(translation) && translations[keys[0]][translation]) translation = translations[keys[0]][translation];
-            if ($.isObject(translation) && translation[keys[2]]) translation = translation[keys[2]];
+            if ($.isObject(translation)) translation = translation[keys[2]];
           }
         }
         return translation ? translation : keys[keys.length-1].capitalize();
