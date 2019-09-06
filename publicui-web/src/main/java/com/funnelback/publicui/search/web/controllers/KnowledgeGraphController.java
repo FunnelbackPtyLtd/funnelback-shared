@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -142,9 +143,10 @@ public class KnowledgeGraphController {
             List<KnowledgeGraphTemplate> templates = marshaller.unMarshal(
                 Optional.of(FileUtils.readFileToByteArray(jsonTemplatesFile)),
                 MissingDateSupplier.lastModifiedDate(jsonTemplatesFile));
-            return prepareJsonModelAndViewForSingleObject(templates
+            Map<String, KnowledgeGraphTemplate> results = templates
                 .stream()
-                .collect(Collectors.groupingBy(KnowledgeGraphTemplate::getType)));
+                .collect(Collectors.toMap(KnowledgeGraphTemplate::getType, Function.identity()));
+            return prepareJsonModelAndViewForSingleObject(results);
         } catch (InvalidInputException | FileNotFoundException e) {
             return prepareJsonModelAndViewForErrorMessage(response, e);
         }
