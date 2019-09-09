@@ -8,6 +8,7 @@ import com.funnelback.common.knowledgegraph.templates.KnowledgeGraphTemplate;
 import com.funnelback.common.profile.ProfileAndView;
 import com.funnelback.common.utils.MissingDateSupplier;
 import com.funnelback.publicui.knowledgegraph.exception.InvalidInputException;
+import com.funnelback.publicui.knowledgegraph.model.KnowledgeGraphLabelsModel;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.SampleCollectionUrlService;
@@ -169,7 +170,7 @@ public class KnowledgeGraphController {
             List<KnowledgeGraphLabel> results = marshaller.unMarshal(
                 Optional.of(FileUtils.readFileToByteArray(jsonLabelsFile)),
                 MissingDateSupplier.lastModifiedDate(jsonLabelsFile));
-            return prepareJsonModelAndViewForSingleObject(results);
+            return prepareJsonModelAndViewForSingleObject(KnowledgeGraphLabelsModel.fromConfigFile(results));
         } catch (InvalidInputException | FileNotFoundException e) {
             return prepareJsonModelAndViewForErrorMessage(response, e);
         }
