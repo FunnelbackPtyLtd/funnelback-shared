@@ -24,7 +24,12 @@ public class HackHtmlEscapingBuiltIn {
         BuiltIn.BUILT_INS_BY_NAME.put("xhtml", new HackedXhtmlEscapingBuiltIn());
     }
 
-    private static String breakAngularInterpolation(String result) {
+    public static void unHackIt() {
+        BuiltIn.BUILT_INS_BY_NAME.put("html", new BuiltInsForStringsEncoding.htmlBI());
+        BuiltIn.BUILT_INS_BY_NAME.put("xhtml", new BuiltInsForStringsEncoding.xhtmlBI());
+    }
+
+    public static String breakAngularInterpolation(String result) {
         // Insert a zero-width space between any pair of curly-brackets
         // to prevent angular xss (RNDSUPPORT-3041)
         return result.replace("{{", "{&#8203;{");

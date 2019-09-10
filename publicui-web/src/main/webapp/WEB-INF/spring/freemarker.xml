@@ -208,5 +208,15 @@
     <bean class="org.springframework.beans.factory.config.MethodInvokingBean">
         <property name="staticMethod" value="freemarker.core.HackHtmlEscapingBuiltIn.hackIt" />
     </bean>
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="freemarkerConfiguration" />
+        <property name="targetMethod" value="setRegisteredCustomOutputFormats" />
+        <property name="arguments">
+            <list>
+                <bean class="com.funnelback.publicui.search.web.views.freemarker.escaping.HTMLPlusAngularOutputFormat" />
+                <bean class="com.funnelback.publicui.search.web.views.freemarker.escaping.XHTMLPlusAngularOutputFormat" />
+            </list>
+        </property>
+    </bean>
 
 </beans>
