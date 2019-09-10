@@ -32,6 +32,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.Windows
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.search.model.transaction.padrecmd.DefaultPadreSwCmd;
 import com.funnelback.publicui.search.service.index.QueryReadLock;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.xml.XmlParsingException;
@@ -193,6 +194,10 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                                 List<String> commandLine,
                                 Map<String, String> env,
                                 PadreForkingOptionsHelper padreForkingOptions) throws DataFetchException, PadreForkingException {
+        if(searchTransaction.getResponse() != null) {
+            searchTransaction.getResponse().setPadreSwCmd(new DefaultPadreSwCmd(commandLine, env));
+        }
+        
         try {
             queryReadLock.lock(searchTransaction.getQuestion().getCollection());
         } catch (FileLockException e) {
