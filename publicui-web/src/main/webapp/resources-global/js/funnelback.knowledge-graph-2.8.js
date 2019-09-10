@@ -1,6 +1,6 @@
 /*
  * Funnelback Knowledge Graph plugin
- * version 2.8.5
+ * version 2.8.6
  *
  * author: Liliana Nowak
  * Copyright Funnelback, 2017-2019
@@ -32,6 +32,11 @@
     contentAttr: null,
     targetUrl: true,
     dateFormat: 'DD MMMM YYYY, HH:mm', // moment.js date formatting
+    field: {
+      callback: null, // function(type, fieldType, fieldKey, fieldValue) { return fieldValue; }
+      display: 'string', // [list|string]
+      separator: ', ', // requires `field.display: 'string'`
+    },
     iconPrefix: 'fa fa-fw fa-',
     maxBreadcrumb: 5,
     maxPagination: 5,
@@ -246,18 +251,27 @@
       var i, len = data.length, template;
       for (i = 0; i < len; i++) {
         template = Template.get(box, 'fields', fieldType, data[i]._type);
-        getFields(template, 'primary', data[i]);
-        getFields(template, 'secondary', data[i]);
+        getFields(template, 'primary', data[i], data[i]._type);
+        getFields(template, 'secondary', data[i], data[i]._type);
       }
       return data;
 
-      function getFields(list, type, data) {
+      function getFields(list, type, data, dataType) {
         data[type] = [];
         if (!list[type]) return;
         for (var i = 0, len = list[type].length; i < len; i++) {
-          if (data['_fields'][list[type][i]]) data[type].push({key: list[type][i], val: data['_fields'][list[type][i]].toLocaleString()});
+          if (data['_fields'][list[type][i]]) data[type].push({key: list[type][i], val: Data.convertField(box, dataType, fieldType.substring(1) + type.capitalize(), list[type][i], data['_fields'][list[type][i]])});
         }
       }
+    },
+
+    convertField: function(box, type, field, fieldKey, fieldValue) {
+      if ($.isFunction(box.options.field.callback)) {
+        const processedFieldValue = box.options.field.callback.call(null, type, field, fieldKey, fieldValue);
+        if (processedFieldValue && $.isArray(processedFieldValue)) fieldValue = processedFieldValue;
+        else Log.warn('Incorrect value returned by callback. Expected array but got', processedFieldValue + '');
+      }
+      return box.options.field.display === 'list' ? fieldValue : fieldValue.join(box.options.field.separator);
     },
 
     groupNodes: function(box, data, type, rels) {
@@ -296,11 +310,17 @@
       const processedData = Model.retrieve(box, data.nodes, 'graph', 'node');
       var i, len, nodesIds = [];
       for (i = 0, len = processedData.length; i < len; i++) {
-        Storage.setItem(Url.storageKey(processedData[i]._url.self, box.options.apiBase), {list: [processedData[i]], total: 1});
+        Storage.setItem(Url.storageKey(processedData[i]._url.self, box.options.apiBase), {list: [convertFields(processedData[i])], total: 1});
         nodesIds.push(processedData[i]._id);
       }
       if (data.nodesSummary.totalMatching > 1 || !Url.isNodeDetail(url)) Storage.setItem(Url.storageKey(url, box.options.apiBase), {list: nodesIds, total: data.nodesSummary.totalMatching}); // Store only actual list with 2 or more elements
       return {list: processedData, total: data.nodesSummary.totalMatching};
+
+      function convertFields(item) {
+        const fields = ['title', 'subtitle', 'desc'];
+        for (var i = 0, len = fields.length; i < len; i++) if (item['_' + fields[i]]) item['_' + fields[i]] = Data.convertField(box, item._type, fields[i], null, item['_' + fields[i]]);
+        return item;
+      }
     },
 
     processRels: function(box, url, data) {
@@ -862,6 +882,7 @@
     },
     partial: {
       text: '{{val}}',
+      listText: '<ul class="' + _prefix + 'list-unstyled ' + _prefix + 'mb-0 kg-list-value">{{#each val}}<li>{{this}}</li>{{/each}}</ul>',
       date: '{{#dateFormat @root._options.dateFormat}}{{val}}{{/dateFormat}}',
       badge: '<span class="' + _prefix + 'badge ' + _prefix + 'badge-{{key}} ' + _prefix + 'badge-{{badgeType val}}">{{translate @root._translate.type _type key}}: {{val}}</span>',
       email: '{{#if val}}<a class="{{_classes}}" href="mailto:{{val}}">{{>icon-block _classes=""}}{{#if _label}}{{_label}}{{else}}{{val}}{{/if}}</a>{{/if}}',
@@ -1881,8 +1902,8 @@
       return '';
     },
     // Get partial template to display based on type of field
-    item: function() {
-      var templ = 'text';
+    item: function(options) {
+      var templ = options.data.root._options.field.display === 'list' && this.val.length > 1 ? 'listText' : 'text';
       if (Template.isBadgeField(this.key)) templ = 'badge';
       if (Template.isDateField(this.key)) templ = 'date';
       if (Template.isEmailField(this.val)) templ = 'email';
