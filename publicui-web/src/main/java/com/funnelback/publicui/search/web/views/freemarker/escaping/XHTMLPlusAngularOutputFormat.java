@@ -9,6 +9,17 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
+/**
+ * Supersede freemarker's built-in xhtml output format
+ * so that it will break any AngularJS interpolation markers
+ * being added to the page.
+ *
+ * The breaking occurs by inserting a zero-width space character
+ * between any consecutive open-curly-bracket characters which
+ * seemingly prevents AngularJS from processing them.
+ *
+ * See RNDSUPPORT-3041 for details.
+ */
 public class XHTMLPlusAngularOutputFormat extends CommonMarkupOutputFormat<TemplateXHTMLPlusAngularOutputModel> {
     public static final XHTMLPlusAngularOutputFormat INSTANCE = new XHTMLPlusAngularOutputFormat();
 
