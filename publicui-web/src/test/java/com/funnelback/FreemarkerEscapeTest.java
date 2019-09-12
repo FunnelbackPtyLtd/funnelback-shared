@@ -60,7 +60,9 @@ public class FreemarkerEscapeTest {
             + "This is a test ${user}");
         cfg.setTemplateLoader(templateLoader);
 
-        cfg.setRegisteredCustomOutputFormats(List.of(new HTMLPlusAngularOutputFormat()));
+        List<OutputFormat> outputFormats = new ArrayList<>();
+        outputFormats.add(new HTMLPlusAngularOutputFormat());
+        cfg.setRegisteredCustomOutputFormats(outputFormats);
 
         Map<String, Object> root = new HashMap<>();
         root.put("user", "Matt{{}}<>");
@@ -84,7 +86,9 @@ public class FreemarkerEscapeTest {
                 + "This is a test ${user}");
         cfg.setTemplateLoader(templateLoader);
 
-        cfg.setRegisteredCustomOutputFormats(List.of(new XHTMLPlusAngularOutputFormat()));
+        List<OutputFormat> outputFormats = new ArrayList<>();
+        outputFormats.add(new XHTMLPlusAngularOutputFormat());
+        cfg.setRegisteredCustomOutputFormats(outputFormats);
 
         Map<String, Object> root = new HashMap<>();
         root.put("user", "Matt{{}}<>");
