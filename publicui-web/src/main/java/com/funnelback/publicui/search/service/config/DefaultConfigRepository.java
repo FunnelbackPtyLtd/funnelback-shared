@@ -239,7 +239,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         c.setQuickLinksConfiguration(resourceManager.load(new ConfigMapResource(
                 collectionId,
                 searchHome,
-                new File(collectionConfigFolder, Files.QUICKLINKS_CONFIG_FILENAME)), 
+                new File(collectionConfigFolder, "quicklinks.cfg")), 
                 AbstractSingleFileResource.wrapDefault(new HashMap<String, String>(0))).getResource());
         
         c.getProfiles().putAll(loadProfiles(c));

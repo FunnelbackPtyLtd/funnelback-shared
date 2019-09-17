@@ -1,9 +1,11 @@
 package com.funnelback.publicui.test.search.service.config;
 
+import com.funnelback.config.keys.collection.QuickLinkKeys;
 import groovy.lang.Script;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -286,26 +288,21 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
     }
     
     @Test
-    public void testQuicklinks() throws IOException {        
+    public void testQuicklinks() {        
         Collection coll = configRepository.getCollection("config-repository");
         Assert.assertTrue(coll.getQuickLinksConfiguration().isEmpty());
         
-        // Create quicklinks
-        FileUtils.writeStringToFile(new File(TEST_DIR, Files.QUICKLINKS_CONFIG_FILENAME), "key=value");
-        coll = configRepository.getCollection("config-repository");
-        Assert.assertEquals("value", coll.getQuickLinksConfiguration().get("key"));
-        
         // Update quicklinks
-        writeAndTouchFuture(new File(TEST_DIR, Files.QUICKLINKS_CONFIG_FILENAME), "key=value\nnew-key=New value");
-        coll = configRepository.getCollection("config-repository");
-        Assert.assertEquals("value", coll.getQuickLinksConfiguration().get("key"));
-        Assert.assertEquals("New value", coll.getQuickLinksConfiguration().get("new-key"));
-        
-        // Delete quicklinks
-        new File(TEST_DIR, Files.QUICKLINKS_CONFIG_FILENAME).delete();
-        coll = configRepository.getCollection("config-repository");
-        Assert.assertTrue(coll.getQuickLinksConfiguration().isEmpty());
-        
+        HashMap<String, String> qlConfigEnabled = new HashMap<>();
+        qlConfigEnabled.put(QuickLinkKeys.PREFIX, "enabled");
+
+        HashMap<String, String> qlConfigDisabled = new HashMap<>();
+        qlConfigDisabled.put(QuickLinkKeys.PREFIX, "disabled");
+
+        coll.setQuickLinksConfiguration(qlConfigDisabled);
+        Assert.assertEquals("disabled", coll.getQuickLinksConfiguration().get(QuickLinkKeys.PREFIX));
+        coll.setQuickLinksConfiguration(qlConfigEnabled);
+        Assert.assertEquals("enabled", coll.getQuickLinksConfiguration().get(QuickLinkKeys.PREFIX));
     }
     
     @Test
