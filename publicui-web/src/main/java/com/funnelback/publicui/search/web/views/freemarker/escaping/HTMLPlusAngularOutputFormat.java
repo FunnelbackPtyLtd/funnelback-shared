@@ -23,6 +23,10 @@ import java.io.Writer;
 public class HTMLPlusAngularOutputFormat extends CommonMarkupOutputFormat<TemplateHTMLPlusAngularOutputModel> {
     public static final HTMLPlusAngularOutputFormat INSTANCE = new HTMLPlusAngularOutputFormat();
 
+    // Nothing outside this class should construct an instance because freemarker relies on
+    // them being singletons for some reason. See RNDSUPPORT-3041
+    private HTMLPlusAngularOutputFormat() {}
+
     @Override public void output(String textToEsc, Writer out) throws IOException, TemplateModelException {
         StringWriter sw = new StringWriter();
         HTMLOutputFormat.INSTANCE.output(textToEsc, sw);
