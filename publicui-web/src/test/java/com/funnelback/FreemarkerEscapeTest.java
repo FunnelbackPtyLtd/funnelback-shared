@@ -53,7 +53,9 @@ public class FreemarkerEscapeTest {
         templateLoader.putTemplate("test.ftl",
             "<#ftl output_format=\"HTML\" encoding=\"utf-8\" />\n"
                 + "This is a test ${user}\n"
-                + "This has no escaping ${user?no_esc}");
+                + "This has no escaping ${user?no_esc}\n"
+                + "This has another no escaping <#noautoesc>${user}</#noautoesc>\n"
+                + "This is different output format <#outputformat \"JavaScript\">${user}</#outputformat>");
         cfg.setTemplateLoader(templateLoader);
 
         List<OutputFormat> outputFormats = new ArrayList<>();
@@ -69,7 +71,9 @@ public class FreemarkerEscapeTest {
         temp.process(root, out);
 
         Assert.assertEquals("This is a test Matt{&#8203;{}}&lt;&gt;\n"
-            + "This has no escaping Matt{{}}<>", out.toString());
+            + "This has no escaping Matt{{}}<>\n"
+            + "This has another no escaping Matt{{}}<>\n"
+            + "This is different output format Matt{{}}<>", out.toString());
     }
 
     @Test
@@ -81,7 +85,9 @@ public class FreemarkerEscapeTest {
         templateLoader.putTemplate("test.ftl",
             "<#ftl output_format=\"XHTML\" encoding=\"utf-8\" />\n"
                 + "This is a test ${user}\n"
-                + "This has no escaping ${user?no_esc}");
+                + "This has no escaping ${user?no_esc}\n"
+                + "This has another no escaping <#noautoesc>${user}</#noautoesc>\n"
+                + "This is different output format <#outputformat \"JavaScript\">${user}</#outputformat>");
         cfg.setTemplateLoader(templateLoader);
 
         List<OutputFormat> outputFormats = new ArrayList<>();
@@ -97,6 +103,8 @@ public class FreemarkerEscapeTest {
         temp.process(root, out);
 
         Assert.assertEquals("This is a test Matt{&#8203;{}}&lt;&gt;\n"
-            + "This has no escaping Matt{{}}<>", out.toString());
+            + "This has no escaping Matt{{}}<>\n"
+            + "This has another no escaping Matt{{}}<>\n"
+            + "This is different output format Matt{{}}<>", out.toString());
     }
 }
