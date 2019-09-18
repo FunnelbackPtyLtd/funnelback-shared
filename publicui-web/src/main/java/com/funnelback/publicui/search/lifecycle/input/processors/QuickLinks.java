@@ -39,19 +39,18 @@ public class QuickLinks extends AbstractInputProcessor {
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         if (SearchTransactionUtils.hasCollection(searchTransaction)
-                && searchTransaction.getQuestion().getCollection().getQuickLinksConfiguration() != null
-                && searchTransaction.getQuestion().getCollection().getQuickLinksConfiguration().size() > 0) {
+                && searchTransaction.getQuestion().getCollection().getConfiguration().getConfigData().size() > 0) {
             
-            if ( Config.isTrue(searchTransaction.getQuestion().getCollection().getQuickLinksConfiguration().get(QuickLinkKeys.PREFIX))) {
+            if ( Config.isTrue(searchTransaction.getQuestion().getCollection().getConfiguration().getConfigData().get(QuickLinkKeys.PREFIX))) {
             
-                Map<String, String> qlConfig = searchTransaction.getQuestion().getCollection().getQuickLinksConfiguration();
+                Map<String, String> colConfig = searchTransaction.getQuestion().getCollection().getConfiguration().getConfigData();
                 String qpOptions = searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR_OPTIONS);
     
                 if (qpOptions == null || ! qpOptions.matches(".*($|\\s)" + QL_OPT_DEPTH + "=\\d+.*")) {
                     // No depth specified on the qp options
                     String opt = QL_OPT_DEPTH + "=1";
-                    if (qlConfig.containsKey(com.funnelback.config.keys.Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey())) {
-                        opt = QL_OPT_DEPTH + "=" + qlConfig.get(com.funnelback.config.keys.Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey());
+                    if (colConfig.containsKey(com.funnelback.config.keys.Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey())) {
+                        opt = QL_OPT_DEPTH + "=" + colConfig.get(com.funnelback.config.keys.Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey());
                     }
                     searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(opt);
                     log.debug("Added query processor option '" + opt + "'");
@@ -60,8 +59,8 @@ public class QuickLinks extends AbstractInputProcessor {
                 if (qpOptions == null || ! qpOptions.matches(".*($|\\s)" + QL_OPT_RANK + "=(\\d+|all).*")) {
                     // No rank specified on the qp options
                     String opt = QL_OPT_RANK + "=1";
-                    if (qlConfig.containsKey(QuickLinkKeys.PREFIX + ".rank")) {
-                        opt = QL_OPT_RANK + "=" + qlConfig.get(QuickLinkKeys.PREFIX + ".rank");
+                    if (colConfig.containsKey(QuickLinkKeys.PREFIX + ".rank")) {
+                        opt = QL_OPT_RANK + "=" + colConfig.get(QuickLinkKeys.PREFIX + ".rank");
                     }
                     searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(opt);
                     log.debug("Added query processor option '" + opt + "'");
