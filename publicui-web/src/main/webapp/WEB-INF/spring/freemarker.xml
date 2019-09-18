@@ -213,8 +213,8 @@
         <property name="targetMethod" value="setRegisteredCustomOutputFormats" />
         <property name="arguments">
             <list>
-                <bean class="com.funnelback.publicui.search.web.views.freemarker.escaping.HTMLPlusAngularOutputFormat" />
-                <bean class="com.funnelback.publicui.search.web.views.freemarker.escaping.XHTMLPlusAngularOutputFormat" />
+                <util:constant static-field="com.funnelback.publicui.search.web.views.freemarker.escaping.HTMLPlusAngularOutputFormat.INSTANCE"/>
+                <util:constant static-field="com.funnelback.publicui.search.web.views.freemarker.escaping.XHTMLPlusAngularOutputFormat.INSTANCE"/>
             </list>
         </property>
     </bean>
