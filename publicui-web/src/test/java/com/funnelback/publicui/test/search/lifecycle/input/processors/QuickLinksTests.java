@@ -1,7 +1,5 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
-import java.util.HashMap;
-
 import com.funnelback.config.keys.collection.QuickLinkKeys;
 import org.junit.Assert;
 
@@ -32,36 +30,14 @@ public class QuickLinksTests {
         SearchTransaction st = new SearchTransaction(question, null);
         processor.processInput(st);
         Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
-        
-        // No quicklinks config
-        question.setCollection(new Collection("dummy", null));
-        processor.processInput(new SearchTransaction(question, null));
-        Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
-
-        // Empty quicklinks config
-        Collection c = new Collection("dummy", null);
-        c.setQuickLinksConfiguration(new HashMap<String, String>());
-        question.setCollection(c);
-        processor.processInput(new SearchTransaction(question, null));
-        Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
-
-        // quicklinks disabled
-        c.getQuickLinksConfiguration().put(QuickLinkKeys.PREFIX, "disabled");
-        question.setCollection(c);
-        processor.processInput(new SearchTransaction(question, null));
-        Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
-
     }
     
     @Test
     public void testWithConfig() throws InputProcessorException, EnvironmentVariableException {
-        HashMap<String, String> qlConfig = new HashMap<String, String>();
-        qlConfig.put(QuickLinkKeys.PREFIX, "enabled");
-        qlConfig.put(com.funnelback.config.keys.Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey(), "42");
-        qlConfig.put(QuickLinkKeys.PREFIX + ".rank", "666");
-        
         Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
-        c.setQuickLinksConfiguration(qlConfig);
+        c.getConfiguration().setValue(QuickLinkKeys.PREFIX, "enabled");
+        c.getConfiguration().setValue(com.funnelback.config.keys.Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey(), "42");
+        c.getConfiguration().setValue(QuickLinkKeys.PREFIX + ".rank", "666");
         
         SearchQuestion question = new SearchQuestion();
         question.setCollection(c);
@@ -85,18 +61,13 @@ public class QuickLinksTests {
         Assert.assertEquals(2, st.getQuestion().getDynamicQueryProcessorOptions().size());
         Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL=42"));
         Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL_rank=666"));
-
-        
     }
     
     @Test
     public void testWithoutConfig() throws InputProcessorException, EnvironmentVariableException {
-        HashMap<String, String> qlConfig = new HashMap<String, String>();
-        qlConfig.put(QuickLinkKeys.PREFIX, "enabled");
-        qlConfig.put(QuickLinkKeys.PREFIX + ".rank", "1");
-        
         Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
-        c.setQuickLinksConfiguration(qlConfig);
+        c.getConfiguration().setValue(QuickLinkKeys.PREFIX, "enabled");
+        c.getConfiguration().setValue(QuickLinkKeys.PREFIX + ".rank", "1");
         
         SearchQuestion question = new SearchQuestion();
         question.setCollection(c);

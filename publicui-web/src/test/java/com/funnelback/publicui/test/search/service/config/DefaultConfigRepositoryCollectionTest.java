@@ -288,24 +288,6 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
     }
     
     @Test
-    public void testQuicklinks() {        
-        Collection coll = configRepository.getCollection("config-repository");
-        Assert.assertTrue(coll.getQuickLinksConfiguration().isEmpty());
-        
-        // Update quicklinks
-        HashMap<String, String> qlConfigEnabled = new HashMap<>();
-        qlConfigEnabled.put(QuickLinkKeys.PREFIX, "enabled");
-
-        HashMap<String, String> qlConfigDisabled = new HashMap<>();
-        qlConfigDisabled.put(QuickLinkKeys.PREFIX, "disabled");
-
-        coll.setQuickLinksConfiguration(qlConfigDisabled);
-        Assert.assertEquals("disabled", coll.getQuickLinksConfiguration().get(QuickLinkKeys.PREFIX));
-        coll.setQuickLinksConfiguration(qlConfigEnabled);
-        Assert.assertEquals("enabled", coll.getQuickLinksConfiguration().get(QuickLinkKeys.PREFIX));
-    }
-    
-    @Test
     public void testFacetedNav() throws IOException {
         Collection coll = configRepository.getCollection("config-repository");
         Assert.assertNull(coll.getFacetedNavigationConfConfig());

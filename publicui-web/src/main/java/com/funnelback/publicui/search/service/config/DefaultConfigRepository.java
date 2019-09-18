@@ -236,12 +236,7 @@ public class DefaultConfigRepository implements ConfigRepository {
                 resourceManager.load(
                         new ParameterTransformResource(new File(collectionConfigFolder, Files.CGI_TRANSFORM_CONFIG_FILENAME)),
                         AbstractSingleFileResource.wrapDefault(new ArrayList<TransformRule>(0))).getResource());
-        c.setQuickLinksConfiguration(resourceManager.load(new ConfigMapResource(
-                collectionId,
-                searchHome,
-                new File(collectionConfigFolder, "quicklinks.cfg")), 
-                AbstractSingleFileResource.wrapDefault(new HashMap<String, String>(0))).getResource());
-        
+
         c.getProfiles().putAll(loadProfiles(c));
         
         // Force the use of the same groovy loader for all of our scripts. It is probably less suprising for users
