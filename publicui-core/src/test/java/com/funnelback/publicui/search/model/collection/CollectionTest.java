@@ -17,7 +17,8 @@ public class CollectionTest {
     @Test
     public void testCloneBuilderCopiesAllFields() {
         // We need the all args constructor here.
-        Collection collection = new Collection("id", mock(Config.class), 
+        Collection collection = new Collection("id", mock(Config.class),
+            mock(Map.class),
             mock(Map.class), 
             mock(FacetedNavigationConfig.class), 
             mock(FacetedNavigationConfig.class), 

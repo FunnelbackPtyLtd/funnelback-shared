@@ -101,6 +101,10 @@ public class Collection {
     @XStreamOmitField
     @Getter private Config configuration;
     
+    /** Quick Links configuration (<code>quicklinks.cfg</code>) */
+    @XStreamOmitField
+    @Getter @Setter private Map<String, String> quickLinksConfiguration;
+    
     /**
      * <p>Search profiles. The key is the profile ID.</p>
      * 
