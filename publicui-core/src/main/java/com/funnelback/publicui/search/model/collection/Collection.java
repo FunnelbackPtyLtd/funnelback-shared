@@ -192,6 +192,7 @@ public class Collection {
         return Collection.builder()
             .id(getId())
             .configuration(getConfiguration())
+            .quickLinksConfiguration(getQuickLinksConfiguration())
             .profiles(getProfiles())
             .facetedNavigationConfConfig(getFacetedNavigationConfConfig())
             .facetedNavigationLiveConfig(getFacetedNavigationLiveConfig())
