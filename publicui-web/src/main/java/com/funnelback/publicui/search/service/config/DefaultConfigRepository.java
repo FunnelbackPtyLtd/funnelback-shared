@@ -238,10 +238,8 @@ public class DefaultConfigRepository implements ConfigRepository {
                         new ParameterTransformResource(new File(collectionConfigFolder, Files.CGI_TRANSFORM_CONFIG_FILENAME)),
                         AbstractSingleFileResource.wrapDefault(new ArrayList<TransformRule>(0))).getResource());
 
-        // To maintain backwards compatibility with Freemarker templates,
-        // we preserve 'setQuickLinksConfiguration()' as it was previously used in the 
-        // default template for quick link value lookups. FTL templates after 15.24 are
-        // expected to utilise values from collection config.
+        // Set the deprecated quick links configuration object to have
+        // the quick link values attained from collection.cfg.
         HashMap<String, String> legacyQuickLinkKeysMap = new HashMap<>();
         legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey(), 
             c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey())
