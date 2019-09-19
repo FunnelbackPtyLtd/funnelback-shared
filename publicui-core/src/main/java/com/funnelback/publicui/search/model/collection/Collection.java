@@ -101,8 +101,14 @@ public class Collection {
     @XStreamOmitField
     @Getter private Config configuration;
     
-    /** Quick Links configuration (<code>quicklinks.cfg</code>) */
+    /** Quick Links configuration (<code>quicklinks.cfg</code>)
+     *  To maintain backwards compatibility with Freemarker templates,
+     *  we preserve 'getQuickLinksConfiguration()' as it was previously used in the
+     *  default template for quick link value lookups. FTL templates after 15.24 are
+     *  expected to utilise values from collection config.
+     * */
     @XStreamOmitField
+    @Deprecated
     @Getter @Setter private Map<String, String> quickLinksConfiguration;
     
     /**

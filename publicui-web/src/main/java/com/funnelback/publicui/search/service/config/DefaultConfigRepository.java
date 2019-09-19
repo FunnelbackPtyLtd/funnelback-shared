@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 
+import com.funnelback.config.keys.Keys;
 import org.apache.commons.io.FileUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,12 +237,40 @@ public class DefaultConfigRepository implements ConfigRepository {
                 resourceManager.load(
                         new ParameterTransformResource(new File(collectionConfigFolder, Files.CGI_TRANSFORM_CONFIG_FILENAME)),
                         AbstractSingleFileResource.wrapDefault(new ArrayList<TransformRule>(0))).getResource());
-        c.setQuickLinksConfiguration(resourceManager.load(new ConfigMapResource(
-                collectionId,
-                searchHome,
-                new File(collectionConfigFolder, Files.QUICKLINKS_CONFIG_FILENAME)), 
-                AbstractSingleFileResource.wrapDefault(new HashMap<String, String>(0))).getResource());
+
+        // Set the deprecated quick links configuration object to have
+        // the quick link values attained from collection.cfg.
+        HashMap<String, String> legacyQuickLinkKeysMap = new HashMap<>();
+        legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey(), 
+            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey())
+        );
+        legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.MAX_LENGTH.getKey(),
+            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.MAX_LENGTH.getKey())
+        );
+        legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.MIN_LENGTH.getKey(),
+            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.MIN_LENGTH.getKey())        
+        );
+        legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.MAX_WORDS.getKey(),
+            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.MAX_WORDS.getKey())
+        );
+        legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.MIN_LINKS.getKey(),
+            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.MIN_LINKS.getKey())
+        );
+        legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.TOTAL_LINKS.getKey(),
+            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.TOTAL_LINKS.getKey())
+        );
+        legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.BLACKLIST_TERMS.getKey(),
+            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.BLACKLIST_TERMS.getKey())
+        );
         
+        c.setQuickLinksConfiguration(
+                resourceManager.load(new ConfigMapResource(
+                        collectionId,
+                        searchHome,
+                        new File(collectionConfigFolder, Files.COLLECTION_FILENAME)),
+                AbstractSingleFileResource.wrapDefault(legacyQuickLinkKeysMap)).getResource());
+
+
         c.getProfiles().putAll(loadProfiles(c));
         
         // Force the use of the same groovy loader for all of our scripts. It is probably less suprising for users
