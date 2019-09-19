@@ -103,7 +103,7 @@ public class Collection {
     
     /** Quick Links configuration (<code>quicklinks.cfg</code>)
      *  To maintain backwards compatibility with Freemarker templates,
-     *  we preserve 'setQuickLinksConfiguration()' as it was previously used in the
+     *  we preserve 'getQuickLinksConfiguration()' as it was previously used in the
      *  default template for quick link value lookups. FTL templates after 15.24 are
      *  expected to utilise values from collection config.
      * */
