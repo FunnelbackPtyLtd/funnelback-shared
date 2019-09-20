@@ -37,6 +37,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Faceted
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
@@ -45,6 +46,7 @@ import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.utils.PadreOptionsForSpeed;
 import com.funnelback.publicui.utils.PadreOptionsForSpeed.OptionAndValue;
 import com.funnelback.publicui.utils.QueryStringUtils;
+import com.google.common.collect.ImmutableSet;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -66,12 +68,20 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
     @Setter
     private FacetExtraSearchNames facetExtraSearchNames = new FacetExtraSearchNames();
     
+    /**
+     * Run on the main search and extra searches.
+     * 
+     * Note that we don't run on FACETED_NAVIGATION_EXTRA_SEARCH.
+     * 
+     * We also don't run on CA or AA, I don't remember why. Perhaps we don't need to.
+     */
+    private static final Set<SearchQuestionType> SEARCH_TYPES_TO_RUN_ON = ImmutableSet.of(SearchQuestionType.SEARCH, SearchQuestionType.EXTRA_SEARCH);
+    
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         
-        // Currently this wont work for AA or CA.
         if (SearchTransactionUtils.hasCollection(searchTransaction)
-                && searchTransaction.getQuestion().getQuestionType().equals(SearchQuestion.SearchQuestionType.SEARCH)) {
+                && SEARCH_TYPES_TO_RUN_ON.contains(searchTransaction.getQuestion().getQuestionType())) {
             if(Config.isTrue(searchTransaction.getQuestion()
                     .getCollection().getConfiguration().value(Keys.ModernUI.FULL_FACETS_LIST))){
                 SearchQuestion q = new FacetedNavigationQuestionFactory()
