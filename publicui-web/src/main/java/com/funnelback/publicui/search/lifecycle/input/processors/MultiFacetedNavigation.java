@@ -68,11 +68,18 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
     @Setter
     private FacetExtraSearchNames facetExtraSearchNames = new FacetExtraSearchNames();
     
+    /**
+     * Run on the main search and extra searches.
+     * 
+     * Note that we don't run on FACETED_NAVIGATION_EXTRA_SEARCH.
+     * 
+     * We also don't run on CA or AA, I don't remember why. Perhaps we don't need to.
+     */
     private static final Set<SearchQuestionType> SEARCH_TYPES_TO_RUN_ON = ImmutableSet.of(SearchQuestionType.SEARCH, SearchQuestionType.EXTRA_SEARCH);
+    
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         
-        // Currently this wont work for AA or CA.
         if (SearchTransactionUtils.hasCollection(searchTransaction)
                 && SEARCH_TYPES_TO_RUN_ON.contains(searchTransaction.getQuestion().getQuestionType())) {
             if(Config.isTrue(searchTransaction.getQuestion()
