@@ -3,12 +3,13 @@ package com.funnelback.publicui.search.web.controllers;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.ALL_NS;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.VIEW_TYPE_NS;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -214,7 +215,7 @@ public class SearchController extends SessionController {
             
             new NumRanksLimitCheck().verifyNumRanksLimitIsNotExceeded(request, question.getCurrentProfileConfig(), i18n);
             
-            transaction = processor.process(question, user, Optional.empty());
+            transaction = processor.process(question, user, Optional.empty(), Optional.empty());
         } else {
             // Collection is null = non existent
             if (request.getParameter(SearchQuestion.RequestParameters.COLLECTION) != null) {

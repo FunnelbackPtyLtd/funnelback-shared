@@ -21,6 +21,6 @@ public interface SearchTransactionProcessor {
      * @param user Current user performing the search, might be null
      * @return The processed {@link SearchTransaction}
      */
-    public SearchTransaction process(SearchQuestion q, SearchUser user, Optional<String> extraSearchName);
+    public SearchTransaction process(SearchQuestion q, SearchUser user, Optional<String> extraSearchName, Optional<SearchTransaction> parentSearchTransaction);
     
 }

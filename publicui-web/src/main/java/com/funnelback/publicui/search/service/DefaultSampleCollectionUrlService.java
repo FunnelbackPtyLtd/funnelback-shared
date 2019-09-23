@@ -1,7 +1,11 @@
 package com.funnelback.publicui.search.service;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.funnelback.common.profile.ProfileAndView;
-import com.funnelback.common.profile.ProfileId;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -9,15 +13,10 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
-import com.funnelback.publicui.utils.web.ProfilePicker;
+
 import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Optional;
 
 @Log4j2
 public class DefaultSampleCollectionUrlService implements SampleCollectionUrlService {
@@ -37,7 +36,7 @@ public class DefaultSampleCollectionUrlService implements SampleCollectionUrlSer
         question.setLogQuery(Optional.ofNullable(false));
 
         SearchUser user = new SearchUser( DefaultSampleCollectionUrlService.class.getSimpleName());
-        SearchTransaction transaction = searchTransactionProcessor.process(question, user, Optional.empty());
+        SearchTransaction transaction = searchTransactionProcessor.process(question, user, Optional.empty(), Optional.empty());
 
         if (!SearchTransactionUtils.hasResults(transaction)) {
             String errorMessage = " - No error message available";
