@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 
-import com.funnelback.config.keys.Keys;
 import org.apache.commons.io.FileUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +53,11 @@ import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.config.data.collection.CollectionConfigDataReadOnly;
 import com.funnelback.config.data.server.ServerConfigDataReadOnly;
 import com.funnelback.config.data.service.ServiceConfigDataReadOnly;
+import com.funnelback.config.keys.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.funnelback.publicui.search.model.curator.config.AutowireCuratorConfigurer;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
@@ -604,6 +605,9 @@ public class DefaultConfigRepository implements ConfigRepository {
     }
     
     public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId) {
+        // We don't want user to depend on the name of the faceted nav extra search, don't let it work with this file.
+        if(new FacetExtraSearchNames().isFacetExtraSearch(extraSearchId)) return null;
+        
         FunnelbackFilePath config = new FunnelbackFilePath(searchHome, 
             DefaultValues.FOLDER_CONF, collection.getId(), EXTRA_SEARCHES_PREFIX + "." + extraSearchId + CFG_SUFFIX);
         
