@@ -1,11 +1,10 @@
 package com.funnelback.publicui.test.search.lifecycle;
 
-import groovy.lang.GroovyClassLoader;
+import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,6 +17,8 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
+import groovy.lang.GroovyClassLoader;
 
 public class GenericHookScriptRunnerTests {
 
@@ -177,7 +178,7 @@ public class GenericHookScriptRunnerTests {
         Assert.assertEquals("Test query", st.getQuestion().getQuery());
         Assert.assertNotNull(st.getQuestion());
         st.getQuestion().setQuestionType(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH);
-        st.setExtraSearchName(Optional.of("foo"));
+        st.setExtraSearchNameAndParentTransaction(Optional.of("foo"), Optional.of(mock(SearchTransaction.class)));
         processor.processOutput(st);
     }
     

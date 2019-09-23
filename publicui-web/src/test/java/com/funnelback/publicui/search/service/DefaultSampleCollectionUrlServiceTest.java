@@ -1,5 +1,11 @@
 package com.funnelback.publicui.search.service;
 
+import org.junit.Assert;
+import org.junit.Test;
+
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+
 import com.funnelback.common.profile.ProfileAndView;
 import com.funnelback.common.profile.ProfileId;
 import com.funnelback.common.profile.ProfileView;
@@ -10,12 +16,6 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import org.junit.Assert;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-
-import static org.junit.Assert.*;
 
 public class DefaultSampleCollectionUrlServiceTest {
 
@@ -36,7 +36,7 @@ public class DefaultSampleCollectionUrlServiceTest {
         mockResponse.setResultPacket(mockResultPacket);
 
         ArgumentCaptor<SearchQuestion> questionCaptor = ArgumentCaptor.forClass(SearchQuestion.class);
-        Mockito.when(searchTransactionProcessor.process(questionCaptor.capture(), Mockito.any(), Mockito.any()))
+        Mockito.when(searchTransactionProcessor.process(questionCaptor.capture(), Mockito.any(), Mockito.any(), Mockito.any()))
             .thenReturn(new SearchTransaction(null, mockResponse));
 
         Collection collection = Mockito.mock(Collection.class);
