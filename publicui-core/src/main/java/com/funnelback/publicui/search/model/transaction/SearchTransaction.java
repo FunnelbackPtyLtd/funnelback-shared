@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * <p>Represents a full search transaction consisting of 
@@ -26,6 +27,7 @@ import lombok.Setter;
  * 
  * @since 11.0
  */
+@Log4j2
 @NoArgsConstructor
 @JsonIgnoreProperties({"extraSearchesTasks", "extraSearchesQuestions", "extraSearchesAproxTimeSpent"})
 public class SearchTransaction {
@@ -53,7 +55,15 @@ public class SearchTransaction {
      * 
      */
     @XStreamOmitField @JsonIgnore
-    @Getter @Setter @NonNull private Optional<String> extraSearchName = Optional.empty();
+    @Getter @NonNull private Optional<String> extraSearchName = Optional.empty();
+    
+    @XStreamOmitField @JsonIgnore
+    @Getter @NonNull private Optional<SearchTransaction> parentTransaction = Optional.empty();
+    
+    public void setExtraSearchNameAndParentTransaction(Optional<String> extraSearchName, Optional<SearchTransaction> parentTransaction) {
+        this.extraSearchName = extraSearchName;
+        this.parentTransaction = parentTransaction;
+    }
     
     /** The question containing the input parameters. */
     @Getter private SearchQuestion question;

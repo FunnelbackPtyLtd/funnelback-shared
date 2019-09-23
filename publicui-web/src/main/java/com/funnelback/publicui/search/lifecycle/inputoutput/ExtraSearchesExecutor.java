@@ -124,7 +124,7 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
                     StopWatch sw = new StopWatch();
                     try {
                         sw.start();
-                        return transactionProcessor.process(extraSearchQuestion, user, Optional.of(extraSearchName));
+                        return transactionProcessor.process(extraSearchQuestion, user, Optional.of(extraSearchName), Optional.of(searchTransaction));
                     } finally {
                         sw.stop();
                         // We know exactly how much time was spent.

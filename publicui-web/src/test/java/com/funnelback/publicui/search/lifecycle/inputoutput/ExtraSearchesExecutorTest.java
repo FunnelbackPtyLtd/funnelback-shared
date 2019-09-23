@@ -2,11 +2,14 @@ package com.funnelback.publicui.search.lifecycle.inputoutput;
 
 import static com.funnelback.common.config.DefaultValues.ModernUI.EXTRA_SEARCH_TIMEOUT_MS;
 import static com.funnelback.common.config.Keys.ModernUI.EXTRA_SEARCH_TIMEOUT;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,13 +20,12 @@ import java.util.concurrent.FutureTask;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.ldap.transaction.compensating.manager.TransactionAwareDirContextInvocationHandler;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import static com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -146,7 +148,7 @@ public class ExtraSearchesExecutorTest {
         SearchTransactionProcessor transactionProcessor = new SearchTransactionProcessor() {
             
             @Override
-            public SearchTransaction process(SearchQuestion q, SearchUser user, Optional<String> extraSearchName) {
+            public SearchTransaction process(SearchQuestion q, SearchUser user, Optional<String> extraSearchName, Optional<SearchTransaction> parentSearchTransaction) {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {

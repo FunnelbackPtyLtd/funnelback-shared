@@ -80,7 +80,7 @@ public class DefaultSearchTransactionProcessorTest {
         output.add(new MockOutputProcessor());
         data.add(new MockDataFetcher());
         
-        SearchTransaction st = processor.process(q, null, Optional.empty());
+        SearchTransaction st = processor.process(q, null, Optional.empty(), Optional.empty());
         
         Assert.assertNotNull(st);
         Assert.assertNotNull(st.getResponse());
@@ -109,7 +109,7 @@ public class DefaultSearchTransactionProcessorTest {
         input.clear();
         input.add(inputProcessor);
         
-        SearchTransaction st = processor.process(q, null, Optional.empty());
+        SearchTransaction st = processor.process(q, null, Optional.empty(), Optional.empty());
 
         this.testError(InputProcessorException.class, st);
     }
@@ -122,7 +122,7 @@ public class DefaultSearchTransactionProcessorTest {
         data.clear();
         data.add(dataFetcher);
         
-        SearchTransaction st = processor.process(q, null, Optional.empty());
+        SearchTransaction st = processor.process(q, null, Optional.empty(), Optional.empty());
 
         this.testError(DataFetchException.class, st);
     }
@@ -135,7 +135,7 @@ public class DefaultSearchTransactionProcessorTest {
         output.clear();
         output.add(outputProcessor);
         
-        SearchTransaction st = processor.process(q, null, Optional.empty());
+        SearchTransaction st = processor.process(q, null, Optional.empty(), Optional.empty());
 
         this.testError(OutputProcessorException.class, st);
     }

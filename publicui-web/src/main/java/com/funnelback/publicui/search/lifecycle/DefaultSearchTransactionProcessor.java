@@ -60,9 +60,9 @@ public class DefaultSearchTransactionProcessor implements SearchTransactionProce
     @Autowired @Setter
     private I18n i18n;
 
-    public SearchTransaction process(SearchQuestion question, SearchUser user, Optional<String> extraSearchName) {
+    public SearchTransaction process(SearchQuestion question, SearchUser user, Optional<String> extraSearchName, Optional<SearchTransaction> parentSearchTransaction) {
         SearchTransaction transaction = new SearchTransaction(question, new SearchResponse());
-        transaction.setExtraSearchName(extraSearchName);
+        transaction.setExtraSearchNameAndParentTransaction(extraSearchName, parentSearchTransaction);
         
         if (user != null) {
             transaction.setSession(new SearchSession(user));

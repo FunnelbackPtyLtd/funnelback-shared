@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.publicui.i18n.I18n;
@@ -21,6 +19,7 @@ import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateScalarModel;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Performs an extra search.
@@ -68,7 +67,8 @@ public class SearchMethod extends AbstractTemplateMethod {
 
         return searchTransactionProcessor.process(sq, 
             null, 
-            Optional.of(i18n.tr("freemarker.extra-search-name", query)));
+            Optional.of(i18n.tr("freemarker.extra-search-name", query)),
+            Optional.empty()); // Sigh we don't know the current search transaction.
     }
     
     
