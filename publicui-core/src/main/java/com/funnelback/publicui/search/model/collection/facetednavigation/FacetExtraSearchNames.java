@@ -1,9 +1,5 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation;
 
-import java.util.Base64;
-
-import java.nio.charset.StandardCharsets;
-
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 
@@ -65,7 +61,7 @@ public class FacetExtraSearchNames {
     
     
     private String encode(String s) {
-        return Base64.getEncoder().encodeToString(s.getBytes(StandardCharsets.UTF_8));
+        return s.replace(SEP, SEP+SEP);
     }
     
     /**
