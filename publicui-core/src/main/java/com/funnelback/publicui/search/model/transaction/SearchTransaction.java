@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -57,12 +58,43 @@ public class SearchTransaction {
     @XStreamOmitField @JsonIgnore
     @Getter @NonNull private Optional<String> extraSearchName = Optional.empty();
     
+    /**
+     * Holds the parent search transaction from which this search transaction was created under.
+     * 
+     * @since 15.14
+     */
     @XStreamOmitField @JsonIgnore
     @Getter @NonNull private Optional<SearchTransaction> parentTransaction = Optional.empty();
     
     public void setExtraSearchNameAndParentTransaction(Optional<String> extraSearchName, Optional<SearchTransaction> parentTransaction) {
         this.extraSearchName = extraSearchName;
         this.parentTransaction = parentTransaction;
+    }
+    
+    /**
+     * Gets the name of the extra search this search should be considered to be under.
+     * 
+     * The result of this should be used when modifying a particular extra search. As
+     * Funnelback may create extra searches under an existing search, for example 
+     * for faceted navigation, this could be used to work out if the search transaction
+     * should be modified.
+     *  
+     * @return The name of the extra search that is running or the name of the EXTRA_SEARCH
+     * from which this search was created from. If this search is not or does not belong to
+     *  an extra search empty will be returned. 
+     */
+    @JsonIgnore
+    public Optional<String> getEffecitveExtraSearchName() {
+        Optional<SearchTransaction> st = Optional.of(this);
+        while(st.isPresent()) {
+            // If the question is null, should this really return an optional?
+            if(st.get().getQuestion() == null) return Optional.empty();
+            if(st.get().getQuestion().getQuestionType() == SearchQuestionType.EXTRA_SEARCH) {
+                return st.get().getExtraSearchName();
+            }
+            st = st.get().getParentTransaction();
+        }
+        return Optional.empty();
     }
     
     /** The question containing the input parameters. */
