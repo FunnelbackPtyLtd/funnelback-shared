@@ -20,10 +20,10 @@ public class SearchTransactionTest {
         SearchTransaction facet = stOfType(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH);
         facet.setExtraSearchNameAndParentTransaction(Optional.of("facet"), Optional.of(parent));
         
-        Assert.assertEquals(Optional.empty(), parent.getEffecitveExtraSearchName());
-        Assert.assertEquals(Optional.empty(), facet.getEffecitveExtraSearchName());
-        Assert.assertEquals(Optional.of("alldoc"), extra.getEffecitveExtraSearchName());
-        Assert.assertEquals(Optional.of("alldoc"), extraFacet.getEffecitveExtraSearchName());
+        Assert.assertEquals(Optional.empty(), parent.getEffectiveExtraSearchName());
+        Assert.assertEquals(Optional.empty(), facet.getEffectiveExtraSearchName());
+        Assert.assertEquals(Optional.of("alldoc"), extra.getEffectiveExtraSearchName());
+        Assert.assertEquals(Optional.of("alldoc"), extraFacet.getEffectiveExtraSearchName());
         
     }
     

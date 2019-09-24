@@ -84,7 +84,7 @@ public class SearchTransaction {
      *  an extra search empty will be returned. 
      */
     @JsonIgnore
-    public Optional<String> getEffecitveExtraSearchName() {
+    public Optional<String> getEffectiveExtraSearchName() {
         Optional<SearchTransaction> st = Optional.of(this);
         while(st.isPresent()) {
             // If the question is null, should this really return an optional?
