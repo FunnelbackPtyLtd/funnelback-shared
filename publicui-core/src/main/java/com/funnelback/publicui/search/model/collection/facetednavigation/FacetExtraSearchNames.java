@@ -1,9 +1,5 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation;
 
-import java.util.Base64;
-
-import java.nio.charset.StandardCharsets;
-
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 
@@ -40,7 +36,7 @@ public class FacetExtraSearchNames {
      * value being picked.
      * @return
      */
-    private String getExtraSearchName(String facetName, String queryStringParamName, String value) {
+    String getExtraSearchName(String facetName, String queryStringParamName, String value) {
         // Base 64 the param and value to ensure we accidently don't generate non unique keys
         // for different inputs.
         // A seperator that wont appear in base64.
@@ -62,10 +58,14 @@ public class FacetExtraSearchNames {
         return SEARCH_WHERE_FACET_IS_DISABLED + SEP + encode(facetName);
     }
     
-    
-    
     private String encode(String s) {
-        return Base64.getEncoder().encodeToString(s.getBytes(StandardCharsets.UTF_8));
+        // Encode the value.
+        // The escape char is \
+        // The value is wrapped in " chars.
+        // and so the only chars we need to escape are \ and "
+        return "\"" + s.replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+            + "\"";
     }
     
     /**
