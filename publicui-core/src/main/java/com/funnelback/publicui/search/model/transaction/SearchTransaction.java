@@ -61,7 +61,7 @@ public class SearchTransaction {
     /**
      * Holds the parent search transaction from which this search transaction was created under.
      * 
-     * @since 15.14
+     * @since 15.14.0.x
      */
     @XStreamOmitField @JsonIgnore
     @Getter @NonNull private Optional<SearchTransaction> parentTransaction = Optional.empty();
@@ -78,7 +78,9 @@ public class SearchTransaction {
      * Funnelback may create extra searches under an existing search, for example 
      * for faceted navigation, this could be used to work out if the search transaction
      * should be modified.
-     *  
+     * 
+     * @since 15.14.0.x
+     * 
      * @return The name of the extra search that is running or the name of the EXTRA_SEARCH
      * from which this search was created from. If this search is not or does not belong to
      *  an extra search empty will be returned. 
