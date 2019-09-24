@@ -61,7 +61,7 @@ public class FacetExtraSearchNames {
     private String encode(String s) {
         // Encode the value.
         // The escape char is \
-        // The value is wrapped in " char
+        // The value is wrapped in " chars.
         // and so the only chars we need to escape are \ and "
         return "\"" + s.replace("\\", "\\\\")
             .replace("\"", "\\\"")
