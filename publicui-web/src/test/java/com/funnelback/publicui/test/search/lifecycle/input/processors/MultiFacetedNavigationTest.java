@@ -348,8 +348,8 @@ public class MultiFacetedNavigationTest {
         st.getQuestion().getInputParameterMap().put("facetScope", "f.foobar%7Cblah%3Dblah");
         processor.addScopedSearchWithFacetUnselected(st, facet);
         Assert.assertEquals("Missing extra search", 1, st.getExtraSearchesQuestions().size());
-        Assert.assertNotNull(st.getExtraSearchesQuestions().get("INTERNAL_FACETED_NAV_SEARCH_FACET_DISABLED-foobar"));
-        SearchQuestion searchQuestion = st.getExtraSearchesQuestions().get("INTERNAL_FACETED_NAV_SEARCH_FACET_DISABLED-foobar");
+        Assert.assertNotNull(st.getExtraSearchesQuestions().get("INTERNAL_FACETED_NAV_SEARCH_FACET_DISABLED-\"foobar\""));
+        SearchQuestion searchQuestion = st.getExtraSearchesQuestions().get("INTERNAL_FACETED_NAV_SEARCH_FACET_DISABLED-\"foobar\"");
         Assert.assertEquals("query should stay enabled","query", searchQuestion.getQuery());
         Assert.assertFalse("Counting options should not have been disabled",
             searchQuestion.getPriorityQueryProcessorOptions().getOptions().containsKey("rmcf"));
