@@ -19,14 +19,14 @@ public class FacetComparatorProvider {
 
     private final Map<FacetValuesOrder, Comparator<Facet.CategoryValue>> FACET_ORDER_TO_COMPARATOR 
         = ImmutableMap.<FacetValuesOrder, Comparator<Facet.CategoryValue>>builder()
-        .put(FacetValuesOrder.COUNT_DESCENDING, new ByCountAscending().reversed())
-        .put(FacetValuesOrder.COUNT_ASCENDING, new ByCountAscending())
+        .put(FacetValuesOrder.COUNT_DESCENDING, FacetComparators.BY_COUNT_DESCENDING)
+        .put(FacetValuesOrder.COUNT_ASCENDING, FacetComparators.BY_COUNT_ASCENDING)
         .put(FacetValuesOrder.SELECTED_FIRST, new BySelectedFirst())
         .put(FacetValuesOrder.CATEGORY_DEFINITION_ORDER, new FacetConfigOrder())
-        .put(FacetValuesOrder.LABEL_ASCENDING, new ByLabelComparator())
-        .put(FacetValuesOrder.LABEL_DESCENDING, new ByLabelComparator().reversed())
-        .put(FacetValuesOrder.LABEL_AS_NUMBER_ASCENDING, new ByLabelAsNumberComparator())
-        .put(FacetValuesOrder.LABEL_AS_NUMBER_DESCENDING, new ByLabelAsNumberComparator().reversed())
+        .put(FacetValuesOrder.LABEL_ASCENDING, FacetComparators.BY_LABEL_ASCENDING)
+        .put(FacetValuesOrder.LABEL_DESCENDING, FacetComparators.BY_LABEL_DESCENDING)
+        .put(FacetValuesOrder.LABEL_AS_NUMBER_ASCENDING, FacetComparators.BY_LABEL_AS_NUMBER_ASCENDING)
+        .put(FacetValuesOrder.LABEL_AS_NUMBER_DESCENDING, FacetComparators.BY_LABEL_AS_NUMBER_DESCENDING)
         .put(FacetValuesOrder.DATE_ASCENDING, new ByDateComparator(DateSortMode.adate))
         .put(FacetValuesOrder.DATE_DESCENDING, new ByDateComparator(DateSortMode.ddate))
         .build();

@@ -1,23 +1,22 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
-import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.funnelback.publicui.search.model.transaction.Facet;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import java.math.BigDecimal;
+
 import com.google.common.collect.ImmutableSet;
 
 
-public class ByLabelAsNumberComparator implements Comparator<Facet.CategoryValue> {
+public class ByStringAsNumberComparator implements Comparator<String> {
     
     private static final Set<Character> SPACE_CHARS_ALLOWED_IN_NUMBERS = knownNumberSpaces();
 
     @Override
-    public int compare(CategoryValue o1, CategoryValue o2) {
-        BigDecimal number1 = extractFirstNumber(o1.getLabel());
-        BigDecimal number2 = extractFirstNumber(o2.getLabel());
+    public int compare(String o1, String o2) {
+        BigDecimal number1 = extractFirstNumber(o1);
+        BigDecimal number2 = extractFirstNumber(o2);
         
         return Comparator.nullsLast(Comparator.<BigDecimal>naturalOrder())
                 .compare(number1, number2);

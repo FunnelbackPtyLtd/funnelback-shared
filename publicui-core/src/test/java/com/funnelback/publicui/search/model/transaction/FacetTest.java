@@ -17,7 +17,7 @@ import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
 import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import com.funnelback.publicui.search.model.transaction.facet.order.ByLabelComparator;
+import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparators;
 
 public class FacetTest {
 
@@ -39,7 +39,7 @@ public class FacetTest {
         
         expectOrderOfValues("Should follow label order", facet, "a3", "a2", "a1", "b", "c");
         
-        facet.setCustomComparator(new ByLabelComparator().reversed());
+        facet.setCustomComparator(FacetComparators.BY_LABEL_ASCENDING.reversed());
         
         expectOrderOfValues("A custom comparator is added but we the order does not say to use it.",
             facet, "a3", "a2", "a1", "b", "c");

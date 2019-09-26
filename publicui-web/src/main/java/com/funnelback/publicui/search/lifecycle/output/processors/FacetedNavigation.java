@@ -192,8 +192,29 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             .collect(Collectors.toList());
         
         // For the old template we make some effort to sort the values in the desired way.
+        synchronized (List.class) {
+            
+        
+        List<CategoryValue> values = new ArrayList<>(categoryToAddValuesTo.getValue().getValues());
+        try {
+            
         Collections.sort(categoryToAddValuesTo.getValue().getValues(), 
             comparatorProvider.getComparatorWhenSortingValuesFromSingleCategory(facetDefinition.getOrder()));
+        } catch (Exception e) {
+            try {
+                for(CategoryValue cv : values) {
+                    System.out.printf("values.add(new CategoryValue(\"a\", \"a\", %s, \"\", \"\", %s, \"\", \"\", \"\", 0));\n",
+                        cv.getCount() + "", cv.isSelected());
+                }
+                Collections.sort(values, 
+                comparatorProvider.getComparatorWhenSortingValuesFromSingleCategory(facetDefinition.getOrder()));
+            } catch (Exception e2) {
+                System.out.println("OK DOne");
+            } 
+            
+            
+        }
+        }
         
         if(parentCat.getValue() != null) {
             //Ensure that this leaf category has values otherwise we don't want it.
