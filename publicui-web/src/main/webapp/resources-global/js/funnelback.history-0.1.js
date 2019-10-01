@@ -20,10 +20,6 @@ var SearchHistory = (function() {
   'use strict'
 
   var Constructor = function(options) {
-    if (!options.collection) {
-      Log.warn('Missing "collection" parameter');
-      return null;
-    }
     return this.init(options);
   }
 
@@ -34,7 +30,7 @@ var SearchHistory = (function() {
     iconPrefix: 'glyphicon glyphicon-', // CSS class(es) prefix used to display icons
     box: {
       selector: '#search-history', // CSS selector to element where content of history should be displayed
-      pageSelector: '#search-results-display', // CSS selector to part of page to hide it when history is displayed
+      pageSelector: ['#search-results-display', '#search-cart'], // list of CSS selectors to parts of page to hide it when history is displayed
       icon: 'time', // icon to display in history box for main header; will be prefixed with `iconPrefix`; if null/undefined, no icon will be displayed
       label: 'History', // label to display in history box for main header
       backIcon: 'arrow-left', // icon to display in history box for link to return to result page; will be prefixed with `iconPrefix`; if null/undefined, no icon will be displayed
@@ -71,7 +67,14 @@ var SearchHistory = (function() {
    * Initialise history widget with provided options
    */
   Constructor.prototype.init = function(options) {
+    if (!options.collection) {
+      Log.warn('Missing "collection" parameter');
+      return null;
+    }
+
     this.options = Utils.extend(Constructor.defaults, options || {});
+    if (!this.options.box.pageSelector) this.options.box.pageSelector = [];
+
     View.init(this.options);
     return this;
   };
@@ -106,7 +109,7 @@ var SearchHistory = (function() {
    */
   Constructor.prototype.show = function() {
     View.element.style.display = 'block';
-    View.pageElement.style.display = 'none';
+    View.togglePageElements('none');
     View.isHidden = false;
     return this;
   };
@@ -116,7 +119,7 @@ var SearchHistory = (function() {
    */
   Constructor.prototype.hide = function() {
     View.element.style.display = 'none';
-    View.pageElement.style.display = 'block';
+    View.togglePageElements('block');
     View.isHidden = true;
     return this;
   };
@@ -187,23 +190,26 @@ var SearchHistory = (function() {
 
   const View = {
     element: null,
-    pageElement: null,
+    pageElements: [],
     isHidden: true,
 
     init: function(options) {
-      View.element = Element.findOnce(options.box.selector);
-      View.pageElement = Element.findOnce(options.box.pageSelector);
+      View.element = ElementUtil.findOnce(options.box.selector);
+      for (var i = 0, len = options.box.pageSelector.length; i < len; i++) {
+        const el = ElementUtil.findOnce(options.box.pageSelector[i]);
+        if (el) View.pageElements.push(el);
+      }
       Constructor.prototype.hide();
 
       // create DOM element of back button from history box to results
-      const backEl = Element.create('flb-history-box-back', View.element, 'a', Templates.getIconLabelTemplate(options, options.box.backIcon, options.box.backLabel), {style: 'cursor: pointer'});
-      Element.addEvent(backEl, 'click', Constructor.prototype.hide);
+      const backEl = ElementUtil.create('flb-history-box-back', View.element, 'a', Templates.getIconLabelTemplate(options, options.box.backIcon, options.box.backLabel), {style: 'cursor: pointer'});
+      ElementUtil.addEvent(backEl, 'click', Constructor.prototype.hide);
       // create DOM element with main history header
-      Element.create('flb-history-box-header', View.element, 'h2', Templates.getIconLabelTemplate(options, options.box.icon, options.box.label));
+      ElementUtil.create('flb-history-box-header', View.element, 'h2', Templates.getIconLabelTemplate(options, options.box.icon, options.box.label));
       View.element.insertAdjacentHTML('beforeend', Templates.once.box);
       // create DOM element to toggle history box display
-      const trigger = Element.create('flb-history-trigger', Element.findOnce(options.trigger.selector), 'a', HandlebarsUtil.compile(options.trigger.template)(Templates.getIconLabelData(options, options.trigger.icon, options.trigger.label)), {style: 'cursor: pointer'});
-      Element.addEvent(trigger, 'click', Constructor.prototype.toggle);
+      const trigger = ElementUtil.create('flb-history-trigger', ElementUtil.findOnce(options.trigger.selector), 'a', HandlebarsUtil.compile(options.trigger.template)(Templates.getIconLabelData(options, options.trigger.icon, options.trigger.label)), {style: 'cursor: pointer'});
+      ElementUtil.addEvent(trigger, 'click', Constructor.prototype.toggle);
 
       View.render(options, 'click-history', 'clickBox'); // render display of click history box
       View.render(options, 'search-history', 'searchBox'); // render display of search history box
@@ -215,8 +221,8 @@ var SearchHistory = (function() {
      * - type of history box: `search-history` or `click-history`
      */
     clear: function(options, type) {
-      Element.remove(Element.findOnce('.' + View.classType(type, 'results')));
-      View.noResults(type, Element.findOnce('.' + View.classType(type, 'clear'), View.element), Element.findOnce('.' + View.classType(type), View.element));
+      ElementUtil.remove(ElementUtil.findOnce('.' + View.classType(type, 'results')));
+      View.noResults(type, ElementUtil.findOnce('.' + View.classType(type, 'clear'), View.element), ElementUtil.findOnce('.' + View.classType(type), View.element));
     },
 
     /**
@@ -227,22 +233,22 @@ var SearchHistory = (function() {
      */
     render: function(options, type, box) {
       // find DOM elemenet holding specific history box
-      const element = Element.findOnce('.' + View.classType(type), View.element),
+      const element = ElementUtil.findOnce('.' + View.classType(type), View.element),
         // create DOM elemenet with specific history box header
-        headerEl = Element.create(View.classType(type, 'header'), element, 'h3', Templates.getIconLabelTemplate(options, options[box].icon, options[box].label)),
+        headerEl = ElementUtil.create(View.classType(type, 'header'), element, 'h3', Templates.getIconLabelTemplate(options, options[box].icon, options[box].label)),
         // creat DOM element of button to clear all data for specific history box
-        clearEl = Element.create(View.classType(type, 'clear'), headerEl, 'a', Templates.getIconLabelTemplate(options, options.box.clearIcon, options.box.clearLabel), {class: options.box.clearClasses});
-      Element.addEvent(clearEl, 'click', function(e) {
+        clearEl = ElementUtil.create(View.classType(type, 'clear'), headerEl, 'a', Templates.getIconLabelTemplate(options, options.box.clearIcon, options.box.clearLabel), {class: options.box.clearClasses});
+      ElementUtil.addEvent(clearEl, 'click', function(e) {
         e.preventDefault();
         return Constructor.prototype.clear(options, type);
       });
 
       // find DOM element with list of specific history results
-      const resultsEl = Element.findOnce(options[box].results);
+      const resultsEl = ElementUtil.findOnce(options[box].results);
       if (resultsEl) {
-        const content = Element.getContent(resultsEl).trim();
+        const content = ElementUtil.getContent(resultsEl).trim();
         // if there is a content display results
-        if (content.length) Element.create(View.classType(type, 'results'), element, 'div', content);
+        if (content.length) ElementUtil.create(View.classType(type, 'results'), element, 'div', content);
         // else display no results message
         else View.noResults(type, clearEl, element);
       }
@@ -274,7 +280,17 @@ var SearchHistory = (function() {
      */
     noResults: function(type, clearEl, boxEl) {
       clearEl.style.display = 'none';
-      Element.create(View.classType(type, 'empty'), boxEl, 'div', 'Your ' + View.labelType(type) + ' is empty', {class: 'text-muted'});
+      ElementUtil.create(View.classType(type, 'empty'), boxEl, 'div', 'Your ' + View.labelType(type) + ' is empty', {class: 'text-muted'});
+    },
+
+    /**
+     * Show or hide DOM elements in the page
+     * - value of CSS property 'display'
+     */
+    togglePageElements: function(display) {
+      for (var i = 0, len = View.pageElements.length; i < len; i++) {
+        View.pageElements[i].style.display = display;
+      }
     }
   };
 
@@ -305,15 +321,15 @@ var SearchHistory = (function() {
   /** Helpers */
 
   // Helpers to work with DOM elements
-  const Element = {
+  const ElementUtil = {
     // Create DOM element
     create: function(id, context, tag, content, attrs) {
       const el = document.createElement(tag ? tag : 'div');
-      if (content) Element.setContent(el, content);
+      if (content) ElementUtil.setContent(el, content);
       if (!attrs) attrs = {};
       if (attrs['class']) attrs['class'] += ' ' + id;
       else attrs['class'] = id;
-      Element.setAttr(el, attrs);
+      ElementUtil.setAttr(el, attrs);
       if (context) context.appendChild(el);
       return el;
     },
@@ -331,7 +347,7 @@ var SearchHistory = (function() {
 
     // Find first DOM element with provided CSS selector
     findOnce: function(selector, context) {
-      return Element.find(selector, context)[0];
+      return ElementUtil.find(selector, context)[0];
     },
 
     // Set attribute of DOM element
@@ -380,7 +396,7 @@ var SearchHistory = (function() {
     // Deep extend of one object with properites of other object
     extend: function(obj, src) {
       for (var key in src) {
-        if (src.hasOwnProperty(key)) obj[key] = typeof src[key] === 'object' ? Utils.extend(obj[key], src[key]) : src[key];
+        if (src.hasOwnProperty(key)) obj[key] = typeof src[key] === 'object' ? Utils.extend(obj[key] || {}, src[key]) : src[key];
       }
       return obj;
     }
