@@ -21,10 +21,6 @@ var Cart = (function() {
   'use strict'
 
   var Constructor = function(options) {
-    if (!options.collection) {
-      Log.warn('Missing "collection" parameter');
-      return null;
-    }
     return this.init(options);
   }
 
@@ -35,7 +31,7 @@ var Cart = (function() {
     iconPrefix: 'glyphicon glyphicon-', // CSS class(es) prefix used to display icons
     cart: {
       selector: '#search-cart', // CSS selector to element where content of cart should be displayed
-      pageSelector: '#search-results-display', // CSS selector to part of page to hide it when cart is displayed
+      pageSelector: ['#search-results-display', '#search-history'], // set of CSS selectors to parts of page to hide then when cart is displayed
       icon: 'pushpin', // icon to display for cart header; will be prefixed with `iconPrefix`; if null/undefined, no icon will be displayed
       label: 'Saved', // label to display as cart header
       backIcon: 'arrow-left', // icon to display in cart for link to return to result page; will be prefixed with `iconPrefix`; if null/undefined, no icon will be displayed
@@ -83,7 +79,14 @@ var Cart = (function() {
    * - fetch cart data
    */
   Constructor.prototype.init = function(options) {
+    if (!options.collection) {
+      Log.error('Missing "collection" parameter');
+      return null;
+    }
+
     this.options = Utils.extend(Constructor.defaults, options || {});
+    if (!this.options.cart.pageSelector) this.options.cart.pageSelector = [];
+
     CartBox.init(this.options);
     CartCount.init(this.options);
     Item.init(this.options);
@@ -129,7 +132,7 @@ var Cart = (function() {
    */
   Constructor.prototype.show = function() {
     CartBox.element.style.display = 'block';
-    CartBox.pageElement.style.display = 'none';
+    CartBox.togglePageElements('none');
     CartBox.isHidden = false;
     return this;
   };
@@ -139,7 +142,7 @@ var Cart = (function() {
    */
   Constructor.prototype.hide = function() {
     CartBox.element.style.display = 'none';
-    CartBox.pageElement.style.display = 'block';
+    CartBox.togglePageElements('block');
     CartBox.isHidden = true;
     return this;
   };
@@ -248,28 +251,43 @@ var Cart = (function() {
   const CartBox = {
     element: null, // DOM element displying cart
     listElement: null, // DOM element displaying list of cart items inside cart
-    pageElement: null, // DOM element to whole page to hide it when cart is displayed
+    pageElements: [], // DOM element to whole page to hide it when cart is displayed
     isHidden: true, // state of visibility of cart
 
     init: function(options) {
-      CartBox.element = Element.findOnce(options.cart.selector);
+      CartBox.element = ElementUtil.findOnce(options.cart.selector);
       if (!CartBox.element) Log.warn('No element was found with provided selector "' + options.cart.selector + '"');
-      CartBox.pageElement = Element.findOnce(options.cart.pageSelector);
-      if (!CartBox.pageElement) Log.warn('No element was found with provided page selector "' + options.cart.pageSelector + '"');
+      
+      for (var i = 0, len = options.cart.pageSelector.length; i < len; i++) {
+        const el = ElementUtil.findOnce(options.cart.pageSelector[i]);
+        if (el) CartBox.pageElements.push(el);
+      }
+      if (!CartBox.pageElements.length) Log.warn('No element was found with provided page selector "' + options.cart.pageSelector + '"');
+      
       Constructor.prototype.hide();
 
       const template = HandlebarsUtil.compile(Templates.once.iconLabel),
         // create DOM element of back button from cart to results
-        backEl = Element.create('flb-cart-box-back', CartBox.element, 'a', template({icon: options.cart.backIcon ? options.iconPrefix + options.cart.backIcon : null, label: options.cart.backLabel}), {style: 'cursor: pointer'}),
+        backEl = ElementUtil.create('flb-cart-box-back', CartBox.element, 'a', template({icon: options.cart.backIcon ? options.iconPrefix + options.cart.backIcon : null, label: options.cart.backLabel}), {style: 'cursor: pointer'}),
         // create DOM elemenet of cart header
-        headerEl = Element.create('flb-cart-box-header', CartBox.element, 'h2', template({icon: options.cart.icon ? options.iconPrefix + options.cart.icon : null, label: options.cart.label})),
+        headerEl = ElementUtil.create('flb-cart-box-header', CartBox.element, 'h2', template({icon: options.cart.icon ? options.iconPrefix + options.cart.icon : null, label: options.cart.label})),
         // creat DOM element of button to clear all data in cart
-        clearEl = Element.create('flb-cart-box-clear', headerEl, 'a', template({icon: options.iconPrefix + 'remove', label: 'Clear'}), {class: 'btn btn-xs btn-danger'});
-      Element.addEvent(backEl, 'click', Constructor.prototype.hide);
-      Element.addEvent(clearEl, 'click', function() { return Constructor.prototype.clear(options); });
+        clearEl = ElementUtil.create('flb-cart-box-clear', headerEl, 'a', template({icon: options.iconPrefix + 'remove', label: 'Clear'}), {class: 'btn btn-xs btn-danger'});
+      ElementUtil.addEvent(backEl, 'click', Constructor.prototype.hide);
+      ElementUtil.addEvent(clearEl, 'click', function() { return Constructor.prototype.clear(options); });
       // create DOM element of list of cart items
-      CartBox.listElement = Element.create('flb-cart-box-list', CartBox.element, 'ul', null, {class: 'list-unstyled'});
+      CartBox.listElement = ElementUtil.create('flb-cart-box-list', CartBox.element, 'ul', null, {class: 'list-unstyled'});
     },
+
+    /**
+     * Show or hide DOM elements in the page
+     * - value of CSS property 'display'
+     */
+    togglePageElements: function(display) {
+      for (var i = 0, len = CartBox.pageElements.length; i < len; i++) {
+        CartBox.pageElements[i].style.display = display;
+      }
+    }
   };
 
   // Handler to access and create element displaying cart count on page
@@ -286,8 +304,8 @@ var Cart = (function() {
       if (options.cartCount.isLabel) CartCount.label = options.cartCount.label;
       if (options.cartCount.label) CartCount.partialTitle += ' in your ' + options.cartCount.label.toLowerCase();
       CartCount.template = HandlebarsUtil.compile(options.cartCount.template);
-      CartCount.element = Element.create(CartCount.selector, Element.findOnce(options.cartCount.selector), 'a', CartCount.template(CartCount.data(0)), {href: '#', title: CartCount.title(0)});
-      Element.addEvent(CartCount.element, 'click', Constructor.prototype.toggle);
+      CartCount.element = ElementUtil.create(CartCount.selector, ElementUtil.findOnce(options.cartCount.selector), 'a', CartCount.template(CartCount.data(0)), {href: '#', title: CartCount.title(0)});
+      ElementUtil.addEvent(CartCount.element, 'click', Constructor.prototype.toggle);
     },
 
     // Data model for Handlebars template
@@ -297,7 +315,7 @@ var Cart = (function() {
 
     // Update count and title of cart count
     set: function(count) {
-      Element.setContent(CartCount.element, CartCount.template(CartCount.data(count)));
+      ElementUtil.setContent(CartCount.element, CartCount.template(CartCount.data(count)));
       CartCount.element.setAttribute('title', CartCount.title(count));
     },
 
@@ -315,7 +333,7 @@ var Cart = (function() {
 
     init: function(options) {
       if (options.item.template) Item.template = HandlebarsUtil.compile(options.item.template);
-      Item.listElement = Element.findOnce(options.item.selector);
+      Item.listElement = ElementUtil.findOnce(options.item.selector);
       if (!Item.listElement) Log.warn('No element was found with provided selector "' + options.item.selector + '"');
     },
 
@@ -329,18 +347,18 @@ var Cart = (function() {
     // Toggle display of item in cart
     update: function(options, data, type) {
       // Find cart trigger within serach result
-      const itemTrigger = Element.findOnce(Item.selector(data.indexUrl), Item.listElement);
+      const itemTrigger = ElementUtil.findOnce(Item.selector(data.indexUrl), Item.listElement);
       // Toggle display of cart trigger
       if (itemTrigger) ItemTrigger.update(options, itemTrigger, type);
 
       if (type === 'add') {
         // Find cart item to be removed from cart display
-        const cartItem = Element.findOnce(Item.selector(data.indexUrl), CartBox.listElement);
+        const cartItem = ElementUtil.findOnce(Item.selector(data.indexUrl), CartBox.listElement);
         // Remove cart item from cart
-        Element.remove(cartItem);
+        ElementUtil.remove(cartItem);
       } else {
         // Create new item to be displayed in cart
-        const cartItem = Element.create('flb-cart-box-item', null, 'li', Item.template(data), {'data-cart-url': data.indexUrl});
+        const cartItem = ElementUtil.create('flb-cart-box-item', null, 'li', Item.template(data), {'data-cart-url': data.indexUrl});
         // Create cart trigger for new item in cart
         ItemTrigger.set(options, cartItem);
         // Set trigger to be delete trigger for new item in cart
@@ -355,7 +373,7 @@ var Cart = (function() {
     // On clearing cart data, update display of item in cart and cart triggers within search results
     clear: function(options) {
       // Find all search results
-      const items = Element.find(Item.selector(), Item.listElement);
+      const items = ElementUtil.find(Item.selector(), Item.listElement);
       // Remove items from cart and set cart tirggers within search results to be added
       for (var i = 0, len = items.length; i < len; i++) ItemTrigger.update(options, items[i], 'add');
     },
@@ -363,7 +381,7 @@ var Cart = (function() {
     // Initialise cart triggers to search results
     set: function(options) {
       // Find all search results
-      const items = Element.find(Item.selector(), Item.listElement);
+      const items = ElementUtil.find(Item.selector(), Item.listElement);
       // Set cart triggers withing search results to be added
       for (var i = items.length - 1; i >= 0; i--) ItemTrigger.set(options, items[i]);
     },
@@ -406,25 +424,25 @@ var Cart = (function() {
 
     // Create cart trigger for provided cart item or search result
     set: function(options, item) {
-      const el = Element.findOnce(options.itemTrigger.selector, item);
-      const trigger = Element.create(ItemTrigger.selector, null, 'a', ItemTrigger.addTemplate, {style: 'cursor: pointer', title: ItemTrigger.addTitle});
-      Element.addEvent(trigger, 'click', ItemTrigger.addEvent);
+      const el = ElementUtil.findOnce(options.itemTrigger.selector, item);
+      const trigger = ElementUtil.create(ItemTrigger.selector, null, 'a', ItemTrigger.addTemplate, {style: 'cursor: pointer', title: ItemTrigger.addTitle});
+      ElementUtil.addEvent(trigger, 'click', ItemTrigger.addEvent);
       if (el) el.insertAdjacentElement(options.itemTrigger.position, trigger);
       else Log.warn('No element was found with provided selector "' + options.itemTrigger.selector + '"');
     },
 
     // Toggle display of cart trigger
     update: function(options, item, type) {
-      const el = Element.findOnce('.' + ItemTrigger.selector, item);
+      const el = ElementUtil.findOnce('.' + ItemTrigger.selector, item);
       if (type === 'add') {
-        Element.setContent(el, ItemTrigger.addTemplate);
-        Element.removeEvent(el, 'click', ItemTrigger.delEvent);
-        Element.addEvent(el, 'click', ItemTrigger.addEvent);
+        ElementUtil.setContent(el, ItemTrigger.addTemplate);
+        ElementUtil.removeEvent(el, 'click', ItemTrigger.delEvent);
+        ElementUtil.addEvent(el, 'click', ItemTrigger.addEvent);
         el.setAttribute('title', ItemTrigger.addTitle);
       } else {
-        Element.setContent(el, ItemTrigger.delTemplate);
-        Element.removeEvent(el, 'click', ItemTrigger.addEvent);
-        Element.addEvent(el, 'click', ItemTrigger.delEvent);
+        ElementUtil.setContent(el, ItemTrigger.delTemplate);
+        ElementUtil.removeEvent(el, 'click', ItemTrigger.addEvent);
+        ElementUtil.addEvent(el, 'click', ItemTrigger.delEvent);
         el.setAttribute('title', ItemTrigger.delTitle);
       }
     }
@@ -447,15 +465,15 @@ var Cart = (function() {
   /** Helpers */
 
   // Helpers to work with DOM elements
-  const Element = {
+  const ElementUtil = {
     // Create DOM element
     create: function(id, context, tag, content, attrs) {
       const el = document.createElement(tag ? tag : 'div');
-      if (content) Element.setContent(el, content);
+      if (content) ElementUtil.setContent(el, content);
       if (!attrs) attrs = {};
       if (attrs['class']) attrs['class'] += ' ' + id;
       else attrs['class'] = id;
-      Element.setAttr(el, attrs);
+      ElementUtil.setAttr(el, attrs);
       if (context) context.appendChild(el);
       return el;
     },
@@ -473,7 +491,7 @@ var Cart = (function() {
 
     // Find first DOM element with provided CSS selector
     findOnce: function(selector, context) {
-      return Element.find(selector, context)[0];
+      return ElementUtil.find(selector, context)[0];
     },
 
     // Set attribute of DOM element
@@ -522,7 +540,7 @@ var Cart = (function() {
     // Deep extend of one object with properites of other object
     extend: function(obj, src) {
       for (var key in src) {
-        if (src.hasOwnProperty(key)) obj[key] = typeof src[key] === 'object' ? Utils.extend(obj[key], src[key]) : src[key];
+        if (src.hasOwnProperty(key)) obj[key] = typeof src[key] === 'object' ? Utils.extend(obj[key] || {}, src[key]) : src[key];
       }
       return obj;
     }
