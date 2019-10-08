@@ -23,8 +23,8 @@
     @provides The URL of the previous page, as <code>${fb.prevUrl}</code>, the number of results on the previous page, as <code>${fb.prevRanks}</code>.
 -->
 <#macro Prev link=question.collection.configuration.value("ui.modern.search_link") startParamName="start_rank">
-    <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
-        <#if response.resultPacket.resultsSummary.prevStart?exists>
+    <#if response?? && response.resultPacket?? && response.resultPacket.resultsSummary??>
+        <#if response.resultPacket.resultsSummary.prevStart??>
             <#assign prevUrl = link + "?"
                 + changeParam(QueryString, startParamName, response.resultPacket.resultsSummary.prevStart) in fb />
             <#assign prevRanks = response.resultPacket.resultsSummary.numRanks in fb />
@@ -48,8 +48,8 @@
     @provides The URL of the next page, as <code>${fb.nextUrl}</code>, the number of results on the next page, as <code>${fb.nextRanks}</code>.
 -->
 <#macro Next link=question.collection.configuration.value("ui.modern.search_link") startParamName="start_rank">
-    <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
-        <#if response.resultPacket.resultsSummary.nextStart?exists>
+    <#if response?? && response.resultPacket?? && response.resultPacket.resultsSummary??>
+        <#if response.resultPacket.resultsSummary.nextStart??>
             <#assign nextUrl = link + "?"
                 + changeParam(QueryString, startParamName, response.resultPacket.resultsSummary.nextStart) in fb />
             <#assign nextRanks = response.resultPacket.resultsSummary.numRanks in fb />
@@ -92,7 +92,7 @@
     <#local rs = response.resultPacket.resultsSummary />
     <#local pages = 0 />
     <#if rs.fullyMatching??>
-        <#if rs.fullyMatching &gt; 0>
+        <#if rs.fullyMatching gt 0>
             <#local pages = (rs.fullyMatching + rs.partiallyMatching + rs.numRanks - 1) / rs.numRanks />
         <#else>
             <#local pages = (rs.totalMatching + rs.numRanks - 1) / rs.numRanks />
@@ -103,17 +103,17 @@
     </#if>
 
     <#local currentPage = 1 />
-    <#if rs.currStart &gt; 0 && rs.numRanks &gt; 0>
+    <#if rs.currStart gt 0 && rs.numRanks gt 0>
         <#local currentPage = (rs.currStart + rs.numRanks -1) / rs.numRanks />
     </#if>
 
     <#local firstPage = 1 />
-    <#if currentPage &gt; ((numPages-1)/2)?floor>
+    <#if currentPage gt ((numPages-1)/2)?floor>
        <#local firstPage = currentPage - ((numPages-1)/2)?floor />
     </#if>
 
     <#list firstPage..firstPage+(numPages-1) as pg>
-        <#if pg &gt; pages><#break /></#if>
+        <#if pg gt pages><#break /></#if>
         <#assign pageNumber = pg in fb />
         <#assign pageUrl = link + "?" + changeParam(QueryString, startParamName, (pg-1) * rs.numRanks+1) in fb />
 
@@ -201,16 +201,16 @@
     @param name Name of the extra search results to process, as configured in <code>collection.cfg</code>.
 -->
 <#macro ExtraResults name>
-    <#if extraSearches?exists && extraSearches[name]?exists>
+    <#if extraSearches?? && extraSearches[name]??>
         <#local questionBackup = question!{} />
         <#local responseBackup = response!{} />
-        <#if error?exists>
+        <#if error??>
             <#local errorBackup = error />
         </#if>
 
         <#global question = extraSearches[name].question!{} />
         <#global response = extraSearches[name].response!{} />
-        <#if extraSearches[name].error?exists>
+        <#if extraSearches[name].error??>
             <#global error = extraSearches[name].error />
         </#if>
 
@@ -218,7 +218,7 @@
 
         <#global question = questionBackup />
         <#global response = responseBackup />
-        <#if errorBackup?exists>
+        <#if errorBackup??>
             <#global error = errorBackup />
         </#if>
     <#else>
@@ -283,16 +283,15 @@
 -->
 <#macro ErrorMessage defaultMessage="An unknown error has occurred. Please try again">
     <#-- PADRE error -->
-    <#if response?exists && response.resultPacket?exists
-        && response.resultPacket.error?exists>
+    <#if response?? && response.resultPacket?? && response.resultPacket.error??>
         <p class="search-error">${response.resultPacket.error.userMsg!defaultMessage?html}</p>
         <!-- PADRE return code: [${response.returnCode!"Unknown"}], admin message: ${response.resultPacket.error.adminMsg!?html} -->
         <@ErrorMessageJS message="PADRE return code: "+response.returnCode!"Unknown" messageData=response.resultPacket.error.adminMsg! />
     </#if>
     <#-- Other errors -->
-    <#if error?exists>
+    <#if error??>
         <!-- ERROR status: ${error.reason!?html} -->
-        <#if error.additionalData?exists>
+        <#if error.additionalData??>
             <p class="search-error">${error.additionalData.message!defaultMessage?html}</p>
             <!-- ERROR cause: ${error.additionalData.cause!?html} --> 
             <@ErrorMessageJS message=error.additionalData.message! messageData=error.additionalData.cause! />
@@ -337,7 +336,7 @@
     @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags 
 -->
 <#macro MultiFacet name="" names=[]>
-    <#if response?exists && response.facets?exists>
+    <#if response?? && response.facets??>
         <#-- We use checkboxes, so enclose them in a form tag -->
         <form class="fb-facets-multiple">
         <#list response.facets as f>
@@ -348,10 +347,10 @@
                 <#assign facet_has_next = f_has_next in fb>
                 <#assign facet_index = f_index in fb>
                 <#-- Do we have values for this facet in the extraSearches searches ? -->
-                <#if question.selectedFacets?seq_contains(f.name) && extraSearches?exists
-                    && extraSearches[ExtraSearches.FACETED_NAVIGATION]?exists
-                    && extraSearches[ExtraSearches.FACETED_NAVIGATION].response?exists
-                    && extraSearches[ExtraSearches.FACETED_NAVIGATION].response.facets?exists>
+                <#if question.selectedFacets?seq_contains(f.name) && extraSearches??
+                    && extraSearches[ExtraSearches.FACETED_NAVIGATION]??
+                    && extraSearches[ExtraSearches.FACETED_NAVIGATION].response??
+                    && extraSearches[ExtraSearches.FACETED_NAVIGATION].response.facets??>
                     <#list extraSearches[ExtraSearches.FACETED_NAVIGATION].response.facets as extraFacet>
                         <#if extraFacet.name == f.name>
                             <#assign facet = extraFacet in fb>
@@ -419,16 +418,16 @@
     @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro MultiValues values facetSelected max=16>
-    <#if values?exists && values?size &gt; 0>
+    <#if values?? && values?size gt 0>
         <ul>
         <#local count = 0>
         <#list values as val>
             <#local count=count+1>
-            <#if count &gt; max><#break></#if>
+            <#if count gt max><#break></#if>
 
             <#local paramName = urlDecode(val.queryStringParam?split("=")[0]) />
             <#local paramValue = urlDecode(val.queryStringParam?split("=")[1]) />
-            <#local checked = question.selectedCategoryValues[paramName]?exists && question.selectedCategoryValues[paramName]?seq_contains(paramValue) />
+            <#local checked = question.selectedCategoryValues[paramName]?? && question.selectedCategoryValues[paramName]?seq_contains(paramValue) />
             <li>
                 <input type="checkbox" class="fb-facets-value"
                     <#if checked>checked="checked"</#if>
@@ -452,7 +451,7 @@
 -->
 <#macro CheckBlending prefix="Your query has been expanded to: " linkText="Click here to use verbatim query" tag="span">
     <#if response?? && response.resultPacket??
-        && response.resultPacket.QSups?? && response.resultPacket.QSups?size &gt; 0>
+        && response.resultPacket.QSups?? && response.resultPacket.QSups?size gt 0>
         ${prefix} <${tag}><#list response.resultPacket.QSups as qsup> ${qsup.query}<#if qsup_has_next>, </#if></#list></${tag}>.
         &nbsp;<a href="?${QueryString}&amp;qsup=off">${linkText?html?replace("&lt;em&gt;", "<em>")?replace("&lt;/em&gt;", "</em>")}</a>
         <#-- See FUN-9496 for info about the strange replaces above -->
@@ -676,12 +675,12 @@
 <#---
     Check if the user click history is empty or not. Writes 'true' if it is, 'false' otherwise.
 -->
-<#macro HasClickHistory><#if session?? && session.clickHistory?size &gt; 0>true<#else>false</#if></#macro>
+<#macro HasClickHistory><#if session?? && session.clickHistory?size gt 0>true<#else>false</#if></#macro>
 
 <#---
     Check if the user search history is empty or not. Writes 'true' if it is, 'false' otherwise.
 -->
-<#macro HasSearchHistory><#if session?? && session.searchHistory?size &gt; 0>true<#else>false</#if></#macro>
+<#macro HasSearchHistory><#if session?? && session.searchHistory?size gt 0>true<#else>false</#if></#macro>
 
 <#-- @end -->
 
