@@ -25,13 +25,13 @@
     @nested Any HTML attributes to include in the a tag.
 -->
 <#macro PrevNext label="" separator=" " next_prev_prefix=" [ " next_prev_suffix=" ] " prevLabel="Prev" nextLabel="Next" numPages=10>
-    <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
+    <#if response?? && response.resultPacket?? && response.resultPacket.resultsSummary??>
         <#local rs = response.resultPacket.resultsSummary />
 
         ${label!""}
 
         <#-- PREVIOUS link -->
-        <#if rs.prevStart?exists>
+        <#if rs.prevStart??>
             <#local url = question.collection.configuration.value("ui.modern.search_link") + "?" />
             <#local url = url + changeParam(QueryString, "start_rank", rs.prevStart) />
 
@@ -40,7 +40,7 @@
 
         <#local pages = 0 />
         <#if rs.fullyMatching??>
-            <#if rs.fullyMatching &gt; 0>
+            <#if rs.fullyMatching gt 0>
                 <#local pages = (rs.fullyMatching + rs.partiallyMatching + rs.numRanks - 1) / rs.numRanks />
             <#else>
                 <#local pages = (rs.totalMatching + rs.numRanks - 1) / rs.numRanks />
@@ -51,17 +51,17 @@
         </#if>
 
         <#local currentPage = 1 />
-        <#if rs.currStart &gt; 0 && rs.numRanks &gt; 0>
+        <#if rs.currStart gt 0 && rs.numRanks gt 0>
             <#local currentPage = (rs.currStart + rs.numRanks -1) / rs.numRanks />
         </#if>
 
         <#local firstPage = 1 />
-        <#if currentPage &gt; ((numPages-1)/2)?floor>
+        <#if currentPage gt ((numPages-1)/2)?floor>
             <#local firstPage = currentPage - ((numPages-1)/2)?floor />
         </#if>
 
         <#list firstPage..firstPage+(numPages-1) as pg>
-            <#if pg &gt; pages><#break /></#if>
+            <#if pg gt pages><#break /></#if>
 
             <#if pg == currentPage>
                 <span class="fb-current-result-page">${pg}</span>
@@ -76,7 +76,7 @@
         </#list>
 
         <#-- NEXT link -->
-        <#if rs.nextStart?exists>
+        <#if rs.nextStart??>
             <#local url = question.collection.configuration.value("ui.modern.search_link") + "?" />
             <#local url = url + changeParam(QueryString, "start_rank", rs.nextStart) />
 
@@ -110,7 +110,7 @@
 -->
 <#macro OpenSearch>
     <#local title><#nested></#local>
-    <#if ! title?exists || title == "">
+    <#if ! title?? || title == "">
         <#local title = "Search " + question.collection.configuration.value("service_name") />
     </#if> 
     <link rel="search" type="application/opensearchdescription+xml" href="open-search.xml?${QueryString?html}" title="${title}">
@@ -140,8 +140,8 @@
     @param name Name of the parameter to test.
 -->
 <#macro IfDefCGI name><#compress>
-    <#if question?exists
-        && question.inputParameterMap?exists
+    <#if question??
+        && question.inputParameterMap??
         && question.inputParameterMap?keys?seq_contains(name)>
         <#nested>
     </#if>
@@ -156,8 +156,8 @@
     @param name Name of the parameter to test.
 -->
 <#macro IfNotDefCGI name><#compress>
-    <#if question?exists
-        && question.inputParameterMap?exists
+    <#if question??
+        && question.inputParameterMap??
         && question.inputParameterMap?keys?seq_contains(name)>
     <#else>
         <#nested>
@@ -171,9 +171,9 @@
 -->
 <#macro cgi><#compress>
     <#local key><#nested></#local>
-    <#if question?exists
-        && question.inputParameterMap?exists
-        && question.inputParameterMap[key]?exists>
+    <#if question??
+        && question.inputParameterMap??
+        && question.inputParameterMap[key]??>
         <#-- Return first element only, to mimic Perl UI behavior --> 
         ${question.inputParameterMap[key]?html!}
     </#if>
@@ -185,13 +185,13 @@
     @param prefix Prefix to display before the suggestion, usually "Did you mean ?".
 -->
 <#macro CheckSpelling prefix="Did you mean:" suffix="?">
-    <#if question?exists
-        && question.collection?exists
-        && question.collection.configuration.value("spelling_enabled")?exists
+    <#if question??
+        && question.collection??
+        && question.collection.configuration.value("spelling_enabled")??
         && is_enabled(question.collection.configuration.value("spelling_enabled"))
-        && response?exists
-        && response.resultPacket?exists
-        && response.resultPacket.spell?exists>
+        && response??
+        && response.resultPacket??
+        && response.resultPacket.spell??>
         ${prefix} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${changeParam(QueryString, "query", response.resultPacket.spell.text?url)?html}">
             <span class="funnelback-highlight">${response.resultPacket.spell.text}</span></a>${suffix}
     </#if>
@@ -206,10 +206,10 @@
     @provides The best bet as <code>${s.bb}</code>.
 -->
 <#macro BestBets>
-    <#if response?exists
-        && response.resultPacket?exists
-        && response.resultPacket.bestBets?exists
-        && response.resultPacket.bestBets?size &gt; 0>
+    <#if response??
+        && response.resultPacket??
+        && response.resultPacket.bestBets??
+        && response.resultPacket.bestBets?size gt 0>
         <#list response.resultPacket.bestBets as bestBet>
             <#assign bb = bestBet in s />
             <#assign bb_index = bestBet_index in s />
@@ -233,9 +233,9 @@
     @provides the search results as <code>${s.result}</code>.
 -->
 <#macro Results>
-    <#if response?exists
-        && response.resultPacket?exists
-        && response.resultPacket.resultsWithTierBars?exists>
+    <#if response??
+        && response.resultPacket??
+        && response.resultPacket.resultsWithTierBars??>
         <#list response.resultPacket.resultsWithTierBars as r>
             <#assign result = r in s />
             <#assign result_has_next = r_has_next in s />
@@ -251,7 +251,7 @@
     @param cut Pattern to look for.
 -->
 <#macro cut cut><#compress>
-    <#if cut?exists>
+    <#if cut??>
         <#local value><#nested></#local>
         ${value?replace("^"+cut, "", "r")}
     </#if>
@@ -308,7 +308,7 @@
     result has quick links.</p>
 -->
 <#macro Quicklinks>
-    <#if s.result.quickLinks?exists>
+    <#if s.result.quickLinks??>
         <#nested>
     </#if>
 </#macro>
@@ -321,7 +321,7 @@
     @provides The quick link as <code>${s.ql}</code>.
 -->
 <#macro QuickRepeat>
-    <#if s.result.quickLinks?exists && s.result.quickLinks.quickLinks?exists>
+    <#if s.result.quickLinks?? && s.result.quickLinks.quickLinks??>
         <#list s.result.quickLinks.quickLinks as quickLink>
             <#assign ql = quickLink in s />
             <#assign ql_index = quickLink_index in s />
@@ -369,8 +369,8 @@
     other purposes like faceted navigation.</p>
 -->
 <#macro QueryClean><#compress>
-    <#if response?exists
-        && response.resultPacket?exists>
+    <#if response??
+        && response.resultPacket??>
         ${response.resultPacket.queryCleaned!?html}
     </#if>
 </#compress></#macro>
@@ -407,13 +407,13 @@
 -->
 <#macro FacetedSearch negate=false>
 	<#if !negate>
-		<#if question?exists
-			&& facetedNavigationConfig(question.collection, question.profile)?exists >
+		<#if question??
+			&& facetedNavigationConfig(question.collection, question.profile)?? >
 			<#nested>
 		</#if>
 	<#else>
-		<#if !question?exists
-			|| !facetedNavigationConfig(question.collection, question.profile)?exists >
+		<#if !question??
+			|| !facetedNavigationConfig(question.collection, question.profile)?? >
 			<#nested>
 		</#if>
     </#if>
@@ -434,7 +434,7 @@
     @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro Facet name="" names=[] orderedNames=[] class="facet">
-    <#if response?exists && response.facets?exists>
+    <#if response?? && response.facets??>
         <#if name == "" && names?size == 0 && orderedNames?size == 0>
             <#-- Iterate over all facets -->
             <#list response.facets as f>
@@ -488,7 +488,7 @@
 -->
 <#macro FacetLabel class="facetLabel" separator="&rarr;" summary=true tag="div" link=question.collection.configuration.value("ui.modern.search_link")>
     <#local fn = facetedNavigationConfig(question.collection, question.profile) >
-    <#if fn?exists>
+    <#if fn??>
         <#-- Find facet definition in the configuration corresponding
              to the facet we're currently displaying -->
         <#list fn.facetDefinitions as fdef>
@@ -653,7 +653,7 @@
     @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro CategoryName class="categoryName" link=question.collection.configuration.value("ui.modern.search_link") extraParams="">
-    <#if s.categoryValue?exists>
+    <#if s.categoryValue??>
         <span class="${class}">
             <a href="${.namespace.CategoryUrl(link,extraParams)?html}">${s.categoryValue.label?html}</a>
         </span>
@@ -678,7 +678,7 @@
     @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
 <#macro CategoryCount class="categoryCount"><#compress>
-    <#if s.categoryValue?exists><span class="${class}">${s.categoryValue.count}</span></#if>
+    <#if s.categoryValue??><span class="${class}">${s.categoryValue.count}</span></#if>
 </#compress></#macro>
 
 <#---
@@ -691,7 +691,7 @@
 -->
 <#macro FacetScope input=true><#compress>
     <@AfterSearchOnly>
-    <#if question?exists && question.selectedCategoryValues?size &gt; 0>
+    <#if question?? && question.selectedCategoryValues?size gt 0>
         <#local facetScope = "" />
         <#list question.selectedCategoryValues?keys as key>
             <#list question.selectedCategoryValues[key] as value>
@@ -731,9 +731,9 @@
     clusters were found.</p>
 -->
 <#macro NoClustersFound>
-    <#if response?exists
-        && response.resultPacket?exists
-        && (! response.resultPacket.contextualNavigation?exists
+    <#if response??
+        && response.resultPacket??
+        && (! response.resultPacket.contextualNavigation??
             || response.resultPacket.contextualNavigation.categories?size == 0)>
         <#nested>
     </#if>
@@ -743,7 +743,7 @@
     Displays previously followed clusters.
 -->
 <#macro ClusterNavLayout>
-    <#if question?exists && question.cnPreviousClusters?size &gt; 0>
+    <#if question?? && question.cnPreviousClusters?size gt 0>
         <#nested>
     </#if>
 </#macro>
@@ -754,7 +754,7 @@
     @provides The previous cluster as <code>${s.previousCluster}</code>.
 -->
 <#macro ContextualNavigationNav>
-    <#if question?exists && question.cnPreviousClusters?size &gt; 0>
+    <#if question?? && question.cnPreviousClusters?size gt 0>
         <#list question.cnPreviousClusters as cluster>
             <#assign previousCluster = cluster in s>
             <#assign previousCluster_index = cluster_index in s>
@@ -774,10 +774,10 @@
     @provides The contextual navigation object as <code>${s.contextualNavigation}</code>.
 -->
 <#macro ClusterLayout>
-    <#if response?exists
-        && response.resultPacket?exists
-        && response.resultPacket.contextualNavigation?exists
-        && response.resultPacket.contextualNavigation.categories?size &gt; 0>
+    <#if response??
+        && response.resultPacket??
+        && response.resultPacket.contextualNavigation??
+        && response.resultPacket.contextualNavigation.categories?size gt 0>
         <#assign contextualNavigation = response.resultPacket.contextualNavigation in s />
         <#if contextualNavigation.categories?size == 1 && contextualNavigation.categories[0].name == "site"
             && contextualNavigation.categories[0].clusters?size &lt; 2>
@@ -818,13 +818,13 @@
         Using that trick makes the 'name' parameter a Hash, so to access our
         initial 'name' argument we must use ${name['name']}
     -->
-    <#if name?exists && name?size == 1>
+    <#if name?? && name?size == 1>
         <#list response.resultPacket.contextualNavigation.categories as c>
-            <#if c.name?exists && c.name == name["name"]>
+            <#if c.name?? && c.name == name["name"]>
                 <#assign category = c in s />
                 <#assign category_hax_next = c_has_next in s />
                 <#assign category_index = c_index in s />
-                <#if c.name != "site" || c.clusters?size &gt; 1>
+                <#if c.name != "site" || c.clusters?size gt 1>
                     <#nested>
                 </#if>
             </#if>
@@ -832,15 +832,15 @@
     <#else>
 
         <#-- Find if we are working at the root level (facet) or in a sub category -->
-        <#if recursionCategories?exists && recursionCategories?size &gt; 0>
+        <#if recursionCategories?? && recursionCategories?size gt 0>
             <#local categories = recursionCategories />
         <#else>
             <#local categories = s.facet.categories />
         </#if>
-        <#if categories?exists && categories?size &gt; 0>
+        <#if categories?? && categories?size gt 0>
 
             <#local class = "category">
-            <#if name?size &gt; 0 && name["class"]?exists>
+            <#if name?size gt 0 && name["class"]??>
                 <#local class = name["class"]>
             </#if>
 
@@ -861,7 +861,7 @@
                         <#assign categoryValue_index = cv_index in s>
 
                         <#local nbCategories = nbCategories+1 />
-                        <#if nbCategories &gt; max><#return></#if>
+                        <#if nbCategories gt max><#return></#if>
                         
                         <#if tag != "">
                             <${tag} class="${class}">
@@ -873,7 +873,7 @@
                     </#if>
                 </#list>
                 <#-- Recurse in sub categories -->
-                <#if category.categories?exists && category.categories?size &gt; 0>
+                <#if category.categories?? && category.categories?size gt 0>
                     <@Category recursionCategories=category.categories max=max tag=tag nbCategories=nbCategories><#nested></@Category>
                 </#if>
             </#list>
@@ -888,7 +888,7 @@
     @provides The cluster as <code>${s.cluster}</code>.
 -->
 <#macro Clusters>
-    <#if s.category?exists>
+    <#if s.category??>
         <#list s.category.clusters as c>
             <#assign cluster = c in s />
             <#assign cluster_has_next = c_has_next in s />
@@ -904,7 +904,7 @@
     @param category Name of the category for contextual navigation (<code>type</code> , <code>site</code>, <code>topic</code>).
 -->
 <#macro ShowMoreClusters category>
-    <#if s.category?exists && s.category.name == category && s.category.moreLink?exists>
+    <#if s.category?? && s.category.name == category && s.category.moreLink??>
         <#nested>
     </#if>
 </#macro>
@@ -915,7 +915,7 @@
     @param category Name of the category for contextual navigation (<code>type</code> , <code>site</code>, <code>topic</code>).
 -->
 <#macro ShowFewerClusters category>
-    <#if s.category?exists && s.category.name == category && s.category.fewerLink?exists>
+    <#if s.category?? && s.category.name == category && s.category.fewerLink??>
         <#nested>
     </#if>
 </#macro>
@@ -937,11 +937,11 @@
         <#assign selectedValue = question.inputParameterMap[name] />
     </#if>
     <select name="${name}" <#compress>
-        <#if additional?exists && additional?is_hash>
+        <#if additional?? && additional?is_hash>
             <#list additional?keys as key>${key}="${additional[key]}" </#list>
         </#if>
         </#compress>>
-        <#if options?size &gt; 0>
+        <#if options?size gt 0>
             <#list options as opt>
                 <#if opt?contains("=")>
                     <#assign valueAndLabel = opt?split("=")>
@@ -954,8 +954,7 @@
         <#if range != "">
             <#assign parsedRange = parseRange(range) />
             <#list parsedRange.start..parsedRange.end as i>
-                <option value="${i?c}" <#if question.inputParameterMap[name]?exists
-                    && question.inputParameterMap[name] == i?c>selected="selected"</#if>>${i?c}</option>
+                <option value="${i?c}" <#if question.inputParameterMap[name]?? && question.inputParameterMap[name] == i?c>selected="selected"</#if>>${i?c}</option>
             </#list>
         </#if>
     </select>
@@ -972,7 +971,7 @@
     @param prefix Optional prefix to output before the date.
 -->
 <#macro Date prefix=""><#compress>
-    <#if question?exists && question.collection?exists>
+    <#if question?? && question.collection??>
         <#local updDate = updatedDate(question.collection.id)!"">
         <#if updDate?is_date>
             ${prefix}${updatedDate(question.collection.id)?datetime?string}
@@ -989,7 +988,7 @@
 -->
 <#macro rss>
     <#assign type><#nested></#assign>
-    <#if type?exists>
+    <#if type??>
         <#if type == "link">
             <link rel="alternate" type="application/rss+xml" title="Search results" href="${SearchPrefix}rss.cgi?${QueryString!""}" />
         </#if>
@@ -1009,7 +1008,7 @@
     one of them.</p>
 -->
 <#macro FormChoice>
-    <#if question?exists && question.collection?exists>
+    <#if question?? && question.collection??>
         <#assign forms = formList(question.collection.id, question.profile) />
         <#assign url = question.collection.configuration.value("ui.modern.search_link")
             + "?collection=" + question.collection.id
