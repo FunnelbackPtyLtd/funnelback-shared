@@ -8,16 +8,18 @@
  * @requires Handlebars http://handlebarsjs.com@4.1.2
  * 
  * @usage 
- * initiation: var myCart = new Cart({ collection: 'my-collection-name' });
+ * initiation: var myCart = new Funnelback.SessionCart({ collection: 'my-collection-name' });
  * open cart: myCart.show();
  * hide cart: myCart.hide();
  * toggle visibility of cart: myCart.toggle();
  * get all settings of cart: myCart.getOption();
- * clear all cart data: myCart.clear(myCart.getOption());
- * add new item to cart: myCart.addItem(myCart.getOption(), 'http://someurl.com');
- * remove item from cart: myCart.deleteItem(myCart.getOption(), 'http://example.com');
+ * clear all cart data: myCart.clear();
+ * add new item to cart: myCart.addItem('http://someurl.com');
+ * remove item from cart: myCart.deleteItem('http://example.com');
  */
-var Cart = (function() {
+if (!window.Funnelback) window.Funnelback = {}; // create namespace
+
+window.Funnelback.SessionCart = (function() {
   'use strict'
 
   var Constructor = function(options) {
@@ -80,25 +82,25 @@ var Cart = (function() {
    */
   Constructor.prototype.init = function(options) {
     if (!options.collection) {
-      Log.error('Missing "collection" parameter');
+      console.error('Missing "collection" parameter');
       return null;
     }
 
-    this.options = Utils.extend(Constructor.defaults, options || {});
-    if (!this.options.cart.pageSelector) this.options.cart.pageSelector = [];
+    Constructor.options = Utils.extend(Constructor.defaults, options || {});
+    if (!Constructor.options.cart.pageSelector) Constructor.options.cart.pageSelector = [];
 
-    CartBox.init(this.options);
-    CartCount.init(this.options);
-    Item.init(this.options);
-    ItemTrigger.init(this.options);
-    Items.set(this.options);
+    CartBox.init(Constructor.options);
+    CartCount.init(Constructor.options);
+    Item.init(Constructor.options);
+    ItemTrigger.init(Constructor.options);
+    Items.set(Constructor.options);
 
-    const that = this;
-    Api.get(that.options).then(function(response) {
-      Items.update(that.options, response.data);
+    Api.get(Constructor.options).then(function(response) {
+      Items.update(Constructor.options, response.data);
       CartCount.set(response.data.length);
+      CartBox.toggleClearElement(response.data);
     }).catch(function(error) {
-      Log.error('Something went wrong and no data was fetched. Try again later..', error);
+      console.error('Something went wrong and no data was fetched. Try again later..', error);
     });
     return this;
   };
@@ -106,14 +108,16 @@ var Cart = (function() {
   /**
    * Clear all items from cart
    */
-  Constructor.prototype.clear = function(options) {
+  Constructor.prototype.clear = function() {
     if (confirm('Your selection will be cleared') === true) {
+      const options = this.getOption();
       Api.delete(options).then(function(response) {
         Items.clear(options);
         CartCount.set(response.data.length);
+        CartBox.toggleClearElement(response.data);
         Constructor.prototype.hide();
       }).catch(function(error) {
-        Log.error('Something went wrong and cart was not cleared. Try again later..', error);
+        console.error('Something went wrong and cart was not cleared. Try again later..', error);
       });
     }
     return this;
@@ -123,7 +127,7 @@ var Cart = (function() {
    * Destroy cart widget, erase options
    */
   Constructor.prototype.destroy = function() {
-    this.options = {};
+    Constructor.options = {};
     return null;
   };
 
@@ -161,39 +165,41 @@ var Cart = (function() {
    */
   Constructor.prototype.getOption = function(key) {
     if (arguments.length === 0) {
-      return this.options; // get all options
+      return Constructor.options; // get all options
     }
 
     if (typeof key === 'string') {
-      return this.options[key]; // get value of specific option
+      return Constructor.options[key]; // get value of specific option
     }
   };
 
   /**
    * Add new item to cart
-   * - cart options
    * - url of item to be added to cart
    */
-  Constructor.prototype.addItem = function(options, url) {
+  Constructor.prototype.addItem = function(url) {
+    const options = this.getOption();
     Api.post(options, {url: url}).then(function(response) {
       Item.update(options, response.data.filter(it => it.indexUrl === url)[0], 'del');
       CartCount.set(response.data.length);
+      CartBox.toggleClearElement(response.data);
     }).catch(function(error) {
-      Log.error('Something went wrong and item was not saved in a cart. Try again later..', error);
+      console.error('Something went wrong and item was not saved in a cart. Try again later..', error);
     });
   };
 
   /**
    * Remove item from cart
-   * - cart options
    * - url of item to be removed from cart
    */
-  Constructor.prototype.deleteItem = function(options, url) {
+  Constructor.prototype.deleteItem = function(url) {
+    const options = this.getOption();
     Api.delete(options, {url: url}).then(function(response) {
       Item.update(options, {indexUrl: url}, 'add');
       CartCount.set(response.data.length);
+      CartBox.toggleClearElement(response.data);
     }).catch(function(error) {
-      Log.error('Something went wrong and result was not removed from a cart. Try again later..', error);
+      console.error('Something went wrong and result was not removed from a cart. Try again later..', error);
     });
   };
 
@@ -241,28 +247,39 @@ var Cart = (function() {
       });
     },
 
-    getUrl: function(options, params = {}) {
+    getParamsString: function(params) {
+      const str = [];
+      for (var p in params) {
+        if (params.hasOwnProperty(p)) str.push(encodeURIComponent(p) + '=' + encodeURIComponent(params[p]));
+      }
+      return str.join('&');
+    },
+
+    getUrl: function(options, params) {
+      if (!params) params = {};
       params['collection'] = options.collection;
-      return options.apiBase + Api.urlPath + '?' + $.param(params);
+      return options.apiBase + Api.urlPath + '?' + Api.getParamsString(params);
     }
   };
 
   // Hadnler to access and create cart
   const CartBox = {
     element: null, // DOM element displying cart
+    clearElement: null, // DOM element displaying button to clear all cart data inside cart
     listElement: null, // DOM element displaying list of cart items inside cart
     pageElements: [], // DOM element to whole page to hide it when cart is displayed
     isHidden: true, // state of visibility of cart
+    emptyMessage: 'No items',
 
     init: function(options) {
       CartBox.element = ElementUtil.findOnce(options.cart.selector);
-      if (!CartBox.element) Log.warn('No element was found with provided selector "' + options.cart.selector + '"');
+      if (!CartBox.element) console.warn('No element was found with provided selector "' + options.cart.selector + '"');
       
       for (var i = 0, len = options.cart.pageSelector.length; i < len; i++) {
         const el = ElementUtil.findOnce(options.cart.pageSelector[i]);
         if (el) CartBox.pageElements.push(el);
       }
-      if (!CartBox.pageElements.length) Log.warn('No element was found with provided page selector "' + options.cart.pageSelector + '"');
+      if (!CartBox.pageElements.length) console.warn('No element was found with provided page selector "' + options.cart.pageSelector + '"');
       
       Constructor.prototype.hide();
 
@@ -270,13 +287,22 @@ var Cart = (function() {
         // create DOM element of back button from cart to results
         backEl = ElementUtil.create('flb-cart-box-back', CartBox.element, 'a', template({icon: options.cart.backIcon ? options.iconPrefix + options.cart.backIcon : null, label: options.cart.backLabel}), {style: 'cursor: pointer'}),
         // create DOM elemenet of cart header
-        headerEl = ElementUtil.create('flb-cart-box-header', CartBox.element, 'h2', template({icon: options.cart.icon ? options.iconPrefix + options.cart.icon : null, label: options.cart.label})),
-        // creat DOM element of button to clear all data in cart
-        clearEl = ElementUtil.create('flb-cart-box-clear', headerEl, 'a', template({icon: options.iconPrefix + 'remove', label: 'Clear'}), {class: 'btn btn-xs btn-danger'});
+        headerEl = ElementUtil.create('flb-cart-box-header', CartBox.element, 'h2', template({icon: options.cart.icon ? options.iconPrefix + options.cart.icon : null, label: options.cart.label}));
+      CartBox.clearElement = ElementUtil.create('flb-cart-box-clear', headerEl, 'a', template({icon: options.iconPrefix + 'remove', label: 'Clear'}), {class: 'btn btn-xs btn-danger'});
       ElementUtil.addEvent(backEl, 'click', Constructor.prototype.hide);
-      ElementUtil.addEvent(clearEl, 'click', function() { return Constructor.prototype.clear(options); });
+      ElementUtil.addEvent(CartBox.clearElement, 'click', function() { return Constructor.prototype.clear(options); });
       // create DOM element of list of cart items
       CartBox.listElement = ElementUtil.create('flb-cart-box-list', CartBox.element, 'ul', null, {class: 'list-unstyled'});
+
+      if (options.cartCount.label) CartBox.emptyMessage += ' in your ' + options.cartCount.label.toLowerCase();
+    },
+
+    /**
+     * Show or hide clear button
+     * - list of cart data 
+     */
+    toggleClearElement: function(data) {
+      CartBox.clearElement.style.display = data.length ? 'inline-block' : 'none';
     },
 
     /**
@@ -334,7 +360,7 @@ var Cart = (function() {
     init: function(options) {
       if (options.item.template) Item.template = HandlebarsUtil.compile(options.item.template);
       Item.listElement = ElementUtil.findOnce(options.item.selector);
-      if (!Item.listElement) Log.warn('No element was found with provided selector "' + options.item.selector + '"');
+      if (!Item.listElement) console.warn('No element was found with provided selector "' + options.item.selector + '"');
     },
 
     // Get CSS selector to search result with provided index URL
@@ -372,6 +398,8 @@ var Cart = (function() {
   const Items = {
     // On clearing cart data, update display of item in cart and cart triggers within search results
     clear: function(options) {
+      // Remove items from cart
+      CartBox.listElement.innerHTML = CartBox.emptyMessage;
       // Find all search results
       const items = ElementUtil.find(Item.selector(), Item.listElement);
       // Remove items from cart and set cart tirggers within search results to be added
@@ -389,6 +417,7 @@ var Cart = (function() {
     // Update display of items in cart and cart triggers within search results based on fetched cart data
     update: function(options, data, type) {
       for (var i = 0, len = data.length; i < len; i++) Item.update(options, data[i], type);
+      if (!data.length) CartBox.listElement.innerHTML = CartBox.emptyMessage;
     }
   }
 
@@ -411,14 +440,16 @@ var Cart = (function() {
         ItemTrigger.delTitle += ' from ' + options.cartCount.label.toLowerCase();
       }
       ItemTrigger.addEvent = function(e) {
+        e.preventDefault();
         const item = e.currentTarget.closest(Item.selector()), url = item.getAttribute(Item.selectorAttr);
-        if (url) return Constructor.prototype.addItem(options, url);
-        else Log.warn('No URL found to save item in a cart');
+        if (url) return Constructor.prototype.addItem(url);
+        else console.warn('No URL found to save item in a cart');
       };
       ItemTrigger.delEvent = function(e) {
+        e.preventDefault();
         const item = e.currentTarget.closest(Item.selector()), url = item.getAttribute(Item.selectorAttr);
-        if (url) return Constructor.prototype.deleteItem(options, url);
-        else Log.warn('No URL found to remove result from a cart');
+        if (url) return Constructor.prototype.deleteItem(url);
+        else console.warn('No URL found to remove result from a cart');
       };
     },
 
@@ -428,7 +459,7 @@ var Cart = (function() {
       const trigger = ElementUtil.create(ItemTrigger.selector, null, 'a', ItemTrigger.addTemplate, {style: 'cursor: pointer', title: ItemTrigger.addTitle});
       ElementUtil.addEvent(trigger, 'click', ItemTrigger.addEvent);
       if (el) el.insertAdjacentElement(options.itemTrigger.position, trigger);
-      else Log.warn('No element was found with provided selector "' + options.itemTrigger.selector + '"');
+      else console.warn('No element was found with provided selector "' + options.itemTrigger.selector + '"');
     },
 
     // Toggle display of cart trigger
@@ -514,25 +545,6 @@ var Cart = (function() {
     removeEvent(element, type, handler) {
       element.removeEventListener(type, handler);
     },
-  };
-
-  // Helper to log into browser console
-  const Log = {
-    title: 'Funnelback Cart Widget',
-
-    error: function(a1, a2, a3) {
-      this.factory('error', a1, a2, a3);
-    },
-
-    warn: function(a1, a2, a3) {
-      this.factory('warn', a1, a2, a3);
-    },
-
-    factory: function(type, a1, a2, a3) {
-      console.group(Log.title);
-      console[type](a1 || '', a2 || '', a3 || '');
-      console.groupEnd();
-    }
   };
 
   // Misc
