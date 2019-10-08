@@ -1,17 +1,19 @@
 package com.funnelback.publicui.search.service.location;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 
-import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.cache.MaxMindInMemoryCacheHelper;
-import com.funnelback.common.config.Keys;
+import com.funnelback.common.maxmind.MaxMindCityLoader;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.maxmind.geoip.Location;
-import com.maxmind.geoip.LookupService;
+import com.maxmind.geoip2.DatabaseReader;
+import com.maxmind.geoip2.GeoIp2Provider;
+import com.maxmind.geoip2.exception.GeoIp2Exception;
+import com.maxmind.geoip2.model.CityResponse;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -27,63 +29,47 @@ public class DefaultGeolocator implements Geolocator {
     @Autowired
     @Setter
     private ConfigRepository configRepository;
+    
+    @Autowired @Setter
+    private File searchHome;
 
-    private LookupService lookupService = null;
-    private String lookupServiceDatabase = "";
+    // Once set we can never replace it as we don't close it or expose the close method.
+    private GeoIp2Provider reader = null;
 
+    @Setter
+    private MaxMindCityLoader maxMindCityLoader = new MaxMindCityLoader();
+    
     /**
      * Determine the user's location based on the IP address of the user, using
      * the MaxMind geocoding database.
      */
     @Override
-    public Location geolocate(SearchQuestion question) {
-        updateLookupServiceIfRequired();
-
-        if (lookupService != null) {
+    public CityResponse geolocate(SearchQuestion question) {
+        loadLookupServiceIfNotLoaded();
+        if (reader != null) {
             String remoteIpAddress = question.getRequestId();
-
-            Location result = lookupService.getLocation(remoteIpAddress);
-            if (result != null) {
-                return result;
+            try {
+                return reader.city(InetAddress.getByName(remoteIpAddress));
+            } catch (IOException | GeoIp2Exception e) {
+                log.catching(e);
             }
         }
-        return new Location(); // Provide an unknown location
+        return null;
     }
-
-    /**
-     * Create a new lookupService if the requested database in global.cfg has
-     * been changed
-     */
-    private void updateLookupServiceIfRequired() {
+    
+    private void loadLookupServiceIfNotLoaded() {
+        if(reader == null) {
+            _loadLookupService();
+        }
+        
+    }
+    private synchronized void _loadLookupService() {
+        if(reader != null) return;
         try {
-            String newLookupServiceDatabase = configRepository
-                    .getGlobalConfiguration().value(Keys.GEOLOCATION_DATABASE_KEY);
-            if (newLookupServiceDatabase == null){
-                log.error("Error cannot create lookup service when " 
-                            + Keys.GEOLOCATION_DATABASE_KEY + " is null." );
-                lookupServiceDatabase = "";
-                lookupService = null;
-            } else if (!lookupServiceDatabase.equals(newLookupServiceDatabase)) {
-                // Recreate the lookup service
-
-                lookupServiceDatabase = newLookupServiceDatabase;
-                
-                StopWatch s = new StopWatch();
-                s.start();
-                
-                lookupService = new LookupService(lookupServiceDatabase,
-                        LookupService.GEOIP_MEMORY_CACHE
-                                | LookupService.GEOIP_CHECK_CACHE);
-                
-                new MaxMindInMemoryCacheHelper().useSharedBackingArrayIfPossible(lookupService);
-                s.stop();
-                log.debug("LookupService recreated. Took " + s);
-            }
-        } catch (IOException e) {
-            log.error("Error while trying to create lookupService for "
-                    + lookupServiceDatabase, e);
-            lookupServiceDatabase = "";
-            lookupService = null;
+            this.reader = maxMindCityLoader.loadReaderFromSearchHome(searchHome);
+        } catch (Exception e) {
+            log.catching(e);
+            return;
         }
     }
 }

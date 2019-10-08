@@ -1,22 +1,24 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import java.util.Map;
+import static com.funnelback.config.keys.Keys.FrontEndKeys;
 
-import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
+import com.funnelback.publicui.search.model.geolocation.Location;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.location.Geolocator;
+import com.maxmind.geoip2.model.CityResponse;
 
-import static com.funnelback.config.keys.Keys.FrontEndKeys;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * <p>
@@ -47,21 +49,23 @@ public class Geolocation extends AbstractInputProcessor {
 
             if (serviceConfigReadOnly.get(FrontEndKeys.ModernUi.GeoLocation.ENABLED)) {
                 //Sets the location in the data model
-                com.maxmind.geoip.Location location = geolocator.geolocate(searchTransaction
-                        .getQuestion());
-                searchTransaction.getQuestion().setLocation(new com.funnelback.publicui.search.model.geolocation.Location(location));
                 
-                Map<String, String[]> params = searchTransaction.getQuestion().getAdditionalParameters();
+                CityResponse response = geolocator.geolocate(searchTransaction.getQuestion());
                 
-                if (serviceConfigReadOnly.get(FrontEndKeys.ModernUi.GeoLocation.SET_ORIGIN)
-                        && !params.containsKey(RequestParameters.ORIGIN)) {
-                    // Set the origin CGI parameter for padre only if it is not already set by CGI
-                    params.put(RequestParameters.ORIGIN, new String[] { location.latitude + ","
-                            + location.longitude });
+                if(response != null) {
+                    Location location = new com.funnelback.publicui.search.model.geolocation.Location(response);
+                    searchTransaction.getQuestion().setLocation(location);
+                    
+                    Map<String, String[]> params = searchTransaction.getQuestion().getAdditionalParameters();
+                    
+                    if (serviceConfigReadOnly.get(FrontEndKeys.ModernUi.GeoLocation.SET_ORIGIN)
+                            && !params.containsKey(RequestParameters.ORIGIN)) {
+                        // Set the origin CGI parameter for padre only if it is not already set by CGI
+                        params.put(RequestParameters.ORIGIN, new String[] { location.getLatitude() + "," + location.getLongitude() });
+                    }
+                    
+                    log.debug("Geocoded location {},{}", location.getLatitude(), location.getLongitude());
                 }
-                
-                log.debug("Geocoded location " + location.latitude + ","
-                        + location.longitude);
             }
         }
     }
