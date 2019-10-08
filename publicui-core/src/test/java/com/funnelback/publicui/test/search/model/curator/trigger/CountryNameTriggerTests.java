@@ -15,9 +15,11 @@ public class CountryNameTriggerTests {
         CountryNameTrigger cnt = new CountryNameTrigger();
         
         SearchQuestion question = new SearchQuestion();
-        com.maxmind.geoip.Location maxmind = new com.maxmind.geoip.Location();
-        maxmind.countryName = "Australia";
-        question.setLocation(new Location(maxmind));
+        Location location = Location.builder()
+                                        .countryName("Australia")
+                                        .build();
+        
+        question.setLocation(location);
         SearchTransaction st = new SearchTransaction(question, null);
         
         Assert.assertFalse("Expected not to activate with an empty country set", cnt.activatesOn(st)); 

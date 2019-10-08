@@ -1,6 +1,14 @@
 package com.funnelback.publicui.search.model.geolocation;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * <p>
@@ -9,23 +17,15 @@ import lombok.Data;
  * </p>
  * 
  * <p>
- * The available fields are based closely on the MaxMind Location object, which
- * we wrap to provide getters and setters for the fields (allowing access to
- * them from FreeMarker).
+ * The available fields are based closely on the MaxMind2 data.
  * </p>
  * 
  * @since 13.0
  */
 @Data
+@Builder
+@AllArgsConstructor
 public class Location {
-
-    /**
-     * The area code of the represented location if it can be determined,
-     * otherwise zero.
-     * 
-     * @since 13.0
-     */
-    private final int areaCode;
 
     /**
      * The city name of the represented location if it can be determined,
@@ -36,7 +36,7 @@ public class Location {
     private final String city;
 
     /**
-     * The two letter country code of the represented location if it can be
+     * The two letter country code (ISO 3166-1 alpha code) of the represented location if it can be
      * determined, otherwise null.
      * 
      * @since 13.0
@@ -50,14 +50,13 @@ public class Location {
      * @since 13.0
      */
     private final String countryName;
-
+    
     /**
-     * The designated market area code of the represented location if it can be
-     * determined, otherwise zero.
+     * The GeoName ID of the country.
      * 
-     * @since 13.0
+     * @since 15.24
      */
-    private final int dmaCode;
+    private final Integer countryGeoNameId;
 
     /**
      * <p>
@@ -71,7 +70,7 @@ public class Location {
      * 
      * @since 13.0
      */
-    private final float latitude;
+    private final Double latitude;
 
     /**
      * <p>
@@ -85,7 +84,7 @@ public class Location {
      * 
      * @since 13.0
      */
-    private final float longitude;
+    private final Double longitude;
 
     /**
      * The metro code of the represented location if it can be determined,
@@ -93,7 +92,7 @@ public class Location {
      * 
      * @since 13.0
      */
-    private final int metroCode;
+    private final Integer metroCode;
 
     /**
      * The postal code of the represented location if it can be determined,
@@ -102,32 +101,72 @@ public class Location {
      * @since 13.0
      */
     private final String postalCode;
-
+    
     /**
-     * The region name of the represented location if it can be determined,
-     * otherwise null.
+     * The subdivisions of the location.
+     *  
+     * This will generally hold the sate or province the location is in, however
+     * it depends on on the particular country. Some locations may have multiple
+     * subdivisions. The order is from the least specific to most specific division.
      * 
-     * @since 13.0
+     * 
+     * @since 15.24
      */
-    private final String region;
-
+    private final List<Subdivision> subdivisions;
+    
+    @AllArgsConstructor
+    @Getter
+    public static class Subdivision {
+        
+        /**
+         * The GeoName id of this subdivision.
+         * 
+         * @since 15.24
+         */
+        private final Integer geoNameId;
+        
+        /**
+         * The name of the subdivision.
+         * 
+         * @since 15.24
+         */
+        private final String name;
+        
+        /**
+         * The ISO-3166-2 code of the subdivision.
+         * 
+         * @since 15.24
+         */
+        private String isoCode;
+        
+        public Subdivision(com.maxmind.geoip2.record.Subdivision s) {
+            this.geoNameId = s.getGeoNameId();
+            this.name = s.getName();
+            this.isoCode = s.getIsoCode();
+        }
+    }
+    
     /**
-     * Construct a new Location object based on a MaxMind Location object (which
-     * is generally produced based on the source user's IP address).
+     * Create a location from maxmind2 data
      * 
-     * @since 13.0
+     * One day we ought to handle locals, because China is not called China in China.
+     * 
+     * @param location
      */
-    public Location(com.maxmind.geoip.Location location) {
-        this.areaCode = location.area_code;
-        this.city = location.city;
-        this.countryCode = location.countryCode;
-        this.countryName = location.countryName;
-        this.dmaCode = location.dma_code;
-        this.latitude = location.latitude;
-        this.longitude = location.longitude;
-        this.metroCode = location.metro_code;
-        this.postalCode = location.postalCode;
-        this.region = location.region;
+    public Location(com.maxmind.geoip2.model.CityResponse location) {
+        this.city = Optional.ofNullable(location).map(l -> l.getCity()).map(c -> c.getName()).orElse(null);
+        this.countryCode = Optional.ofNullable(location).map(l -> l.getCountry()).map(c -> c.getIsoCode()).orElse(null);
+        this.countryName = Optional.ofNullable(location).map(l -> l.getCountry()).map(c -> c.getName()).orElse(null);
+        this.countryGeoNameId = Optional.ofNullable(location).map(l -> l.getCountry()).map(c -> c.getGeoNameId()).orElse(null);
+        this.latitude = Optional.ofNullable(location).map(l -> l.getLocation()).map(l -> l.getLatitude()).orElse(null);
+        this.longitude = Optional.ofNullable(location).map(l -> l.getLocation()).map(l -> l.getLongitude()).orElse(null);
+        this.metroCode = Optional.ofNullable(location).map(l -> l.getLocation()).map(l -> l.getMetroCode()).orElse(null);
+        this.postalCode = Optional.ofNullable(location).map(l -> l.getPostal()).map(p -> p.getCode()).orElse(null);
+        if(location.getSubdivisions() != null) {
+            this.subdivisions = Collections.unmodifiableList(location.getSubdivisions().stream().map(Subdivision::new).collect(Collectors.toList()));
+        } else {
+            this.subdivisions = Collections.emptyList();
+        }
     }
 
 }
