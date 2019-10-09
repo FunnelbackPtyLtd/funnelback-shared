@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.springframework.util.SocketUtils;
 
+import com.funnelback.common.testutils.TmpFolderProvider;
 import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
 import com.google.common.io.Files;
@@ -17,7 +18,7 @@ public class SamlSecurityWithAdminEnabledAlsoIT extends SamlSecurityIT {
     @BeforeClass
     public static void startServers() throws Exception {
         SamlSecurityIT.mujina = new MujinaIdentityProviderServer();
-        SamlSecurityIT.mujina.start();
+        SamlSecurityIT.mujina.start(TmpFolderProvider.getTmpDir(SamlSecurityWithAdminEnabledAlsoIT.class, "all", "mujina"));
         
         Integer port = SocketUtils.findAvailableTcpPort();
         File searchHome = createSearchHome(port);
