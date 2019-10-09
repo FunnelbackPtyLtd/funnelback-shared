@@ -44,6 +44,10 @@
         <constructor-arg ref="searchHome"></constructor-arg>
     </bean>
 
+    <bean id="configPasswordEncryptionService" class="com.funnelback.config.security.ConfigPasswordEncryptionService">
+        <constructor-arg ref="searchHome"></constructor-arg>
+    </bean>
+
     <bean
         id="funnelbackVersion"
         class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
