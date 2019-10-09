@@ -14,6 +14,7 @@ import org.springframework.util.SocketUtils;
 
 import com.funnelback.common.testutils.SearchHomeConfigs;
 import com.funnelback.common.testutils.SearchHomeProvider;
+import com.funnelback.common.testutils.TmpFolderProvider;
 import com.funnelback.publicui.integration.DefaultAdminSecurityIT;
 import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
@@ -26,7 +27,7 @@ public class SamlSecuritySha256IT {
     @BeforeClass
     public static void startServers() throws Exception {
         SamlSecuritySha256IT.mujina = new MujinaIdentityProviderServer();
-        SamlSecuritySha256IT.mujina.start();
+        SamlSecuritySha256IT.mujina.start(TmpFolderProvider.getTmpDir(SamlSecuritySha256IT.class, "all", "mujina"));
 
         Integer port = SocketUtils.findAvailableTcpPort();
         searchHome = createSearchHome(port);

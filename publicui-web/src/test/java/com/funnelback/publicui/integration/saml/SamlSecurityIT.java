@@ -21,6 +21,7 @@ import org.springframework.util.SocketUtils;
 
 import com.funnelback.common.testutils.SearchHomeConfigs;
 import com.funnelback.common.testutils.SearchHomeProvider;
+import com.funnelback.common.testutils.TmpFolderProvider;
 import com.funnelback.publicui.integration.DefaultAdminSecurityIT;
 import com.funnelback.springmvc.api.config.SharedBetweenContainersHelper;
 import com.funnelback.springmvc.api.config.security.SecurityConfigBase;
@@ -36,7 +37,7 @@ public class SamlSecurityIT {
     @BeforeClass
     public static void startServers() throws Exception {
         SamlSecurityIT.mujina = new MujinaIdentityProviderServer();
-        SamlSecurityIT.mujina.start();
+        SamlSecurityIT.mujina.start(TmpFolderProvider.getTmpDir(SamlSecurityIT.class, "all", "mujina"));
 
         Integer port = SocketUtils.findAvailableTcpPort();
         searchHome = createSearchHome(port);
