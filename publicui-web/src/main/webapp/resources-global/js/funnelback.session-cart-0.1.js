@@ -33,11 +33,14 @@ window.Funnelback.SessionCart = (function() {
     iconPrefix: 'glyphicon glyphicon-', // CSS class(es) prefix used to display icons
     cart: {
       selector: '#search-cart', // CSS selector to element where content of cart should be displayed
-      pageSelector: ['#search-results-display', '#search-history'], // set of CSS selectors to parts of page to hide then when cart is displayed
+      pageSelector: ['#search-results-content', '#search-history'], // set of CSS selectors to parts of page to hide then when cart is displayed
       icon: 'pushpin', // icon to display for cart header; will be prefixed with `iconPrefix`; if null/undefined, no icon will be displayed
       label: 'Saved', // label to display as cart header
       backIcon: 'arrow-left', // icon to display in cart for link to return to result page; will be prefixed with `iconPrefix`; if null/undefined, no icon will be displayed
       backLabel: 'Back to results', // label to display in cart for link to return to result page
+      clearClasses: 'btn btn-xs btn-danger', // CSS classes added to link element displayed in cart to clear all cart data
+      clearIcon: 'remove', // icon to display for link element in cart to clear all cart data
+      clearLabel: 'Clear', // label to display for link element in cart to clear all cart data
     },
     cartCount: {
       selector: '.flb-cart-count', // CSS selector to element where cart count should be displayed
@@ -47,11 +50,11 @@ window.Funnelback.SessionCart = (function() {
       template: '{{>icon-block}} {{>label-block}}{{>badge-block}}'
     },
     item: {
-      selector: '#search-results', // CSS selector to list of item; if item should be toggled into cart, item requires to have attribute 'data-cart-url' that has index URL value of item
+      selector: '#search-results', // CSS selector to list of item; if item should be toggled into cart, item requires to have attribute 'data-fb-result' that has index URL value of item
       template: '<h4><a href="{{indexUrl}}">{{#truncate 70}}{{title}}{{/truncate}}</a></h4><cite class="text-success">{{#cut "https://"}}{{indexUrl}}{{/cut}}</cite><p>{{#truncate 255}}{{summary}}{{/truncate}}</p>',
     },
     itemTrigger: {
-      // Where item trigger should be displayed within context of `itemSelector`
+      // Where item trigger should be displayed within search/cart result
       selector: 'h4', // CSS selector of element where item trigger will be inserted in relative position to it
       position: 'afterbegin', // [beforebegin|afterbegin|beforeend|afterend] relative position to `selector` element where item trigger will be inserted
       /*
@@ -59,7 +62,7 @@ window.Funnelback.SessionCart = (function() {
         afterbegin: just inside the `selector` element, before its first child
         beforeend: just inside the `selector` element, after its last child
         afterend: after the `selector` element itself
-       */
+      */
       // Set display of item trigger to add to / delete from cart
       iconAdd: 'pushpin', // icon to display for trigger to add item to cart; will be prefixed with `iconPrefix`; if null/undefined, no icon will be displayed
       iconDelete: 'remove', // icon to display for trigger to delete item from cart; will be prefixed with `iconPrefix`; if null/undefined, no icon will be displayed
@@ -67,8 +70,10 @@ window.Funnelback.SessionCart = (function() {
       labelAdd: 'Add to cart', // label to display for trigger to add item to cart
       labelDelete: 'Remove from cart', // label to display for trigger to delete item from cart
       template: '{{>icon-block}} {{>label-block}}',
-    }
-  }
+    },
+    cartItemTrigger: {}, // Will default to settings of `itemTrigger` but each key can be optionally customised
+    resultItemTrigger: {} // Will default to settings of `itemTrigger` but each key can be optionally customised
+  };
 
   /**
    * Create isolated Handlebars environment
@@ -88,6 +93,8 @@ window.Funnelback.SessionCart = (function() {
 
     Constructor.options = Utils.extend(Constructor.defaults, options || {});
     if (!Constructor.options.cart.pageSelector) Constructor.options.cart.pageSelector = [];
+    Constructor.options.cartItemTrigger = Utils.extend(Utils.extend({}, Constructor.options.itemTrigger), Constructor.options.cartItemTrigger);
+    Constructor.options.resultItemTrigger = Utils.extend(Utils.extend({}, Constructor.options.itemTrigger), Constructor.options.resultItemTrigger);
 
     CartBox.init(Constructor.options);
     CartCount.init(Constructor.options);
@@ -274,21 +281,20 @@ window.Funnelback.SessionCart = (function() {
     init: function(options) {
       CartBox.element = ElementUtil.findOnce(options.cart.selector);
       if (!CartBox.element) console.warn('No element was found with provided selector "' + options.cart.selector + '"');
-      
+      CartBox.element.style.display = 'none';
+
       for (var i = 0, len = options.cart.pageSelector.length; i < len; i++) {
         const el = ElementUtil.findOnce(options.cart.pageSelector[i]);
         if (el) CartBox.pageElements.push(el);
       }
       if (!CartBox.pageElements.length) console.warn('No element was found with provided page selector "' + options.cart.pageSelector + '"');
-      
-      Constructor.prototype.hide();
 
       const template = HandlebarsUtil.compile(Templates.once.iconLabel),
         // create DOM element of back button from cart to results
         backEl = ElementUtil.create('flb-cart-box-back', CartBox.element, 'a', template({icon: options.cart.backIcon ? options.iconPrefix + options.cart.backIcon : null, label: options.cart.backLabel}), {style: 'cursor: pointer'}),
         // create DOM elemenet of cart header
         headerEl = ElementUtil.create('flb-cart-box-header', CartBox.element, 'h2', template({icon: options.cart.icon ? options.iconPrefix + options.cart.icon : null, label: options.cart.label}));
-      CartBox.clearElement = ElementUtil.create('flb-cart-box-clear', headerEl, 'a', template({icon: options.iconPrefix + 'remove', label: 'Clear'}), {class: 'btn btn-xs btn-danger'});
+      CartBox.clearElement = ElementUtil.create('flb-cart-box-clear', headerEl, 'a', template({icon: options.cart.clearIcon ? options.iconPrefix + options.cart.clearIcon : null, label: options.cart.clearLabel}), {class: options.cart.clearClasses});
       ElementUtil.addEvent(backEl, 'click', Constructor.prototype.hide);
       ElementUtil.addEvent(CartBox.clearElement, 'click', function() { return Constructor.prototype.clear(options); });
       // create DOM element of list of cart items
@@ -353,7 +359,7 @@ window.Funnelback.SessionCart = (function() {
 
   // Handler to access and update search result/cart item
   const Item = {
-    selectorAttr: 'data-cart-url', // name of attribute holding index URL of search result that should be toogled into cart
+    selectorAttr: 'data-fb-result', // name of attribute holding index URL of search result that should be toogled into cart
     listElement: null, // DOM element with list of search results
     template: null, // compiled Handlebars template to display single item in cart
 
@@ -363,21 +369,28 @@ window.Funnelback.SessionCart = (function() {
       if (!Item.listElement) console.warn('No element was found with provided selector "' + options.item.selector + '"');
     },
 
-    // Get CSS selector to search result with provided index URL
-    // if no `url` is passed get CSS selector to all search results
+    /**
+     * Get CSS selector to search result with provided index URL
+     * if no `url` is passed get CSS selector to all search results
+     * - url of item based on which item is added to cart
+     */
     selector: function(url) {
       return url ? '[' + Item.selectorAttr + '="' + url + '"]' : '[' + Item.selectorAttr + ']';
     },
 
-    // Toggle display of cart trigger for search result
-    // Toggle display of item in cart
-    update: function(options, data, type) {
+    /**
+     * Toggle display of cart trigger for search result and of item in cart
+     * - widget options 
+     * - item data returned by API
+     * - action to be performed on item: 'add' or 'del'
+     */
+    update: function(options, data, action) {
       // Find cart trigger within serach result
       const itemTrigger = ElementUtil.findOnce(Item.selector(data.indexUrl), Item.listElement);
       // Toggle display of cart trigger
-      if (itemTrigger) ItemTrigger.update(options, itemTrigger, type);
+      if (itemTrigger) ItemTrigger.update('result', itemTrigger, action);
 
-      if (type === 'add') {
+      if (action === 'add') {
         // Find cart item to be removed from cart display
         const cartItem = ElementUtil.findOnce(Item.selector(data.indexUrl), CartBox.listElement);
         // Remove cart item from cart
@@ -386,9 +399,9 @@ window.Funnelback.SessionCart = (function() {
         // Create new item to be displayed in cart
         const cartItem = ElementUtil.create('flb-cart-box-item', null, 'li', Item.template(data), {'data-cart-url': data.indexUrl});
         // Create cart trigger for new item in cart
-        ItemTrigger.set(options, cartItem);
+        ItemTrigger.set('cart', options.cartItemTrigger, cartItem);
         // Set trigger to be delete trigger for new item in cart
-        ItemTrigger.update(options, cartItem);
+        ItemTrigger.update('cart', cartItem);
         // Add new item at the beginning of list of items in cart
         CartBox.listElement.insertAdjacentElement('afterbegin', cartItem);
       }
@@ -403,78 +416,103 @@ window.Funnelback.SessionCart = (function() {
       // Find all search results
       const items = ElementUtil.find(Item.selector(), Item.listElement);
       // Remove items from cart and set cart tirggers within search results to be added
-      for (var i = 0, len = items.length; i < len; i++) ItemTrigger.update(options, items[i], 'add');
+      for (var i = 0, len = items.length; i < len; i++) ItemTrigger.update('result', items[i], 'add');
     },
 
-    // Initialise cart triggers to search results
+    // Initialise cart triggers for search results
     set: function(options) {
       // Find all search results
       const items = ElementUtil.find(Item.selector(), Item.listElement);
       // Set cart triggers withing search results to be added
-      for (var i = items.length - 1; i >= 0; i--) ItemTrigger.set(options, items[i]);
+      for (var i = items.length - 1; i >= 0; i--) ItemTrigger.set('result', options.resultItemTrigger, items[i]);
     },
 
-    // Update display of items in cart and cart triggers within search results based on fetched cart data
-    update: function(options, data, type) {
-      for (var i = 0, len = data.length; i < len; i++) Item.update(options, data[i], type);
+    /**
+     * Update display of items in cart and cart triggers within search results based on fetched cart data
+     * - widget options 
+     * - list of data items from API
+     * - action to be performed on data item: 'add' or 'del'
+     */
+    update: function(options, data, action) {
+      for (var i = 0, len = data.length; i < len; i++) Item.update(options, data[i], action);
       if (!data.length) CartBox.listElement.innerHTML = CartBox.emptyMessage;
     }
   }
 
-  // Handler to access and create cart trigger
+  // Handler to access and create cart triggers
   const ItemTrigger = {
-    selector: 'flb-cart-item-tirgger', // CSS class name assigned to each cart trigger
-    addEvent: null, // click event assigned to cart trigger to add item to cart
-    addTemplate: null, // compiled Handlebars template of cart trigger to display add to cart
-    addTitle: 'Add', // title used to create content of title attribute of cart trigger to display for add to cart
-    delEvent: null, // click event assigned to cart trigger to remove item from cart
-    delTemplate: null, // compiled Handlebars template of cart trigger to display remove from cart
-    delTitle: 'Remove', // title used to create content of title attribute of cart trigger to display for remvoe from cart
+    selector: 'flb-cart-item-tirgger', // CSS class name assigned to each trigger
+    addEvent: null, // click event assigned to trigger to add item to cart
+    delEvent: null, // click event assigned to trigger to remove item from cart
+    cartAddTemplate: null, // compiled Handlebars template of trigger in cart to display add to cart
+    cartAddTitle: 'Add', // title used to create content of title attribute of trigger in cart to display for add to cart
+    cartDelTemplate: null, // compiled Handlebars template of trigger in cart to display remove from cart
+    cartDelTitle: 'Remove', // title used to create content of title attribute of trigger in cart to display for remvoe from cart
+    resultAddTemplate: null, // compiled Handlebars template of trigger in result list to display add to cart
+    resultAddTitle: 'Add', // title used to create content of title attribute of trigger in result list to display for add to cart
+    resultDelTemplate: null, // compiled Handlebars template of trigger in result list to display remove from cart
+    resultDelTitle: 'Remove', // title used to create content of title attribute of trigger in result list to display for remvoe from cart
 
     init: function(options) {
-      const template = HandlebarsUtil.compile(options.itemTrigger.template);
-      ItemTrigger.addTemplate = template({icon: options.iconPrefix + options.itemTrigger.iconAdd, label: options.itemTrigger.isLabel ? options.itemTrigger.labelAdd : null});
-      ItemTrigger.delTemplate = template({icon: options.iconPrefix + options.itemTrigger.iconDelete, label: options.itemTrigger.isLabel ? options.itemTrigger.labelDelete : null});
-      if (options.cartCount.label) {
-        ItemTrigger.addTitle += ' to ' + options.cartCount.label.toLowerCase();
-        ItemTrigger.delTitle += ' from ' + options.cartCount.label.toLowerCase();
-      }
-      ItemTrigger.addEvent = function(e) {
+      setTrigger('cart', options.cartItemTrigger); // Set settings for trigger displayed within cart item
+      setTrigger('result', options.resultItemTrigger); // Set settings for trigger displayed within result item
+
+      ItemTrigger.addEvent = function(e) { // Define event triggered on adding item to cart
         e.preventDefault();
         const item = e.currentTarget.closest(Item.selector()), url = item.getAttribute(Item.selectorAttr);
         if (url) return Constructor.prototype.addItem(url);
         else console.warn('No URL found to save item in a cart');
       };
-      ItemTrigger.delEvent = function(e) {
+      ItemTrigger.delEvent = function(e) { // Define event triggered on deleting item from cart
         e.preventDefault();
         const item = e.currentTarget.closest(Item.selector()), url = item.getAttribute(Item.selectorAttr);
         if (url) return Constructor.prototype.deleteItem(url);
         else console.warn('No URL found to remove result from a cart');
       };
+
+      function setTrigger(type, trigger) {
+        const template = HandlebarsUtil.compile(trigger.template);
+        ItemTrigger[type + 'AddTemplate'] = template({icon: options.iconPrefix + trigger.iconAdd, label: trigger.isLabel ? trigger.labelAdd: null});
+        ItemTrigger[type + 'DelTemplate'] = template({icon: options.iconPrefix + trigger.iconDelete, label: trigger.isLabel ? trigger.labelDelete : null});
+        if (options.cartCount.label) {
+          ItemTrigger[type + 'AddTitle'] += ' to ' + options.cartCount.label.toLowerCase();
+          ItemTrigger[type + 'DelTitle'] += ' from ' + options.cartCount.label.toLowerCase();
+        }
+      }
     },
 
-    // Create cart trigger for provided cart item or search result
-    set: function(options, item) {
-      const el = ElementUtil.findOnce(options.itemTrigger.selector, item);
-      const trigger = ElementUtil.create(ItemTrigger.selector, null, 'a', ItemTrigger.addTemplate, {style: 'cursor: pointer', title: ItemTrigger.addTitle});
-      ElementUtil.addEvent(trigger, 'click', ItemTrigger.addEvent);
-      if (el) el.insertAdjacentElement(options.itemTrigger.position, trigger);
-      else console.warn('No element was found with provided selector "' + options.itemTrigger.selector + '"');
+    /**
+     * Create cart trigger for provided cart item or search result
+     * - type of trigger: 'cart' or 'result'
+     * - trigger settings
+     * - DOM element to which trigger should be added
+     */
+    set: function(type, trigger, item) {
+      const el = ElementUtil.findOnce(trigger.selector, item);
+      const triggerEl = ElementUtil.create(ItemTrigger.selector, null, 'a', ItemTrigger[type + 'AddTemplate'], {style: 'cursor: pointer', title: ItemTrigger[type + 'AddTitle']});
+      ElementUtil.addEvent(triggerEl, 'click', ItemTrigger.addEvent);
+      if (el) el.insertAdjacentElement(trigger.position, triggerEl);
+      else console.info('No element was found with provided selector "' + trigger.selector + '"');
     },
 
-    // Toggle display of cart trigger
-    update: function(options, item, type) {
+    /**
+     * Toggle display of cart trigger
+     * - type of trigger: 'cart' or 'result'
+     * - DOM element to which trigger is assigned
+     * - action to be performed on trigger: 'add' or 'del'
+     */
+    update: function(type, item, action) {
       const el = ElementUtil.findOnce('.' + ItemTrigger.selector, item);
-      if (type === 'add') {
-        ElementUtil.setContent(el, ItemTrigger.addTemplate);
+      if (action === 'add') {
+        ElementUtil.setContent(el, ItemTrigger[type + 'AddTemplate']);
         ElementUtil.removeEvent(el, 'click', ItemTrigger.delEvent);
         ElementUtil.addEvent(el, 'click', ItemTrigger.addEvent);
-        el.setAttribute('title', ItemTrigger.addTitle);
+        el.setAttribute('title', ItemTrigger[type + 'AddTitle']);
       } else {
-        ElementUtil.setContent(el, ItemTrigger.delTemplate);
+        ElementUtil.setContent(el, ItemTrigger[type + 'DelTemplate']);
         ElementUtil.removeEvent(el, 'click', ItemTrigger.addEvent);
         ElementUtil.addEvent(el, 'click', ItemTrigger.delEvent);
-        el.setAttribute('title', ItemTrigger.delTitle);
+        el.setAttribute('title', ItemTrigger[type + 'DelTitle']);
       }
     }
 

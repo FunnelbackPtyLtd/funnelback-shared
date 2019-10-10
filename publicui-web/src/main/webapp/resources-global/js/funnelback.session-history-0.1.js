@@ -55,7 +55,6 @@ window.Funnelback.SessionHistory = (function() {
     Constructor.options = Utils.extend(Constructor.defaults, options || {});
     if (!Constructor.options.pageSelector) Constructor.options.pageSelector = [];
     View.init(Constructor.options);
-    Constructor.prototype.hide();
     return this;
   };
 
@@ -188,6 +187,7 @@ window.Funnelback.SessionHistory = (function() {
 
     init: function(options) {
       View.setElement(options.historySelector, 'history', 'warn'); // Find element displaying history data
+      if (View.history) View.history.style.display = 'none';
       View.setElement(options.clickEmptySelector, 'clickEmpty'); // Find element displaying click history empty
       View.setElement(options.clickResultsSelector, 'clickResults'); // Find element displaying click history data
       View.setElement(options.searchEmptySelector, 'searchEmpty'); // Find element displaying search history empty
