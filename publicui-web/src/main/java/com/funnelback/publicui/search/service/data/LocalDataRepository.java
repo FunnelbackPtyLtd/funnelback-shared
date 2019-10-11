@@ -43,6 +43,7 @@ import com.funnelback.common.url.VFSURLUtils;
 import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.common.views.StoreView;
 import com.funnelback.common.views.View;
+import com.funnelback.config.security.ConfigPasswordEncryptionService;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.ManualPadreForkingOptions;
@@ -101,6 +102,9 @@ public class LocalDataRepository implements DataRepository {
 
     @Autowired
     private I18n i18n;
+    
+    @Autowired
+    private ConfigPasswordEncryptionService configPasswordEncryptionService;
 
     /**
      * @param searchHome Funnelback installation folder, to be able to locate
@@ -242,10 +246,15 @@ public class LocalDataRepository implements DataRepository {
         } else {
             // Use Filecopy credentials to fetch the content
             FileSystemOptions options = new FileSystemOptions();
+            
+            String password = collection.getConfiguration().value(com.funnelback.config.keys.Keys.CollectionKeys.FilecopyGatherer.PASSWORD)
+                .map(c -> c.getUnencryptedPassword(configPasswordEncryptionService).getCleartextPassword())
+                .orElse(null);
+                
             UserAuthenticator ua = new StaticUserAuthenticator(
                             collection.getConfiguration().value(Keys.FileCopy.DOMAIN),
                             collection.getConfiguration().value(Keys.FileCopy.USERNAME),
-                            collection.getConfiguration().value(Keys.FileCopy.PASSWORD));
+                            password);
             DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(options, ua);
             
             FileSystemManager manager = VFS.getManager();
