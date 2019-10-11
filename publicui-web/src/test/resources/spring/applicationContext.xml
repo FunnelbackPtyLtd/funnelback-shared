@@ -182,5 +182,10 @@
        <constructor-arg ref="FunnelbackFilePathCachedResourceEntryValidatorMap" />
    </bean>
    <bean name="FunnelbackFilePathCachedResourceEntryValidatorMap" class="java.util.concurrent.ConcurrentHashMap"/>
+   
+   <bean id="configPasswordEncryptionService" class="com.funnelback.config.security.ConfigPasswordEncryptionService">
+        <constructor-arg ref="searchHome"></constructor-arg>
+   </bean>
+   
     
 </beans>
