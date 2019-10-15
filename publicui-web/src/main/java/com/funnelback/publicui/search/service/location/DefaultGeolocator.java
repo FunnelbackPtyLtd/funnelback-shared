@@ -1,16 +1,20 @@
 package com.funnelback.publicui.search.service.location;
 
+import java.util.Optional;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
+import org.apache.http.conn.util.InetAddressUtils;
+import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.maxmind.MaxMindCityLoader;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.GeoIp2Provider;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
@@ -48,13 +52,31 @@ public class DefaultGeolocator implements Geolocator {
         loadLookupServiceIfNotLoaded();
         if (reader != null) {
             String remoteIpAddress = question.getRequestId();
-            try {
-                return reader.city(InetAddress.getByName(remoteIpAddress));
-            } catch (IOException | GeoIp2Exception e) {
-                log.catching(e);
+            Optional<InetAddress> address = makeAddress(remoteIpAddress);
+            if(address.isPresent()) {
+                try {
+                    return reader.city(address.get());
+                } catch (IOException | GeoIp2Exception e) {
+                    log.catching(e);
+                }
             }
         }
         return null;
+    }
+    
+    Optional<InetAddress> makeAddress(String possibleIp) {
+        if(possibleIp == null) return Optional.empty();
+        if(InetAddressUtils.isIPv4Address(possibleIp) || InetAddressUtils.isIPv6Address(possibleIp)) {
+             try {
+                return Optional.of(InetAddress.getByName(possibleIp));
+            } catch (UnknownHostException e) {
+                log.debug("Could not make InetAddress from '{}'", possibleIp, e);
+                return Optional.empty();
+            }
+        } else {
+            log.debug("Can not make a InetAddress from '{}' which does not look like an IP address", possibleIp);
+            return Optional.empty();
+        }
     }
     
     private void loadLookupServiceIfNotLoaded() {
