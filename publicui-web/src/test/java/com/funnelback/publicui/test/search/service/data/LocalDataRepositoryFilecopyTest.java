@@ -33,7 +33,7 @@ public class LocalDataRepositoryFilecopyTest {
             new NoOptionsConfig(new File("src/test/resources/dummy-search_home"),
                 "filecopy")
             .setValue(Keys.FileCopy.USERNAME, "")
-            .setValue(Keys.FileCopy.PASSWORD, "")
+            .setValue(com.funnelback.config.keys.Keys.CollectionKeys.FilecopyGatherer.PASSWORD.getKey(), "")
             .setValue(Keys.FileCopy.DOMAIN, ""));
         
         if (OS.isFamilyWindows()) {

@@ -82,7 +82,7 @@ public class GetFilecopyDocumentControllerTest {
                 new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "filecopy")
                 .setValue("collection_type", "filecopy")
                 .setValue(Keys.FileCopy.USERNAME, "")
-                .setValue(Keys.FileCopy.PASSWORD, "")
+                .setValue(com.funnelback.config.keys.Keys.CollectionKeys.FilecopyGatherer.PASSWORD.getKey(), "")
                 .setValue(Keys.FileCopy.DOMAIN, "")));
         configRepository.addCollection(
             new Collection("dummy",
@@ -94,7 +94,7 @@ public class GetFilecopyDocumentControllerTest {
                 .setValue("collection_type", "filecopy")
                 .setValue(Keys.FileCopy.SECURITY_MODEL, DefaultValues.FileCopy.SECURITY_MODEL_NTFS)
                 .setValue(Keys.FileCopy.USERNAME, "")
-                .setValue(Keys.FileCopy.PASSWORD, "")
+                .setValue(com.funnelback.config.keys.Keys.CollectionKeys.FilecopyGatherer.PASSWORD.getKey(), "")
                 .setValue(Keys.FileCopy.DOMAIN, "")));
 
         filecopyDlsDefaultProfile = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
