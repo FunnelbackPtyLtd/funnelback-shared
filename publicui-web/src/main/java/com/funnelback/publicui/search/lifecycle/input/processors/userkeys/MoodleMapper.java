@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.funnelback.config.security.ConfigPasswordEncryptionService;
 import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.common.config.Config;
@@ -139,7 +140,10 @@ public class MoodleMapper implements UserKeysMapper {
 
         String jdbc_url = configData.value(Keys.Database.JDBC_ADDRESS);
         String username = configData.value(Keys.Database.JDBC_USERNAME);
-        String password = configData.value(Keys.Database.JDBC_PASSWORD);
+        String password = configData.value(com.funnelback.config.keys.Keys.CollectionKeys.DatabaseGatherer.PASSWORD)
+            .map((p) -> p.getUnencryptedPassword(new ConfigPasswordEncryptionService(configData.getSearchHomeDir()))
+                .getCleartextPassword())
+            .orElse(null);
 
         return DriverManager.getConnection(jdbc_url, username, password);
     }
