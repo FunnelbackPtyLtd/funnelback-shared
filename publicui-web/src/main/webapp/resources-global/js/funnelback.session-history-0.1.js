@@ -36,11 +36,13 @@ window.Funnelback.SessionHistory = (function() {
     searchResultsSelector: '.session-history-search-results', // CSS selector to element displaying search history data
     pageSelector: ['#search-results-content', '#search-cart'], // list of CSS selectors to parts of page to hide it when history is displayed
 
-    // Selectors to DOM elements triggering events; each CSS selector can return zero or more elements
+    // Selectors to DOM elements triggering events; each CSS selector can return zero or more elements    
     clearClickSelector: '.session-history-clear-click', // CSS selector to element on clicking which click history data will be cleared
     clearSearchSelector: '.session-history-clear-search', // CSS selector to element on clicking which search history data will be cleared
     hideSelector: '.session-history-hide', // CSS selector to element on clicking which history box will be hidden
     showSelector: '.session-history-show', // CSS selector to element on clicking which history box will be shown
+    currentSearchHistorySelectors: ['.session-history-breadcrumb'], // list of CSS selectors to elements which should be hidden when the search history data is cleared.
+    currentClickHistorySelectors: ['.session-history-link'], // list of CSS selectors to elements which should be hidden when the click history data is cleared.
     toggleSelector: '.session-history-toggle', // CSS selector to element on clicking which history box will be toggled
   };
 
@@ -182,8 +184,10 @@ window.Funnelback.SessionHistory = (function() {
     searchClear: null,
     searchEmpty: null,
     searchResults: null,
+    clickHistoryLinks: [],
+    searchHistoryLinks: [],
     // Store state if history box is hidden or shown
-    isHidden: true,
+    isHidden: true,    
 
     init: function(options) {
       View.setElement(options.historySelector, 'history', 'warn'); // Find element displaying history data
@@ -203,11 +207,24 @@ window.Funnelback.SessionHistory = (function() {
       View.clickResults ? View.results('click') : View.noResults('click');
       View.searchResults ? View.results('search') : View.noResults('search');
 
+      var i;
       // Find elements to be hidden when history box is displayed
-      for (var i = 0, len = options.pageSelector.length; i < len; i++) {
+      for (i = 0; i < options.pageSelector.length; i++) {
         const el = document.querySelector(options.pageSelector[i]);
         if (el) View.page.push(el);
         else console.warn('No element was found for ' + options.pageSelector[i] + ' selector');
+      }
+      
+      // Find elements to be hidden when search history is cleared.
+      for (i = 0; i < options.currentSearchHistorySelectors.length; i++) {
+        const els = document.querySelectorAll(options.currentSearchHistorySelectors[i]);
+        Array.prototype.push.apply(View.searchHistoryLinks, els);
+      }
+
+      // Find elements to be hidden when click history is cleared.
+      for (i = 0; i < options.currentClickHistorySelectors.length; i++) {
+        const els = document.querySelectorAll(options.currentClickHistorySelectors[i]);
+        Array.prototype.push.apply(View.clickHistoryLinks, els);
       }
     },
 
@@ -220,6 +237,8 @@ window.Funnelback.SessionHistory = (function() {
       if (!confirm('Your ' + type + ' history will be cleared')) return;
       Api.delete(options, type).then(function(response) {
         View.noResults(type);
+        // Hide existing dom elements which show click or search data. 
+        View.toggle(View[type + 'HistoryLinks'], 'none');
       }).catch(function(error) {
         console.error('Something went wrong and ' + type + ' history was not cleared. Please try again later...', error);
       });
