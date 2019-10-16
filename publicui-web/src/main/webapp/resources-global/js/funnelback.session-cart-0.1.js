@@ -359,7 +359,7 @@ window.Funnelback.SessionCart = (function() {
 
   // Handler to access and update search result/cart item
   const Item = {
-    selectorAttr: 'data-fb-result', // name of attribute holding index URL of search result that should be toogled into cart
+    selectorAttr: 'data-fb-result', // name of attribute holding index URL of search result that should be toggled into cart
     listElement: null, // DOM element with list of search results
     template: null, // compiled Handlebars template to display single item in cart
 
@@ -397,7 +397,9 @@ window.Funnelback.SessionCart = (function() {
         ElementUtil.remove(cartItem);
       } else {
         // Create new item to be displayed in cart
-        const cartItem = ElementUtil.create('flb-cart-box-item', null, 'li', Item.template(data), {'data-cart-url': data.indexUrl});
+        const attributes = {};
+        attributes[Item.selectorAttr] = data.indexUrl;
+        const cartItem = ElementUtil.create('flb-cart-box-item', null, 'li', Item.template(data), attributes);
         // Create cart trigger for new item in cart
         ItemTrigger.set('cart', options.cartItemTrigger, cartItem);
         // Set trigger to be delete trigger for new item in cart
@@ -547,6 +549,8 @@ window.Funnelback.SessionCart = (function() {
 
     // Remove DOM element
     remove: function(element) {
+      // If api calls are called directly, maybe the result does not appear on the screen to remove.
+      if (!element) { console.warn("Remove called on element which could not be found"); return; }
       element.parentNode.removeChild(element);
     },
 
