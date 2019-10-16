@@ -45,9 +45,9 @@ window.Funnelback.SessionCart = (function() {
     cartCount: {
       selector: '.flb-cart-count', // CSS selector to element where cart count should be displayed
       icon: 'shopping-cart', // icon to display for cart count; will be prefixed with `iconPrefix`; if null/undefined, no icon will be displayed
-      isLabel: false, // [true|false]; if true label will be displayed as text of element else it won't be displayed
+      isLabel: false, // [true|false]; if true label will be displayed as text of element else it won't be displayed, but will be used in the title attribute.
       label: 'cart', // label add to attribute `title` of cart count to inform about number of items; if `isLabel: true`, this label will be displayed as element text
-      template: '{{>icon-block}} {{>label-block}}{{>badge-block}}'
+      template: '{{>icon-block}} {{>label-block}} {{>badge-block}}'
     },
     item: {
       selector: '#search-results', // CSS selector to list of item; if item should be toggled into cart, item requires to have attribute 'data-fb-result' that has index URL value of item
@@ -325,9 +325,9 @@ window.Funnelback.SessionCart = (function() {
   // Handler to access and create element displaying cart count on page
   const CartCount = {
     selector: 'flb-cart-count-trigger', // CSS class assigned to cart count element
-    element: null, // DOM element displayin cart count
+    element: null, // DOM element displaying cart count
     icon: null, // prefixed with `iconPrefix` icon to display for cart count; if null no icon is displayed
-    label: null, // label to display fir cart count if label is enabeld `isLabel: true`
+    label: null, // label to display for cart count if label is enabled `isLabel: true`, will always be used in the title text if set.
     partialTitle: ' items', // partial title used to create content of title attribute "<count> items"; if label is set "<count> item in your <label>"
     template: null, // compiled Handlebars template to display cart count
 
@@ -385,7 +385,7 @@ window.Funnelback.SessionCart = (function() {
      * - action to be performed on item: 'add' or 'del'
      */
     update: function(options, data, action) {
-      // Find cart trigger within serach result
+      // Find cart trigger within search result
       const itemTrigger = ElementUtil.findOnce(Item.selector(data.indexUrl), Item.listElement);
       // Toggle display of cart trigger
       if (itemTrigger) ItemTrigger.update('result', itemTrigger, action);
@@ -441,17 +441,17 @@ window.Funnelback.SessionCart = (function() {
 
   // Handler to access and create cart triggers
   const ItemTrigger = {
-    selector: 'flb-cart-item-tirgger', // CSS class name assigned to each trigger
+    selector: 'flb-cart-item-trigger', // CSS class name assigned to each trigger
     addEvent: null, // click event assigned to trigger to add item to cart
     delEvent: null, // click event assigned to trigger to remove item from cart
     cartAddTemplate: null, // compiled Handlebars template of trigger in cart to display add to cart
-    cartAddTitle: 'Add', // title used to create content of title attribute of trigger in cart to display for add to cart
+    cartAddTitle: null, // title used to create content of title attribute of trigger in cart to display for add to cart
     cartDelTemplate: null, // compiled Handlebars template of trigger in cart to display remove from cart
-    cartDelTitle: 'Remove', // title used to create content of title attribute of trigger in cart to display for remvoe from cart
+    cartDelTitle: null, // title used to create content of title attribute of trigger in cart to display for remove from cart
     resultAddTemplate: null, // compiled Handlebars template of trigger in result list to display add to cart
-    resultAddTitle: 'Add', // title used to create content of title attribute of trigger in result list to display for add to cart
+    resultAddTitle: null, // title used to create content of title attribute of trigger in result list to display for add to cart
     resultDelTemplate: null, // compiled Handlebars template of trigger in result list to display remove from cart
-    resultDelTitle: 'Remove', // title used to create content of title attribute of trigger in result list to display for remvoe from cart
+    resultDelTitle: null, // title used to create content of title attribute of trigger in result list to display for remove from cart
 
     init: function(options) {
       setTrigger('cart', options.cartItemTrigger); // Set settings for trigger displayed within cart item
@@ -474,10 +474,8 @@ window.Funnelback.SessionCart = (function() {
         const template = HandlebarsUtil.compile(trigger.template);
         ItemTrigger[type + 'AddTemplate'] = template({icon: options.iconPrefix + trigger.iconAdd, label: trigger.isLabel ? trigger.labelAdd: null});
         ItemTrigger[type + 'DelTemplate'] = template({icon: options.iconPrefix + trigger.iconDelete, label: trigger.isLabel ? trigger.labelDelete : null});
-        if (options.cartCount.label) {
-          ItemTrigger[type + 'AddTitle'] += ' to ' + options.cartCount.label.toLowerCase();
-          ItemTrigger[type + 'DelTitle'] += ' from ' + options.cartCount.label.toLowerCase();
-        }
+        ItemTrigger[type + 'AddTitle'] = trigger.labelAdd;
+        ItemTrigger[type + 'DelTitle'] = trigger.labelDelete;
       }
     },
 
