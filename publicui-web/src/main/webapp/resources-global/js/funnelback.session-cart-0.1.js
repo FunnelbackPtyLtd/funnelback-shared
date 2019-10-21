@@ -637,7 +637,7 @@ window.Funnelback.SessionCart = (function() {
     },
     
     // Remove event from DOM element
-    removeEvent(element, type, handler) {
+    removeEvent: function(element, type, handler) {
       element.removeEventListener(type, handler);
     },
   };
