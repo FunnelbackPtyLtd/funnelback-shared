@@ -215,22 +215,22 @@ window.Funnelback.SessionHistory = (function() {
       View.clickResults ? View.results('click') : View.noResults('click');
       View.searchResults ? View.results('search') : View.noResults('search');
 
-      var i;
+      var i, len;
       // Find elements to be hidden when history box is displayed
-      for (i = 0; i < options.pageSelector.length; i++) {
+      for (i = 0, len = options.pageSelector.length; i < len; i++) {
         const el = document.querySelector(options.pageSelector[i]);
         if (el) View.page.push(el);
         else console.warn('No element was found for ' + options.pageSelector[i] + ' selector');
       }
       
       // Find elements to be hidden when search history is cleared.
-      for (i = 0; i < options.currentSearchHistorySelectors.length; i++) {
+      for (i = 0, len = options.currentSearchHistorySelectors.length; i < len; i++) {
         const els = document.querySelectorAll(options.currentSearchHistorySelectors[i]);
         Array.prototype.push.apply(View.searchHistoryLinks, els);
       }
 
       // Find elements to be hidden when click history is cleared.
-      for (i = 0; i < options.currentClickHistorySelectors.length; i++) {
+      for (i = 0, len = options.currentClickHistorySelectors.length; i < len; i++) {      
         const els = document.querySelectorAll(options.currentClickHistorySelectors[i]);
         Array.prototype.push.apply(View.clickHistoryLinks, els);
       }

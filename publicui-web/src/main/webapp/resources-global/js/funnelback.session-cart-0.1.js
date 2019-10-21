@@ -19,6 +19,47 @@
  */
 if (!window.Funnelback) window.Funnelback = {}; // create namespace
 
+
+// While best practice is to normally include polyfills as an external dependency,
+// for these two functions, its more convenient to include them with this file
+// than to force users to manually spent a few seconds adding polyfills as an upgrade
+// or integration step. If people want to over ride these, they can just import 
+// external polyfills manually _before_ importing this script.
+// ======== Polyfills for IE9+. =========
+// From https://developer.mozilla.org/en-US/docs/Web/API/Element/closest
+if (!Element.prototype.matches) {
+  Element.prototype.matches = Element.prototype.msMatchesSelector || 
+                              Element.prototype.webkitMatchesSelector;
+}
+
+if (!Element.prototype.closest) {
+  Element.prototype.closest = function(s) {
+    var el = this;
+
+    do {
+      if (el.matches(s)) return el;
+      el = el.parentElement || el.parentNode;
+    } while (el !== null && el.nodeType === 1);
+    return null;
+  };
+}
+
+// From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries#Polyfill
+if (!Object.entries) {
+  Object.entries = function( obj ){
+    var ownProps = Object.keys( obj ),
+        i = ownProps.length,
+        resArray = new Array(i); // preallocate the Array
+    while (i--)
+      resArray[i] = [ownProps[i], obj[ownProps[i]]];
+    
+    return resArray;
+  };
+}
+
+// ======= End Polyfills ========
+
+
 window.Funnelback.SessionCart = (function() {
   'use strict'
 
@@ -187,7 +228,7 @@ window.Funnelback.SessionCart = (function() {
   Constructor.prototype.addItem = function(url) {
     const options = this.getOption();
     Api.post(options, {url: url}).then(function(response) {
-      Item.update(options, response.data.filter(it => it.indexUrl === url)[0], 'del');
+      Item.update(options, response.data.filter(function(it) { return it.indexUrl === url; })[0], 'del');
       CartCount.set(response.data.length);
       CartBox.toggleClearElement(response.data);
     }).catch(function(error) {
