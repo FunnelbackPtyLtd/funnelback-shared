@@ -188,11 +188,11 @@ window.Funnelback.SessionHistory = (function() {
     searchHistoryLinks: [],
     // We only show/hide elements we were responsible for hiding/showing.
     toggleStates: {
-      page: undefined,
-      clickEmpty: undefined,
-      searchEmpty: undefined,
-      clickHistoryLinks: undefined,
-      searchHistoryLinks: undefined,
+      page: null,
+      clickEmpty: null,
+      searchEmpty: null,
+      clickHistoryLinks: null,
+      searchHistoryLinks: null,
     },
     // Store state if history box is hidden or shown
     isHidden: true,    
@@ -306,7 +306,7 @@ window.Funnelback.SessionHistory = (function() {
       for (var i = 0, len = elements.length; i < len; i++) {
         const elToConsider = elements[i];
         // Skip elements we have not toggled in the past.
-        if (View.toggleStates[toggleStatesSelector].indexOf(elToConsider) !== -1){          
+        if (Array.prototype.indexOf.call(View.toggleStates[toggleStatesSelector], elToConsider) !== -1){
           // Skip elements already in that state.
           if (elToConsider.style.display !== display) {
             elToConsider.style.display = display;
