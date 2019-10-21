@@ -335,7 +335,7 @@ window.Funnelback.SessionCart = (function() {
         // create DOM element of back button from cart to results
         backEl = ElementUtil.create('flb-cart-box-back', CartBox.element, 'a', template({icon: options.cart.backIcon ? options.iconPrefix + options.cart.backIcon : null, label: options.cart.backLabel}), {style: 'cursor: pointer'}),
         // create DOM elemenet of cart header
-        headerEl = ElementUtil.create('flb-cart-box-header', CartBox.element, 'h2', template({icon: options.cart.icon ? options.iconPrefix + options.cart.icon : null, label: options.cart.label}));
+        headerEl = ElementUtil.create('flb-cart-box-header', CartBox.element, 'h2', template({icon: options.cart.icon ? options.iconPrefix + options.cart.icon : null, label: options.cart.label + ' '})); // Ensure a space between this label and clear icon.
       CartBox.clearElement = ElementUtil.create('flb-cart-box-clear', headerEl, 'a', template({icon: options.cart.clearIcon ? options.iconPrefix + options.cart.clearIcon : null, label: options.cart.clearLabel}), {class: options.cart.clearClasses});
       ElementUtil.addEvent(backEl, 'click', Constructor.prototype.hide);
       ElementUtil.addEvent(CartBox.clearElement, 'click', function() { return Constructor.prototype.clear(options); });
