@@ -274,7 +274,8 @@ window.Funnelback.SessionCart = (function() {
     element: null, // DOM element displying cart
     clearElement: null, // DOM element displaying button to clear all cart data inside cart
     listElement: null, // DOM element displaying list of cart items inside cart
-    pageElements: [], // DOM element to whole page to hide it when cart is displayed
+    pageElements: [], // DOM elements to hide it when cart is displayed. see also hiddenPageElements
+    modifiedPageElements: null, // Some page elements might already have been hidden. If we werent responsible for hiding them, dont unhide them.
     isHidden: true, // state of visibility of cart
     emptyMessage: 'No items',
 
@@ -316,9 +317,22 @@ window.Funnelback.SessionCart = (function() {
      * - value of CSS property 'display'
      */
     togglePageElements: function(display) {
+      // initialise modifiedPageElements the first time. 
+      // Also, if we're ever hiding things; otherwise you get wierd interactions between this and session history.
+      if (!CartBox.modifiedPageElements || display === 'none') { CartBox.modifiedPageElements = CartBox.pageElements; }
+      const newlyModifiedElements = [];            
       for (var i = 0, len = CartBox.pageElements.length; i < len; i++) {
-        CartBox.pageElements[i].style.display = display;
+        const elToConsider = CartBox.pageElements[i];
+        // Skip elements we have not toggled in the past.
+        if (CartBox.modifiedPageElements.indexOf(elToConsider) !== -1){          
+          // Skip elements already in that state.
+          if (elToConsider.style.display !== display) {
+            elToConsider.style.display = display;
+            newlyModifiedElements.push(elToConsider)
+          }
+        }
       }
+      CartBox.modifiedPageElements = newlyModifiedElements;
     }
   };
 
