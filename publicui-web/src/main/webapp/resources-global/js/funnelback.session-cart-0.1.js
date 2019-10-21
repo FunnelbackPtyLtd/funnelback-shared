@@ -187,7 +187,7 @@ window.Funnelback.SessionCart = (function() {
   Constructor.prototype.addItem = function(url) {
     const options = this.getOption();
     Api.post(options, {url: url}).then(function(response) {
-      Item.update(options, response.data.filter(it => it.indexUrl === url)[0], 'del');
+      Item.update(options, response.data.filter(function(it) { return it.indexUrl === url; })[0], 'del');
       CartCount.set(response.data.length);
       CartBox.toggleClearElement(response.data);
     }).catch(function(error) {
@@ -461,13 +461,13 @@ window.Funnelback.SessionCart = (function() {
 
       ItemTrigger.addEvent = function(e) { // Define event triggered on adding item to cart
         e.preventDefault();
-        const item = e.currentTarget.closest(Item.selector()), url = item.getAttribute(Item.selectorAttr);
+        const item = ElementUtil.closest(e.currentTarget, Item.selector()), url = item.getAttribute(Item.selectorAttr);
         if (url) return Constructor.prototype.addItem(url);
         else console.warn('No URL found to save item in a cart');
       };
       ItemTrigger.delEvent = function(e) { // Define event triggered on deleting item from cart
         e.preventDefault();
-        const item = e.currentTarget.closest(Item.selector()), url = item.getAttribute(Item.selectorAttr);
+        const item = ElementUtil.closest(e.currentTarget, Item.selector()), url = item.getAttribute(Item.selectorAttr);
         if (url) return Constructor.prototype.deleteItem(url);
         else console.warn('No URL found to remove result from a cart');
       };
@@ -567,7 +567,7 @@ window.Funnelback.SessionCart = (function() {
 
     // Set attribute of DOM element
     setAttr: function(element, attrs) {
-      const attrsArr = Object.entries(attrs);
+      const attrsArr = Utils.entries(attrs);
       for (var i = 0, len = attrsArr.length; i < len; i++) element.setAttribute(attrsArr[i][0], attrsArr[i][1]);
     },
 
@@ -582,9 +582,30 @@ window.Funnelback.SessionCart = (function() {
     },
     
     // Remove event from DOM element
-    removeEvent(element, type, handler) {
+    removeEvent: function(element, type, handler) {
       element.removeEventListener(type, handler);
     },
+
+    // This is a polyfill for IE9+ from https://developer.mozilla.org/en-US/docs/Web/API/Element/closest
+    // We dont use the normal polyfills as an external dependency because I wanted to save the user
+    // from having to make a decision on what extra file to import for the sake of a few lines.
+    // By doing it this way as a custom function, it doesn't risk conflicting with other polyfills they
+    // may already have. 
+    closest: function(element, selectors) {
+      if (!Element.prototype.closest) {
+        var el = element;      
+        var matches = Element.prototype.matches || 
+                      Element.prototype.msMatchesSelector || 
+                      Element.prototype.webkitMatchesSelector;
+        do {
+          if (matches.call(el, selectors)) return el;
+          el = el.parentElement || el.parentNode;
+        } while (el !== null && el.nodeType === 1);
+        return null;
+      } else {
+        return element.closest(selectors);
+      }
+    }
   };
 
   // Misc
@@ -595,6 +616,21 @@ window.Funnelback.SessionCart = (function() {
         if (src.hasOwnProperty(key)) obj[key] = typeof src[key] === 'object' ? Utils.extend(obj[key] || {}, src[key]) : src[key];
       }
       return obj;
+    },
+
+    // IE9+ Polyfill for Object.entries(). See comment in ElementUtils.closest() for why this is done this way.
+    entries: function(obj) {
+      if (!Object.entries) {        
+        var ownProps = Object.keys( obj ),
+            i = ownProps.length,
+            resArray = new Array(i); // preallocate the Array
+        while (i--)
+          resArray[i] = [ownProps[i], obj[ownProps[i]]];
+        
+        return resArray;      
+      } else {
+        return Object.entries(obj);
+      }
     }
   };
 
@@ -607,7 +643,7 @@ window.Funnelback.SessionCart = (function() {
 
     // Register with Handlebars partial templates
     registerPartial: function(templates) {
-      const templatesArr = Object.entries(templates);
+      const templatesArr = Utils.entries(templates);
       for (var i = 0, len = templatesArr.length; i < len; i++) Constructor.prototype.Handlebars.registerPartial(templatesArr[i][0] + '-block', templatesArr[i][1]);
     },
   };
