@@ -103,7 +103,7 @@ window.Funnelback.SessionHistory = (function() {
    */
   Constructor.prototype.show = function() {
     if (View.history) View.history.style.display = 'block';
-    View.toggle(View.page, 'none');
+    View.toggle(View.page, 'page', 'none');
     View.isHidden = false;
     return this;
   };
@@ -113,7 +113,7 @@ window.Funnelback.SessionHistory = (function() {
    */
   Constructor.prototype.hide = function() {
     if (View.history) View.history.style.display = 'none';
-    View.toggle(View.page, 'block');
+    View.toggle(View.page, 'page', 'block');
     View.isHidden = true;
     return this;
   };
@@ -186,6 +186,14 @@ window.Funnelback.SessionHistory = (function() {
     searchResults: null,
     clickHistoryLinks: [],
     searchHistoryLinks: [],
+    // We only show/hide elements we were responsible for hiding/showing.
+    toggleStates: {
+      page: null,
+      clickEmpty: null,
+      searchEmpty: null,
+      clickHistoryLinks: null,
+      searchHistoryLinks: null,
+    },
     // Store state if history box is hidden or shown
     isHidden: true,    
 
@@ -238,7 +246,7 @@ window.Funnelback.SessionHistory = (function() {
       Api.delete(options, type).then(function(response) {
         View.noResults(type);
         // Hide existing dom elements which show click or search data. 
-        View.toggle(View[type + 'HistoryLinks'], 'none');
+        View.toggle(View[type + 'HistoryLinks'], type + 'HistoryLinks','none');
       }).catch(function(error) {
         console.error('Something went wrong and ' + type + ' history was not cleared. Please try again later...', error);
       });
@@ -273,8 +281,8 @@ window.Funnelback.SessionHistory = (function() {
      */
     noResults: function(type) {
       View.toggle(View[type + 'Clear'], 'none');
-      if (View[type + 'Empty']) View.toggle([View[type + 'Empty']], 'block');
-      if (View[type + 'Results']) View.toggle([View[type + 'Results']], 'none');
+      if (View[type + 'Empty']) View.toggle([View[type + 'Empty']], type + 'Empty', 'block');
+      if (View[type + 'Results']) View.toggle([View[type + 'Results']], type + 'Results', 'none');
     },
 
     /**
@@ -282,16 +290,31 @@ window.Funnelback.SessionHistory = (function() {
      * - type of history box: `search` or `click`
      */
     results: function(type) {
-      if (View[type + 'Empty']) View.toggle([View[type + 'Empty']], 'none');
-      if (View[type + 'Results']) View.toggle([View[type + 'Results']], 'block');
+      if (View[type + 'Empty']) View.toggle([View[type + 'Empty']], type + 'Empty', 'none');
+      if (View[type + 'Results']) View.toggle([View[type + 'Results']],  type + 'Results',  'block');
     },
 
     /**
      * Show or hide DOM elements in the page
      * - value of CSS property 'display'
+     * - toggleStatesSelector: selector in View.toggleStates to check if we changed it previously.
      */
-    toggle: function(elements, display) {
-      for (var i = 0, len = elements.length; i < len; i++) elements[i].style.display = display;
+    toggle: function(elements, toggleStatesSelector, display) {      
+      // initialise toggleStates the first time. Also, if we're ever hiding things; otherwise you get wierd interactions between this and session cart all elements are candidates.
+      if (!View.toggleStates[toggleStatesSelector] || display === 'none') { View.toggleStates[toggleStatesSelector] = elements; }
+      const newlyModifiedElements = [];            
+      for (var i = 0, len = elements.length; i < len; i++) {
+        const elToConsider = elements[i];
+        // Skip elements we have not toggled in the past.
+        if (Array.prototype.indexOf.call(View.toggleStates[toggleStatesSelector], elToConsider) !== -1){
+          // Skip elements already in that state.
+          if (elToConsider.style.display !== display) {
+            elToConsider.style.display = display;
+            newlyModifiedElements.push(elToConsider)
+          }
+        }
+      }
+      View.toggleStates[toggleStatesSelector] = newlyModifiedElements;
     }
   };
 
