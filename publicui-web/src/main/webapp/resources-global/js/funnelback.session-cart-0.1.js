@@ -19,6 +19,47 @@
  */
 if (!window.Funnelback) window.Funnelback = {}; // create namespace
 
+
+// While best practice is to normally include polyfills as an external dependency,
+// for these two functions, its more convenient to include them with this file
+// than to force users to manually spent a few seconds adding polyfills as an upgrade
+// or integration step. If people want to over ride these, they can just import 
+// external polyfills manually _before_ importing this script.
+// ======== Polyfills for IE9+. =========
+// From https://developer.mozilla.org/en-US/docs/Web/API/Element/closest
+if (!Element.prototype.matches) {
+  Element.prototype.matches = Element.prototype.msMatchesSelector || 
+                              Element.prototype.webkitMatchesSelector;
+}
+
+if (!Element.prototype.closest) {
+  Element.prototype.closest = function(s) {
+    var el = this;
+
+    do {
+      if (el.matches(s)) return el;
+      el = el.parentElement || el.parentNode;
+    } while (el !== null && el.nodeType === 1);
+    return null;
+  };
+}
+
+// From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries#Polyfill
+if (!Object.entries) {
+  Object.entries = function( obj ){
+    var ownProps = Object.keys( obj ),
+        i = ownProps.length,
+        resArray = new Array(i); // preallocate the Array
+    while (i--)
+      resArray[i] = [ownProps[i], obj[ownProps[i]]];
+    
+    return resArray;
+  };
+}
+
+// ======= End Polyfills ========
+
+
 window.Funnelback.SessionCart = (function() {
   'use strict'
 
@@ -294,7 +335,7 @@ window.Funnelback.SessionCart = (function() {
         // create DOM element of back button from cart to results
         backEl = ElementUtil.create('flb-cart-box-back', CartBox.element, 'a', template({icon: options.cart.backIcon ? options.iconPrefix + options.cart.backIcon : null, label: options.cart.backLabel}), {style: 'cursor: pointer'}),
         // create DOM elemenet of cart header
-        headerEl = ElementUtil.create('flb-cart-box-header', CartBox.element, 'h2', template({icon: options.cart.icon ? options.iconPrefix + options.cart.icon : null, label: options.cart.label}));
+        headerEl = ElementUtil.create('flb-cart-box-header', CartBox.element, 'h2', template({icon: options.cart.icon ? options.iconPrefix + options.cart.icon : null, label: options.cart.label + ' '})); // Ensure a space between this label and clear icon.
       CartBox.clearElement = ElementUtil.create('flb-cart-box-clear', headerEl, 'a', template({icon: options.cart.clearIcon ? options.iconPrefix + options.cart.clearIcon : null, label: options.cart.clearLabel}), {class: options.cart.clearClasses});
       ElementUtil.addEvent(backEl, 'click', Constructor.prototype.hide);
       ElementUtil.addEvent(CartBox.clearElement, 'click', function() { return Constructor.prototype.clear(options); });
@@ -475,13 +516,13 @@ window.Funnelback.SessionCart = (function() {
 
       ItemTrigger.addEvent = function(e) { // Define event triggered on adding item to cart
         e.preventDefault();
-        const item = ElementUtil.closest(e.currentTarget, Item.selector()), url = item.getAttribute(Item.selectorAttr);
+        const item = e.currentTarget.closest(Item.selector()), url = item.getAttribute(Item.selectorAttr);
         if (url) return Constructor.prototype.addItem(url);
         else console.warn('No URL found to save item in a cart');
       };
       ItemTrigger.delEvent = function(e) { // Define event triggered on deleting item from cart
         e.preventDefault();
-        const item = ElementUtil.closest(e.currentTarget, Item.selector()), url = item.getAttribute(Item.selectorAttr);
+        const item = e.currentTarget.closest(Item.selector()), url = item.getAttribute(Item.selectorAttr);
         if (url) return Constructor.prototype.deleteItem(url);
         else console.warn('No URL found to remove result from a cart');
       };
@@ -581,7 +622,7 @@ window.Funnelback.SessionCart = (function() {
 
     // Set attribute of DOM element
     setAttr: function(element, attrs) {
-      const attrsArr = Utils.entries(attrs);
+      const attrsArr = Object.entries(attrs);
       for (var i = 0, len = attrsArr.length; i < len; i++) element.setAttribute(attrsArr[i][0], attrsArr[i][1]);
     },
 
@@ -599,27 +640,6 @@ window.Funnelback.SessionCart = (function() {
     removeEvent: function(element, type, handler) {
       element.removeEventListener(type, handler);
     },
-
-    // This is a polyfill for IE9+ from https://developer.mozilla.org/en-US/docs/Web/API/Element/closest
-    // We dont use the normal polyfills as an external dependency because I wanted to save the user
-    // from having to make a decision on what extra file to import for the sake of a few lines.
-    // By doing it this way as a custom function, it doesn't risk conflicting with other polyfills they
-    // may already have. 
-    closest: function(element, selectors) {
-      if (!Element.prototype.closest) {
-        var el = element;      
-        var matches = Element.prototype.matches || 
-                      Element.prototype.msMatchesSelector || 
-                      Element.prototype.webkitMatchesSelector;
-        do {
-          if (matches.call(el, selectors)) return el;
-          el = el.parentElement || el.parentNode;
-        } while (el !== null && el.nodeType === 1);
-        return null;
-      } else {
-        return element.closest(selectors);
-      }
-    }
   };
 
   // Misc
@@ -630,21 +650,6 @@ window.Funnelback.SessionCart = (function() {
         if (src.hasOwnProperty(key)) obj[key] = typeof src[key] === 'object' ? Utils.extend(obj[key] || {}, src[key]) : src[key];
       }
       return obj;
-    },
-
-    // IE9+ Polyfill for Object.entries(). See comment in ElementUtils.closest() for why this is done this way.
-    entries: function(obj) {
-      if (!Object.entries) {        
-        var ownProps = Object.keys( obj ),
-            i = ownProps.length,
-            resArray = new Array(i); // preallocate the Array
-        while (i--)
-          resArray[i] = [ownProps[i], obj[ownProps[i]]];
-        
-        return resArray;      
-      } else {
-        return Object.entries(obj);
-      }
     }
   };
 
@@ -657,7 +662,7 @@ window.Funnelback.SessionCart = (function() {
 
     // Register with Handlebars partial templates
     registerPartial: function(templates) {
-      const templatesArr = Utils.entries(templates);
+      const templatesArr = Object.entries(templates);
       for (var i = 0, len = templatesArr.length; i < len; i++) Constructor.prototype.Handlebars.registerPartial(templatesArr[i][0] + '-block', templatesArr[i][1]);
     },
   };
