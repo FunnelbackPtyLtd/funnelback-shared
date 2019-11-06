@@ -1,6 +1,6 @@
 /*
  * Funnelback Knowledge Graph plugin
- * version 2.8.6
+ * version 2.8.7
  *
  * author: Liliana Nowak
  * Copyright Funnelback, 2017-2019
@@ -1832,6 +1832,7 @@
     storageKey: 'translations',
     urlPath: 's/knowledge-graph/labels.json',
     keys: {
+      default: '_default',
       property: 'property',
       relationship: 'relationship',
       type: 'type',
@@ -1852,7 +1853,7 @@
       } else {
         var keys = [].slice.call(arguments), translation, translations = Storage.getItem(this.storageKey);
         if (translations) {
-          translation = (translations[keys[0]] && translations[keys[0]][keys[1]]) || undefined;
+          translation = (translations[keys[0]] && (translations[keys[0]][keys[1]] || translations[keys[0]][Translation.keys.default])) || undefined;
           if (keys[0] === Translation.keys.property && translation) {
             while($.isString(translation) && translations[keys[0]][translation]) translation = translations[keys[0]][translation];
             if ($.isObject(translation)) translation = translation[keys[2]];
