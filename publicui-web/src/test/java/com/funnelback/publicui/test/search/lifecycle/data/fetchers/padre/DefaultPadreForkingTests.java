@@ -1,26 +1,32 @@
 package com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.exec.OS;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.apache.commons.exec.OS;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.system.EnvironmentVariableException;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.DefaultPadreForking;
@@ -95,7 +101,11 @@ public class DefaultPadreForkingTests {
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
             new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
-        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchQuestion sq = spy(new SearchQuestion());
+        ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+        doReturn(profileConfig).when(sq).getCurrentProfileConfig();
+        
+        SearchTransaction st = new SearchTransaction(sq, new SearchResponse());
         st.getQuestion().setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
         st.getQuestion().getDynamicQueryProcessorOptions().addAll(qpOptions);
         st.getQuestion().getMetaParameters().add("t:test");
@@ -110,11 +120,13 @@ public class DefaultPadreForkingTests {
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
             new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
-        SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
-        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
-        qs.setQuery("test");
-        SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
+        SearchQuestion sq = spy(new SearchQuestion());
+        ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+        doReturn(profileConfig).when(sq).getCurrentProfileConfig();
+        sq.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
+        sq.getDynamicQueryProcessorOptions().addAll(qpOptions);
+        sq.setQuery("test");
+        SearchTransaction st = new SearchTransaction(sq, new SearchResponse());
         
         
         forking.fetchData(st);
@@ -129,15 +141,17 @@ public class DefaultPadreForkingTests {
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
             new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
-        SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", 
+        SearchQuestion sq = spy(new SearchQuestion());
+        ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+        doReturn(profileConfig).when(sq).getCurrentProfileConfig();
+        sq.setCollection(new Collection("padre-forking", 
             new NoOptionsConfig(searchHome, "padre-forking")
             .setValue("query_processor", getMockPadre())
             .setValue("ui.modern.padre_response_size_limit_bytes", "1"))
         );
-        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
-        qs.setQuery("test");
-        SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
+        sq.getDynamicQueryProcessorOptions().addAll(qpOptions);
+        sq.setQuery("test");
+        SearchTransaction st = new SearchTransaction(sq, new SearchResponse());
         
         forking.fetchData(st);
 
@@ -149,11 +163,13 @@ public class DefaultPadreForkingTests {
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
             new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml.bad"}));
         
-        SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
-        qs.setQuery("test");
-        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
-        SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
+        SearchQuestion sq = spy(new SearchQuestion());
+        ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+        doReturn(profileConfig).when(sq).getCurrentProfileConfig();
+        sq.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
+        sq.setQuery("test");
+        sq.getDynamicQueryProcessorOptions().addAll(qpOptions);
+        SearchTransaction ts = new SearchTransaction(sq, new SearchResponse());
         
         
         try {
@@ -166,10 +182,12 @@ public class DefaultPadreForkingTests {
     
     @Test
     public void testInvalidQueryProcessor() throws FileNotFoundException, EnvironmentVariableException {
-        SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", "invalid")));
-        qs.setQuery("test");
-        SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
+        SearchQuestion sq = spy(new SearchQuestion());
+        ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+        doReturn(profileConfig).when(sq).getCurrentProfileConfig();
+        sq.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", "invalid")));
+        sq.setQuery("test");
+        SearchTransaction ts = new SearchTransaction(sq, new SearchResponse());
         
         
         try {
@@ -189,10 +207,12 @@ public class DefaultPadreForkingTests {
             qp += ".sh";
         }
 
-        SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", qp)));
-        qs.setQuery("test");
-        SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
+        SearchQuestion sq = spy(new SearchQuestion());
+        ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+        doReturn(profileConfig).when(sq).getCurrentProfileConfig();
+        sq.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", qp)));
+        sq.setQuery("test");
+        SearchTransaction ts = new SearchTransaction(sq, new SearchResponse());
         
         
         
@@ -207,12 +227,12 @@ public class DefaultPadreForkingTests {
             List<String> qpOptions = new ArrayList<String>(Arrays.asList(
                 new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
             
-            SearchQuestion qs = new SearchQuestion();
-            qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
-            qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
-            qs.setQuery("test");
-            qs.setImpersonated(true);
-            SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
+            SearchQuestion sq = new SearchQuestion();
+            sq.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
+            sq.getDynamicQueryProcessorOptions().addAll(qpOptions);
+            sq.setQuery("test");
+            sq.setImpersonated(true);
+            SearchTransaction ts = new SearchTransaction(sq, new SearchResponse());
             
             Advapi32.INSTANCE.ImpersonateSelf(WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation);
             forking.fetchData(ts);
@@ -233,16 +253,16 @@ public class DefaultPadreForkingTests {
             List<String> qpOptions = new ArrayList<String>(Arrays.asList(
                 new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
             
-            SearchQuestion qs = new SearchQuestion();
-            qs.setCollection(new Collection("padre-forking", 
+            SearchQuestion sq = new SearchQuestion();
+            sq.setCollection(new Collection("padre-forking", 
                 new NoOptionsConfig(searchHome, "padre-forking")
                 .setValue("query_processor", getMockPadre())
                 .setValue("ui.modern.padre_response_size_limit_bytes", "1"))                
             );
-            qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
-            qs.setQuery("test");
-            qs.setImpersonated(true);
-            SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
+            sq.getDynamicQueryProcessorOptions().addAll(qpOptions);
+            sq.setQuery("test");
+            sq.setImpersonated(true);
+            SearchTransaction ts = new SearchTransaction(sq, new SearchResponse());
             
             try {
                 Advapi32.INSTANCE.ImpersonateSelf(WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation);
