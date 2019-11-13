@@ -227,7 +227,9 @@ public class DefaultPadreForkingTests {
             List<String> qpOptions = new ArrayList<String>(Arrays.asList(
                 new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
             
-            SearchQuestion sq = new SearchQuestion();
+            SearchQuestion sq = spy(new SearchQuestion());
+            ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+            doReturn(profileConfig).when(sq).getCurrentProfileConfig();
             sq.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
             sq.getDynamicQueryProcessorOptions().addAll(qpOptions);
             sq.setQuery("test");
@@ -253,7 +255,9 @@ public class DefaultPadreForkingTests {
             List<String> qpOptions = new ArrayList<String>(Arrays.asList(
                 new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
             
-            SearchQuestion sq = new SearchQuestion();
+            SearchQuestion sq = spy(new SearchQuestion());
+            ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+            doReturn(profileConfig).when(sq).getCurrentProfileConfig();
             sq.setCollection(new Collection("padre-forking", 
                 new NoOptionsConfig(searchHome, "padre-forking")
                 .setValue("query_processor", getMockPadre())
