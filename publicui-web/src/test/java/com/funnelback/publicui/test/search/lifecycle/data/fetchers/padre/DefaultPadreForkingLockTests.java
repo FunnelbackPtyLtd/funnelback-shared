@@ -6,6 +6,11 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
+
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +32,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.testutils.TmpFolderProvider;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.DefaultPadreForking;
@@ -78,7 +84,9 @@ public class DefaultPadreForkingLockTests {
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
             new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml", "2"}));
         
-        SearchQuestion qs = new SearchQuestion();
+        SearchQuestion qs = spy(new SearchQuestion());
+        ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+        doReturn(profileConfig).when(qs).getCurrentProfileConfig();
         qs.setCollection(new Collection("padre-forking", 
                 new NoOptionsConfig(searchHome, "padre-forking")
             .setValue("query_processor", getMockPadre())));
@@ -116,7 +124,8 @@ public class DefaultPadreForkingLockTests {
             new String[]{
                 "src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
 
-        qs = new SearchQuestion();
+        qs = spy(new SearchQuestion());
+        doReturn(profileConfig).when(qs).getCurrentProfileConfig();
         qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
         qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         qs.setQuery("test");
@@ -148,7 +157,9 @@ public class DefaultPadreForkingLockTests {
             new String[]{
                 "src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
-        SearchQuestion qs = new SearchQuestion();
+        SearchQuestion qs = spy(new SearchQuestion());
+        ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+        doReturn(profileConfig).when(qs).getCurrentProfileConfig();
         qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
         qs.setQuery("test");
         qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
@@ -191,7 +202,10 @@ public class DefaultPadreForkingLockTests {
 
         }
 
-        SearchQuestion qs = new SearchQuestion();
+        SearchQuestion qs = spy(new SearchQuestion());
+        ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+        doReturn(profileConfig).when(qs).getCurrentProfileConfig();
+        
         qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", qp)));
         qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         qs.setQuery("test");

@@ -23,6 +23,7 @@ import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.AbstractDataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.CfgOptionsPassedByEnvironment;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingExceptionPacketSizeTooBig;
@@ -119,6 +120,7 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
     
             Map<String, String> env = new HashMap<String, String>(
                     searchTransaction.getQuestion().getEnvironmentVariables());
+            env.putAll(new CfgOptionsPassedByEnvironment().cfgOptoons(searchTransaction));
             env.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
             env.put(EnvironmentKeys.QUERY_STRING.toString(), getQueryString(searchTransaction));
             
