@@ -49,7 +49,7 @@ public final class CountryNameTrigger implements Trigger, HasNoBeans {
     public boolean activatesOn(SearchTransaction searchTransaction) {
         Location location = searchTransaction.getQuestion().getLocation();
         if(location != null && location.getCountryName() != null && targetCountries != null) {
-            targetCountries.contains(location.getCountryName());
+            return targetCountries.contains(location.getCountryName());
         }
         return false;
     }
