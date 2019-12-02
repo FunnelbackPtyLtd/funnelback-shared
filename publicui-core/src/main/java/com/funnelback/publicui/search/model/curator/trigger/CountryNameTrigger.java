@@ -48,7 +48,10 @@ public final class CountryNameTrigger implements Trigger, HasNoBeans {
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction) {
         Location location = searchTransaction.getQuestion().getLocation();
-        return targetCountries.contains(location.getCountryName());
+        if(location != null && location.getCountryName() != null && targetCountries != null) {
+            targetCountries.contains(location.getCountryName());
+        }
+        return false;
     }
 
     /** Configure this trigger (expected to autowire in any dependencies) */
