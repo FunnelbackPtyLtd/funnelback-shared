@@ -22,7 +22,7 @@
 
     @provides The URL of the previous page, as <code>${fb.prevUrl}</code>, the number of results on the previous page, as <code>${fb.prevRanks}</code>.
 -->
-<#macro Prev link=question.collection.configuration.value("ui.modern.search_link") startParamName="start_rank">
+<#macro Prev link=question.currentProfileConfig.get("ui.modern.search_link") startParamName="start_rank">
     <#if response?? && response.resultPacket?? && response.resultPacket.resultsSummary??>
         <#if response.resultPacket.resultsSummary.prevStart??>
             <#assign prevUrl = link + "?"
@@ -47,7 +47,7 @@
 
     @provides The URL of the next page, as <code>${fb.nextUrl}</code>, the number of results on the next page, as <code>${fb.nextRanks}</code>.
 -->
-<#macro Next link=question.collection.configuration.value("ui.modern.search_link") startParamName="start_rank">
+<#macro Next link=question.currentProfileConfig.get("ui.modern.search_link") startParamName="start_rank">
     <#if response?? && response.resultPacket?? && response.resultPacket.resultsSummary??>
         <#if response.resultPacket.resultsSummary.nextStart??>
             <#assign nextUrl = link + "?"
@@ -88,7 +88,7 @@
 
     @param numPages Number of pages links to display (default = 10)
 -->
-<#macro Page numPages=10 link=question.collection.configuration.value("ui.modern.search_link") startParamName="start_rank">
+<#macro Page numPages=10 link=question.currentProfileConfig.get("ui.modern.search_link") startParamName="start_rank">
     <#local rs = response.resultPacket.resultsSummary />
     <#local pages = 0 />
     <#if rs.fullyMatching??>
@@ -254,7 +254,7 @@
 <#macro ViewModeBanner>
     <@AdminUIOnly>
         <#local style="padding: 5px; font-family: Verdana; text-align: right; border: solid 2px #aaa; font-size: small;" />
-        <#local returnTo=ContextPath+"/"+question.collection.configuration.value("ui.modern.search_link")+"?"+QueryString />
+        <#local returnTo=ContextPath+"/"+question.currentProfileConfig.get("ui.modern.search_link")+"?"+QueryString />
         <#if question.profile?ends_with("_preview")>
             <div id="funnelback_form_mode" style="background-color: lightblue; ${style}">
                 &middot; <a href="${SearchPrefix}../d/manage/${question.collection.id}:${question.profile?replace("_preview", "")}/files/detail?path=preview%2Ftemplates%2F${question.form}.ftl" title="Edit this form">edit form</a>
