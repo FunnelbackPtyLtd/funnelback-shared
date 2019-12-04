@@ -32,7 +32,7 @@
 
         <#-- PREVIOUS link -->
         <#if rs.prevStart??>
-            <#local url = question.collection.configuration.value("ui.modern.search_link") + "?" />
+            <#local url = question.currentProfileConfig.get("ui.modern.search_link") + "?" />
             <#local url = url + changeParam(QueryString, "start_rank", rs.prevStart) />
 
             ${next_prev_prefix}<a href="${url?html}" rel="prev" class="fb-previous-result-page fb-page-nav" <#nested>>${prevLabel} ${rs.numRanks}</a>${next_prev_suffix}
@@ -66,7 +66,7 @@
             <#if pg == currentPage>
                 <span class="fb-current-result-page">${pg}</span>
             <#else>
-                <#local url = question.collection.configuration.value("ui.modern.search_link") + "?" />
+                <#local url = question.currentProfileConfig.get("ui.modern.search_link") + "?" />
                 <#local url = url + changeParam(QueryString, "start_rank", (pg-1) * rs.numRanks+1) />
 
                 <a href="${url?html}" <#nested>>${pg}</a>
@@ -77,7 +77,7 @@
 
         <#-- NEXT link -->
         <#if rs.nextStart??>
-            <#local url = question.collection.configuration.value("ui.modern.search_link") + "?" />
+            <#local url = question.currentProfileConfig.get("ui.modern.search_link") + "?" />
             <#local url = url + changeParam(QueryString, "start_rank", rs.nextStart) />
 
             ${next_prev_prefix}<a href="${url?html}" rel="next" class="fb-next-result-page fb-page-nav" <#nested>>${nextLabel} ${rs.numRanks}</a>${next_prev_suffix}
@@ -111,7 +111,7 @@
 <#macro OpenSearch>
     <#local title><#nested></#local>
     <#if ! title?? || title == "">
-        <#local title = "Search " + question.collection.configuration.value("service_name") />
+        <#local title = "Search " + question.currentProfileConfig.get("service_name") />
     </#if> 
     <link rel="search" type="application/opensearchdescription+xml" href="open-search.xml?${QueryString?html}" title="${title}">
 </#macro>
@@ -187,12 +187,11 @@
 <#macro CheckSpelling prefix="Did you mean:" suffix="?">
     <#if question??
         && question.collection??
-        && question.collection.configuration.value("spelling_enabled")??
-        && is_enabled(question.collection.configuration.value("spelling_enabled"))
+        && question.currentProfileConfig.get("spelling_enabled")?boolean
         && response??
         && response.resultPacket??
         && response.resultPacket.spell??>
-        ${prefix} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${changeParam(QueryString, "query", response.resultPacket.spell.text?url)?html}">
+        ${prefix} <a href="${question.currentProfileConfig.get("ui.modern.search_link")}?${changeParam(QueryString, "query", response.resultPacket.spell.text?url)?html}">
             <span class="funnelback-highlight">${response.resultPacket.spell.text}</span></a>${suffix}
     </#if>
 </#macro>
@@ -486,7 +485,7 @@
     @param tag HTML tag to wrap the name and summary
     @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
-<#macro FacetLabel class="facetLabel" separator="&rarr;" summary=true tag="div" link=question.collection.configuration.value("ui.modern.search_link")>
+<#macro FacetLabel class="facetLabel" separator="&rarr;" summary=true tag="div" link=question.currentProfileConfig.get("ui.modern.search_link")>
     <#local fn = facetedNavigationConfig(question.collection, question.profile) >
     <#if fn??>
         <#-- Find facet definition in the configuration corresponding
@@ -514,7 +513,7 @@
     @param alltext Text to use to completely remove the facet constraints. Defaults to &quot;all&quot;.
     @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
-<#macro FacetSummary separator="&rarr;" alltext="all" link=question.collection.configuration.value("ui.modern.search_link")>
+<#macro FacetSummary separator="&rarr;" alltext="all" link=question.currentProfileConfig.get("ui.modern.search_link")>
     <#-- We must test various combinations here as different browsers will encode
          some characters differently (i.e. '/' will sometimes be preserved, sometimes
          encoded as '%2F' -->
@@ -526,7 +525,7 @@
     <@FacetBreadCrumb categoryDefinitions=facetDef.categoryDefinitions selectedCategoryValues=question.selectedCategoryValues separator=separator />
 </#macro>
 
-<#function FacetAllUrl facetDef link=question.collection.configuration.value("ui.modern.search_link")>
+<#function FacetAllUrl facetDef link=question.currentProfileConfig.get("ui.modern.search_link")>
     <#return link + "?" + removeParam(facetScopeRemove(QueryString, facetDef.allQueryStringParamNames), ["start_rank","duplicate_start_rank"] + facetDef.allQueryStringParamNames) />
 </#function>
 
@@ -578,7 +577,7 @@
                     <#-- part needs to be url-decoded to be displayed nicely
                          e.g. "with spaces" rather than "with%20spaces" -->
                     <#if part_has_next>
-                        ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank","duplicate_start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName?url}=${pathBuilding?url}">${urlDecode(part)?html}</a>
+                        ${separator} <a href="${question.currentProfileConfig.get("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank","duplicate_start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName?url}=${pathBuilding?url}">${urlDecode(part)?html}</a>
                     <#else>
                         ${separator} ${urlDecode(part)?html}
                     </#if>
@@ -623,7 +622,7 @@
                 <#if last == true>
                     ${separator} ${valueLabel?html}
                 <#else>
-                    ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank","duplicate_start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${selectedCategoryValues[def.queryStringParamName][0]?url}">
+                    ${separator} <a href="${question.currentProfileConfig.get("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank","duplicate_start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${selectedCategoryValues[def.queryStringParamName][0]?url}">
                         ${valueLabel?html}
                     </a>
                     <@FacetBreadCrumb categoryDefinitions=def.subCategories selectedCategoryValues=selectedCategoryValues separator=separator/>
@@ -652,7 +651,7 @@
     @param extraParams Optional extra URL parameters to append to the link. Will be appended as is. Consider using <code>?url</code> when passing a value.
     @deprecated The new facets data model has been simplified and can be used directly with native FreeMarker tags
 -->
-<#macro CategoryName class="categoryName" link=question.collection.configuration.value("ui.modern.search_link") extraParams="">
+<#macro CategoryName class="categoryName" link=question.currentProfileConfig.get("ui.modern.search_link") extraParams="">
     <#if s.categoryValue??>
         <span class="${class}">
             <a href="${.namespace.CategoryUrl(link,extraParams)?html}">${s.categoryValue.label?html}</a>
@@ -666,7 +665,7 @@
     @param link Search link to use. Defaults to <code>ui.modern.search_link</code>.
     @param extraParams Optional extra URL parameters to append to the link. Will be appended as is. Consider using <code>?url</code> when passing a value.
 -->
-<#function CategoryUrl link=question.collection.configuration.value("ui.modern.search_link") extraParams=""><#compress>
+<#function CategoryUrl link=question.currentProfileConfig.get("ui.modern.search_link") extraParams=""><#compress>
     <#assign paramName = .namespace.categoryValue.queryStringParam?split("=")[0]>
     <#return link + "?" + removeParam(facetScopeRemove(QueryString, paramName), ["start_rank", "duplicate_start_rank", paramName]) + "&" + .namespace.categoryValue.queryStringParam + extraParams />
 </#compress></#function>
@@ -1010,7 +1009,7 @@
 <#macro FormChoice>
     <#if question?? && question.collection??>
         <#assign forms = formList(question.collection.id, question.profile) />
-        <#assign url = question.collection.configuration.value("ui.modern.search_link")
+        <#assign url = question.currentProfileConfig.get("ui.modern.search_link")
             + "?collection=" + question.collection.id
             + "&amp;profile=" + question.profile />
         <#list forms as form>
