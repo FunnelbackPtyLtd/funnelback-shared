@@ -298,7 +298,7 @@
     @param label Label to use for the link.
 -->
 <#macro Explore label="Explore">
-    <a class="search-explore" href="?collection=${question.collection.id}&profile=${question.profile}&query=explore:${s.result.liveUrl?url?html}">${label}</a>
+    <a class="search-explore" href="?collection=${question.collection.id}&profile=${question.profile}&form=${question.form}&query=explore:${s.result.liveUrl?url?html}">${label}</a>
 </#macro>
 
 <#---
