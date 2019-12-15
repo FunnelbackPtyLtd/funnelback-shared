@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.function.Supplier;
 
 import org.apache.commons.io.IOUtils;
-import org.jfree.util.Log;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -80,7 +79,7 @@ public class CompressingByteArrayOutputStream extends SizeListeningOutputStream 
                 this.setUnderlyingStream(compressedStream);
                 isCompressing = true;
             } catch (IOException e) {
-                Log.warn("Could not compress stream", e);
+                log.warn("Could not compress stream", e);
             }
         }
     }

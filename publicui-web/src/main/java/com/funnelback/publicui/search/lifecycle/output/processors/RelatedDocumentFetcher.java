@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -132,7 +131,7 @@ public class RelatedDocumentFetcher extends AbstractOutputProcessor {
             RelatedDocumentFetchConfig rdfc = config.get(key).orElse(null);
             
             if (rdfc == null) {
-                Log.warn("Missing expected related document fetch config at " + key.getKey() + ". Other settings for this relatedDocumentKey will be ignored.");
+                log.warn("Missing expected related document fetch config at " + key.getKey() + ". Other settings for this relatedDocumentKey will be ignored.");
                 continue;
             }
             
