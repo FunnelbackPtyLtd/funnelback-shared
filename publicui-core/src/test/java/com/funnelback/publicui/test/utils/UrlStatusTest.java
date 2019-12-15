@@ -42,10 +42,8 @@ public class UrlStatusTest {
         {
             Map<String, String> metaParams = new HashMap<>();
             metaParams.put(Keys.COLLECTION_TYPE, Collection.Type.meta.toString());
+            metaParams.put(com.funnelback.config.keys.Keys.CollectionKeys.Meta.META_COMPONENTS.getKey(), "subcoll1,subcoll2");
             TestUtils.createVeryBasicCollection(searchHome, "parent", metaParams);
-            File metaConf = TestUtils.getConfigDir(searchHome, "parent");
-            File metaCollectionMetaCfg = new File(metaConf, Files.META_CONFIG_FILENAME);
-            FileUtils.writeStringToFile(metaCollectionMetaCfg, "subcoll1\nsubcoll2", "UTF-8");
         }
         
         Assert.assertEquals(MatchResult.MATCHES, 
@@ -78,10 +76,8 @@ public class UrlStatusTest {
         {
             Map<String, String> metaParams = new HashMap<>();
             metaParams.put(Keys.COLLECTION_TYPE, Collection.Type.meta.toString());
+            metaParams.put(com.funnelback.config.keys.Keys.CollectionKeys.Meta.META_COMPONENTS.getKey(), "subcoll1,subcoll2");
             TestUtils.createVeryBasicCollection(searchHome, "parent", metaParams);
-            File metaConf = TestUtils.getConfigDir(searchHome, "parent");
-            File metaCollectionMetaCfg = new File(metaConf, Files.META_CONFIG_FILENAME);
-            FileUtils.writeStringToFile(metaCollectionMetaCfg, "subcoll1\nsubcoll2", "UTF-8");
         }
         
         Assert.assertEquals(MatchResult.NOT_RELEVANT, 
