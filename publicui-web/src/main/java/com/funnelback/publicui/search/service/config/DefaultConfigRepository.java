@@ -227,9 +227,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         
         if (Type.meta.equals(c.getType())) {
             c.setMetaComponents(
-                    resourceManager.load(
-                            new SimpleFileResource(new File(collectionConfigFolder, Files.META_CONFIG_FILENAME)),
-                            AbstractSingleFileResource.wrapDefault(new String[0])).getResource());
+                config.value(Keys.CollectionKeys.Meta.META_COMPONENTS.getKey(), "").split(","));
         } else {
             c.setMetaComponents(new String[0]);
         }
