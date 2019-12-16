@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -227,7 +228,11 @@ public class DefaultConfigRepository implements ConfigRepository {
         
         if (Type.meta.equals(c.getType())) {
             c.setMetaComponents(
-                config.value(Keys.CollectionKeys.Meta.META_COMPONENTS.getKey(), "").split(","));
+                config.value(Keys.CollectionKeys.Meta.META_COMPONENTS)
+                    .stream()
+                    .map((coll) -> coll.getId())
+                    .collect(Collectors.toList())
+                    .toArray(new String[]{}));
         } else {
             c.setMetaComponents(new String[0]);
         }
