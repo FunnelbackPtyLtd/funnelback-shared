@@ -1,11 +1,15 @@
 package com.funnelback.publicui.test.search.service.config;
 
+import com.funnelback.config.keys.Keys;
 import com.funnelback.config.keys.collection.QuickLinkKeys;
 import groovy.lang.Script;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -74,8 +78,8 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         Collection coll = configRepository.getCollection("config-repository");
         Assert.assertEquals(0, coll.getMetaComponents().length);
         
-        // Create meta.cfg
-        writeAndTouchFuture(new File(TEST_DIR, Files.META_CONFIG_FILENAME), "component-1\ncomponent-2");
+        // Set meta components (but it's not a meta collection yet)
+        setMetaComponentsCollectionConfigValue(new File(TEST_DIR, "collection.cfg"), "component-1,component-2");
         // Still not a meta collection
         coll = configRepository.getCollection("config-repository");
         Assert.assertEquals(0, coll.getMetaComponents().length);
@@ -90,18 +94,29 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         Assert.assertTrue(ArrayUtils.contains(coll.getMetaComponents(), "component-1"));
         Assert.assertTrue(ArrayUtils.contains(coll.getMetaComponents(), "component-2"));
         
-        // Update meta.cfg
-        writeAndTouchFuture(new File(TEST_DIR, Files.META_CONFIG_FILENAME), "component-3");
+        // Update the meta components
+        setMetaComponentsCollectionConfigValue(new File(TEST_DIR, "collection.cfg"), "component-3");
         coll = configRepository.getCollection("config-repository");
         Assert.assertEquals(1, coll.getMetaComponents().length);
         Assert.assertTrue(ArrayUtils.contains(coll.getMetaComponents(), "component-3"));
-
-        // Delete meta.cfg
-        new File(TEST_DIR, Files.META_CONFIG_FILENAME).delete();
-        coll = configRepository.getCollection("config-repository");
-        Assert.assertEquals(0, coll.getMetaComponents().length);
     }
-    
+
+    // Edit the given collection.cfg file to have the given newValue for the meta-components
+    // Note - Will move meta components to the end of the file.
+    private void setMetaComponentsCollectionConfigValue(File file, String newValue) {
+        try {
+            String contentWithoutMetaComponents = java.nio.file.Files.lines(file.toPath())
+                .filter((l) -> !l.startsWith(Keys.CollectionKeys.Meta.META_COMPONENTS.getKey() + "="))
+                .reduce("", (a, b) -> a + "\n" + b);
+
+            java.nio.file.Files.writeString(file.toPath(),
+                contentWithoutMetaComponents + "\n" +
+                    Keys.CollectionKeys.Meta.META_COMPONENTS.getKey() + "=" + newValue);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test
     public void testParametersTransform() throws IOException {
         Collection coll = configRepository.getCollection("config-repository");

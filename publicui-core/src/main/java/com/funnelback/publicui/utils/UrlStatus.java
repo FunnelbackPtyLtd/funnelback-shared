@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+import com.funnelback.common.config.CollectionNotFoundException;
 import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.common.config.Collection;
@@ -23,7 +24,8 @@ public class UrlStatus {
         NOT_RELEVANT;
     }
     
-    public static MatchResult UrlMatchesCrawlerIncludeExcludePattern(File searchHome, String collection, String url) {
+    public static MatchResult UrlMatchesCrawlerIncludeExcludePattern(File searchHome, String collection, String url) throws
+        CollectionNotFoundException {
         
         Config config;
         try {
