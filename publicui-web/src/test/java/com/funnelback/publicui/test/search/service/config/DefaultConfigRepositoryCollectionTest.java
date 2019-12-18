@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -105,9 +106,13 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
     // Note - Will move meta components to the end of the file.
     private void setMetaComponentsCollectionConfigValue(File file, String newValue) {
         try {
-            String contentWithoutMetaComponents = java.nio.file.Files.lines(file.toPath())
-                .filter((l) -> !l.startsWith(Keys.CollectionKeys.Meta.META_COMPONENTS.getKey() + "="))
-                .reduce("", (a, b) -> a + "\n" + b);
+            String contentWithoutMetaComponents;
+            try (Stream<String> lines = java.nio.file.Files.lines(file.toPath())) {
+                contentWithoutMetaComponents = lines
+                    .filter((l) -> !l.startsWith(Keys.CollectionKeys.Meta.META_COMPONENTS.getKey() + "="))
+                    .reduce("", (a, b) -> a + "\n" + b);
+
+            }
 
             java.nio.file.Files.writeString(file.toPath(),
                 contentWithoutMetaComponents + "\n" +
