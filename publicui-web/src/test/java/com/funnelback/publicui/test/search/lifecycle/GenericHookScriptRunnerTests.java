@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner;
+import com.funnelback.publicui.search.lifecycle.SearchPluginRunner;
 import com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner.Phase;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -41,6 +42,7 @@ public class GenericHookScriptRunnerTests {
     @Test
     public void testMissingData() throws DataFetchException {
         GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.pre_datafetch, Phase.Data);
+        processor.setSearchPluginRunner(mock(SearchPluginRunner.class));
 
         // No transaction
         processor.fetchData(null);
@@ -61,6 +63,7 @@ public class GenericHookScriptRunnerTests {
     @Test
     public void testNoScriptForAPhase() throws Exception {
         GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.pre_datafetch, Phase.Data);
+        processor.setSearchPluginRunner(mock(SearchPluginRunner.class));
         st.getQuestion().getCollection().getHookScriptsClasses().remove(Hook.pre_datafetch);
         
         processor.processInput(st);
@@ -75,6 +78,7 @@ public class GenericHookScriptRunnerTests {
     @Test
     public void scriptThrowingException() throws Exception {
         GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.pre_datafetch, Phase.Data);
+        processor.setSearchPluginRunner(mock(SearchPluginRunner.class));
         st.getQuestion().getCollection().getHookScriptsClasses().put(Hook.pre_datafetch, new GroovyClassLoader().parseClass("throw new RuntimeException()"));
         
         processor.processInput(st);
@@ -88,6 +92,7 @@ public class GenericHookScriptRunnerTests {
     @Test
     public void testRunInDataPhase() throws Exception {
         GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.pre_datafetch, Phase.Data);
+        processor.setSearchPluginRunner(mock(SearchPluginRunner.class));
         
         processor.processInput(st);
         processor.processOutput(st);
@@ -103,6 +108,7 @@ public class GenericHookScriptRunnerTests {
     @Test
     public void testRunInInputPhase() throws Exception {
         GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.post_datafetch, Phase.Input);
+        processor.setSearchPluginRunner(mock(SearchPluginRunner.class));
         
         processor.fetchData(st);
         processor.processOutput(st);
@@ -118,6 +124,7 @@ public class GenericHookScriptRunnerTests {
     @Test
     public void testRunInOutputPhase() throws Exception {
         GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.post_datafetch, Phase.Output);
+        processor.setSearchPluginRunner(mock(SearchPluginRunner.class));
         
         processor.processInput(st);
         processor.fetchData(st);
@@ -136,6 +143,7 @@ public class GenericHookScriptRunnerTests {
         .getHookScriptsClasses().put(Hook.post_process, new GroovyClassLoader().parseClass("transaction.question = null"));
         
         GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.post_process, Phase.Output);
+        processor.setSearchPluginRunner(mock(SearchPluginRunner.class));
         
         processor.processInput(st);
         processor.fetchData(st);
@@ -154,6 +162,7 @@ public class GenericHookScriptRunnerTests {
         .getHookScriptsClasses().put(Hook.post_process, new GroovyClassLoader().parseClass("transaction.question = null\ntransaction.foobarfoobar()"));
         
         GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.post_process, Phase.Output);
+        processor.setSearchPluginRunner(mock(SearchPluginRunner.class));
         
         processor.processInput(st);
         processor.fetchData(st);
@@ -172,6 +181,7 @@ public class GenericHookScriptRunnerTests {
         .getHookScriptsClasses().put(Hook.post_process, new GroovyClassLoader().parseClass("transaction.foobarfoobar()"));
         
         GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.post_process, Phase.Output);
+        processor.setSearchPluginRunner(mock(SearchPluginRunner.class));
         
         processor.processInput(st);
         processor.fetchData(st);
@@ -188,6 +198,7 @@ public class GenericHookScriptRunnerTests {
             .getHookScriptsClasses().put(Hook.pre_datafetch, new GroovyClassLoader().parseClass("transaction.customData[\"hookName\"] = hook.name()"));
     
         GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.pre_datafetch, Phase.Input);
+        processor.setSearchPluginRunner(mock(SearchPluginRunner.class));
         
         processor.processInput(st);;
         processor.fetchData(st);

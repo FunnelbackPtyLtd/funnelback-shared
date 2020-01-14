@@ -33,7 +33,7 @@ public abstract class SessionController {
      * for the ID
      */
     @ModelAttribute
-    public SearchUser getSearchUser(HttpServletRequest request) {
+    public final SearchUser getSearchUser(HttpServletRequest request) {
         UUID uuid = SessionInterceptor.getExistingOrNewUserId(request);
         if (uuid == null) {
             // Fall back to request attribute, this will be set the first
@@ -64,7 +64,7 @@ public abstract class SessionController {
      * @return
      * @throws IllegalStateException when both the given profile and default profile do not exist.
      */
-    public ServiceConfigReadOnly getServiceConfigOrDefault(ConfigRepository configRepository, Collection collection, Optional<String> profile)
+    public final ServiceConfigReadOnly getServiceConfigOrDefault(ConfigRepository configRepository, Collection collection, Optional<String> profile)
         throws IllegalStateException {
         if(profile.isPresent()) {
             try {
