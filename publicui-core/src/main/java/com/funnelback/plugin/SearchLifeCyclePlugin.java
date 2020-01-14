@@ -3,79 +3,51 @@ package com.funnelback.plugin;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
+ * Plugins can implement this to add logic to a search life cycle.
+ * 
+ * A plugin must set in the plugins properties file a line that is:
+ * com.funnelback.plugin.SearchLifeCyclePlugin=name.of.class.from.Plugin.
+ * 
  * All methods will be called under the context of the the search UI
  *
  */
 public interface SearchLifeCyclePlugin {
     
-//    /**
-//     * Called only when a search is being executed under the search UI.
-//     * 
-//     * The context contains:
-//     * 
-//     * "SEARCH_TRANSACTION"
-//     * - type: com.funnelback.publicui.search.model.transaction.SearchTransaction
-//     * - The search transaction which is can be edited for customisation.
-//     * "HOOK_TYPE_S"
-//     * - type: String
-//     * - Defines when the hook is being called during the lifecycle can either be TODO.... 
-//     * 
-//     * Note called for cache copies. 
-//     * 
-//     * @param context
-//     */
-//    public default void searchHook(SearchTransaction searchTransaction) {
-//        
-//    }
-    
+    /**
+     * Runs just after the <code>hook_pre_process.groovy</code> hook and 
+     * before any input processing occurs. Manipulation of the query and 
+     * addition or modification of most question attributes can be made at this point.
+     * 
+     * @param transaction
+     */
     default void preProcess(SearchTransaction transaction) {}
     
+    /**
+     * Runs just after the <code>hook_pre_datafetch.groovy</code> hook and
+     * after all of the input processing is complete, but just before the 
+     * query is submitted. This hook can be used to manipulate any additional 
+     * data model elements that are populated by the input processing. This 
+     * is most commonly used for modifying faceted navigation.
+     * 
+     * @param transaction
+     */
     default void preDatafetch(SearchTransaction transaction) {}
     
+    /**
+     * Runs just after the <code>hook_post_datafetch.groovy</code> hook which is just 
+     * after the response object is populated based on the raw XML return, but before 
+     * other response elements are built. This is most commonly used to 
+     * modify underlying data before the faceted navigation is built.
+     * 
+     * @param transaction
+     */
     default void postDatafetch(SearchTransaction transaction) {}
     
+    /**
+     * Runs just after the <code>hook_post_process.groovy</code> hook. This is used to 
+     * modify the final data model prior to rendering of the search results.
+     * 
+     * @param transaction
+     */
     default void postProcess(SearchTransaction transaction) {}
-
-    
-    // TODO cache copies are harder because the pre hook does some work in checking if access is granted.
-//    /**
-//     * Called when a cached document is being served under the serach UI.
-//     * 
-//     * the context contains:
-//     * "collection":
-//     * - type: com.funnelback.publicui.search.model.collection.Collection
-//     * - Configuration for the current collection.
-//     * "document"
-//     * - type: com.funnelback.common.io.store.Store.RecordAndMetadata<? extends Record<?>>
-//     * 
-//     * @param context
-//     */
-//    public default void cacheHook(Map<String, Object> context) {
-//        
-//    }
-    
-//    /**
-//     * Allows the plugin to define query_processor_options that will be overridden by query processor
-//     * set in collection.cfg, profile.cfg, padre_opts.cfg, in the URL, or internally e.g. for faceted navigation.
-//     * 
-//     * The context will contain:
-//     * "SEARCH_TRANSACTION"
-//     * - type: com.funnelback.publicui.search.model.transaction.SearchTransaction
-//     * - The search transaction which is can be edited for customisation.
-//// TODO this stuff needs to go to some other place free of the modern UI.
-////     * "COLLECTON_CFG_OPTIONS":
-////     * - type: Function<String, String>
-////     * - This is a function which can be given key and will return the value for that key as set in collection.cfg
-////     * ditto for PROFILE_CFG_OPTIONS
-////     * Otherwise the context will be empty.
-//     * 
-//     * @param context
-//     * @return the first query processor options given to padre that may be overridden by other options.
-//     */
-//    public default String defaultQueryProcessorOptions(Map<String, Object> context) {
-//        return null;
-//        
-//    }
-    
-
 }
