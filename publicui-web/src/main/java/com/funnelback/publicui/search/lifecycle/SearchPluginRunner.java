@@ -69,7 +69,7 @@ public class SearchPluginRunner {
                         .<SearchLifeCyclePlugin>withSearchPluginB()
                         .pluginName(plugin)
                         .classType(SearchLifeCyclePlugin.class)
-                        .withSearchPLugin(searchPlugin -> {
+                        .withSearchPlugin(searchPlugin -> {
                             switch (hook) {
                             case extra_searches:
                                 // No longer recommended
