@@ -60,7 +60,7 @@ public class SearchPluginRunner {
     
     public void runPluginsFor(SearchTransaction st, Hook hook) {
         for(PluginId plugin : new PluginHelper().enabledPlugins(st.getQuestion().getCurrentProfileConfig())) {
-            log.debug("Runnig: " + plugin);
+            log.debug("Running: " + plugin);
             try {
                 this.classLoaderCache.withPluginClassLoader(new CollectionId(st.getQuestion().getCollection().getId()),
                     plugin, 
