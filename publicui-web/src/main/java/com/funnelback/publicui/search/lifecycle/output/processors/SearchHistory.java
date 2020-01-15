@@ -55,7 +55,8 @@ public class SearchHistory extends AbstractOutputProcessor {
         if (SearchTransactionUtils.hasResponse(st)
             && SearchTransactionUtils.hasSession(st)
             && st.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.ModernUi.Session.SESSION)
-            && st.getSession().getSearchUser() != null ) {
+            && st.getSession().getSearchUser() != null
+            && st.getSession().getSearchUser().getId() != null ) {
         
             SearchResponse r = st.getResponse();
             SearchQuestion q = st.getQuestion();

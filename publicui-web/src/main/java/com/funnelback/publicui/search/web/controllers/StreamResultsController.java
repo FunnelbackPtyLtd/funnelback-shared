@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.jxpath.CompiledExpression;
@@ -44,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Controller
 @Log4j2
-public class StreamResultsController extends SessionController {
+public class StreamResultsController {
     
     private static final XJPathResultDataFetcher RESULT_DATA_FETCHER = new XJPathResultDataFetcher();
 
