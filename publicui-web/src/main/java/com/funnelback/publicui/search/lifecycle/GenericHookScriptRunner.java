@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
@@ -26,6 +27,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 import groovy.lang.Binding;
 import groovy.lang.Script;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -40,6 +42,9 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
     public static enum Phase {
         Input, Data, Output;
     }
+    
+    @Setter
+    @Autowired private SearchPluginRunner searchPluginRunner; 
     
     private static final String TYPE_ERROR_MSG = "The entry '%s' with value '%s' in the Map '%s' has an unexpected type. "
             + "It should be either "+String.class.getName()+"[] or "+List.class.getName()+"<"+String.class.getName()+"> "
@@ -70,6 +75,7 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
         if (ArrayUtils.contains(phases, Phase.Data)) {
             runHookScript(searchTransaction);
         }
+        this.searchPluginRunner.runPluginsFor(searchTransaction, hookScriptToRun);
     }
     
     @Override
@@ -77,6 +83,7 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
         if (ArrayUtils.contains(phases, Phase.Input)) {
             runHookScript(searchTransaction);
         }
+        this.searchPluginRunner.runPluginsFor(searchTransaction, hookScriptToRun);
     }
 
     @Override
@@ -84,6 +91,7 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
         if (ArrayUtils.contains(phases, Phase.Output)) {
             runHookScript(searchTransaction);
         }
+        this.searchPluginRunner.runPluginsFor(searchTransaction, hookScriptToRun);
     }
     
     /**
@@ -104,26 +112,29 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
                     
                     fixMapsWithArrayLists(searchTransaction);
                 } catch (Throwable t) {
-                    String msg = "Error while running '" + hookScriptToRun.toString() + "' hook for collection '" + collection.getId() + "'";
-                    SearchQuestionType searchQuestionType = Optional.ofNullable(searchTransaction).map(s -> s.getQuestion()).map(q -> q.getQuestionType()).orElse(null);
-                    
-                    if(searchQuestionType != null) {
-                        msg += " on a search of type '" + searchQuestionType + "'";
-                    }
-                    if(searchTransaction.getExtraSearchName().isPresent()) {
-                        msg += " in extra search '" + searchTransaction.getExtraSearchName().get() + "'.";
-                        if(searchQuestionType == SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH) {
-                            msg +=  " To see this extra search in the JSON/XML output disable the config option: '" 
-                                + FrontEndKeys.ModernUi.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey() + "'";
-                        }
-                    }
-                    
-                    
-                    
+                    String msg = "Error while running '" + hookScriptToRun.toString() + "' hook for collection '" + collection.getId() + "'"
+                        + appendOnSearchTypeMsg(searchTransaction);
                     log.error(msg, t);
                 }
             }
         }
+    }
+    
+    static String appendOnSearchTypeMsg(SearchTransaction searchTransaction) {
+        String msg = "";
+        SearchQuestionType searchQuestionType = Optional.ofNullable(searchTransaction).map(s -> s.getQuestion()).map(q -> q.getQuestionType()).orElse(null);
+                    
+        if(searchQuestionType != null) {
+            msg += " on a search of type '" + searchQuestionType + "'";
+        }
+        if(searchTransaction.getExtraSearchName().isPresent()) {
+            msg += " in extra search '" + searchTransaction.getExtraSearchName().get() + "'.";
+            if(searchQuestionType == SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH) {
+                msg +=  " To see this extra search in the JSON/XML output disable the config option: '" 
+                    + FrontEndKeys.ModernUi.REMOVE_INTERNAL_EXTRA_SEARCHES.getKey() + "'";
+            }
+        }
+        return msg;
     }
     
     /**
