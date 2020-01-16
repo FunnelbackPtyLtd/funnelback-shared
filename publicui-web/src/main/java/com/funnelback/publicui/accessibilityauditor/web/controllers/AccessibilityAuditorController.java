@@ -88,7 +88,7 @@ public class AccessibilityAuditorController {
         @ModelAttribute SearchUser user,
         @RequestParam(required=false) JsonPCallbackParam callback) throws Exception {
         
-        streamResultsController.getAllResults(request, response, fields, fieldnames, fileName, optimisations, question, user,
+        streamResultsController.getAllResults(request, response, fields, fieldnames, optimisations, fileName, false, question, user,
             SearchQuestionType.ACCESSIBILITY_AUDITOR_GET_ALL_RESULTS, callback);
     }
     

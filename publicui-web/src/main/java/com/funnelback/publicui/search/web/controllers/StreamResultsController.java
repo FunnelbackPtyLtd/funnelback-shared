@@ -31,14 +31,13 @@ import com.funnelback.publicui.streamedresults.DataConverter;
 import com.funnelback.publicui.streamedresults.PagedQuery;
 import com.funnelback.publicui.streamedresults.ResultFields;
 import com.funnelback.publicui.streamedresults.TransactionToResults;
-import com.funnelback.publicui.streamedresults.converters.CSVDataConverter;
-import com.funnelback.publicui.streamedresults.converters.JSONDataConverter;
-import com.funnelback.publicui.streamedresults.converters.JSONPDataConverter;
+import com.funnelback.publicui.streamedresults.converters.DataConverterProvider;
 import com.funnelback.publicui.streamedresults.datafetcher.XJPathResultDataFetcher;
 import com.funnelback.publicui.utils.JsonPCallbackParam;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 import com.funnelback.springmvc.web.binder.GenericEditor;
 
+import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 
 @Controller
@@ -63,10 +62,7 @@ public class StreamResultsController {
     private SearchTransactionProcessor processor;
     
     @Autowired
-    private JSONDataConverter JSONDataConverter;
-    
-    @Autowired
-    private CSVDataConverter CSVDataConverter;
+    private DataConverterProvider dataConverterProvider;
     
     @InitBinder
     public void initBinder(DataBinder binder) {
@@ -75,32 +71,8 @@ public class StreamResultsController {
         binder.registerCustomEditor(JsonPCallbackParam.class, new GenericEditor(JsonPCallbackParam::new));
     }
     
-    /**
-     * Gets the data converter to use based on the extension.
-     * 
-     * <p>Note that the return type is of object this is because I can't seem to do:
-     * DataConverter<?> converter = getDataConverterFromExtension("");
-     * converter.writeHead(convert.getWritter()); // here is the issue.
-     * Java doesn't understand that the type returned by convert.getWritter() is the
-     * same type as what is expected by converter.writeHead().</p>
-     * 
-     * @param ext
-     * @return
-     */
-    private DataConverter<Object> getDataConverterFromExtension(String ext, Optional<JsonPCallbackParam> callback) {
-        if(ext.equals("json")) {
-            if(callback.isPresent()) {
-                return (DataConverter) new JSONPDataConverter(callback.get(), this.JSONDataConverter);
-            }
-            return (DataConverter) this.JSONDataConverter;
-        }
-        
-        if(ext.equals("csv")) {
-            return (DataConverter) this.CSVDataConverter;
-        }
-        
-        return null;
-    }
+    
+    
     /**
      * A special end point that can return all results back to the user regardless of collection size.
      * 
@@ -151,11 +123,17 @@ public class StreamResultsController {
             @RequestParam(required=false) CommaSeparatedList fieldnames,
             @RequestParam(required=false, defaultValue="true") boolean optimisations,
             @RequestParam(required=false) String fileName,
+            @ApiParam(value = "For formats that have a header and or footer, this option can be used to disable returning of "
+                + "the header and footer depending on what is supported.\n\n"
+                + "Under CSV the header line that outlines the name of each field will not"
+                + " be returned when set false.\n\n"
+                + "Under JSON the leading '[' and trailing ']' will not be written.")
+            @RequestParam(required = false, defaultValue="true") boolean headerandfooter,
             @Valid SearchQuestion question,
             @ModelAttribute SearchUser user,
             @RequestParam(required=false) JsonPCallbackParam callback) throws Exception {
         
-        getAllResults(request, response, fields, fieldnames, fileName, optimisations, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS,
+        getAllResults(request, response, fields, fieldnames, optimisations, fileName, headerandfooter, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS,
             callback);
         
     }
@@ -165,8 +143,9 @@ public class StreamResultsController {
         HttpServletResponse response,
         CommaSeparatedList fields,
         CommaSeparatedList fieldnames,
-        String fileName,
         boolean optimisations,
+        String fileName,
+        boolean headerandfooter,
         @Valid SearchQuestion question,
         @ModelAttribute SearchUser user,
         SearchQuestionType searchQuestionType,
@@ -181,9 +160,10 @@ public class StreamResultsController {
             SearchQuestionBinder.bind(executionContextHolder.getExecutionContext(), request, question, localeResolver, funnelbackVersion);
             
             // Find the data converter to use based on the extension.
-            DataConverter<Object> dataConverter = getDataConverterFromExtension(
+            DataConverter<Object> dataConverter = (DataConverter<Object>) dataConverterProvider.getDataConverterFromExtension(
                 FilenameUtils.getExtension(request.getRequestURI()),
-                Optional.ofNullable(callback));
+                Optional.ofNullable(callback),
+                headerandfooter);
             
             // TODO I am not sure how an exception should be returned here. Do I try to make a message in the 
             // requested format e.g. csv/json or should I write nothing or should I just write some text back
