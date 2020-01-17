@@ -124,10 +124,9 @@ public class StreamResultsController {
             @RequestParam(required=false, defaultValue="true") boolean optimisations,
             @RequestParam(required=false) String fileName,
             @ApiParam(value = "For formats that have a header and or footer, this option can be used to disable returning of "
-                + "the header and footer.\n\n"
-                + "Under CSV the header line that outlines the name of each field will not"
-                + " be returned when set false.\n\n"
-                + "Under JSON the leading '[' and trailing ']' will not be written.")
+                + "the header and footer if supported. Currently only CSV supports this option.\n\n"
+                + "For CSV the header line that outlines the name of each field will not"
+                + " be returned when set false.\n\n")
             @RequestParam(required = false, defaultValue="true") boolean headerandfooter,
             @Valid SearchQuestion question,
             @ModelAttribute SearchUser user,

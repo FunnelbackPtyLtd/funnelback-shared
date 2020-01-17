@@ -46,12 +46,11 @@ public class DataConverterProvider {
         };
         
         if(ext.equals("json")) {
-            // If the header and footer are not wanted then what is added by JSONP is not wanted, so
-            // we just don't make use of it.
-            if(jsonPCallBack.isPresent() && headerAndFooter) {
+            // JSON doesn't support not writitng the header/footer 
+            if(jsonPCallBack.isPresent()) {
                 return new JSONPDataConverter(jsonPCallBack.get(), this.JSONDataConverter);
             }
-            return wrapWithNoHeadersIfNeeded.apply(this.JSONDataConverter);
+            return this.JSONDataConverter;
         }
         
         if(ext.equals("csv")) {

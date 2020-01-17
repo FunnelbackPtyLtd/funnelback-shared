@@ -44,8 +44,8 @@ public class DataConverterProviderTest {
     @Test
     public void testJSONNoHeader() {
         DataConverter<?> converter = provider.getDataConverterFromExtension("json", Optional.empty(), false);
-        Assert.assertTrue(converter instanceof NoHeaderAndFooterDataConverter);
-        Assert.assertEquals(JSONDataConverter, ((NoHeaderAndFooterDataConverter) converter).getDataConverter());
+        Assert.assertFalse(converter instanceof NoHeaderAndFooterDataConverter);
+        Assert.assertEquals(JSONDataConverter, converter);
     }
     
     @Test
@@ -57,8 +57,8 @@ public class DataConverterProviderTest {
     @Test
     public void testJSONPNoHeader() {
         DataConverter<?> converter = provider.getDataConverterFromExtension("json", Optional.of(new JsonPCallbackParam("a")), false);
-        Assert.assertTrue(converter instanceof NoHeaderAndFooterDataConverter);
-        Assert.assertEquals(JSONDataConverter, ((NoHeaderAndFooterDataConverter) converter).getDataConverter());
+        Assert.assertFalse(converter instanceof NoHeaderAndFooterDataConverter);
+        Assert.assertEquals(JSONDataConverter, converter);
     }
     
 }
