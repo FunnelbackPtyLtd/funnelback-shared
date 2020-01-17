@@ -34,14 +34,14 @@ public class DataConverterProvider {
      * 
      * @param ext
      * @param jsonPCallBack Used to specify the name of the function to wrap the JSON in.
-     * @param headerAndFooter Specifies if the header and footer are wanted.
+     * @param header Specifies if the header is wanted, so far only CSV respects this..
      * @return
      */
     public DataConverter<?> getDataConverterFromExtension(String ext, 
             Optional<JsonPCallbackParam> jsonPCallBack,
-            boolean headerAndFooter) {
+            boolean header) {
         Function<DataConverter<?>, DataConverter<?>> wrapWithNoHeadersIfNeeded = c -> {
-            if(headerAndFooter) return c;
+            if(header) return c;
             return new NoHeaderAndFooterDataConverter<>(c);
         };
         

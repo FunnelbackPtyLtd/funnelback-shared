@@ -123,16 +123,15 @@ public class StreamResultsController {
             @RequestParam(required=false) CommaSeparatedList fieldnames,
             @RequestParam(required=false, defaultValue="true") boolean optimisations,
             @RequestParam(required=false) String fileName,
-            @ApiParam(value = "For formats that have a header and or footer, this option can be used to disable returning of "
-                + "the header and footer if supported. Currently only CSV supports this option.\n\n"
+            @ApiParam(value = "For formats that have a header, this option can be used to disable returning of "
+                + "the header if supported. Currently only CSV supports this option. Other formats may be supported in the future.\n\n"
                 + "For CSV the header line that outlines the name of each field will not"
                 + " be returned when set false.\n\n")
-            @RequestParam(required = false, defaultValue="true") boolean headerandfooter,
+            @RequestParam(required = false, defaultValue="true") boolean header,
             @Valid SearchQuestion question,
             @ModelAttribute SearchUser user,
             @RequestParam(required=false) JsonPCallbackParam callback) throws Exception {
-        
-        getAllResults(request, response, fields, fieldnames, optimisations, fileName, headerandfooter, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS,
+        getAllResults(request, response, fields, fieldnames, optimisations, fileName, header, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS,
             callback);
         
     }
