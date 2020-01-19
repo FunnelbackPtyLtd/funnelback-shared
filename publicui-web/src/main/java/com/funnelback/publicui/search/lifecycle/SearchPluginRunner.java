@@ -10,10 +10,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.CollectionId;
+import com.funnelback.config.keys.Keys;
 import com.funnelback.plugin.PluginClassLoaderCache;
 import com.funnelback.plugin.PluginHelper;
 import com.funnelback.plugin.PluginId;
+import com.funnelback.plugin.PluginIdAndVersion;
 import com.funnelback.plugin.PluginRunner;
+import com.funnelback.plugin.PluginVersion;
 import com.funnelback.plugin.SearchLifeCyclePlugin;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.transaction.ExecutionContext;
@@ -62,12 +65,14 @@ public class SearchPluginRunner {
         for(PluginId plugin : new PluginHelper().enabledPlugins(st.getQuestion().getCurrentProfileConfig())) {
             log.debug("Running: " + plugin);
             try {
+                PluginVersion version = st.getQuestion().getCurrentProfileConfig().get(Keys.CollectionKeys.Plugin.version(plugin));
+                PluginIdAndVersion pluginIdAndVersion = new PluginIdAndVersion(plugin, version);
                 this.classLoaderCache.withPluginClassLoader(new CollectionId(st.getQuestion().getCollection().getId()),
-                    plugin, 
+                    pluginIdAndVersion, 
                     classLoader -> {
                         new PluginRunner()
                         .<SearchLifeCyclePlugin>withSearchPluginB()
-                        .pluginName(plugin)
+                        .pluginIdAndVersion(pluginIdAndVersion)
                         .classType(SearchLifeCyclePlugin.class)
                         .withSearchPlugin(searchPlugin -> {
                             switch (hook) {
