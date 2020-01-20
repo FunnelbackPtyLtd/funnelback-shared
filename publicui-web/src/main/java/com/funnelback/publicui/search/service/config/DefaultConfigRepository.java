@@ -246,25 +246,25 @@ public class DefaultConfigRepository implements ConfigRepository {
         // the quick link values attained from collection.cfg.
         HashMap<String, String> legacyQuickLinkKeysMap = new HashMap<>();
         legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey(), 
-            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey())
+            c.getConfiguration().value(Keys.CollectionKeys.QuickLinkKeys.DEPTH.getKey())
         );
         legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.MAX_LENGTH.getKey(),
-            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.MAX_LENGTH.getKey())
+            c.getConfiguration().value(Keys.CollectionKeys.QuickLinkKeys.MAX_LENGTH.getKey())
         );
         legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.MIN_LENGTH.getKey(),
-            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.MIN_LENGTH.getKey())        
+            c.getConfiguration().value(Keys.CollectionKeys.QuickLinkKeys.MIN_LENGTH.getKey())        
         );
         legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.MAX_WORDS.getKey(),
-            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.MAX_WORDS.getKey())
+            c.getConfiguration().value(Keys.CollectionKeys.QuickLinkKeys.MAX_WORDS.getKey())
         );
         legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.MIN_LINKS.getKey(),
-            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.MIN_LINKS.getKey())
+            c.getConfiguration().value(Keys.CollectionKeys.QuickLinkKeys.MIN_LINKS.getKey())
         );
         legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.TOTAL_LINKS.getKey(),
-            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.TOTAL_LINKS.getKey())
+            c.getConfiguration().value(Keys.CollectionKeys.QuickLinkKeys.TOTAL_LINKS.getKey())
         );
         legacyQuickLinkKeysMap.put(Keys.CollectionKeys.QuickLinkKeys.BLACKLIST_TERMS.getKey(),
-            c.getConfiguration().getConfigData().get(Keys.CollectionKeys.QuickLinkKeys.BLACKLIST_TERMS.getKey())
+            c.getConfiguration().value(Keys.CollectionKeys.QuickLinkKeys.BLACKLIST_TERMS.getKey())
         );
         
         c.setQuickLinksConfiguration(
