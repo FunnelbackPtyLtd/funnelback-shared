@@ -72,6 +72,7 @@ public class SearchPluginRunner {
                     classLoader -> {
                         new PluginRunner()
                         .<SearchLifeCyclePlugin>withSearchPluginB()
+                        .pluginClassLoader(classLoader)
                         .pluginIdAndVersion(pluginIdAndVersion)
                         .classType(SearchLifeCyclePlugin.class)
                         .withSearchPlugin(searchPlugin -> {
@@ -104,7 +105,8 @@ public class SearchPluginRunner {
                         })
                         .onError(e -> {
                             log.warn("Error when running plugin: '" + plugin + "'" + appendOnSearchTypeMsg(st), e);
-                        });
+                        })
+                        .run();
                         
                         return null;
                     });
