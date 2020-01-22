@@ -11,6 +11,12 @@ import org.vibur.objectpool.PoolObjectFactory;
 import org.vibur.objectpool.PoolService;
 import org.vibur.objectpool.util.ConcurrentLinkedQueueCollection;
 
+/**
+ * The XMLInputFactory is expensive to generate and it is not clear if it is thread safe.
+ * 
+ * This lets us cache a XMLInputFactory and will make the XML reader from it.
+ *
+ */
 public class XMLStreamReaderCreator {
 
     private PoolService<XMLInputFactory> pool;
