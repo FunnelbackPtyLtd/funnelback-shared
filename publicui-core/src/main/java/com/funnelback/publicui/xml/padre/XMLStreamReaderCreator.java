@@ -14,7 +14,12 @@ import org.vibur.objectpool.util.ConcurrentLinkedQueueCollection;
 /**
  * The XMLInputFactory is expensive to generate and it is not clear if it is thread safe.
  * 
- * This lets us cache a XMLInputFactory and will make the XML reader from it.
+ * This lets us cache a XMLInputFactory and will make the XML reader from it, we assume
+ * the resulting XMLStreamReader objects are independent from each other hence we don't actually
+ * block in here and do the parsing of the XML here. Instead this just has a pooled XMLInputFactory
+ * and calls createXMLStreamReader() on it. The createXMLStreamReader() method is super cheap
+ * so it is unlikely that two threads are ever going to be in contention for the pool. Even in that case
+ * we revert back to constructing an expensive to make XMLInputFactory.
  *
  */
 public class XMLStreamReaderCreator {
