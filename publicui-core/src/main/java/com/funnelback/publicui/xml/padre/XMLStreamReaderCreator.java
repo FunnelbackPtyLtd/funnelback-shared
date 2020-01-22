@@ -71,6 +71,19 @@ public class XMLStreamReaderCreator {
         return createXMLStreamReaderFrom(XMLInputFactory.newInstance(), is, charset);
     }
     
+    /**
+     * The actual work done with the xmlInputFactory.
+     * 
+     * This generally seems to be pretty fast at about 1000 calls in 1ms,
+     * it does read the first bit of the input stream. 
+     * 
+     * 
+     * @param xmlInputFactory
+     * @param is
+     * @param charset
+     * @return
+     * @throws XMLStreamException
+     */
     private XMLStreamReader createXMLStreamReaderFrom(XMLInputFactory xmlInputFactory, InputStream is, String charset) throws XMLStreamException {
         return xmlInputFactory.createXMLStreamReader(is, charset);
     }
