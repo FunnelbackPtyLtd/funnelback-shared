@@ -53,6 +53,8 @@ public class StaxStreamParser implements PadreXmlParser {
     /** Tag marking the start of the XML document */
     private static final String XML_HEADER_TAG = "<?xml";
     
+    private static final XMLStreamReaderCreator xMLStreamReaderCreator = new XMLStreamReaderCreator();
+    
     public ResultPacket parse(byte[] padreStdOut, Charset charset, boolean allowContentInProlog) throws XmlParsingException {
         return parse(new ByteArrayInputStream(padreStdOut), charset, allowContentInProlog);
     }
@@ -88,7 +90,7 @@ public class StaxStreamParser implements PadreXmlParser {
         ResultPacket packet = new ResultPacket();
         
         try {
-            XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance() 
+            XMLStreamReader xmlStreamReader = xMLStreamReaderCreator 
                                         .createXMLStreamReader(padreStdOut, charset.displayName());
         
             

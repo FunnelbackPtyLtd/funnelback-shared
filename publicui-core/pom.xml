@@ -166,6 +166,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.vibur</groupId>
+            <artifactId>vibur-object-pool</artifactId>
+            <version>25.0</version>
+        </dependency>
+        <dependency>
             <artifactId>funnelback-api-client-core</artifactId>
             <groupId>com.funnelback.api.client</groupId>
             <version>${project.version}</version>
