@@ -20,7 +20,7 @@ public interface IndexConfigProvider {
      * 
      * Invalid formats are likely to cause silent errors.
      * 
-     * TODO define how this will be combined.
+     * FUN-13612
      */
     public default InputStream externalMetadata(IndexConfigProviderContext context) {
         return null;
@@ -95,7 +95,7 @@ public interface IndexConfigProvider {
      * xmlIndexingConfig.getInnerDocumentPaths().add(new InnerDocumentPath(""));
      * 
      * // This plugin requires that all unmapped content is indexed as document content.
-     * // If your plugin doesn't care what this is set to leave it null
+     * // If your plugin doesn't care what this is set to leave it null.
      * xmlIndexingConfig.setWhenNoContentPathsAreSet(WhenNoContentPathsAreSet.INDEX_ALL_UNMAPPED_AS_CONTENT);
      * </code>
      * 
@@ -109,11 +109,10 @@ public interface IndexConfigProvider {
     }
     
     /**
-     * Supply additional exact match URLs to kill.
+     * Supply a stream of URLs to kill by exact match.
      * 
-     * Like kill_exact.cfg
-     * 
-     * See also TODO some API.
+     * The behaviour of the returned URLs matches the behaviour as if they where
+     * appended to kill_exact.cfg.
      * 
      * A Stream can be made from a list if the list is small for example:
      * <code>
@@ -128,18 +127,17 @@ public interface IndexConfigProvider {
     }
     
     /**
-     * Supply additional partial match URLs to kill.
+     * Supply a stream of URLs to kill by partial match.
      * 
-     * Like kill_partial.cfg
-     * s
-     * See also TODO some API.
+     * The behaviour of the returned URLs matches the behaviour as if they where
+     * appended to kill_partial.cfg.
      * 
      * A Stream can be made from a list if the list is small for example:
      * <code>
      *     return List.of("http://example.com/").stream();
      * </code>
      * 
-     * @return a Stream of URLs to kill by "exact" match.
+     * @return a Stream of URLs to kill by "partial" match.
      * 
      */
     public default Stream<String>  killByPartialMatch(IndexConfigProviderContext context) {
@@ -150,6 +148,9 @@ public interface IndexConfigProvider {
      * Supply additional faceted navigation configuration.
      * 
      * Additional faceted navigation is supplied as a JSON similar to the API.
+     * 
+     * This expects to return a list <code>[]</code> of Facets. The id,
+     * lastModified and created fields do not need to be set.
      * 
      * 
      * 
