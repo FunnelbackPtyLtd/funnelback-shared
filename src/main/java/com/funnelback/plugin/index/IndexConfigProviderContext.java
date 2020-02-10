@@ -4,14 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
-
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.config.keys.WildCardKeyMatcher;
 
 public interface IndexConfigProviderContext {
 
@@ -22,14 +17,18 @@ public interface IndexConfigProviderContext {
     public String getCollectionName();
     
     /**
-     * TODO
-     * matches the folder name used on disk
+     * When the plugin is called for a profile, this will be set to the profile and view value
+     * which is used in the profile parameter in the modern UI. This also matches the profile
+     * folder used on disk in the collection configuration.
      * 
-     * also matches the name used in the profile param in the modern UI
-     * @return
+     * @return Empty when not running on a profile otherwise the profile and view.
      */
     public Optional<String> getProfileWithView();
     
+    /**
+     * 
+     * @return Empty when not running on a profile otherwise the profile this is being run.
+     */
     public Optional<String> getProfile();
 
     /**
@@ -80,7 +79,12 @@ public interface IndexConfigProviderContext {
     public Map<String, List<String>> getConfigKeysMatchingPattern(String pattern);
     
     /**
-     * TODO
+     * May be used to read a file from the current collection's configuration directory.
+     * 
+     * @param pathsBelowConf The path below the current collection's configuration directory e.g.
+     * List.of("collection.cfg") to read $SEARCH_HOME/conf/$COLLECTION/collection.cfg 
+     * @return if the file is present the bytes of that file, otherwise empty.
+     * @throws IOException
      */
     public Optional<byte[]> readCollectionConfigFile(String ... pathsBelowConf) throws IOException;
     
