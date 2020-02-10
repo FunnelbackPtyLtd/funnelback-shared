@@ -76,63 +76,6 @@ public interface IndexConfigProvider {
         return List.of();
     }
     
-    // IGNORE
-//    /**
-//     * Supply additional configuration used for XML processing.
-//     * 
-//     * The map may contain any of the following keys and values which will be appended 
-//     * to the existing XML configuration assuming the path is already not in use.
-//     * The keys are a String and the values for these are all  List of Maps
-//     * where the map contains a key "path" and the value is the wanted path.
-//     * 
-//     * contentPaths: When empty the field 'whenNoContentPaths' describes what is 
-//     *  indexed, when non empty only the text within the given paths are indexed.
-//     * documentPaths: Defines where the documents are within the XML, this can be
-//     *  used to split XML documents. Like urlPaths it is recommended to do this 
-//     *  within a filter.
-//     *  
-//     * fileTypePaths: The type at this path (e.g. HTML, PDF, DOC) will be used 
-//     *  by the query process to report the original document type. The last file 
-//     *  type found will be used.
-//     *  
-//     * innerDocumentPaths: Maps an element withing an XML document which contains a 
-//     *  (XML escaped) document that may itself be HTML/XML/text. e.g. 
-//     *  /root/html could be a path to an element which contains HTML. The indexer 
-//     *  will index that document as though it is HTML.
-//     *  
-//     * urlPaths: The URL at this path will be used as the documents URL. This will 
-//     * typically cause cached copies to no longer work, this can not be used with 
-//     * Push collections, this path must come before inner HTML documents with links. 
-//     * It is recommended that filtering be used to change the URL instead to avoid 
-//     * those issues
-//     * 
-//     * Additionally the outer map may also specify 'whenNoContentPathsAreSet',
-//     * unlike other keys if this is set it will override what has been previously set.
-//     * 
-//     * whenNoContentPathsAreSet: efines what should be indexed as document content when 
-//     * no paths are mapped as 'ContentPaths'. The two options available are 
-//     * 'INDEX_ALL_UNMAPPED_AS_CONTENT' whichwill index all unmapped paths (e.g. paths 
-//     * not used as metadata, url or inner documents) as document content. The other 
-//     * option 'DONT_INDEX_UNMAPPED_AS_CONTENT' which will NOT index any paths that are 
-//     * left unmapped. Note that if some path is mapped as a 'ContentPath', then this 
-//     * setting has no effect.
-//     * 
-//     * Example:
-//     * Map.of(
-//     *      "contentPaths", List.of(Map.of("path", "/root/content")),
-//     *      "documentPaths", List.of(Map.of("path", "/root/documents")),
-//     *      "fileTypePaths", List.of(Map.of("path", "/root/mime")),
-//     *      "innerDocumentPaths", List.of(Map.of("path", "/root/html")),
-//     *      "urlPaths", List.of(Map.of("path", "/root/urls")),
-//     *      "whenNoContentPathsAreSet", "INDEX_ALL_UNMAPPED_AS_CONTENT");
-//     *      
-//     * Note that this model is a sub set of the model returned by the API, refer to the API
-//     * for further details. The response of the API can be returned here so long as it is 
-//     * converted into standard java types.
-//     * 
-//     * @return
-//     */
-    
     /**
      * Supply additional configuration used for XML processing.
      * 
