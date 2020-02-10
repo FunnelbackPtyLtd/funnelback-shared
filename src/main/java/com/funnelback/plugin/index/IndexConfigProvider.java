@@ -152,20 +152,23 @@ public interface IndexConfigProvider {
      * This expects to return a list <code>[]</code> of Facets. The id,
      * lastModified and created fields do not need to be set.
      * 
+     * It may be easier to design the facets you want using the UI, then use the API
+     * to get out each facet you want:
+     * GET /faceted-navigation/v2/collections/{collection}/profiles/{profile}/facet/{id}/views/{view}
+     * The value wanted is what is set in the <code>data</code> field. Then string the facet 
+     * definitions together as a JSON array.  
      * 
      * 
-     * @return 
+     * @return A JSON list of facet definitions to use. 
      */
     public default String extraFacetedNavigation(IndexConfigProviderContext context) {
         return null;
     }
     
     /**
-     * Define profiles for which query completion will be supplied
+     * Supply query completion CSV files to use on profiles.
      * 
-     * This expects to return the data for all profiles rather than just a single.
-     * This is done as typically the CSV can be large and is often shared between multiple 
-     * profiles.
+     * The QueryCompletionCSV supports defining a single CSV file for many profiles.
      *   
      * 
      * @param contextForAllProfiles The context for all profiles which exists.
