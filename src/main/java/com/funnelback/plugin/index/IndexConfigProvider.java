@@ -122,7 +122,7 @@ public interface IndexConfigProvider {
      * @return a Stream of URLs to kill by "exact" match.
      * 
      */
-    public default Stream<String>  killByExactMatch(IndexConfigProviderContext context) {
+    public default Stream<String> killByExactMatch(IndexConfigProviderContext context) {
         return Stream.of();
     }
     
