@@ -17,11 +17,16 @@ public class IsAdminUIMethod extends AbstractTemplateMethod {
 
     public static final String NAME = "isAdminUI"; 
     
-    @Autowired
     private ConfigRepository configRepository;
     
-    public IsAdminUIMethod() {
+    public IsAdminUIMethod(ConfigRepository configRepository) {
         super(1, 0, false);
+
+        if (configRepository == null) {
+            throw new RuntimeException("configRepository given to " + IsAdminUIMethod.class.getName() + " constructor was null.");
+        }
+
+        this.configRepository = configRepository;
     }
 
     @SuppressWarnings("rawtypes")
