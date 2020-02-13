@@ -165,12 +165,9 @@ public class Collection {
      */
     public Type getType() {
         Type out = Type.unknown;
-        if (configuration != null && configuration.hasValue(Keys.COLLECTION_TYPE)) {
-            try {
-                out = Type.valueOf(configuration.value(Keys.COLLECTION_TYPE));
-            } catch (IllegalArgumentException iae) {
-                log.warn("Unkown collection type: '" + configuration.value(Keys.COLLECTION_TYPE) + "'", iae);
-            }
+        if (configuration != null) {
+            return configuration.value(com.funnelback.config.keys.Keys.CollectionKeys.CollectionDetails.COLLECTION_TYPE);
+            
         }
         return out;
     }
