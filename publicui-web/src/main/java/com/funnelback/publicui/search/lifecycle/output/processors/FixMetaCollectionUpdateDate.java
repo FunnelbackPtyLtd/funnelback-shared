@@ -1,20 +1,27 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Time;
+import java.time.ZoneOffset;
 
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.collection.update.stages.AddTimeStamp;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.date.FastDateMarshaller;
 import com.funnelback.common.function.CallableCE;
 import com.funnelback.common.lock.QueryReadLock;
 import com.funnelback.common.lock.QueryReadLockI;
@@ -27,6 +34,10 @@ import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.thoughtworks.xstream.converters.basic.DateConverter;
 
@@ -97,15 +108,17 @@ public class FixMetaCollectionUpdateDate extends AbstractOutputProcessor {
         }
     }
     
+    
     public /* for testing */ long componentUpdateTime(String indexStem) throws IOException {
         // Using the same type of date converter as SearchXStreamMarshaller for consistency
         // It's not clear if it's thread safe on its own, so I guess I have to assume not
-        DateConverter dateConverter = new DateConverter(Details.getUpdateDatePatternWithoutLocal(), new String[] {Details.getUpdateDatePatternWithoutLocal()}, TimeZone.getDefault());
-        File componentUpdateTimeFile = new File(new File(indexStem).getParentFile(), "index_time");
-        String componentUpdateTime = Files.readFirstLine(componentUpdateTimeFile, StandardCharsets.UTF_8);
         
-        Date parsed = (Date) dateConverter.fromString(componentUpdateTime);
-
-        return parsed.getTime();
+        File componentUpdateTimeFile = new File(new File(indexStem).getParentFile(), "index_time");
+        byte[] b = java.nio.file.Files.readAllBytes(componentUpdateTimeFile.toPath());
+        
+        String componentUpdateTime = new String(b, StandardCharsets.US_ASCII);
+        
+        return AddTimeStamp.parseIndexDateToDate(componentUpdateTime).getTime();
     }
+    
 }
