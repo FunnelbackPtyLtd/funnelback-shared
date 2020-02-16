@@ -156,10 +156,23 @@ public interface IndexConfigProvider {
      * to get out each facet you want:
      * GET /faceted-navigation/v2/collections/{collection}/profiles/{profile}/facet/{id}/views/{view}
      * The value wanted is what is set in the <code>data</code> field. Then string the facet 
-     * definitions together as a JSON array.  
+     * definitions together as a JSON array.
+     * 
+     * For example this could return:
+     * <code>
+     * [{
+     * "name": "Authors",
+     * "facetValues": "FROM_SCOPED_QUERY_HIDE_UNSELECTED_PARENT_VALUES",
+     * "constraintJoin": "AND",
+     * "selectionType": "SINGLE",
+     * "categories": [{ "type": "MetaDataFieldCategory", "subCategories": [], "metadataField": "author" }],
+     * "order": [ "SELECTED_FIRST", "COUNT_DESCENDING"]
+     * }]
+     * </code>
      * 
      * 
-     * @return A JSON list of facet definitions to use. 
+     * @return JSON as a string which contains a list of facet definitions as returned by the
+     * API. 
      */
     public default String extraFacetedNavigation(IndexConfigProviderContext context) {
         return null;
