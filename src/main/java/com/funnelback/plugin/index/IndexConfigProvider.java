@@ -168,14 +168,19 @@ public interface IndexConfigProvider {
     /**
      * Supply query completion CSV files to use on profiles.
      * 
-     * The QueryCompletionCSV supports defining a single CSV file for many profiles.
+     * The QueryCompletionCSV supports defining a single CSV "file" for many profiles. The
+     * CSV is actually given as a supplier of a InputStream. This means for example you could 
+     * have some profiles get their query completion CSV by contacting a remote server.
      *   
      * 
      * @param contextForAllProfiles The context for all profiles which exists.
      * @return A list of QueryCompletionCSV objects each of which contain the profiles
-     * it should apply to along with the CSV for example: 
+     * it should apply to along with the CSV. For example, to apply the CSV from a remote
+     * web server to the profiles "_default" and "news" you could do something similar to:
      * <code>
-     * List.of(new QueryCompletionCSV(List.of("_default", "news"),  () -> {return new MyQueryCompletionCSVInputStream();}));
+     * List.of(
+     *  new QueryCompletionCSV(List.of("_default", "news"),  () -> {return new URLFetchingInputStream("https://example.com/);})
+     *  );
      * </code>
      * 
      */
