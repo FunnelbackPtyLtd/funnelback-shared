@@ -18,7 +18,7 @@ public interface IndexConfigProvider {
     /**
      * Return external metadata in the raw format as defined in documentation.
      * 
-     * Invalid formats are likely to cause silent errors.
+     * Invalid formats are likely to cause indexing errors.
      * 
      * FUN-13612
      */
@@ -82,7 +82,8 @@ public interface IndexConfigProvider {
      * The contentPaths, documentPaths, fileTypePaths, innerDocumentPaths and
      * urlPaths will be appended to the existing XML indexing configuration. The
      * whenNoContentPathsAreSet field however will replace any existing value set,
-     * this it is not required that the pugin sets this.
+     * thus the plugin may leave whenNoContentPathsAreSet as null to not overwrite
+     * what it is set to.
      * 
      * Example:
      * <code>
