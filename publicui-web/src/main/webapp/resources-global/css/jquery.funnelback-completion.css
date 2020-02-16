@@ -1,8 +1,0 @@
-.ui-helper-hidden-accessible {border: 0 none; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px;}
-.ui-help-hidden {display: none;}
-.ui-menu {background-color: #fff;}
-.ui-menu {width: 200px; border: solid 1px #e6e6e6;}
-.ui-menu, .ui-menu li {list-style-type: none; margin: 0; padding: 0;}
-.ui-menu-item a, li.ui-autocomplete-category {display: block; padding: 2px;}
-li.ui-autocomplete-category {background-color: #e6e6e6; font-weight: bold;}
-.ui-state-focus, .ui-menu-item a.ui-state-focus { background-color: #428bca; color: #fff;}

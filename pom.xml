@@ -1,11 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.funnelback.publicui</groupId>
-    <artifactId>publicui-parent</artifactId>
-    <packaging>pom</packaging>
-    <name>Modern UI for Funnelback - Parent</name>
-
+    <artifactId>funnelback-shared</artifactId>
+    <packaging>jar</packaging>
+    <name>Funnelback Shared</name>
     <parent>
         <groupId>com.funnelback</groupId>
         <artifactId>java-parent</artifactId>
@@ -13,78 +11,236 @@
         <relativePath></relativePath>
     </parent>
 
-    <issueManagement>
-        <system>JIRA</system>
-        <url>https://jira.cbr.au.funnelback.com/browse/FUN</url>
-    </issueManagement>
-    <ciManagement>
-        <system>Jenkins</system>
-        <url>http://jenkins.cbr.au.funnelback.com/job/funnelback-publicui</url>
-    </ciManagement>
-    <inceptionYear>2011</inceptionYear>
-    <scm>
-        <connection>scm:svn:https://svn.cbr.au.funnelback.com/svn/enterprise-search/trunk/java/publicui</connection>
-        <developerConnection>scm:svn:https://svn.cbr.au.funnelback.com/svn/enterprise-search/trunk/java/publicui</developerConnection>
-        <tag>HEAD</tag>
-        <url>http://svn.cbr.au.funnelback.com/websvn/listing.php?repname=enterprise-search&amp;path=/trunk/java/publicui/</url>
-    </scm>
-    <organization>
-        <name>Funnelback</name>
-        <url>http://www.funnelback.com/</url>
-    </organization>
+    <profiles>
+        <profile>
+            <!-- Only call doco generator if tests are enabled, otherwise the test 
+                class is not found and the build fails -->
+            <activation>
+                <property>
+                    <name>!maven.test.skip</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.2.1</version>
+                        <configuration>
+                            <classpathScope>test</classpathScope>
+                            <mainClass>com.funnelback.publicui.test.search.model.GenerateDataModelDoco</mainClass>
+                            <arguments>
+                                <argument>${project.basedir}/src/main/javadoc/overview.html</argument>
+                            </arguments>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
-    <modules>
-        <module>publicui-web</module>
-        <module>publicui-core</module>
-        <module>publicui-doc</module>
-        <module>publicui-form-converter</module>
-        <module>publicui-templates</module>
-    </modules>
+    <properties>
+        <liquibase.url>jdbc:h2:${env.SEARCH_HOME}/databases/search-session</liquibase.url>
+        <liquibase.driver>org.h2.Driver</liquibase.driver>
+    </properties>
 
     <build>
+        <finalName>funnelback-${project.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
-                <artifactId>maven-checkstyle-plugin</artifactId>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-json-schema-plugin</artifactId>
+                <version>2.4.4-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>generate1</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>com/funnelback/publicui/search/model/transaction/SearchTransaction</include>
+                            </includes>
+                            <outputSchema>${project.basedir}/src/main/javadoc/doc-files/SearchTransactionSchema.json</outputSchema>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.code.findbugs</groupId>
+                        <artifactId>jsr305</artifactId>
+                        <version>3.0.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
-
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>xml-maven-plugin</artifactId>
+                <!-- JavaDoc doesn't understand lombok, so we must delombok first.
+                     See https://stackoverflow.com/a/51947792/797 and https://github.com/rzwitserloot/lombok/issues/1033 --> 
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>1.18.2.0</version>
+                <configuration>
+                    <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+                    <outputDirectory>${project.basedir}/target/delombok</outputDirectory>
+                    <addOutputDirectory>false</addOutputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <configuration>
+                    <show>private</show>
+                    <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
+                    <sourcepath>${project.basedir}/target/delombok</sourcepath>
+                    <sourceFileIncludes>
+                        <include>com/funnelback/publicui/search/model/**/*.java</include>
+                    </sourceFileIncludes>
+                    <sourceFileExcludes>
+                        <exclude>com/funnelback/publicui/search/model/collection/delegate/**/*.java</exclude>
+                    </sourceFileExcludes>
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <failOnError>false</failOnError>
+                    <additionalparam>--allow-script-in-comments</additionalparam>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <configuration>
+                    <tasks>
+                        <delete file="${project.basedir}/src/main/javadoc/overview.html" />
+                    </tasks>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.thoughtworks.xstream</groupId>
-                <artifactId>xstream</artifactId>
-                <version>1.4.7</version>
-            </dependency>
-            <dependency>
-                <groupId>com.funnelback</groupId>
-                <artifactId>funnelback-common</artifactId>
-                <version>${project.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.tika</groupId>
-                        <artifactId>tika-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.tika</groupId>
-                        <artifactId>tika-parsers</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>cc.mallet</groupId>
-                        <artifactId>mallet</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.funnelback</groupId>
-                        <artifactId>funnelback-squiz-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.vibur</groupId>
+            <artifactId>vibur-object-pool</artifactId>
+            <version>25.0</version>
+        </dependency>
+        <dependency>
+            <artifactId>funnelback-api-client-core</artifactId>
+            <groupId>com.funnelback.api.client</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.funnelback</groupId>
+            <artifactId>funnelback-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.maxmind.geoip</groupId>
+            <artifactId>geoip-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+    </dependencies>
 </project>
