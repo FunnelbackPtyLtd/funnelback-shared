@@ -21,7 +21,6 @@ import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
 import com.funnelback.common.function.Flattener;
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType;
 import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
 import com.funnelback.publicui.xml.FacetConverter;
@@ -246,8 +245,6 @@ public class Facet {
         /**
          * <p>Values for this category.</p>
          * 
-         * <p>Either a single one for item type {@link CategoryDefinition}s
-         * or multiple for fill type {@link CategoryDefinition}s.</p>
          */
         @Getter private final List<CategoryValue> values = new ArrayList<CategoryValue>();
         
@@ -310,8 +307,6 @@ public class Facet {
     /**
      * <p>Value of a facet category, such as "Location = Sydney".</p>
      * 
-     * <p>Is either automatically generated (fill type {@link CategoryDefinition} or
-     * manually created (item type {@link CategoryDefinition}</p>
      */
     @AllArgsConstructor
     public static class CategoryValue {

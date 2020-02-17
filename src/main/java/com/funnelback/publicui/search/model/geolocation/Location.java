@@ -1,9 +1,6 @@
 package com.funnelback.publicui.search.model.geolocation;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -139,34 +136,6 @@ public class Location {
          */
         private String isoCode;
         
-        public Subdivision(com.maxmind.geoip2.record.Subdivision s) {
-            this.geoNameId = s.getGeoNameId();
-            this.name = s.getName();
-            this.isoCode = s.getIsoCode();
-        }
-    }
-    
-    /**
-     * Create a location from maxmind2 data
-     * 
-     * One day we ought to handle locals, because China is not called China in China.
-     * 
-     * @param location
-     */
-    public Location(com.maxmind.geoip2.model.CityResponse location) {
-        this.city = Optional.ofNullable(location).map(l -> l.getCity()).map(c -> c.getName()).orElse(null);
-        this.countryCode = Optional.ofNullable(location).map(l -> l.getCountry()).map(c -> c.getIsoCode()).orElse(null);
-        this.countryName = Optional.ofNullable(location).map(l -> l.getCountry()).map(c -> c.getName()).orElse(null);
-        this.countryGeoNameId = Optional.ofNullable(location).map(l -> l.getCountry()).map(c -> c.getGeoNameId()).orElse(null);
-        this.latitude = Optional.ofNullable(location).map(l -> l.getLocation()).map(l -> l.getLatitude()).orElse(null);
-        this.longitude = Optional.ofNullable(location).map(l -> l.getLocation()).map(l -> l.getLongitude()).orElse(null);
-        this.metroCode = Optional.ofNullable(location).map(l -> l.getLocation()).map(l -> l.getMetroCode()).orElse(null);
-        this.postalCode = Optional.ofNullable(location).map(l -> l.getPostal()).map(p -> p.getCode()).orElse(null);
-        if(location.getSubdivisions() != null) {
-            this.subdivisions = Collections.unmodifiableList(location.getSubdivisions().stream().map(Subdivision::new).collect(Collectors.toList()));
-        } else {
-            this.subdivisions = Collections.emptyList();
-        }
     }
 
 }

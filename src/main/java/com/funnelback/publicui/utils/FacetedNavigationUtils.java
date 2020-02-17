@@ -9,12 +9,12 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-import com.funnelback.common.function.StreamUtils;
-import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
-import com.funnelback.publicui.search.model.collection.Profile;
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
-import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+//import com.funnelback.common.function.StreamUtils;
+//import com.funnelback.publicui.search.model.collection.Collection;
+//import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
+//import com.funnelback.publicui.search.model.collection.Profile;
+//import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+//import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.facetednavigation.FacetParameter;
 import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetails;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -26,41 +26,41 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class FacetedNavigationUtils {
 
-    /**
-     * Will select the correct faceted navigation configuration depending on
-     * collection parameters (Is there a config location override ?) and the presence
-     * of a profile.
-     * @param c
-     * @param p
-     * @return
-     */
-    public static FacetedNavigationConfig selectConfiguration(Collection c, String profileId) {
-        FacetedNavigationConfig config = null;
-        if (profileId != null) {
-            Profile p = c.getProfiles().get(profileId);
-            if (p != null) {
-                config = p.getFacetedNavConfConfig();
-            }
-        }
-        
-        //If the profile does not have faceted nav look in live.
-        if(config == null) {
-            config = c.getFacetedNavigationLiveConfig();
-        }
-        
-        
-        //It may not be copied to live if the step is skipped or maybe the file is deleted, 
-        //use the collection level conf config
-        if(config == null) {
-            return c.getFacetedNavigationConfConfig();
-        }
-        
-        return config;
-    }
+//    /**
+//     * Will select the correct faceted navigation configuration depending on
+//     * collection parameters (Is there a config location override ?) and the presence
+//     * of a profile.
+//     * @param c
+//     * @param p
+//     * @return
+//     */
+//    public static FacetedNavigationConfig selectConfiguration(Collection c, String profileId) {
+//        FacetedNavigationConfig config = null;
+//        if (profileId != null) {
+//            Profile p = c.getProfiles().get(profileId);
+//            if (p != null) {
+//                config = p.getFacetedNavConfConfig();
+//            }
+//        }
+//        
+//        //If the profile does not have faceted nav look in live.
+//        if(config == null) {
+//            config = c.getFacetedNavigationLiveConfig();
+//        }
+//        
+//        
+//        //It may not be copied to live if the step is skipped or maybe the file is deleted, 
+//        //use the collection level conf config
+//        if(config == null) {
+//            return c.getFacetedNavigationConfConfig();
+//        }
+//        
+//        return config;
+//    }
     
-    public static FacetedNavigationConfig selectConfiguration(SearchTransaction st) {
-        return selectConfiguration(st.getQuestion().getCollection(), st.getQuestion().getProfile());
-    }
+//    public static FacetedNavigationConfig selectConfiguration(SearchTransaction st) {
+//        return selectConfiguration(st.getQuestion().getCollection(), st.getQuestion().getProfile());
+//    }
     
     /**
      * Returns a set of facet parameters (i.e. CGI parameters for facet selection)
@@ -93,69 +93,69 @@ public class FacetedNavigationUtils {
         return result;
     }
     
-    public static List<FacetSelectedDetails> getFacetSelectedDetails(SearchQuestion searchQuestion) {
-        return getFacetParameters(searchQuestion)
-            .stream()
-            .map(f -> StreamUtils.ofNullable(f.getValues())
-                    .map(v -> new FacetSelectedDetails(f.getName(), f.getExtraParameter(), v)))
-            .flatMap(i -> i)
-            .filter(f -> !"".equals(f.getValue())) // Skip empty values.
-            .collect(Collectors.toList());
-    }
-    
-    
-    /**
-     * Check if a category value is currently selected
-     * @param cDef Category definition to check
-     * @param selectedCategories List of selected categories from the transaction
-     * @param categoryValue Value to check for selection
-     * @return
-     */
-    public static boolean isCategorySelected(CategoryDefinition cDef, Map<String, List<String>> selectedCategories, String categoryValue) {
-        return selectedCategories
-            .entrySet()
-            .stream()
-            .filter(entry -> entry.getKey().equals(cDef.getQueryStringParamName()))
-            .anyMatch(entry -> entry.getValue().contains(categoryValue));
-    }
-    
-    /**
-     * Checks if the facet that the category value belongs to is a facet that is selected.
-     * 
-     * <p>The facet is is selected if any category value under the facet is selected.</p>
-     * @param cDef
-     * @param selectedCategories
-     * @return
-     */
-    public static boolean isFacetSelected(CategoryDefinition cDef, Map<String, List<String>> selectedCategories) {
-        String keyPrefix = facetParamNamePrefix(cDef.getFacetName());
-        return selectedCategories.keySet().stream().anyMatch(k -> k.startsWith(keyPrefix));
-    }
-    
-    /**
-     * Checks if the facet that the category value belongs to is a facet that is selected.
-     * 
-     * <p>The facet is is selected if any category value under the facet is selected.</p>
-     * @param facetDefinition
-     * @param selectedCategories
-     * @return
-     */
-    public static boolean isFacetSelected(FacetDefinition facetDefinition, Map<String, List<String>> selectedCategories) {
-        String keyPrefix = facetParamNamePrefix(facetDefinition.getName());
-        return selectedCategories.keySet().stream().anyMatch(k -> k.startsWith(keyPrefix));
-    }
-    
-    /**
-     * Gets the prefix of a faceted navigation category value prefix.
-     * 
-     *  <p>This is prefix of the key that is added to the URL if the category
-     *  value is selected e.g. f.nameOfFacet|</p>
-     * @param nameOfFacet
-     * @return
-     */
-    public static String facetParamNamePrefix(String nameOfFacet) {
-        return RequestParameters.FACET_PREFIX + nameOfFacet + CategoryDefinition.QS_PARAM_SEPARATOR;
-    }
+//    public static List<FacetSelectedDetails> getFacetSelectedDetails(SearchQuestion searchQuestion) {
+//        return getFacetParameters(searchQuestion)
+//            .stream()
+//            .map(f -> StreamUtils.ofNullable(f.getValues())
+//                    .map(v -> new FacetSelectedDetails(f.getName(), f.getExtraParameter(), v)))
+//            .flatMap(i -> i)
+//            .filter(f -> !"".equals(f.getValue())) // Skip empty values.
+//            .collect(Collectors.toList());
+//    }
+//    
+//    
+//    /**
+//     * Check if a category value is currently selected
+//     * @param cDef Category definition to check
+//     * @param selectedCategories List of selected categories from the transaction
+//     * @param categoryValue Value to check for selection
+//     * @return
+//     */
+//    public static boolean isCategorySelected(CategoryDefinition cDef, Map<String, List<String>> selectedCategories, String categoryValue) {
+//        return selectedCategories
+//            .entrySet()
+//            .stream()
+//            .filter(entry -> entry.getKey().equals(cDef.getQueryStringParamName()))
+//            .anyMatch(entry -> entry.getValue().contains(categoryValue));
+//    }
+//    
+//    /**
+//     * Checks if the facet that the category value belongs to is a facet that is selected.
+//     * 
+//     * <p>The facet is is selected if any category value under the facet is selected.</p>
+//     * @param cDef
+//     * @param selectedCategories
+//     * @return
+//     */
+//    public static boolean isFacetSelected(CategoryDefinition cDef, Map<String, List<String>> selectedCategories) {
+//        String keyPrefix = facetParamNamePrefix(cDef.getFacetName());
+//        return selectedCategories.keySet().stream().anyMatch(k -> k.startsWith(keyPrefix));
+//    }
+//    
+//    /**
+//     * Checks if the facet that the category value belongs to is a facet that is selected.
+//     * 
+//     * <p>The facet is is selected if any category value under the facet is selected.</p>
+//     * @param facetDefinition
+//     * @param selectedCategories
+//     * @return
+//     */
+//    public static boolean isFacetSelected(FacetDefinition facetDefinition, Map<String, List<String>> selectedCategories) {
+//        String keyPrefix = facetParamNamePrefix(facetDefinition.getName());
+//        return selectedCategories.keySet().stream().anyMatch(k -> k.startsWith(keyPrefix));
+//    }
+//    
+//    /**
+//     * Gets the prefix of a faceted navigation category value prefix.
+//     * 
+//     *  <p>This is prefix of the key that is added to the URL if the category
+//     *  value is selected e.g. f.nameOfFacet|</p>
+//     * @param nameOfFacet
+//     * @return
+//     */
+//    public static String facetParamNamePrefix(String nameOfFacet) {
+//        return RequestParameters.FACET_PREFIX + nameOfFacet + CategoryDefinition.QS_PARAM_SEPARATOR;
+//    }
     
     /**
      * Remove the query key value pair from the queryStringMap looking in the facetScope param as well.

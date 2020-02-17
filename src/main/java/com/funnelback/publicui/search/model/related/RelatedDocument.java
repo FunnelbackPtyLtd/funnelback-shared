@@ -1,10 +1,9 @@
 package com.funnelback.publicui.search.model.related;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import com.funnelback.common.config.CollectionId;
+import java.net.URI;
 
 import lombok.Data;
 

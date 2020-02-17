@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 import java.net.URI;
 
-import java.net.URI;
-
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -18,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.PrePersist;
 
-import com.funnelback.common.function.Predicates;
 import com.funnelback.publicui.search.model.padre.Result;
 
 import lombok.Getter;
@@ -72,7 +69,7 @@ public class ClickHistory extends SessionResult {
         ch.getMetaData().putAll(r.getMetaData()
                 .entrySet()
                 .stream()
-                .filter(e -> Predicates.containedBy(metadataClassToRecord).test(e.getKey()))
+                .filter(e -> metadataClassToRecord.contains(e.getKey()))
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
         
         return ch;

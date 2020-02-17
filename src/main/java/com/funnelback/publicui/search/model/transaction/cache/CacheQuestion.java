@@ -1,7 +1,8 @@
 package com.funnelback.publicui.search.model.transaction.cache;
 
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.publicui.search.model.collection.Collection;
+import java.util.Collection;
+
+import com.funnelback.publicui.search.model.collection.SearchPackageConfig;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,14 +24,14 @@ public class CacheQuestion {
      */
     @NonNull
     @Getter @Setter
-    private Collection collection;
+    private SearchPackageConfig collection;
     
     /**
      * Profile where to lookup the cached copies template to use 
      */
     @NonNull
     @javax.validation.constraints.Pattern(regexp="[\\w-_]+")
-    @Getter @Setter private String profile = DefaultValues.DEFAULT_PROFILE;
+    @Getter @Setter private String profile = "_default";
     
     /**
      * <p>Form (template) to use to render the cached copy</p>
@@ -41,7 +42,7 @@ public class CacheQuestion {
     @NonNull
     @javax.validation.constraints.Pattern(regexp="[\\w-_]+")        
     @Getter @Setter
-    private String form = DefaultValues.DEFAULT_FORM;
+    private String form = "simple";
     
     /**
      * URL of the document to retrieve the cached copy of

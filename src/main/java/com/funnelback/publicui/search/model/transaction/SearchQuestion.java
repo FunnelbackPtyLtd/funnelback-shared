@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.transaction;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -15,14 +17,10 @@ import java.security.Principal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.funnelback.common.Environment.FunnelbackVersion;
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.collection.Profile;
+import com.funnelback.publicui.search.model.collection.SearchPackageConfig;
+import com.funnelback.publicui.search.model.collection.ServiceConfig;
 import com.funnelback.publicui.search.model.geolocation.Location;
 import com.funnelback.publicui.search.model.log.Log;
-import com.funnelback.publicui.search.model.profile.ServerConfigReadOnlyWhichAlsoHasAStringGetMethod;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
 import com.google.common.collect.ListMultimap;
@@ -84,14 +82,14 @@ public class SearchQuestion {
     /**
      * Searched {@link Collection}.
      */
-    @Getter @Setter private Collection collection;
+    @Getter @Setter private SearchPackageConfig collection;
 
     /**
-     * Search {@link Profile}, defaulting to "_default"
+     * The profile to search with, defaulting to "_default".
      */
     @NonNull
     @javax.validation.constraints.Pattern(regexp="[\\w-_]+")
-    @Getter @Setter private String profile = DefaultValues.DEFAULT_PROFILE;
+    @Getter @Setter private String profile = "_default";
 
     /**
      * The profile which will be used for the request. This one will always correspond to the
@@ -111,9 +109,12 @@ public class SearchQuestion {
      * Returns the (modern) config of the currentProfile
      */
     // XStream won't serialize getters it seems, excluded from Jackson on the class
-    public ServiceConfigReadOnly getCurrentProfileConfig() {
-        return new ServerConfigReadOnlyWhichAlsoHasAStringGetMethod(collection.getProfiles().get(currentProfile).getServiceConfig());
+    public ServiceConfig getCurrentProfileConfig() {
+        return serviceConfigProvider.apply(this);
     }
+    
+    @Setter @JsonIgnore @XStreamOmitField
+    private Function<SearchQuestion, ServiceConfig> serviceConfigProvider = sq -> null;
     
     /**
      * Specific component of a meta-collection to query
@@ -125,7 +126,7 @@ public class SearchQuestion {
      */
     @NonNull
     @javax.validation.constraints.Pattern(regexp="[\\w-_]+")        
-    @Getter @Setter private String form = DefaultValues.DEFAULT_FORM;
+    @Getter @Setter private String form = "simple";
     
     /**
      * Contextual Navigation: last clicked cluster
@@ -432,7 +433,7 @@ public class SearchQuestion {
      * 
      * @since 15.12
      */
-    @Getter @Setter private FunnelbackVersion funnelbackVersion;
+    @Getter @Setter private FunnelbackVersionI funnelbackVersion;
     
     
     /**

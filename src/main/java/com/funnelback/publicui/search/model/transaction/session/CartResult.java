@@ -57,15 +57,16 @@ public class CartResult extends SessionResult {
         return super.getCollection();
     }
     
-    public static CartResult from(CartResultDBModel dbmodel) {
-        return new CartResult(dbmodel.getUserId(), 
-            dbmodel.getCollectionIdForIndexUrl(), 
-            dbmodel.getIndexUrl().toString(), 
-            dbmodel.getTitle(), 
-            dbmodel.getSummary(), 
-            dbmodel.getAddedDate(),
-            dbmodel.getMetaData());
-    }
+    // TODO move a roo
+//    public static CartResult from(CartResultDBModel dbmodel) {
+//        return new CartResult(dbmodel.getUserId(), 
+//            dbmodel.getCollectionIdForIndexUrl(), 
+//            dbmodel.getIndexUrl().toString(), 
+//            dbmodel.getTitle(), 
+//            dbmodel.getSummary(), 
+//            dbmodel.getAddedDate(),
+//            dbmodel.getMetaData());
+//    }
     
     
     public static CartResult fromResult(Result r) {

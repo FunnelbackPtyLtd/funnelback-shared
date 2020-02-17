@@ -1,7 +1,8 @@
 package com.funnelback.publicui.search.model.transaction;
 
-import com.funnelback.common.padre.ResultPacket;
+
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
 
 /**
  * Convenience utilities for {@link SearchTransaction}.
