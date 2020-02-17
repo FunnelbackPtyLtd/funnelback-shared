@@ -171,6 +171,10 @@ public interface IndexConfigProvider {
      * }]
      * </code>
      * 
+     * During query processing each facet must have a unique name. Facets defined on the profile
+     * will be used in preference to facets defined from the plugin. After that facets from plugins will
+     * be used so long as the facet, by name, does not already exist.
+     * 
      * 
      * @return JSON as a string which contains a list of facet definitions as returned by the
      * API. 
