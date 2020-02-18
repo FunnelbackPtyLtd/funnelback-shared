@@ -20,7 +20,7 @@ public interface IndexConfigProvider {
      * 
      * Invalid formats are likely to cause indexing errors.
      * 
-     * FUN-13612
+     * FUN-13689
      */
     public default InputStream externalMetadata(IndexConfigProviderContext context) {
         return null;
@@ -148,18 +148,20 @@ public interface IndexConfigProvider {
     /**
      * Supply additional faceted navigation configuration.
      * 
-     * Additional faceted navigation is supplied as a JSON similar to the API.
+     * Additional faceted navigation is supplied as a JSON similar to the API
+     * <code>
+     * GET /faceted-navigation/v2/collections/{collection}/profiles/{profile}/facet/{id}/views/{view}
+     * <code>
      * 
      * This expects to return a list <code>[]</code> of Facets. The id,
      * lastModified and created fields do not need to be set.
      * 
-     * It may be easier to design the facets you want using the UI, then use the API
-     * to get out each facet you want:
-     * GET /faceted-navigation/v2/collections/{collection}/profiles/{profile}/facet/{id}/views/{view}
-     * The value wanted is what is set in the <code>data</code> field. Then string the facet 
-     * definitions together as a JSON array.
+     * Since the acceptable combinations of facets is complicated, it may be easier 
+     * to design the facets you want using the faceted navigation UI. After configuring 
+     * your facet, extract the facet configuration JSON from the preview screen and omit the 
+     * id, lastModified and created fields.
      * 
-     * For example this could return:
+     * For example:
      * <code>
      * [{
      * "name": "Authors",
