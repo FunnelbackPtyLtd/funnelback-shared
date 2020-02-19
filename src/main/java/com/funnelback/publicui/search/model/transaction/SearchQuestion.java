@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.collection.SearchPackageConfig;
 import com.funnelback.publicui.search.model.collection.ServiceConfig;
 import com.funnelback.publicui.search.model.geolocation.Location;
-import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
 import com.google.common.collect.ListMultimap;
@@ -245,13 +244,13 @@ public class SearchQuestion {
     @Getter @Setter private boolean impersonated;
     
     /**
-     * Request identifier to log for this transaction. Depending of the collection configuration
+     * Request identifier to log for this transaction. Depending on the collection configuration
      * it can be an IP address, an md5 hash of the address, nothing ("-") or null.
      * 
      *  @since 12.4 - Renamed from <code>userId</code>
      *  @since 12.5 - Renamed from <code>userIdToLog</code>
      */
-    @Getter @Setter private String requestId = Log.REQUEST_ID_NOTHING;
+    @Getter @Setter private String requestId = "-";
     
     /**
      * Defines if the query should be logged or not, or if it should fall back to default.

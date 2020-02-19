@@ -1,8 +1,8 @@
 package com.funnelback.publicui.search.model.padre;
 
-import groovy.transform.ToString;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * The smallest bounding box the coordinates of all result within the daat limit.

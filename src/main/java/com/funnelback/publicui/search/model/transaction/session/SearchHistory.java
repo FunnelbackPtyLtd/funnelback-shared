@@ -97,7 +97,6 @@ public class SearchHistory {
      */
     public void setSearchParams(String params) {
         this.searchParams = params;
-        this.searchParamsSignature = URLSignature.computeQueryStringSignature(searchParams);
     }
     
 }

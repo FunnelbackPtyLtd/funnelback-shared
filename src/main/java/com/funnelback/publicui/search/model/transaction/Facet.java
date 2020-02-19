@@ -1,10 +1,7 @@
 package com.funnelback.publicui.search.model.transaction;
-import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_CONSTRAINT_JOIN;
-import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_ORDER;
-import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_SELECTION_TYPE;
-import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_VALUES;
-
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +17,10 @@ import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
-import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType;
 import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
 import com.funnelback.publicui.xml.FacetConverter;
+import com.google.common.base.Function;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -147,7 +144,11 @@ public class Facet {
      */
     @Deprecated
     public Facet(String name) {
-        this(name, LEGACY_FACET_SELECTION_TYPE, LEGACY_FACET_CONSTRAINT_JOIN, LEGACY_FACET_VALUES, LEGACY_FACET_ORDER);
+        this(name, 
+            FacetSelectionType.SINGLE,
+            FacetConstraintJoin.LEGACY,
+            FacetValues.FROM_SCOPED_QUERY,
+            List.of(FacetValuesOrder.SELECTED_FIRST, FacetValuesOrder.COUNT_DESCENDING));
     }
     
     @Override
@@ -203,10 +204,49 @@ public class Facet {
     
     private Stream<Facet.CategoryValue> getValuesAsStream() {
          return this.getCategories().stream()
-            .flatMap(Flattener.mapper(Category::getCategories))
+            .flatMap(mapper(Category::getCategories))
             .map(Category::getValues)
             .flatMap(List::stream)
             .sorted(comparatorForSorting());
+    }
+    
+    /**
+     * Clone from com.funnelback.common.function.StreamUtils.ofNullableSingle(T)
+     * 
+     * @param <T>
+     * @param a
+     * @return
+     */
+    public static <T> Stream<T> ofNullableSingle(T a) {
+        if(a == null) return Stream.empty();
+        return Stream.of(a);
+    }
+    
+    /**
+     * Clone from com.funnelback.common.function.Flattener.flatten(T, Function<T, Collection<T>>)
+     * 
+     * @param <T>
+     * @param value
+     * @param getChildren
+     * @return
+     */
+    private static <T>  Stream<T> flatten(T value, Function<T, Collection<T>> getChildren) {
+        // This is a more generic form of:
+        // https://stackoverflow.com/questions/32656888/recursive-use-of-stream-flatmap
+        return Stream.concat(ofNullableSingle(value), 
+            Optional.ofNullable(value).map(getChildren::apply).orElse(Collections.emptyList()).stream()
+                .flatMap(child -> flatten(child, getChildren)));
+    }
+    
+    /**
+     * Clone from com.funnelback.common.function.Flattener.mapper(Function<T, Collection<T>>)
+     * 
+     * @param <T>
+     * @param getChildren
+     * @return
+     */
+    private static <T> Function<T, Stream<T>> mapper(Function<T, Collection<T>> getChildren) {
+        return (value) -> flatten(value, getChildren);
     }
     
     @JsonIgnore

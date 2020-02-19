@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.funnelback.common.config.DefaultValues.FacetedNavigation.DateSortMode;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 
 /**
@@ -32,24 +31,15 @@ public class ByDateComparator implements Comparator<CategoryValue> {
         DATE_LABELS_VALUES.put("Uncertain", 900000);
     }
     
-    private final DateSortMode sortMode;
-    
     private final Comparator<Integer> comparator;
 
-    public ByDateComparator(DateSortMode sortMode) {
-        if (! DateSortMode.adate.equals(sortMode)
-            && ! DateSortMode.ddate.equals(sortMode)) {
-            throw new IllegalArgumentException("Unsupported sort mode " + sortMode);
-        }
-        
+    public ByDateComparator(boolean ascending) {
         Comparator<Integer> comparator = Comparator.naturalOrder();
-        if(!DateSortMode.adate.equals(sortMode)) {
+        if(!ascending) {
             comparator = comparator.reversed();
         }
         
         this.comparator = Comparator.nullsLast(comparator);
-        
-        this.sortMode = sortMode;
     }
     
     @Override

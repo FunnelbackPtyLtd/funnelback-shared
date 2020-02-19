@@ -10,48 +10,6 @@
         <version>15.25.2006-SNAPSHOT</version>
         <relativePath></relativePath>
     </parent>
-
-    <profiles>
-        <profile>
-            <!-- Only call doco generator if tests are enabled, otherwise the test 
-                class is not found and the build fails -->
-            <activation>
-                <property>
-                    <name>!maven.test.skip</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.2.1</version>
-                        <configuration>
-                            <classpathScope>test</classpathScope>
-                            <mainClass>com.funnelback.publicui.test.search.model.GenerateDataModelDoco</mainClass>
-                            <arguments>
-                                <argument>${project.basedir}/src/main/javadoc/overview.html</argument>
-                            </arguments>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-    <properties>
-        <liquibase.url>jdbc:h2:${env.SEARCH_HOME}/databases/search-session</liquibase.url>
-        <liquibase.driver>org.h2.Driver</liquibase.driver>
-    </properties>
-
     <build>
         <finalName>funnelback-${project.artifactId}-${project.version}</finalName>
         <plugins>
@@ -150,60 +108,18 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.vibur</groupId>
-            <artifactId>vibur-object-pool</artifactId>
-            <version>25.0</version>
-        </dependency>
-        <dependency>
-            <artifactId>funnelback-api-client-core</artifactId>
-            <groupId>com.funnelback.api.client</groupId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-oxm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency>
-<!--         <dependency> -->
-<!--             <groupId>com.funnelback</groupId> -->
-<!--             <artifactId>funnelback-common</artifactId> -->
-<!--             <version>${project.version}</version> -->
-<!--         </dependency> -->
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -218,21 +134,9 @@
             <artifactId>log4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.maxmind.geoip</groupId>
-            <artifactId>geoip-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.1-api</artifactId>
             <version>1.0.0.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -241,6 +145,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

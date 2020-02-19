@@ -1,16 +1,26 @@
 package com.funnelback.publicui.search.model.transaction.facet;
 
+import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin.AND;
+import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin.OR;
+import static com.funnelback.common.facetednavigation.models.FacetSelectionType.MULTIPLE;
+import static com.funnelback.common.facetednavigation.models.FacetSelectionType.SINGLE;
+import static com.funnelback.common.facetednavigation.models.FacetSelectionType.SINGLE_AND_UNSELECT_OTHER_FACETS;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_SCOPED_QUERY;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_SCOPED_QUERY_HIDE_UNSELECTED_PARENT_VALUES;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_ALL_QUERY;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_QUERY;
+import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.CHECKBOX;
+import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.RADIO_BUTTON;
+import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.SINGLE_DRILL_DOWN;
+import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.TAB;
+import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.getType;
+
+import java.util.stream.Stream;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.common.facetednavigation.models.FacetValues;
-import com.funnelback.common.function.StreamUtils;
-
-import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.getType;
-import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.*;
-import static com.funnelback.common.facetednavigation.models.FacetSelectionType.*;
-import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin.*;
-import static com.funnelback.common.facetednavigation.models.FacetValues.*;
 
 public class FacetDisplayTypeTest {
 
@@ -18,7 +28,7 @@ public class FacetDisplayTypeTest {
     public void testCheckBox() {
         Assert.assertEquals(CHECKBOX, getType(MULTIPLE, AND, FROM_SCOPED_QUERY));
         Assert.assertEquals(CHECKBOX, getType(MULTIPLE, OR, FROM_SCOPED_QUERY));
-        StreamUtils.ofNullable(FacetValues.values())
+        Stream.of(FacetValues.values())
          .forEach(facetValue -> Assert.assertEquals(CHECKBOX, getType(MULTIPLE, OR, facetValue)));
     }
     

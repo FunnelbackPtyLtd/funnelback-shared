@@ -1,12 +1,10 @@
 package com.funnelback.publicui.search.model.padre;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.collections.Transformer;
 
 import com.funnelback.publicui.search.model.util.map.AutoConvertingMap;
 import com.funnelback.publicui.search.model.util.map.Converters;
@@ -366,32 +364,22 @@ public class ResultPacket {
      * @return A list containing both {@link Result} and {@link TierBar}, in
      * the order returned by PADRE.
      */
-    @SuppressWarnings("unchecked")
     public List<ResultType> getResultsWithTierBars() {
-        try {
-            if (tierBars.size() > 0) {
-                ArrayList<ResultType> out = new ArrayList<ResultType>();
-                for (TierBar tb: getTierBars()) {
-                    out.add(tb);
-                    for (Result r: getResults().subList(tb.getFirstRank(), tb.getLastRank())) {
-                        out.add(r);
-                    }
+        if (tierBars != null && tierBars.size() > 0) {
+            ArrayList<ResultType> out = new ArrayList<ResultType>();
+            for (TierBar tb: getTierBars()) {
+                out.add(tb);
+                for (Result r: getResults().subList(tb.getFirstRank(), tb.getLastRank())) {
+                    out.add(r);
                 }
-                return out;            
-            } else {
-                return ListUtils.transformedList(getResults(), new Transformer() {
-                    @Override
-                    public Object transform(Object o) {
-                        return (ResultType) o;
-                    }
-                });
             }
-        } catch (Throwable t) {
-            // Ignore errors
-            return new ArrayList<ResultType>();
+            return out;            
+        } else {
+            return Collections.unmodifiableList(this.getResults());
         }
     }
     
+    // TODO remove this.
     /** Constants for the PADRE XML result packet tags. */
     public static final class Schema {
         

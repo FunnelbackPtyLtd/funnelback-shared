@@ -121,7 +121,7 @@ public class SearchResponse {
      * 
      * @since 12.4
      */
-    @Getter @Setter private org.springframework.util.StopWatch performanceMetrics;
+    @Getter @Setter private Object performanceMetrics;
     
     /**
      * @return true if the {@link #resultPacket} is not null.

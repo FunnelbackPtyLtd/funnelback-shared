@@ -9,8 +9,6 @@ import java.util.TreeSet;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.SneakyThrows;
 
 /**
@@ -65,7 +63,10 @@ public class URLSignature {
             }
         }
         
-        return (StringUtils.join(keyList, "") + StringUtils.join(valueList, ""));
+        StringBuilder sb = new StringBuilder();
+        keyList.forEach(sb::append);
+        valueList.forEach(sb::append);
+        return sb.toString();
     }
     
 }

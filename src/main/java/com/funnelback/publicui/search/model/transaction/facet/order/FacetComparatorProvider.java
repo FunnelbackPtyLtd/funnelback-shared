@@ -6,14 +6,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections.ComparatorUtils;
-
-import com.funnelback.common.config.DefaultValues.FacetedNavigation.DateSortMode;
 import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
-import com.funnelback.common.function.TakeWhile;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.google.common.collect.ImmutableMap;
+
+import lombok.AllArgsConstructor;
 
 public class FacetComparatorProvider {
 
@@ -27,8 +25,8 @@ public class FacetComparatorProvider {
         .put(FacetValuesOrder.LABEL_DESCENDING, FacetComparators.BY_LABEL_DESCENDING)
         .put(FacetValuesOrder.LABEL_AS_NUMBER_ASCENDING, FacetComparators.BY_LABEL_AS_NUMBER_ASCENDING)
         .put(FacetValuesOrder.LABEL_AS_NUMBER_DESCENDING, FacetComparators.BY_LABEL_AS_NUMBER_DESCENDING)
-        .put(FacetValuesOrder.DATE_ASCENDING, new ByDateComparator(DateSortMode.adate))
-        .put(FacetValuesOrder.DATE_DESCENDING, new ByDateComparator(DateSortMode.ddate))
+        .put(FacetValuesOrder.DATE_ASCENDING, new ByDateComparator(true))
+        .put(FacetValuesOrder.DATE_DESCENDING, new ByDateComparator(false))
         .build();
     
     Comparator<Facet.CategoryValue> getComparator(FacetValuesOrder orderToSortBy, Optional<Comparator<Facet.CategoryValue>> customComparator) {
@@ -49,8 +47,26 @@ public class FacetComparatorProvider {
         if(ordersToSortBy == null || ordersToSortBy.isEmpty()) {
             return new AsIsComparator();
         }
-        return ComparatorUtils.chainedComparator(ordersToSortBy.stream().map(o -> getComparator(o, customComparator)).collect(Collectors.toList()));
+        
+        List<Comparator<Facet.CategoryValue>> comparators = ordersToSortBy.stream().map(o -> getComparator(o, customComparator)).collect(Collectors.toList());
+        return new ChainComparator<>(comparators);
     }
+    
+    @AllArgsConstructor
+    private static class ChainComparator<T> implements Comparator<T> {
+        private List<Comparator<T>> comparatorList;   
+        
+        @Override
+        public int compare(T o1, T o2) {
+            for(Comparator<T> comparator : comparatorList) {
+                int res = comparator.compare(o1, o2);
+                if(res != 0) return res;
+            }
+            return 0;
+        }
+        
+    }
+    
     
     /**
      * This is the comparator to use when we are sorting values that come from a Single CategoryDefinition.
@@ -83,9 +99,9 @@ public class FacetComparatorProvider {
         // do this as the comparator CATEGORY_DEFINITION_ORDER allways returns zero
         // as it wants to preserve the ordering, that will result in the following
         // comparators being used, so we remove them.
-        return makeComparatorChain(TakeWhile
-                            .takeWhile(o -> o != FacetValuesOrder.CATEGORY_DEFINITION_ORDER, ordersToSortBy.stream())
-                            .collect(Collectors.toList()), customComparator);
+        return makeComparatorChain(
+            ordersToSortBy.stream().takeWhile(o -> o != FacetValuesOrder.CATEGORY_DEFINITION_ORDER).collect(Collectors.toList()),
+            customComparator);
     }
     
     private static class AsIsComparator implements Comparator<Facet.CategoryValue> {

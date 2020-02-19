@@ -13,12 +13,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 
-import org.apache.tools.ant.taskdefs.optional.junit.BaseTest;
-
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 
 @RunWith(Parameterized.class)
-public abstract class FacetComparatorBaseTest extends BaseTest {
+public abstract class FacetComparatorBaseTest {
     
     @Parameter(0)
     public List<CategoryValue> input;
