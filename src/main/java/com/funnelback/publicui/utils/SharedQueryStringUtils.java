@@ -11,9 +11,10 @@ import java.net.URLDecoder;
 import lombok.SneakyThrows;
 
 /**
- * Utilities for manipulating query strings
+ * Utilities for manipulating query strings.
+ *  
  */
-public class QueryStringUtils {
+public class SharedQueryStringUtils {
     
     /**
      * Convert a query string to Map

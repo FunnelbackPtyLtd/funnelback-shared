@@ -8,9 +8,9 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.funnelback.publicui.utils.QueryStringUtils;
+import com.funnelback.publicui.utils.SharedQueryStringUtils;
 
-public class QueryStringUtilsTests {
+public class SharedQueryStringUtilsTests {
     
     @Test
     public void testToMap() {
@@ -24,7 +24,7 @@ public class QueryStringUtilsTests {
             + "&param7=something%26with%26ampersands"
             + "&foo";
         
-        Map<String, List<String>> map = QueryStringUtils.toMap("?" + input);
+        Map<String, List<String>> map = SharedQueryStringUtils.toMap("?" + input);
         
         Assert.assertEquals(Arrays.asList(new String[] {"value1"}), map.get("param1"));
         Assert.assertEquals(Arrays.asList(new String[] {"first value", "second value"}), map.get("param2"));
@@ -34,7 +34,7 @@ public class QueryStringUtilsTests {
         Assert.assertEquals(Arrays.asList(new String[] {"something=with=equals"}), map.get("param6"));
         Assert.assertEquals(Arrays.asList(new String[] {"something&with&ampersands"}), map.get("param7"));
         
-        map = QueryStringUtils.toMap(input);
+        map = SharedQueryStringUtils.toMap(input);
 
         Assert.assertEquals(Arrays.asList(new String[] {"value1"}), map.get("param1"));
         Assert.assertEquals(Arrays.asList(new String[] {"first value", "second value"}), map.get("param2"));
@@ -47,7 +47,7 @@ public class QueryStringUtilsTests {
     
     @Test
     public void testToMapEmptyString() {
-        Assert.assertEquals(new HashMap<>(), QueryStringUtils.toMap(""));
+        Assert.assertEquals(new HashMap<>(), SharedQueryStringUtils.toMap(""));
     }
     
 }

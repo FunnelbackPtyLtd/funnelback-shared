@@ -51,7 +51,7 @@ public class URLSignature {
         List<String> keyList = new ArrayList<String>();
         List<String> valueList = new ArrayList<String>();
         
-        Map<String, String[]> params = QueryStringUtils.toArrayMap(queryString);
+        Map<String, String[]> params = SharedQueryStringUtils.toArrayMap(queryString);
         SortedSet<String> sortedKeys = new TreeSet<String>(params.keySet());
         for (String key: sortedKeys) {
             keyList.add(URLDecoder.decode(key, "UTF-8"));
