@@ -13,7 +13,7 @@ import com.funnelback.plugin.index.model.querycompletion.QueryCompletionCSV;
  * An interface that my be implemented in a plugin to control indexing.
  *
  */
-public interface IndexConfigProvider {
+public interface IndexingConfigProvider {
 
     /**
      * Return external metadata in the raw format as defined in documentation.
