@@ -20,7 +20,25 @@ public interface IndexingConfigProvider {
      * 
      * Invalid formats are likely to cause indexing errors.
      * 
-     * FUN-13689
+     * Each external metadata provided by plugins and from conf, do no interact with 
+     * each other. This means if two plugins provided an entry for the same URL pattern
+     * and the same metadata, both values would be applied. e.g.
+     * Plugin 1 provides:
+     * <code>
+     * http://example.com/a foo:bar
+     * </code>
+     * plugin 2 provides:
+     * <code>
+     * http://example.com/a foo:foobar
+     * </code>
+     * 
+     * A document like:
+     * <code>
+     * http://example.com/a
+     * </code>
+     * Would have both metadata values "bar" and "foobar" in the metadata class "foo".
+     * 
+     * 
      */
     public default InputStream externalMetadata(IndexConfigProviderContext context) {
         return null;
