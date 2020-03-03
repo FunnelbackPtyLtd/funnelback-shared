@@ -1,3 +1,5 @@
+package curator
+
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 public class TestTrigger implements com.funnelback.publicui.search.model.curator.trigger.GroovyTriggerInterface {
