@@ -1,6 +1,5 @@
 package com.funnelback.plugin.gatherer;
 
-import java.io.IOException;
 import java.net.URI;
 
 import com.google.common.collect.ListMultimap;
@@ -18,11 +17,9 @@ public interface PluginStore {
      * value, and the value must follow the HTTP Content-Type header syntax. Further
      * the Content-Type value must declare the type of the content and if the Charset
      * of the content.
-     *  
-     * @throws IOException
      */
     public void store(URI uri,
         byte[] content,
-        ListMultimap<String, String> metadata) throws IOException;
+        ListMultimap<String, String> metadata);
     
 }

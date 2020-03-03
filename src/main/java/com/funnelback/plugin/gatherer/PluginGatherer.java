@@ -1,6 +1,6 @@
 package com.funnelback.plugin.gatherer;
 
-public interface GathererPlugin {
+public interface PluginGatherer {
 
     /**
      * 
