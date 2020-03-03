@@ -1,3 +1,5 @@
+package curator
+
 import java.util.Map;
 
 import com.funnelback.publicui.search.model.curator.config.Action.Phase;
