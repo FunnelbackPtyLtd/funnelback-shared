@@ -1,5 +1,11 @@
 package com.funnelback.plugin.gatherer;
 
+/**
+ * A plugin may implement this if the plugin is to support gathering of documents.
+ * 
+ * The plugin will only be called on custom collections.
+ *
+ */
 public interface PluginGatherer {
 
     /**
