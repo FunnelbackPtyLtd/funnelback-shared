@@ -8,7 +8,6 @@
         <groupId>com.funnelback</groupId>
         <artifactId>funnelback-shared-parent</artifactId>
         <version>15.25.2007-SNAPSHOT</version>
-        <relativePath></relativePath>
     </parent>
     <build>
         <finalName>funnelback-${project.artifactId}-${project.version}</finalName>
