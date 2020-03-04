@@ -10,7 +10,7 @@ import com.funnelback.filter.api.documents.NoContentDocument;
  * Filters a document where the content is converted to a byte[].
  * 
  * <p>The document will only call {@link #filterAsBytesDocument(BytesDocument, FilterContext)}
- * if {@link #canFilter(FilterableDocument, FilterContext)} returns true.</p>
+ * if {@link #canFilter(NoContentDocument, FilterContext)} returns true.</p>
  * 
  *
  */
@@ -44,7 +44,7 @@ public interface BytesDocumentFilter extends Filter {
     
     /**
      * Filters the {@link BytesDocument}
-     * <p>Called when {@link #canFilter(FilterableDocument, FilterContext)} returns
+     * <p>Called when {@link #canFilter(NoContentDocument, FilterContext)} returns
      * {@link PreFilterCheck#ATTEMPT_FILTER}</p> 
      * 
      * @param document to be filtered, which has been converted into a RawFilterableDocument
@@ -54,7 +54,7 @@ public interface BytesDocumentFilter extends Filter {
     public FilterResult filterAsBytesDocument(BytesDocument document, FilterContext context);
     
     /**
-     * Filter method responsible for calling {@link #canFilter(FilterableDocument, FilterContext)} and {@link #filterAsBytesDocument(BytesDocument, FilterContext)}
+     * Filter method responsible for calling {@link #canFilter(NoContentDocument, FilterContext)} and {@link #filterAsBytesDocument(BytesDocument, FilterContext)}
      * 
      * <p>Typically this method should not be overridden.</p>
      * {@inheritDoc}
@@ -62,7 +62,7 @@ public interface BytesDocumentFilter extends Filter {
     @Override
     public default FilterResult filter(FilterableDocument document, FilterContext context) {
         if(this.canFilter(document, context) == PreFilterCheck.ATTEMPT_FILTER) {
-            return this.filterAsBytesDocument(BytesDocument.from(document), context);
+            return this.filterAsBytesDocument(context.getDocumentTypeConverter().toBytesDocument(document), context);
         }
         return FilterResult.skipped();
     }

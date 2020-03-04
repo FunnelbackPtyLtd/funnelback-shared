@@ -10,7 +10,7 @@ import com.funnelback.filter.api.documents.StringDocument;
  * Filter a document where the content is converted to a String.
  * 
  * <p>The document will only call {@link #filterAsStringDocument(StringDocument, FilterContext)} 
- * if both {@link #canFilter(FilterableDocument, FilterContext)} returns true 
+ * if both {@link #canFilter(NoContentDocument, FilterContext)} returns true 
  * and the document can be converted into a String.</p>
  * 
  * <p>After a document has been converted into a StringDocument, the encoding 
@@ -50,7 +50,7 @@ public interface StringDocumentFilter extends Filter {
     /**
      * Filters the {@link StringDocument}
      * 
-     * <p>Called when {@link #canFilter(FilterableDocument, FilterContext)} returns
+     * <p>Called when {@link #canFilter(NoContentDocument, FilterContext)} returns
      * {@link PreFilterCheck#ATTEMPT_FILTER}</p> 
      * @param document to be filtered where the document content has been converted into a String
      * @param context under which the filter is running. 
@@ -59,16 +59,16 @@ public interface StringDocumentFilter extends Filter {
     public FilterResult filterAsStringDocument(StringDocument document, FilterContext context);
     
     /**
-     * Filter method responsible for calling {@link #canFilter(FilterableDocument, FilterContext)} and {@link #filterAsStringDocument(StringDocument, FilterContext)}
+     * Filter method responsible for calling {@link #canFilter(NoContentDocument, FilterContext)} and {@link #filterAsStringDocument(StringDocument, FilterContext)}
      * 
      * <p>Typically this method should not be overridden.</p>
      * {@inheritDoc}
      */
     public default FilterResult filter(FilterableDocument document, FilterContext context) {
         if(this.canFilter(document, context) == PreFilterCheck.ATTEMPT_FILTER) {
-            return StringDocument
-                .from(document).map(doc -> this.filterAsStringDocument(doc, context))
-                .orElse(FilterResult.skipped());
+            return context.getDocumentTypeConverter().toStringDocument(document)
+                    .map(doc -> this.filterAsStringDocument(doc, context))
+                    .orElse(FilterResult.skipped());
         }
         return FilterResult.skipped();
     }
