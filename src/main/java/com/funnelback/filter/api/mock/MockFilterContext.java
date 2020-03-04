@@ -8,12 +8,20 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.funnelback.filter.api.DocumentTypeFactory;
 import com.funnelback.filter.api.FilterContext;
+import com.funnelback.filter.api.FilterDocumentFactory;
+import com.funnelback.filter.context.DefaultDocumentTypeFactory;
+import com.funnelback.filter.context.DefaultFilterDocumentFactory;
 
 public class MockFilterContext implements FilterContext {
 
     @Getter @Setter private String collectionName;
     private Map<String, String> map;
+    
+    @Getter private final FilterDocumentFactory filterDocumentFactory = new DefaultFilterDocumentFactory();
+    
+    @Getter private final DocumentTypeFactory documentTypeFactory = new DefaultDocumentTypeFactory();
     
     private MockFilterContext() {
         collectionName = "dummy-filtering-mock-collection-"+System.currentTimeMillis();
@@ -37,6 +45,4 @@ public class MockFilterContext implements FilterContext {
     public static MockFilterContext getEmptyContext() {
         return new MockFilterContext();
     }
-
-    
 }
