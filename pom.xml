@@ -12,5 +12,6 @@
     </parent>
     <modules>
         <module>plugin-shared</module>
+        <module>plugin-archetypes</module>
     </modules>
 </project>

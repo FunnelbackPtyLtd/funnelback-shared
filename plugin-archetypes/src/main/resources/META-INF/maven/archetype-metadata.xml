@@ -1,0 +1,41 @@
+<archetype-descriptor>
+    <fileSets>
+        <fileSet filtered="true" packaged="true">
+            <directory>__version__/src/main/java</directory>
+        </fileSet>
+        <fileSet filtered="true">
+            <directory>__version__/src/main/resources</directory>
+            <includes>
+                <include>**/funnelback-plugin-__artifactId__.properties</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>__version__/libs</directory>
+        </fileSet>
+        <fileSet filtered="true">
+            <directory>__version__/tmp</directory>
+            <includes>
+                <include>*.java</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+    <requiredProperties>
+        <requiredProperty key="gatherer" >
+            <defaultValue>false</defaultValue>
+            <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
+        </requiredProperty>
+        <requiredProperty key="facets" >
+            <defaultValue>false</defaultValue>
+            <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
+        </requiredProperty>
+        <requiredProperty key="indexing" >
+            <defaultValue>false</defaultValue>
+            <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
+        </requiredProperty>
+        <requiredProperty key="searchLifeCycle" >
+            <defaultValue>false</defaultValue>
+            <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
+        </requiredProperty>
+        <requiredProperty key="archetypeVersion"> </requiredProperty>
+    </requiredProperties>
+</archetype-descriptor>
