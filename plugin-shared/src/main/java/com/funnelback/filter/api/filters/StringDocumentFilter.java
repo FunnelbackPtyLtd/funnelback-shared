@@ -66,7 +66,7 @@ public interface StringDocumentFilter extends Filter {
      */
     public default FilterResult filter(FilterableDocument document, FilterContext context) {
         if(this.canFilter(document, context) == PreFilterCheck.ATTEMPT_FILTER) {
-            return context.getDocumentTypeConverter().toStringDocument(document)
+            return context.getFilterDocumentFactory().toStringDocument(document)
                     .map(doc -> this.filterAsStringDocument(doc, context))
                     .orElse(FilterResult.skipped());
         }

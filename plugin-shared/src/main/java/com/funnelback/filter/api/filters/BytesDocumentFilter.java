@@ -62,7 +62,7 @@ public interface BytesDocumentFilter extends Filter {
     @Override
     public default FilterResult filter(FilterableDocument document, FilterContext context) {
         if(this.canFilter(document, context) == PreFilterCheck.ATTEMPT_FILTER) {
-            return this.filterAsBytesDocument(context.getDocumentTypeConverter().toBytesDocument(document), context);
+            return this.filterAsBytesDocument(context.getFilterDocumentFactory().toBytesDocument(document), context);
         }
         return FilterResult.skipped();
     }
