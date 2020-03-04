@@ -41,9 +41,15 @@ public interface DocumentType {
     public static final DocumentType MIME_CSV_TEXT = _DocumentType.builder().contentType("text/csv").build();
 
     /**
+     * Deprecated do not use, use MIME_XHTML instead.
+     */
+    @Deprecated
+    public static final DocumentType MIME_XHTML_TEXT = _DocumentType.builder().HTML(true).XML(true).contentType("text/xhtml").build();
+    
+    /**
      * Simple xhtml MIME type which should be used when a filter converts a document to xhtml.
      */
-    public static final DocumentType MIME_XHTML_TEXT = _DocumentType.builder().HTML(true).XML(true).contentType("text/xhtml").build();
+    public static final DocumentType MIME_XHTML = _DocumentType.builder().HTML(true).XML(true).contentType("application/xhtml+xml").build();
 
     /**
      * A mime type that is unknown. Filters may be written to detect this and replace the 
