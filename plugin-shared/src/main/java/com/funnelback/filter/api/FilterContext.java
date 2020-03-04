@@ -34,4 +34,20 @@ public interface FilterContext {
      * otherwise returns empty.
      */
     public Optional<String> getConfigValue(String key);
+    
+    /**
+     * Provides a DocumentTypeConverter, used to convert between filterable document types.
+     * 
+     * The implementation provided under testing may differ from the implementation provided
+     * under Funnelback e.g. during a crawl.
+     * 
+     * @return
+     */
+    public FilterDocumentFactory getFilterDocumentFactory();
+    
+    /**
+     * Provides a DocumentTypeFactory, may be used to construct  
+     * @return
+     */
+    public DocumentTypeFactory getDocumentTypeFactory();
 }

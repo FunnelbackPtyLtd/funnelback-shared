@@ -1,6 +1,9 @@
 package com.funnelback.filter.api;
 
-import com.funnelback.filter.ContentTypeDocumentType;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 /**
  * Holds the information describing the type of the document.
@@ -14,12 +17,12 @@ public interface DocumentType {
     /**
      * Simple html MIME type which should be used when a filter converts a document to html.
      */
-    public static final DocumentType MIME_HTML_TEXT = fromContentType("text/html");
+    public static final DocumentType MIME_HTML_TEXT = _DocumentType.builder().HTML(true).contentType("text/html").build();
     
     /**
      * Simple json MIME type which should be used when a filter converts a document to json.
      */
-    public static final DocumentType MIME_APPLICATION_JSON_TEXT = fromContentType("application/json");
+    public static final DocumentType MIME_APPLICATION_JSON_TEXT = _DocumentType.builder().JSON(true).contentType("application/json").build();
     
     /**
      * Simple json MIME type which should be used when a filter converts a document to json.
@@ -30,28 +33,34 @@ public interface DocumentType {
     /**
      * Simple xml MIME type which should be used when a filter converts a document to xml.
      */
-    public static final DocumentType MIME_XML_TEXT = fromContentType("text/xml");
+    public static final DocumentType MIME_XML_TEXT = _DocumentType.builder().XML(true).contentType("text/xml").build();
     
     /**
-     * Standard CSV MIME type which should be used when a filter converts a documen to CSV
+     * Standard CSV MIME type which should be used when a filter converts a document to CSV
      */
-    public static final DocumentType MIME_CSV_TEXT = fromContentType("text/csv");
+    public static final DocumentType MIME_CSV_TEXT = _DocumentType.builder().contentType("text/csv").build();
 
+    /**
+     * Deprecated do not use, use MIME_XHTML instead.
+     */
+    @Deprecated
+    public static final DocumentType MIME_XHTML_TEXT = _DocumentType.builder().HTML(true).XML(true).contentType("text/xhtml").build();
+    
     /**
      * Simple xhtml MIME type which should be used when a filter converts a document to xhtml.
      */
-    public static final DocumentType MIME_XHTML_TEXT = fromContentType("text/xhtml");
+    public static final DocumentType MIME_XHTML_XML = _DocumentType.builder().HTML(true).XML(true).contentType("application/xhtml+xml").build();
 
     /**
      * A mime type that is unknown. Filters may be written to detect this and replace the 
      * mime type with something better. 
      */
-    public static final DocumentType MIME_UNKNOWN = fromContentType("application/octet-stream");
+    public static final DocumentType MIME_UNKNOWN = _DocumentType.builder().contentType("application/octet-stream").build();
     
     /**
      * A document type for plain text documents.
      */
-    public static final DocumentType MIME_TEXT_PLAIN = fromContentType("text/plain");
+    public static final DocumentType MIME_TEXT_PLAIN = _DocumentType.builder().contentType("text/plain").build();
 
     /**
      * 
@@ -81,15 +90,18 @@ public interface DocumentType {
      */
     public String asContentType();
     
-    /**
-     * Creates a DocumentType from HTTP header Content-Type.
-     * 
-     * @param contentType the HTTP content type which will be used to create 
-     * DocumentType from.
-     * @return a DocumentType constructed from the given contentType.
-     */
-    public static DocumentType fromContentType(String contentType) {
-        return new ContentTypeDocumentType(contentType);
+    @Builder(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class _DocumentType implements DocumentType {
+
+        @Builder.Default @Getter public final boolean HTML = false;
+        @Builder.Default @Getter public final boolean XML = false;
+        @Builder.Default @Getter public final boolean JSON = false;
+        public final String contentType;
+
+        @Override
+        public String asContentType() {
+            return contentType;
+        }
     }
-        
 }
