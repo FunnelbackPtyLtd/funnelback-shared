@@ -6,7 +6,7 @@ import com.funnelback.filter.api.documents.BytesDocument;
 import com.funnelback.filter.api.documents.FilterableDocument;
 import com.funnelback.filter.api.documents.StringDocument;
 
-public interface FilterDocumentConverter {
+public interface FilterDocumentFactory {
 
     /**
      * Converts a FilterableDocument into a RawFilterableDocument
@@ -30,5 +30,17 @@ public interface FilterDocumentConverter {
      */
     public Optional<StringDocument> toStringDocument(FilterableDocument filterableDocument);
     
+    /**
+     * Constructs a StringDocument from a FilterableDocument, with the given mimeType and content.
+     * 
+     * <p>This may be used when converting from binary to a string form, such as pdf to html.</p>
+     * 
+     * @param filterableDocument which the resulting document will be cloned from.
+     * @param documentType of the given content.
+     * @param content the new content of the document as a String.
+     * @return A StringDocument which is the same as the given filterableDocument except with
+     * the given documentType and content.
+     */
+    public StringDocument toStringDocument(FilterableDocument filterableDocument, DocumentType documentType, String content);
     
 }

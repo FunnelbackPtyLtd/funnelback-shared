@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 import com.funnelback.filter.api.DocumentType;
 import com.funnelback.filter.api.DocumentTypeFactory;
 import com.funnelback.filter.api.FilterContext;
-import com.funnelback.filter.api.FilterDocumentConverter;
+import com.funnelback.filter.api.FilterDocumentFactory;
 import com.google.common.collect.ListMultimap;
 
 /**
@@ -22,7 +22,7 @@ public interface BytesDocument extends FilterableDocument {
      * Creates a clone of the document with the given content.
      * 
      * <p>If the charset is known, it usually better to create a new StringDocument using
-     * {@link FilterDocumentConverter#toStringDocument(FilterableDocument)} as most filters work on 
+     * {@link FilterDocumentFactory#toStringDocument(FilterableDocument)} as most filters work on 
      * Strings.</p>
      * 
      * @param documentType the type of content. Typically a predefined type from {@link DocumentType}

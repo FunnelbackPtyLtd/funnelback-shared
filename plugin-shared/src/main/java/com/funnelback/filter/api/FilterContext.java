@@ -43,7 +43,7 @@ public interface FilterContext {
      * 
      * @return
      */
-    public FilterDocumentConverter getDocumentTypeConverter();
+    public FilterDocumentFactory getFilterDocumentFactory();
     
     /**
      * Provides a DocumentTypeFactory, may be used to construct  
