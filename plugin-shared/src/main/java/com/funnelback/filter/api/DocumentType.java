@@ -49,7 +49,7 @@ public interface DocumentType {
     /**
      * Simple xhtml MIME type which should be used when a filter converts a document to xhtml.
      */
-    public static final DocumentType MIME_XHTML = _DocumentType.builder().HTML(true).XML(true).contentType("application/xhtml+xml").build();
+    public static final DocumentType MIME_XHTML_XML = _DocumentType.builder().HTML(true).XML(true).contentType("application/xhtml+xml").build();
 
     /**
      * A mime type that is unknown. Filters may be written to detect this and replace the 
