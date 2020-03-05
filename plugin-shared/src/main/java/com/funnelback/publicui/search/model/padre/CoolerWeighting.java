@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.model.padre;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,7 @@ import lombok.Setter;
  */
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class CoolerWeighting {
     
     /** Separator between the id and the name */
@@ -31,42 +33,6 @@ public class CoolerWeighting {
     /** Identifier */
     @Getter @Setter private int id;
     
-    /**
-     * <p>2 CoolerWeightings are considered equals
-     * if their name + id match.</p>
-     * 
-     * <p>Two different instances with the same name and id
-     * will be considered equal.</p>
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj != null) {
-            CoolerWeighting other = (CoolerWeighting) obj;
-            
-            if (other.getId() == this.getId()) {
-                return (other.getName() == null && this.getName() == null)
-                        || other.getName().equals(this.getName());
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     * <p>Hash code based on the name + id properties.</p>
-     * 
-     * <p>Two different instances with the same name and id
-     * will have the same hash code.</p>
-     */
-    @Override
-    public int hashCode() {
-        if (getName() != null) {
-            return getName().hashCode() + getId();
-        } else {
-            return getId();
-        }
-    }
-
     @Override
     public String toString() {
         // Be aware that this String representation will be used by
