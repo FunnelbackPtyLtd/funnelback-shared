@@ -35,11 +35,4 @@ public class ContextualNavigation {
      */
     @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
 
-    /** Constants for the PADRE XML result packet tags. */
-    public final static class Schema {
-        public static final String CONTEXTUAL_NAVIGATION = "contextual_navigation";
-        
-        public static final String SEARCH_TERMS = "search_terms";
-    }
-    
 }

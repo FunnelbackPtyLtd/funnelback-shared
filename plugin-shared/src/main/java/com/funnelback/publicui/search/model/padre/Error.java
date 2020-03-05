@@ -21,12 +21,5 @@ public class Error {
     /** Technical message for the administrator. */
     @Getter private String adminMsg;
     
-    /** Constants for the PADRE XML result packet tags. */
-    public static final class Schema {
-        public static final String ERROR = "error";
-        
-        public static final String USERMSG = "usermsg";
-        public static final String ADMINMSG = "adminmsg";        
-    }
 }
     

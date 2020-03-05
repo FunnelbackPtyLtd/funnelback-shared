@@ -29,27 +29,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Result implements ResultType {
-
-    /**
-     * Date format used to format a date when serialising
-     * a result object.
-     */
-    public static final String DATE_PATTERN_OUT = "d MMM yyyy";
-
-    /**
-     * Date formats used to parse dates in PADRE results.
-     */
-    public static final String[] DATE_PATTERNS_IN = {DATE_PATTERN_OUT, "MMM yyyy", "yyyy"};
-
-    /**
-     * String returned by PADRE when a result has no date.
-     */
-    public static final String NO_DATE = "No Date";
-
-    /**
-     * Prefix for Metadata fields in the MetaData Map.
-     */
-    public static final String METADATA_PREFIX = Schema.METADATA + "_";
     
     /** Rank of the result (From 1 to n) */
     @Getter @Setter private Integer rank;
@@ -292,50 +271,5 @@ public class Result implements ResultType {
      * @since 15.12
      */
     @Getter @Setter private boolean diversified = false;
-    
-    /** Constants for the PADRE XML result packet tags. */
-    public static final class Schema {
-        
-        // CHECKSTYLE:OFF
-        public static final String RESULT = "result";
-        
-        public static final String RANK = "rank";
-        public static final String SCORE = "score";
-        public static final String TITLE = "title";
-        public static final String COLLECTION = "collection";
-        public static final String COMPONENT = "component";
-        public static final String COLLAPSED = "collapsed";
-        public static final String LIVE_URL = "live_url";
-        public static final String SUMMARY = "summary";
-        public static final String ALL_SUMMARY_TEXT = "all_summary_text";
-        public static final String CACHE_URL = "cache_url";        
-        public static final String DATE = "date";
-        public static final String FILESIZE = "filesize";
-        public static final String FILETYPE = "filetype";
-        public static final String TIER = "tier";
-        public static final String DOCNUM = "docnum";
-        public static final String EXPLORE_LINK = "explore_link";
-        public static final String KM_FROM_ORIGIN = "km_from_origin";
-        public static final String EXPLAIN = "explain";
-        public static final String METADATA = "md";
-        public static final String METADATA_VALUE = "v";
-        public static final String TAGS = "tags";
-        public static final String RQ = "rq";
-        public static final String ATTR_METADATA_F = "f";
-        public static final String ATTR_METADATA_CLASS_SEPARATORS = "s";
-        public static final String ATTR_METADATA_VALUE_SEPARATOR = "s";
-        public static final String GSCOPES_SET = "gscopes_set";
-        
-        public static final String COLLAPSED_SIG = "sig";
-        public static final String COLLAPSED_COL = "col";
-        public static final String COLLAPSED_COUNT = "count";
-        
-        public static final String DOCUMENT_VISIBLE_TO_USER = "documentVisibleToUser";
-        
-        public static final String PROMOTED = "promoted";
-        public static final String DIVERSIFIED = "diversified";
-        
-        // CHECKSTYLE:ON
-    }
 }
 

@@ -38,15 +38,4 @@ public class BestBet {
      * stored by hook scripts.
      */
     @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
-    
-    /** Constants for the PADRE XML result packet tags. */
-    public static class Schema {
-        public static final String BB = "bb";
-        
-        public static final String BB_TRIGGER = "bb_trigger";
-        public static final String BB_LINK = "bb_link";
-        public static final String BB_TITLE = "bb_title";
-        public static final String BB_DESC = "bb_desc";    
-    }
-    
 }

@@ -72,12 +72,4 @@ public class Cluster {
             }
         }
     }
-    
-    /** Constants for the PADRE XML result packet tags. */
-    public final static class Schema {
-        public static final String CLUSTER = "cluster";
-        
-        public static final String HREF = "href";
-        public static final String COUNT = "count";
-    }
 }
