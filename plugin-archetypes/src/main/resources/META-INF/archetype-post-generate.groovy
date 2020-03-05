@@ -49,7 +49,7 @@ if(isFacetsEnabled) {
 }
 
 if(isSearchLifeCycleEnabled) {
-    enableImplementation("SearchLifeCyclePlugin", "com.funnelback.plugin.SearchLifeCyclePlugin")
+    enableImplementation("SearchLifeCycleImpl", "com.funnelback.plugin.SearchLifeCyclePlugin")
 }
 
 // Delete tmp directory and files
@@ -73,6 +73,11 @@ Files.walkFileTree(tmp, new SimpleFileVisitor<Path>() {
 def enableImplementation(String impl, String qualifiedInterface) {
     String className = impl + ".java"
     Path source = tmp.resolve(className)
-    Files.copy(source, target.resolve(pluginClassPrefix + className), StandardCopyOption.REPLACE_EXISTING)
+    Path destination = target.resolve(pluginClassPrefix + className)
+    Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
+    def fileCreated = destination.toFile()
+    // Change the internal reference of class name
+    def newContent= fileCreated.text.replace(impl, pluginClassPrefix + impl)
+    fileCreated.text = newContent
     propertiesFile.append(qualifiedInterface + "=" + groupId + "." + pluginClassPrefix + impl + "\n")
 }

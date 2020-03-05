@@ -15,20 +15,21 @@
         <!-- add your dependencies here -->
     </dependencies>
     <build>
+        <sourceDirectory>${version}/src/main/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>${version}/src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.basedir}/${version}/libs</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
