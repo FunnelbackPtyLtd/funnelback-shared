@@ -378,11 +378,4 @@ public class ResultPacket {
             return Collections.unmodifiableList(this.getResults());
         }
     }
-    
-    // TODO remove this.
-    
-    public static final class Schema {
-        
-        
-    }
 }

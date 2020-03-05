@@ -118,25 +118,4 @@ public class ResultsSummary {
      */
     @Getter @Setter private boolean resultDiversificationApplied;
 
-    /** Constants for the PADRE XML result packet tags. */
-    public static final class Schema {
-        
-        public static final String RESULTS_SUMMARY = "results_summary";
-        
-        public static final String FULLY_MATCHING = "fully_matching";
-        public static final String COLLAPSED = "collapsed";
-        public static final String PARTIALLY_MATCHING = "partially_matching";
-        public static final String TOTAL_MATCHING = "total_matching";
-        public static final String ESTIMATED_COUNTS = "estimated_counts";
-        public static final String ANY_URLS_PROMOTED = "any_urls_promoted";
-        public static final String CARRIED_OVER_FTD = "carried_over_ftd";
-        public static final String TOTAL_DISTINCT_MATCHING_URLS = "total_distinct_matching_urls";
-        public static final String NUM_RANKS = "num_ranks";
-        public static final String CURRSTART = "currstart";
-        public static final String CURREND = "currend";
-        public static final String PREVSTART = "prevstart";
-        public static final String NEXTSTART = "nextstart";
-        public static final String TOTAL_SECURITY_OBSCURED_URLS = "total_security_obscured_urls";
-    }
-    
 }

@@ -39,14 +39,5 @@ public class QuickLinks {
         @Getter @Setter private String text;
         @Getter @Setter private String url;
     }
-
-    /** Constants for the PADRE XML result packet tags. */
-    public static final class Schema {
-        public static final String QUICKLINKS = "quicklinks";
-        public static final String DOMAIN = "domain";
-        
-        public static final String QUICKLINK = "quicklink";        
-        public static final String QLTEXT = "qltext";
-        public static final String QLURL = "qlurl";
-    }
+    
 }

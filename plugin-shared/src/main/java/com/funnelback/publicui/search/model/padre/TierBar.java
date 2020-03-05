@@ -20,12 +20,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TierBar implements ResultType {
-
-    /**
-     * Date format used in tier bar, when the <tt>-event</tt>
-     * query processor option is used.
-     */
-    public static final String DATE_PATTERN = "yyyyMMdd";
     
     /** Number of query terms matched by this tier bar */
     @Getter @Setter private int matched;
@@ -58,15 +52,6 @@ public class TierBar implements ResultType {
         this.matched = matched;
         this.outOf = outOf;
         this.eventDate = eventDate;
-    }
-
-    /** Constants for the PADRE XML result packet tags. */
-    public final class Schema {
-        public static final String TIER_BAR = "tier_bar";
-        
-        public static final String MATCHED = "matched";
-        public static final String OUTOF = "outof";
-        public static final String EVENT_DATE = "event_date";
     }
     
 }

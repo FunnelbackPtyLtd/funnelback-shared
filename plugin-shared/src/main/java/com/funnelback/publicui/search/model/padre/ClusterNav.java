@@ -44,12 +44,4 @@ public class ClusterNav {
      * Label for this navigation item, such as "King Richard".
      */
     @Getter @Setter private String label;
-    
-    /** Constants for the PADRE XML result packet tags. */
-    public final static class Schema {
-        public static final String CLUSTER_NAV = "cluster_nav";
-        
-        public static final String LEVEL = "level";
-        public static final String URL = "url";
-    }
 }

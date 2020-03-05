@@ -43,15 +43,4 @@ public class Category {
         this.name = name;
         this.more = more;
     }
-    
-    /** Constants for the PADRE XML result packet tags. */
-    public final static class Schema {
-        public static final String CATEGORY = "category";
-        
-        public static final String NAME = "name";
-        public static final String MORE = "more";
-        
-        public static final String MORE_LINK = "more_link";
-        public static final String FEWER_LINK = "fewer_link";
-    }
 }
