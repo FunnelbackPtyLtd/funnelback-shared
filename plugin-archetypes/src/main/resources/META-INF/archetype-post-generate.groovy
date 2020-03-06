@@ -15,10 +15,10 @@ Path projectPath = Paths.get(request.outputDirectory, request.artifactId)
 properties = request.properties
 
 // the Java package of the generated project, e.g. com.acme
-groupId = request.groupId
+packageName = request.packageName
 
 // convert it into a path, e.g. com/acme
-packagePath = groupId.replace(".", "/")
+packagePath = packageName.replace(".", "/")
 
 boolean isGathererEnabled = Boolean.parseBoolean(properties.get("gatherer"))
 boolean isIndexingEnabled = Boolean.parseBoolean(properties.get("indexing"))
@@ -49,7 +49,7 @@ if(isFacetsEnabled) {
 }
 
 if(isSearchLifeCycleEnabled) {
-    enableImplementation("SearchLifeCyclePlugin", "com.funnelback.plugin.SearchLifeCyclePlugin")
+    enableImplementation("SearchLifeCycle", "com.funnelback.plugin.SearchLifeCyclePlugin")
 }
 
 // Delete tmp directory and files
@@ -73,6 +73,11 @@ Files.walkFileTree(tmp, new SimpleFileVisitor<Path>() {
 def enableImplementation(String impl, String qualifiedInterface) {
     String className = impl + ".java"
     Path source = tmp.resolve(className)
-    Files.copy(source, target.resolve(pluginClassPrefix + className), StandardCopyOption.REPLACE_EXISTING)
-    propertiesFile.append(qualifiedInterface + "=" + groupId + "." + pluginClassPrefix + impl + "\n")
+    Path destination = target.resolve(pluginClassPrefix + className)
+    Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
+    def fileCreated = destination.toFile()
+    // Change the internal reference of class name
+    def newContent= fileCreated.text.replace("class " + impl, "class " + pluginClassPrefix + impl)
+    fileCreated.text = newContent
+    propertiesFile.append(qualifiedInterface + "=" + packageName + "." + pluginClassPrefix + impl + "\n")
 }
