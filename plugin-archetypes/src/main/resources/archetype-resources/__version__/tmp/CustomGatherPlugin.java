@@ -1,4 +1,4 @@
-package ${groupId};
+package ${package};
 
 import com.funnelback.plugin.gatherer.PluginGatherContext;
 import com.funnelback.plugin.gatherer.PluginGatherer;
