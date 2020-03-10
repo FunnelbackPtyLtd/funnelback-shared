@@ -15,9 +15,9 @@
 
     <dependencies>
         <dependency>
-          <groupId>com.funnelback</groupId>
-          <artifactId>funnelback-shared</artifactId>
-          <version>${project.version}</version>
+            <groupId>com.funnelback</groupId>
+            <artifactId>funnelback-shared</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
