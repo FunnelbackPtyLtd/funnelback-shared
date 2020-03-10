@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>funnelback-shared-test</artifactId>
+    <packaging>jar</packaging>
+    <name>Plugin Shared Test Resources</name>
+    <parent>
+        <groupId>com.funnelback</groupId>
+        <artifactId>funnelback-shared-parent</artifactId>
+        <version>15.25.2009-SNAPSHOT</version>
+    </parent>
+    <build>
+        <finalName>funnelback-${project.artifactId}-${project.version}</finalName>
+    </build>
+
+    <dependencies>
+        <dependency>
+          <groupId>com.funnelback</groupId>
+          <artifactId>funnelback-shared</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>

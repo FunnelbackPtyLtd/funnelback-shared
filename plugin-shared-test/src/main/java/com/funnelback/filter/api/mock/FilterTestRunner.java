@@ -6,7 +6,13 @@ import org.junit.runner.notification.Failure;
 
 public class FilterTestRunner {
 
-    public static Result runTests(Class clazz) {
+    /**
+     * Runs junit tests that are found on the given class
+     * 
+     * @param classWithJunitTests
+     * @return
+     */
+    public static Result runTests(Class<?> classWithJunitTests) {
         JUnitCore junit = new JUnitCore();
         junit.addListener(new org.junit.internal.TextListener(System.out){
             @Override
@@ -20,7 +26,7 @@ public class FilterTestRunner {
                 }
             }
         }); 
-        return junit.run(clazz);
+        return junit.run(classWithJunitTests);
        
     }
 }

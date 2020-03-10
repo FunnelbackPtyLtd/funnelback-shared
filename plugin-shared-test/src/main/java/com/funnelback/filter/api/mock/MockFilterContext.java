@@ -5,41 +5,44 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.funnelback.filter.api.DocumentTypeFactory;
 import com.funnelback.filter.api.FilterContext;
 import com.funnelback.filter.api.FilterDocumentFactory;
-import com.funnelback.filter.context.DefaultDocumentTypeFactory;
-import com.funnelback.filter.context.DefaultFilterDocumentFactory;
 
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * A Filter context suitable for testing.
+ *
+ */
 public class MockFilterContext implements FilterContext {
 
     @Getter @Setter private String collectionName;
-    private Map<String, String> map;
     
-    @Getter private final FilterDocumentFactory filterDocumentFactory = new DefaultFilterDocumentFactory();
+    private final Map<String, String> config;
     
-    @Getter private final DocumentTypeFactory documentTypeFactory = new DefaultDocumentTypeFactory();
+    @Getter @Setter private FilterDocumentFactory filterDocumentFactory = new MockFilterDocumentFactory();
     
-    private MockFilterContext() {
+    @Getter @Setter private DocumentTypeFactory documentTypeFactory = new UnknownDocumentTypeFactory();
+    
+    public MockFilterContext() {
         collectionName = "dummy-filtering-mock-collection-"+System.currentTimeMillis();
-        map = new HashMap<>();
+        config = new HashMap<>();
     }
 
     @Override
     public Set<String> getConfigKeys() {
-        return map.keySet();
+        return config.keySet();
     }
 
     @Override
     public Optional<String> getConfigValue(String key) {
-        return Optional.ofNullable(map.get(key));
+        return Optional.ofNullable(config.get(key));
     }
     
     public void setConfigValue(String key, String value) {
-        map.put(key, value);
+        config.put(key, value);
     }
     
     public static MockFilterContext getEmptyContext() {

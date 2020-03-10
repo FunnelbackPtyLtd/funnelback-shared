@@ -1,15 +1,14 @@
 package com.funnelback.filter.api.mock;
 
+import java.util.Optional;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.Optional;
 
 import com.funnelback.filter.api.DocumentType;
 import com.funnelback.filter.api.documents.BytesDocument;
 import com.funnelback.filter.api.documents.StringDocument;
-import com.funnelback.filter.documents.DefaultBytesDocument;
-import com.funnelback.filter.documents.DefaultStringDocument;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
 
@@ -32,7 +31,7 @@ public interface MockDocuments {
      */
     public static StringDocument mockStringDoc(String uri, DocumentType documentType, String content) {
         try {
-            return new DefaultStringDocument(new URI(uri), HashMultimap.create(), documentType, content);
+            return new MockStringDocument(new URI(uri), HashMultimap.create(), documentType, content);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -70,7 +69,7 @@ public interface MockDocuments {
      */
     public static BytesDocument mockByteDoc(String uri, DocumentType documentType, Optional<Charset> charset, byte[] content) {
         try {
-            return new DefaultBytesDocument(new URI(uri), ArrayListMultimap.create(), documentType, charset, content);
+            return new MockBytesDocument(new URI(uri), ArrayListMultimap.create(), documentType, charset, content);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
