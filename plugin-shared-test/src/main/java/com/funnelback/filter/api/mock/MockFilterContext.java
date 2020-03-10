@@ -9,22 +9,26 @@ import com.funnelback.filter.api.DocumentTypeFactory;
 import com.funnelback.filter.api.FilterContext;
 import com.funnelback.filter.api.FilterDocumentFactory;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.With;
 
 /**
  * A Filter context suitable for testing.
  *
  */
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MockFilterContext implements FilterContext {
 
     @Getter @Setter private String collectionName;
     
     private final Map<String, String> config;
     
-    @Getter @Setter private FilterDocumentFactory filterDocumentFactory = new MockFilterDocumentFactory();
+    @Getter @Setter @With private FilterDocumentFactory filterDocumentFactory = new MockFilterDocumentFactory();
     
-    @Getter @Setter private DocumentTypeFactory documentTypeFactory = new UnknownDocumentTypeFactory();
+    @Getter @Setter @With private DocumentTypeFactory documentTypeFactory = new UnknownDocumentTypeFactory();
     
     public MockFilterContext() {
         collectionName = "dummy-filtering-mock-collection-"+System.currentTimeMillis();
