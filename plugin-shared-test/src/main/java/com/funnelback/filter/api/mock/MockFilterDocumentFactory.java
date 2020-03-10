@@ -30,17 +30,18 @@ public class MockFilterDocumentFactory implements FilterDocumentFactory {
     @Override
     public Optional<StringDocument> toStringDocument(FilterableDocument filterableDocument) {
         if(filterableDocument.getCharset().isPresent()) {
-            new MockStringDocument(filterableDocument.getURI(),
+            return Optional.of(new MockStringDocument(filterableDocument.getURI(),
                 filterableDocument.getMetadata(),
                 filterableDocument.getDocumentType(),
-                new String(filterableDocument.getCopyOfContents(), filterableDocument.getCharset().get()));
+                new String(filterableDocument.getCopyOfContents(), filterableDocument.getCharset().get())));
         }
         return Optional.empty();
     }
 
     @Override
-    public StringDocument toStringDocument(FilterableDocument filterableDocument, DocumentType documentType,
-        String content) {
+    public StringDocument toStringDocument(FilterableDocument filterableDocument, 
+                                                DocumentType documentType,
+                                                String content) {
         return new MockStringDocument(filterableDocument.getURI(), 
             filterableDocument.getMetadata(),
             documentType,
