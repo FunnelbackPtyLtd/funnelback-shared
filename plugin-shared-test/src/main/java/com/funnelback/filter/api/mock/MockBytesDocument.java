@@ -9,7 +9,6 @@ import java.nio.charset.Charset;
 
 import com.funnelback.filter.api.DocumentType;
 import com.funnelback.filter.api.documents.BytesDocument;
-import com.funnelback.filter.api.documents.FilterableDocument;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -33,7 +32,16 @@ public class MockBytesDocument implements BytesDocument {
     @Getter @NonNull private final Optional<Charset> charset;
     @Getter @NonNull private final DocumentType documentType;
     
-    public MockBytesDocument(URI URI, 
+    /**
+     * Use {@link MockDocuments#mockByteDoc} instead.
+     * 
+     * @param URI
+     * @param metadata
+     * @param documentType
+     * @param charset
+     * @param content
+     */
+    MockBytesDocument(URI URI, 
                             ListMultimap<String, String> metadata,
                             DocumentType documentType,
                             Optional<Charset> charset,

@@ -35,13 +35,12 @@ public class MockStringDocument implements StringDocument {
     @NonNull @Getter private final DocumentType documentType;
     
     /**
-     * Constructs a StringDocument with the given content.
-     * 
+     * Use {@link MockDocuments#mockEmptyStringDoc} instead.
      * @param URI
      * @param metadata
      * @param content
      */
-    public MockStringDocument(URI URI, 
+    MockStringDocument(URI URI, 
                                     Multimap<String, String> metadata,
                                     DocumentType documentType,
                                     @NonNull String content) {
