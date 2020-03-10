@@ -13,7 +13,7 @@ import com.funnelback.filter.api.documents.StringDocument;
  * 
  * The FilterDocumentFactory that is provided under Funnelback e.g. during a crawl
  * is slightly different to this. The Funnelback provided one is both more efficient
- * and capable of guessing charset if not already set on the FilterableDocument. 
+ * and capable of guessing the charset, if not already set on the FilterableDocument. 
  *
  */
 public class MockFilterDocumentFactory implements FilterDocumentFactory {
