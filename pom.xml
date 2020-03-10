@@ -12,6 +12,7 @@
     </parent>
     <modules>
         <module>plugin-shared</module>
+        <module>plugin-shared-test</module>
         <module>plugin-archetypes</module>
     </modules>
 </project>
