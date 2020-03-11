@@ -37,7 +37,7 @@ resources = projectPath.resolve(request.version + "/src/main/resources")
 propertiesFile = resources.resolve("funnelback-plugin-" + request.artifactId + ".properties").toFile()
 
 if(isGathererEnabled) {
-    enableImplementation("CustomGatherPlugin", "com.funnelback.plugin.gatherer.GathererPlugin")
+    enableImplementation("CustomGatherPlugin", "com.funnelback.plugin.gatherer.PluginGatherer")
 }
 
 if(isIndexingEnabled) {
