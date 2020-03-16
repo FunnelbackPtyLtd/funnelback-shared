@@ -11,16 +11,23 @@
             <artifactId>funnelback-shared</artifactId>
             <groupId>com.funnelback</groupId>
             <version>${archetypeVersion}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- add your dependencies here -->
     </dependencies>
     <build>
         <sourceDirectory>${version}/src/main/java</sourceDirectory>
+        <testSourceDirectory>${version}/src/test/java</testSourceDirectory>
         <resources>
             <resource>
                 <directory>${version}/src/main/resources</directory>
             </resource>
         </resources>
+        <testResources>
+            <testResource>
+                <directory>${version}/src/test/resources</directory>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

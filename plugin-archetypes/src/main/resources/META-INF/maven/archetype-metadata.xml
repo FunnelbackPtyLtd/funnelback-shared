@@ -3,6 +3,12 @@
         <fileSet filtered="true" packaged="true">
             <directory>__version__/src/main/java</directory>
         </fileSet>
+        <fileSet filtered="true" packaged="true">
+            <directory>__version__/src/test/java</directory>
+        </fileSet>
+        <fileSet filtered="true">
+            <directory>__version__/src/test/resources</directory>
+        </fileSet>
         <fileSet filtered="true">
             <directory>__version__/src/main/resources</directory>
             <includes>
