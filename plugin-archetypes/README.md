@@ -19,7 +19,7 @@ Ex: Enable indexing and gatherer in plugin
 ```
 mvn archetype:generate -DarchetypeGroupId=com.funnelback    \
     -DarchetypeArtifactId=plugin-archetypes                 \
-    -DarchetypeVersion=15.25.2007-SNAPSHOT                  \
+    -DarchetypeVersion=15.25.2010-SNAPSHOT                  \
     -DgroupId=com.example                                   \
     -DartifactId=example-plugin                             \
     -Dversion=1.0                                           \
