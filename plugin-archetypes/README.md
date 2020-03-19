@@ -10,6 +10,7 @@ Currently we support the implementations of several interfaces ie.
 - `indexing` 
 - `facets` 
 - `searchLifeCycle`
+- `filtering`
 
 You can enable one or many of them inside the same plugin using a flag.
 
@@ -23,5 +24,6 @@ mvn archetype:generate -DarchetypeGroupId=com.funnelback    \
     -DartifactId=example-plugin                             \
     -Dversion=1.0                                           \
     -Dgatherer=true                                         \
-    -Dindexing=true
+    -Dindexing=true                                         \
+    -Dfiltering=true
 ```

@@ -42,6 +42,10 @@
             <defaultValue>false</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
+        <requiredProperty key="filtering" >
+            <defaultValue>false</defaultValue>
+            <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
+        </requiredProperty>
         <requiredProperty key="archetypeVersion"> </requiredProperty>
     </requiredProperties>
 </archetype-descriptor>
