@@ -39,14 +39,14 @@ propertiesFile = resources.resolve("funnelback-plugin-" + request.artifactId + "
 if(isGathererEnabled) {
     String gathererImplementation = "CustomGatherPlugin"
     String gathererInterface = "com.funnelback.plugin.gatherer.PluginGatherer"
-    enableImplementation(gathererImplementation)
+    enableSourceAndTestImplementations(gathererImplementation)
     writeToPropertiesFile(gathererImplementation, gathererInterface)
 }
 
 if(isIndexingEnabled) {
     String indexingImplementation = "IndexingPlugin"
     String indexingInterface = "com.funnelback.plugin.index.IndexingConfigProvider"
-    enableImplementation(indexingImplementation)
+    enableSourceAndTestImplementations(indexingImplementation)
     writeToPropertiesFile(indexingImplementation, indexingInterface)
 }
 
@@ -61,13 +61,13 @@ if(isFacetsEnabled) {
 if(isSearchLifeCycleEnabled) {
     String searchLifeCycleImplementation = "SearchLifeCycle"
     String searchLifeCycleInterface = "com.funnelback.plugin.SearchLifeCyclePlugin"
-    enableImplementation(searchLifeCycleImplementation)
+    enableSourceAndTestImplementations(searchLifeCycleImplementation)
     writeToPropertiesFile(searchLifeCycleImplementation, searchLifeCycleInterface)
 }
 
 if(isFilteringEnabled) {
     String filteringImplementation = "CustomFilter"
-    enableImplementation(filteringImplementation)
+    enableSourceAndTestImplementations(filteringImplementation)
 }
 
 // Delete tmp directory and files
@@ -88,7 +88,7 @@ Files.walkFileTree(tmp, new SimpleFileVisitor<Path>() {
     }
 })
 
-def enableImplementation(String impl) {
+def enableSourceAndTestImplementations(String impl) {
     srcTarget = projectPath.resolve(request.version + "/src/main/java/" + packagePath)
     testTarget = projectPath.resolve(request.version + "/src/test/java/" + packagePath)
 
