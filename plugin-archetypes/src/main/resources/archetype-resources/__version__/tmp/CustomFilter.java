@@ -9,11 +9,13 @@ import com.funnelback.filter.api.filters.StringDocumentFilter;
 
 public class CustomFilter implements StringDocumentFilter {
 
-    @Override public PreFilterCheck canFilter(NoContentDocument noContentDocument, FilterContext filterContext) {
+    @Override
+    public PreFilterCheck canFilter(NoContentDocument noContentDocument, FilterContext filterContext) {
         return null;
     }
 
-    @Override public FilterResult filterAsStringDocument(StringDocument stringDocument, FilterContext filterContext) {
+    @Override
+    public FilterResult filterAsStringDocument(StringDocument stringDocument, FilterContext filterContext) {
         return null;
     }
 }
