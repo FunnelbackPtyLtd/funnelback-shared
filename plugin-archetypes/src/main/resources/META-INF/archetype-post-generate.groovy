@@ -39,14 +39,14 @@ propertiesFile = resources.resolve("funnelback-plugin-" + request.artifactId + "
 if(isGathererEnabled) {
     String gathererImplementation = "CustomGatherPlugin"
     String gathererInterface = "com.funnelback.plugin.gatherer.PluginGatherer"
-    enableSourceAndTestImplementations(gathererImplementation)
+    enableImplementationAndTests(gathererImplementation)
     writeToPropertiesFile(gathererImplementation, gathererInterface)
 }
 
 if(isIndexingEnabled) {
     String indexingImplementation = "IndexingPlugin"
     String indexingInterface = "com.funnelback.plugin.index.IndexingConfigProvider"
-    enableSourceAndTestImplementations(indexingImplementation)
+    enableImplementationAndTests(indexingImplementation)
     writeToPropertiesFile(indexingImplementation, indexingInterface)
 }
 
@@ -54,20 +54,20 @@ if(isFacetsEnabled) {
     String facetsImplementation = "FacetsPlugin"
     String facetsInterface = "com.funnelback.plugin.facets.FacetProvider"
     enableSourceImplementation(facetsImplementation)
-    enableTestImplementation(facetsImplementation)
+    enableImplementationAndTests(facetsImplementation)
     writeToPropertiesFile(facetsImplementation, facetsInterface)
 }
 
 if(isSearchLifeCycleEnabled) {
     String searchLifeCycleImplementation = "SearchLifeCycle"
     String searchLifeCycleInterface = "com.funnelback.plugin.SearchLifeCyclePlugin"
-    enableSourceAndTestImplementations(searchLifeCycleImplementation)
+    enableImplementationAndTests(searchLifeCycleImplementation)
     writeToPropertiesFile(searchLifeCycleImplementation, searchLifeCycleInterface)
 }
 
 if(isFilteringEnabled) {
     String filteringImplementation = "CustomFilter"
-    enableSourceAndTestImplementations(filteringImplementation)
+    enableImplementationAndTests(filteringImplementation)
 }
 
 // Delete tmp directory and files
@@ -88,25 +88,22 @@ Files.walkFileTree(tmp, new SimpleFileVisitor<Path>() {
     }
 })
 
-def enableSourceAndTestImplementations(String impl) {
-    srcTarget = projectPath.resolve(request.version + "/src/main/java/" + packagePath)
-    testTarget = projectPath.resolve(request.version + "/src/test/java/" + packagePath)
-
-    enableImplementation(impl, impl + ".java", srcTarget)
-    enableImplementation(impl, impl + "Test.java", testTarget)
+def enableImplementationAndTests(String impl) {
+    enableSourceImplementation(impl)
+    enableTests(impl)
 }
 
 def enableSourceImplementation(String impl) {
     srcTarget = projectPath.resolve(request.version + "/src/main/java/" + packagePath)
-    enableImplementation(impl, impl + ".java", srcTarget)
+    prepareSourceFiles(impl, impl + ".java", srcTarget)
 }
 
-def enableTestImplementation(String impl) {
+def enableTests(String impl) {
     testTarget = projectPath.resolve(request.version + "/src/test/java/" + packagePath)
-    enableImplementation(impl, impl + "Test.java", testTarget)
+    prepareSourceFiles(impl, impl + "Test.java", testTarget)
 }
 
-def enableImplementation(String impl, String className, Path target) {
+def prepareSourceFiles(String impl, String className, Path target) {
     Path source = tmp.resolve(className)
     Path destination = target.resolve(pluginClassPrefix + className)
     Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
