@@ -37,37 +37,36 @@ resources = projectPath.resolve(request.version + "/src/main/resources")
 propertiesFile = resources.resolve("funnelback-plugin-" + request.artifactId + ".properties").toFile()
 
 if(isGathererEnabled) {
-    String gathererImplementation = "CustomGatherPlugin"
-    String gathererInterface = "com.funnelback.plugin.gatherer.PluginGatherer"
-    enableImplementationAndTests(gathererImplementation)
-    writeToPropertiesFile(gathererImplementation, gathererInterface)
+    String pluginImplementation = "CustomGatherPlugin"
+    String pluginInterface = "com.funnelback.plugin.gatherer.PluginGatherer"
+    enableImplementationAndTests(pluginImplementation)
+    writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isIndexingEnabled) {
-    String indexingImplementation = "IndexingPlugin"
-    String indexingInterface = "com.funnelback.plugin.index.IndexingConfigProvider"
-    enableImplementationAndTests(indexingImplementation)
-    writeToPropertiesFile(indexingImplementation, indexingInterface)
+    String pluginImplementation = "IndexingPlugin"
+    String pluginInterface = "com.funnelback.plugin.index.IndexingConfigProvider"
+    enableImplementationAndTests(pluginImplementation)
+    writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isFacetsEnabled) {
-    String facetsImplementation = "FacetsPlugin"
-    String facetsInterface = "com.funnelback.plugin.facets.FacetProvider"
-    enableSourceImplementation(facetsImplementation)
-    enableImplementationAndTests(facetsImplementation)
-    writeToPropertiesFile(facetsImplementation, facetsInterface)
+    String pluginImplementation = "FacetsPlugin"
+    String pluginInterface = "com.funnelback.plugin.facets.FacetProvider"
+    enableImplementationAndTests(pluginImplementation)
+    writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isSearchLifeCycleEnabled) {
-    String searchLifeCycleImplementation = "SearchLifeCycle"
-    String searchLifeCycleInterface = "com.funnelback.plugin.SearchLifeCyclePlugin"
-    enableImplementationAndTests(searchLifeCycleImplementation)
-    writeToPropertiesFile(searchLifeCycleImplementation, searchLifeCycleInterface)
+    String pluginImplementation = "SearchLifeCycle"
+    String pluginInterface = "com.funnelback.plugin.SearchLifeCyclePlugin"
+    enableImplementationAndTests(pluginImplementation)
+    writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isFilteringEnabled) {
-    String filteringImplementation = "CustomFilter"
-    enableImplementationAndTests(filteringImplementation)
+    String pluginImplementation = "CustomFilter"
+    enableImplementationAndTests(pluginImplementation)
 }
 
 // Delete tmp directory and files
