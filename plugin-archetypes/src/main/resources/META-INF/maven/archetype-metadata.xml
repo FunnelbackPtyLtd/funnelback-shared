@@ -27,23 +27,23 @@
     </fileSets>
     <requiredProperties>
         <requiredProperty key="gatherer" >
-            <defaultValue>false</defaultValue>
+            <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="facets" >
-            <defaultValue>false</defaultValue>
+            <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="indexing" >
-            <defaultValue>false</defaultValue>
+            <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="searchLifeCycle" >
-            <defaultValue>false</defaultValue>
+            <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="filtering" >
-            <defaultValue>false</defaultValue>
+            <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="archetypeVersion"> </requiredProperty>
