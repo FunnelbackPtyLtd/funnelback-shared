@@ -22,18 +22,6 @@
         <!-- add your dependencies here -->
     </dependencies>
     <build>
-        <sourceDirectory>${version}/src/main/java</sourceDirectory>
-        <testSourceDirectory>${version}/src/test/java</testSourceDirectory>
-        <resources>
-            <resource>
-                <directory>${version}/src/main/resources</directory>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>${version}/src/test/resources</directory>
-            </testResource>
-        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -43,12 +31,32 @@
                     <release>11</release>
                 </configuration>
             </plugin>
+            <!-- copy the non provided non test libs into the libs directory -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/${project.version}/libs</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <outputDirectory>${version}/libs</outputDirectory>
+                    <outputDirectory>target/${project.version}/libs</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
