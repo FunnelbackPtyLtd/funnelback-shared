@@ -19,6 +19,7 @@ the plugin into funnelback with:
 ```
 mvn clean install -Pinstall-local
 ```
+
 ### Manually installing
 
 That can be installed into Funnelback
