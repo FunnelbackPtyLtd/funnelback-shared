@@ -10,7 +10,18 @@ That will build, run the tests and assemble the plugin into:
 target/version
 ```
 
-That can be installed into Funnelback by dropping it under:
+## Installing
+
+### Installing to a locally installed Funnelback
+If you have a local Funnelback and SEARCH_HOME is defined you can install
+the plugin into funnelback with:
+
+```
+mvn clean install -Pinstall-local
+```
+### Manually installing
+
+That can be installed into Funnelback
 ```
 /opt/funnelback/share/plugins/<plugin-name>/
 ```

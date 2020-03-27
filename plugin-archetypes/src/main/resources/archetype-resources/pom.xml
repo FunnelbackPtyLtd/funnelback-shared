@@ -61,4 +61,46 @@
             </plugin>
         </plugins>
     </build>
+    
+    <profiles>
+      <!-- run "mvn clean install -Pinstall-local" to install into a local funnelback installation -->
+        <profile>
+            <id>install-local</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>install-to-local-fb</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <fail message="Environment variable SEARCH_HOME must be set." unless="env.SEARCH_HOME"/>
+                                        
+                                        <echo message="Installing plugin into '${env.SEARCH_HOME}'" />
+
+                                        <mkdir dir="${env.SEARCH_HOME}/share/plugins" />
+                                        <mkdir dir="${env.SEARCH_HOME}/share/plugins/${project.artifactId}" />
+                                        <mkdir dir="${env.SEARCH_HOME}/share/plugins/${project.artifactId}/${project.version}" />
+                                        
+                                        <delete>
+                                            <fileset dir="${env.SEARCH_HOME}/share/plugins/${project.artifactId}/${project.version}" includes="**/*" />
+                                        </delete>
+
+                                        <copy todir="${env.SEARCH_HOME}/share/plugins/${project.artifactId}/${project.version}" overwrite="true">
+                                            <fileset dir="target/${project.version}" />
+                                        </copy>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
