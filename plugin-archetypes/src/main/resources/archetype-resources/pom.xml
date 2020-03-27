@@ -102,5 +102,36 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>install-remote-rsync</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>install-to-local-fb</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <fail message="Environment variable SEARCH_HOME_REMOTE must be set to the full path of SEARCH_HOME on the remote host." unless="env.SEARCH_HOME_REMOTE"/>
+                                        <fail message="Environment variable SEARCH_USER_AND_HOST must be set to the user and hostname of the remote host in the form user@host" unless="env.SEARCH_USER_AND_HOST"/>
+                                        
+                                        <exec executable="rsync">
+                                            <arg value="-avz"/>
+                                            <arg value="target/${project.version}"/>
+                                            <arg value="${env.SEARCH_USER_AND_HOST}:${env.SEARCH_HOME_REMOTE}/share/plugins/${project.artifactId}/"/>
+                                        </exec>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
