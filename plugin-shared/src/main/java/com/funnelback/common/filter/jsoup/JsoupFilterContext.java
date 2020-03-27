@@ -14,7 +14,7 @@ public interface JsoupFilterContext {
      * For example, where Funnelback is installed and what collection is being used,
      * as well as access to configuration settings.
      */
-    JsoupFilterSetupContext getSetup();
+    SetupContext getSetup();
     
     /**
      * The document being filtered.

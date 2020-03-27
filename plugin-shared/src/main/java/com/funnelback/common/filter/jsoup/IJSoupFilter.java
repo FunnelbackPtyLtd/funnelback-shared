@@ -23,7 +23,7 @@ public interface IJSoupFilter extends Runnable {
      * 
      * The default implementation does nothing, which is appropriate for many filters.
      */
-    default public void setup(JsoupFilterSetupContext setup) {
+    default public void setup(SetupContext setup) {
         // Do nothing
     }
     
@@ -40,7 +40,7 @@ public interface IJSoupFilter extends Runnable {
      * you can do so by creating static variables/methods on your filter class and calling/using them
      * however, be aware then that you must then manage any concurrency safely yourself.
      */
-    public void processDocument(JsoupFilterContext filterContext);
+    public void processDocument(FilterContext filterContext);
     
     /**
      * We provide a default run method, which is run when a groovy script is executed.
