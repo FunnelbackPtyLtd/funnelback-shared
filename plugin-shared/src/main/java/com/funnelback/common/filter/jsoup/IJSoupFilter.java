@@ -55,7 +55,7 @@ public interface IJSoupFilter extends Runnable {
     default public void run() {
         Class<?> testRunnerClass;
         try {
-            testRunnerClass = this.getClass().getClassLoader().loadClass("com.funnelback.common.filter.jsoup.JsoupTestRunner.JsoupTestRunner");
+            testRunnerClass = this.getClass().getClassLoader().loadClass("com.funnelback.common.filter.jsoup.JsoupTestRunner");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Can not run jsoup filter without $SEARCH_HOME/lib/java/all on the class path.");
         }
