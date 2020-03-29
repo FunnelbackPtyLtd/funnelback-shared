@@ -32,8 +32,8 @@ pluginPrefix = request.artifactId.replaceAll("[^a-zA-Z0-9]"," ")
 // make the first letter of each word capitalized for the class name
 pluginClassPrefix = WordUtils.capitalizeFully(pluginPrefix).replaceAll(" ", "")
 
-tmp = projectPath.resolve(request.version + "/tmp")
-resources = projectPath.resolve(request.version + "/src/main/resources")
+tmp = projectPath.resolve("tmp")
+resources = projectPath.resolve("src/main/resources")
 propertiesFile = resources.resolve("funnelback-plugin-" + request.artifactId + ".properties").toFile()
 
 if(isGathererEnabled) {
@@ -93,12 +93,12 @@ def enableImplementationAndTests(String impl) {
 }
 
 def enableSourceImplementation(String impl) {
-    srcTarget = projectPath.resolve(request.version + "/src/main/java/" + packagePath)
+    srcTarget = projectPath.resolve("src/main/java/" + packagePath)
     prepareSourceFiles(impl, impl + ".java", srcTarget)
 }
 
 def enableTests(String impl) {
-    testTarget = projectPath.resolve(request.version + "/src/test/java/" + packagePath)
+    testTarget = projectPath.resolve("src/test/java/" + packagePath)
     prepareSourceFiles(impl, impl + "Test.java", testTarget)
 }
 
