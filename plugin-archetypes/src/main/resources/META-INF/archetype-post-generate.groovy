@@ -69,6 +69,8 @@ if(isFilteringEnabled) {
     enableImplementationAndTests(pluginImplementation)
 }
 
+writePluginPropsFileTest();
+
 // Delete tmp directory and files
 Files.walkFileTree(tmp, new SimpleFileVisitor<Path>() {
 
@@ -115,4 +117,10 @@ def prepareSourceFiles(String impl, String className, Path target) {
 // Write entry to funnelback-plugin properties file
 def writeToPropertiesFile(String impl, String qualifiedInterface) {
     propertiesFile.append(qualifiedInterface + "=" + packageName + "." + pluginClassPrefix + impl + "\n")
+}
+
+def writePluginPropsFileTest() {
+    Path source = tmp.resolve("PluginPropsFileTest.java");
+    Path destination = testTarget.resolve("PluginPropsFileTest.java");
+    Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
 }
