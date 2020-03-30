@@ -15,6 +15,12 @@
                 <include>**/funnelback-plugin-__artifactId__.properties</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory/>
+            <includes>
+                <include>BUILD.md</include>
+            </includes>
+        </fileSet>
         <fileSet filtered="true">
             <directory>tmp</directory>
             <includes>
