@@ -35,6 +35,9 @@ public interface SetupContext {
      * 
      * This is useful in cases where you need to process some set of config
      * values (e.g. one setting per data source).
+     * 
+     * Example:
+     * A prefix of 'myfilter' will match 'myfilter.foo' and 'myfilter.foo.bar'.
      */
     Set<String> getConfigKeysWithPrefix(String prefix);
 
