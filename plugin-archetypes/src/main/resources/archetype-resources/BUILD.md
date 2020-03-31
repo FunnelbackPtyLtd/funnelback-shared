@@ -20,6 +20,17 @@ the plugin into funnelback with:
 mvn clean install -Pinstall-local
 ```
 
+### Installing to a remote Funnelback
+if you have Funnelback installed on a remote server, you can rsync the plugin
+over with:
+
+```
+mvn clean install -Pinstall-remote-rsync
+```
+
+Running that command will outline what needs to be done to set the remote host,
+user and remote search home.
+
 ### Manually installing
 
 That can be installed into Funnelback
