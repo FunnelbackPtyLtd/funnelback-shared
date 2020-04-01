@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import java.io.InputStream;
 
+import com.funnelback.plugin.index.consumers.GscopeByRegexConsumer;
 import com.funnelback.plugin.index.model.indexingconfig.XmlIndexingConfig;
 import com.funnelback.plugin.index.model.querycompletion.QueryCompletionCSV;
 
@@ -184,5 +185,24 @@ public interface IndexingConfigProvider {
      */
     public default List<QueryCompletionCSV> queryCompletionCSVForProfile(List<IndexConfigProviderContext> contextForAllProfiles) {
         return List.of();
+    }
+    
+    /**
+     * Supply gscopes that must be set when a regular expression matches the URL.
+     * 
+     * For example, to set the gscope 'isDocument' for all documents within:
+     * 'example.com/documents/ set:
+     * 
+     * <code>
+     * consumer.accept("isDocument", "example\\.com/documents/"); 
+     * </code>
+     * 
+     * Note that the regex specual character '.' is escaped with '\' which is a java character
+     * which must be escaped with another '\' thus '\\.'.
+     * 
+     * @param consumer
+     */
+    public default void supplyGscopesByRegex(GscopeByRegexConsumer consumer) {
+        
     }
 }
