@@ -42,6 +42,12 @@ public interface FilterContext {
      * The current implementation will add the metadata by inserting HTML meta tags into the document
      * but in the future we may change this to store metadata separately to the content itself, so avoid
      * relying on a specific storage location.
+     * 
+     * Example to add multiple values to a single metadata key.
+     * <code>
+     * context.getAdditionalMetadata().put("a", "value 1");
+     * context.getAdditionalMetadata().put("a", "value 2");
+     * </code>
      */
     Multimap<String, String> getAdditionalMetadata();
     
