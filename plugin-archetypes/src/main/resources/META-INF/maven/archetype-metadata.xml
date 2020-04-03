@@ -49,6 +49,12 @@
             <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
+        <requiredProperty key="groupId" >
+            <validationRegex><![CDATA[^[a-zA-Z0-9\.\-]+$]]></validationRegex>
+        </requiredProperty>
+        <requiredProperty key="artifactId" >
+            <validationRegex><![CDATA[^[a-zA-Z0-9\.\-]+$]]></validationRegex>
+        </requiredProperty>
         <requiredProperty key="archetypeVersion"> </requiredProperty>
     </requiredProperties>
 </archetype-descriptor>
