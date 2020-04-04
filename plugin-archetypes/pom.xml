@@ -5,7 +5,7 @@
     <parent>
         <artifactId>funnelback-shared-parent</artifactId>
         <groupId>com.funnelback</groupId>
-        <version>15.25.2011-SNAPSHOT</version>
+        <version>15.25.2013-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
