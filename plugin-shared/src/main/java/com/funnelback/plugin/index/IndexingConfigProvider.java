@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 
 import java.io.InputStream;
 
+import com.funnelback.plugin.index.consumers.GscopeByQueryConsumer;
+import com.funnelback.plugin.index.consumers.GscopeByRegexConsumer;
 import com.funnelback.plugin.index.model.indexingconfig.XmlIndexingConfig;
 import com.funnelback.plugin.index.model.querycompletion.QueryCompletionCSV;
 
@@ -164,6 +166,60 @@ public interface IndexingConfigProvider {
     }
     
     /**
+     * Supply gscopes that must be set on a document when a regular expression matches the URL.
+     * 
+     * For example, to set the gscope 'isDocument' for all documents within:
+     * 'example.com/documents/ set:
+     * 
+     * <code>
+     * consumer.accept("isDocument", "example\\.com/documents/"); 
+     * </code>
+     * 
+     * Note that the regex special character '.' is escaped with '\' which is a java character
+     * which must be escaped with another '\' thus '\\.'.
+     * 
+     * The consumer may be called multiple times to configure multiple gscopes to be 
+     * set by various regular expressions. For example:
+     * 
+     * <code>
+     * consumer.accept("cat", ".*cat.*");
+     * consumer.accept("cat", ".*kitty.*");
+     * consumer.accept("dog", ".*dog.*");
+     * </code>
+     * 
+     * @param consumer Accepts gscopes that will be set when the URL matches the regex.
+     */
+    public default void supplyGscopesByRegex(GscopeByRegexConsumer consumer) {
+        
+    }
+    
+    /**
+     * Supply gscopes that must be set on a document when a query matches the document.
+     * 
+     * For example, to set the gscope 'isDocument' for all documents matching the query:
+     * "word document"
+     * 
+     * <code>
+     * consumer.accept("isDocument", "word document"); 
+     * </code>
+     * 
+     * Multiple queries can be supplied and query language may be used. For example, 
+     * set gscope 'org' on documents containing the term 'enterprise' or 'organisation', 
+     * and gscope 'public' on documents containing both 'public' and 'internet'.
+     * 
+     * <code>
+     * consumer.accept("org", "[enterprise organisation]"); 
+     * // Use mandatory inclusion operator to ensure both terms are present.
+     * consumer.accept("public", "|public |internet"); 
+     * </code>
+     * 
+     * @param consumer Accepts gscopes that will be set then the document matches the query.
+     */
+    public default void supplyGscopesByQuery(GscopeByQueryConsumer consumer) {
+        
+    }
+    
+    /**
      * Supply query completion CSV files to use on profiles.
      * 
      * The QueryCompletionCSV supports defining a single CSV "file" for many profiles. The
@@ -185,4 +241,6 @@ public interface IndexingConfigProvider {
     public default List<QueryCompletionCSV> queryCompletionCSVForProfile(List<IndexConfigProviderContext> contextForAllProfiles) {
         return List.of();
     }
+    
+    
 }
