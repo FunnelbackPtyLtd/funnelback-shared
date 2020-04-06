@@ -165,7 +165,7 @@ public interface IndexingConfigProvider {
         return Stream.of();
     }
     
-        /**
+    /**
      * Supply gscopes that must be set on a document when a regular expression matches the URL.
      * 
      * For example, to set the gscope 'isDocument' for all documents within:
