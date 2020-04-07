@@ -25,6 +25,8 @@ boolean isIndexingEnabled = Boolean.parseBoolean(properties.get("indexing"))
 boolean isFacetsEnabled = Boolean.parseBoolean(properties.get("facets"))
 boolean isSearchLifeCycleEnabled = Boolean.parseBoolean(properties.get("searchLifeCycle"))
 boolean isFilteringEnabled = Boolean.parseBoolean(properties.get("filtering"))
+boolean isJsoupFilteringEnabled = Boolean.parseBoolean(properties.get("jsoup-filtering"))
+
 
 // Remove non alpha numeric chars
 pluginPrefix = request.artifactId.replaceAll("[^a-zA-Z0-9]"," ")
@@ -37,35 +39,40 @@ resources = projectPath.resolve("src/main/resources")
 propertiesFile = resources.resolve("funnelback-plugin-" + request.artifactId + ".properties").toFile()
 
 if(isGathererEnabled) {
-    String pluginImplementation = "CustomGatherPlugin"
+    String pluginImplementation = "PluginGatherer"
     String pluginInterface = "com.funnelback.plugin.gatherer.PluginGatherer"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isIndexingEnabled) {
-    String pluginImplementation = "IndexingPlugin"
+    String pluginImplementation = "IndexingConfigProvider"
     String pluginInterface = "com.funnelback.plugin.index.IndexingConfigProvider"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isFacetsEnabled) {
-    String pluginImplementation = "FacetsPlugin"
+    String pluginImplementation = "FacetProvider"
     String pluginInterface = "com.funnelback.plugin.facets.FacetProvider"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isSearchLifeCycleEnabled) {
-    String pluginImplementation = "SearchLifeCycle"
+    String pluginImplementation = "SearchLifeCyclePlugin"
     String pluginInterface = "com.funnelback.plugin.SearchLifeCyclePlugin"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isFilteringEnabled) {
-    String pluginImplementation = "CustomFilter"
+    String pluginImplementation = "StringFilter"
+    enableImplementationAndTests(pluginImplementation)
+}
+
+if(isJsoupFilteringEnabled) {
+    String pluginImplementation = "JsoupFilter"
     enableImplementationAndTests(pluginImplementation)
 }
 
@@ -110,7 +117,10 @@ def prepareSourceFiles(String impl, String className, Path target) {
     Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
     def fileCreated = destination.toFile()
     // Change the internal reference of class name inside file
-    def newContent= fileCreated.text.replace("class " + impl, "class " + pluginClassPrefix + impl)
+    def newContent= fileCreated.text
+       //.replace("class " + impl, "class " + pluginClassPrefix + impl)
+      .replace("_ClassNamePrefix_", pluginClassPrefix);
+    
     fileCreated.text = newContent
 }
 

@@ -49,6 +49,10 @@
             <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
+        <requiredProperty key="jsoup-filtering" >
+            <defaultValue>true</defaultValue>
+            <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
+        </requiredProperty>
         <requiredProperty key="groupId" >
             <validationRegex><![CDATA[^[a-zA-Z0-9\.\-]+$]]></validationRegex>
         </requiredProperty>
