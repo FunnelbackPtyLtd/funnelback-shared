@@ -1,6 +1,6 @@
 package ${package};
 
-import com.funnelback.AbstractPluginPropertiesFileTest;
+import com.funnelback.plugin.test.AbstractPluginPropertiesFileTest;
 
 /**
  *  Tests to check that the plugin properties file is valid.
