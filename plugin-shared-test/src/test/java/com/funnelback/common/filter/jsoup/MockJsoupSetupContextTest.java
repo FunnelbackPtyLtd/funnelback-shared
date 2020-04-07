@@ -11,23 +11,23 @@ public class MockJsoupSetupContextTest {
 
     @Test
     public void testByDefaultConfigSettingsAreEmpty() {
-        Assert.assertEquals(0, new MockJsoupSetupContext().getConfigSettings().size());
+        Assert.assertEquals(0, new MockJsoupSetupContext().getConfigKeysWithPrefix("").size());
     }
     
     @Test
     public void testConfigOptionsCanBeSetAndRead() {
         MockJsoupSetupContext setupContext = new MockJsoupSetupContext();
-        setupContext.getConfigSettings().put("a", "b");
+        setupContext.setConfigSetting("a", "b");
         Assert.assertEquals("b", setupContext.getConfigSetting("a"));
     }
     
     @Test
     public void testConfigOptionsCanBeReadByPrefix() {
         MockJsoupSetupContext setupContext = new MockJsoupSetupContext();
-        setupContext.getConfigSettings().put("a", "aron");
-        setupContext.getConfigSettings().put("aa", "ron");
-        setupContext.getConfigSettings().put("aar", "on");
-        setupContext.getConfigSettings().put("ro", "n");
+        setupContext.setConfigSetting("a", "aron");
+        setupContext.setConfigSetting("aa", "ron");
+        setupContext.setConfigSetting("aar", "on");
+        setupContext.setConfigSetting("ro", "n");
         Set<String> keysWithPrefix = setupContext.getConfigKeysWithPrefix("aa");
         
         Assert.assertEquals(Set.of("aa", "aar"),  keysWithPrefix);
@@ -39,9 +39,9 @@ public class MockJsoupSetupContextTest {
     @Test
     public void testConfigOptionsCanBeReadByPattern() {
         MockJsoupSetupContext setupContext = new MockJsoupSetupContext();
-        setupContext.getConfigSettings().put("a.b.c", "a");
-        setupContext.getConfigSettings().put("a.c.d", "a");
-        setupContext.getConfigSettings().put("a.d.c", "a");
+        setupContext.setConfigSetting("a.b.c", "a");
+        setupContext.setConfigSetting("a.c.d", "a");
+        setupContext.setConfigSetting("a.d.c", "a");
         
         Map<String, List<String>> matchingPattern = setupContext.getConfigKeysMatchingPattern("a.*.c");
         

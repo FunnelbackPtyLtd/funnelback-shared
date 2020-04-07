@@ -45,7 +45,19 @@ public class MockJsoupSetupContext implements SetupContext {
      * In test set the values to exactly what you expect them to be.
      * 
      */
-    @Getter private Map<String, String> configSettings = new HashMap<>();
+    private Map<String, String> configSettings = new HashMap<>();
+    
+    /**
+     * Set a config setting to a value.
+     * 
+     * 
+     * @param key
+     * @param value The value to set the key to, when null the key will be removed from the config settings.
+     */
+    public void setConfigSetting(String key, String value) {
+        if(value == null) configSettings.remove(key);
+        else configSettings.put(key, value);
+    }
     
     @Override
     public String getConfigSetting(String key) {

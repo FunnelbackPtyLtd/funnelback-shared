@@ -7,7 +7,7 @@ import com.funnelback.filter.api.documents.StringDocument;
 import com.funnelback.filter.api.filters.PreFilterCheck;
 import com.funnelback.filter.api.filters.StringDocumentFilter;
 
-public class CustomFilter implements StringDocumentFilter {
+public class _ClassNamePrefix_StringFilter implements StringDocumentFilter {
 
     @Override
     public PreFilterCheck canFilter(NoContentDocument noContentDocument, FilterContext filterContext) {

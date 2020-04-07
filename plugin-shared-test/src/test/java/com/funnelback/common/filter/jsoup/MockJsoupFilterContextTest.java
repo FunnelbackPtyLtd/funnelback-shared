@@ -21,7 +21,7 @@ public class MockJsoupFilterContextTest {
     @Test
     public void testSettingConfigSettings() {
         MockJsoupFilterContext filterContext = new MockJsoupFilterContext("hi");
-        filterContext.getSetup().getConfigSettings().put("a", "b");
+        filterContext.getSetup().setConfigSetting("a", "b");
         
         Assert.assertEquals("b", filterContext.getSetup().getConfigSetting("a"));
     }
