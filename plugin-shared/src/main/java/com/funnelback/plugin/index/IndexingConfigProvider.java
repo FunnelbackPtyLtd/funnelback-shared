@@ -189,7 +189,7 @@ public interface IndexingConfigProvider {
      * 
      * @param consumer Accepts gscopes that will be set when the URL matches the regex.
      */
-    public default void supplyGscopesByRegex(GscopeByRegexConsumer consumer) {
+    public default void supplyGscopesByRegex(IndexConfigProviderContext context, GscopeByRegexConsumer consumer) {
         
     }
     
@@ -215,7 +215,7 @@ public interface IndexingConfigProvider {
      * 
      * @param consumer Accepts gscopes that will be set then the document matches the query.
      */
-    public default void supplyGscopesByQuery(GscopeByQueryConsumer consumer) {
+    public default void supplyGscopesByQuery(IndexConfigProviderContext context, GscopeByQueryConsumer consumer) {
         
     }
     
