@@ -51,11 +51,11 @@ public interface IndexingConfigProvider {
      * and the same metadata, both values would be applied. e.g.
      * Plugin 1 provides:
      * <code>
-     * consumer.accept("http://example.com/a", ImmutableListMultimap.of("foo", "bar"));
+     * consumer.addMetadataToPrefix("http://example.com/a", ImmutableListMultimap.of("foo", "bar"));
      * </code>
      * plugin 2 provides:
      * <code>
-     * consumer.accept("http://example.com/a", ImmutableListMultimap.of("foo", "foobar"));
+     * consumer.addMetadataToPrefix("http://example.com/a", ImmutableListMultimap.of("foo", "foobar"));
      * </code>
      * 
      * A document like:
