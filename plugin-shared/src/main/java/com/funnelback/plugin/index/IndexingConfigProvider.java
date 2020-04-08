@@ -8,7 +8,10 @@ import com.funnelback.plugin.index.consumers.GscopeByQueryConsumer;
 import com.funnelback.plugin.index.consumers.GscopeByRegexConsumer;
 import com.funnelback.plugin.index.consumers.KillByExactMatchConsumer;
 import com.funnelback.plugin.index.consumers.KillByPartialMatchConsumer;
+import com.funnelback.plugin.index.consumers.MetadataMappingConsumer;
 import com.funnelback.plugin.index.model.indexingconfig.XmlIndexingConfig;
+import com.funnelback.plugin.index.model.metadatamapping.MetadataSourceType;
+import com.funnelback.plugin.index.model.metadatamapping.MetadataType;
 import com.funnelback.plugin.index.model.querycompletion.QueryCompletionCSV;
 
 /**
@@ -71,50 +74,38 @@ public interface IndexingConfigProvider {
      * Supply additional metadata mappings from the plugin.
      * 
      * 
-     * Returns a List of Maps where each Map has:
-     * name: the name of the metadata class e.g. "a"
-     * type: The type of the metadata class, will be used if the type
-     * has not been previously declared. The type must be one of:
-     * 'TEXT_NOT_INDEXED_AS_DOCUMENT_CONTENT', 'TEXT_INDEXED_AS_DOCUMENT_CONTENT', 
-     * 'GEOSPATIAL', 'NUMERICAL', 'SECURITY', 'DATE'.
-     * sources: Must be a list of maps.
+     * Metadata must be mapped into a metadata class e.g. "a", in general these must be no longer than 
+     * 64 chars and must be alpha numeric.
+     * Each metadata class has a type and this is defined by the enum {@link MetadataType}.
+     * A source of the metadata must also be defined, this is done by defining a source type and locator.
+     * A sourceType is defined by the enum {@link MetadataSourceType}.
+     * A locator is used to find the metadata within the source e.g. XML or HTML_OR_HTTP_HEADERS.
      * 
-     * And each source map must contain:
-     * sourceType: Defines where the metadata comes from must be one of
-     * 'XML', 'HTML_OR_HTTP_HEADERS'
-     * locator: Defines the location from where the metadata comes from.
-     * 
-     * To map metadata "author" from HTML documents to metadata class "a"
+     * To map HTML metadata "author" and "publisher" to metadata class "a"
      * and map XML path /root/secure to 'SECURITY' field 'S':
      * 
-     * List.of(
-     *     Map.of("name", "a",
-     *         "type", "TEXT_INDEXED_AS_DOCUMENT_CONTENT",
-     *         "sources", List.of(
-     *                              Map.of("sourceType", "HTML_OR_HTTP_HEADERS", "locator", "author"))
-     *                         ),
-     *     Map.of("name", "S",
-     *         "type", "SECURITY",
-     *         "sources", List.of(
-     *                              Map.of("sourceType", "XML", "locator", "/root/secure"))
-     *                         )
-     *     );
+     * <code>
+     * consumer.map("a", MetadataType.TEXT_INDEXED_AS_DOCUMENT_CONTENT, MetadataSourceType.HTML_OR_HTTP_HEADERS, "author");
+     * consumer.map("a", MetadataType.TEXT_NOT_INDEXED_AS_DOCUMENT_CONTENT, MetadataSourceType.HTML_OR_HTTP_HEADERS, "publisher");
+     * consumer.map("S", MetadataType.SECURITY, MetadataSourceType.HTML_OR_HTTP_HEADERS, "/root/secure");
+     * </code>
      * 
-     * Note that this model is a sub set of the model returned by the API, refer to the API
-     * for further details. The response of the API can be returned here so long as it is 
-     * converted into standard java types.
      * 
-     * Should any conflicts arise, the plugin will have lower priority and so will be unable
-     * to override anything previously set. In the case that a metadata class is already mapped
-     * sources for that metadata class will be appended to the existing metadata class unless the 
-     * source is already in use. In the future this may change and a single locator may be used for 
-     * multiple metadata classes.
+     * Should any conflicts arise, the first definition will be accepted. In the above example metadata class
+     * "a" would be set to "MetadataType.TEXT_INDEXED_AS_DOCUMENT_CONTENT" unless "a" was previously set to
+     * some other type.
      * 
-     * @return
+     * The same applies for MetadataSourceType and the locator, the first definition of a locator will win thus for:
+     * <code>
+     * consumer.map("x", MetadataType.TEXT_INDEXED_AS_DOCUMENT_CONTENT, MetadataSourceType.HTML_OR_HTTP_HEADERS, "author");
+     * consumer.map("y", MetadataType.TEXT_INDEXED_AS_DOCUMENT_CONTENT, MetadataSourceType.HTML_OR_HTTP_HEADERS, "author");
+     * </code>
+     * "author" from HTML metadata or HTTP headers will be written into metadata "x" only. This may change in the future.
+     * 
+     * Plugins always have a lower priority then what is set in a collection's configuration.
+     * 
      */
-    public default List<Map<String, Object>> metadataMappings(IndexConfigProviderContext context) {
-        
-        return List.of();
+    public default void metadataMappings(IndexConfigProviderContext context, MetadataMappingConsumer consumer) {
     }
     
     /**
