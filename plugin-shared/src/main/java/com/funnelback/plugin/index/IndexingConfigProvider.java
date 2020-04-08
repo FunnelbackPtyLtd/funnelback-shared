@@ -3,8 +3,6 @@ package com.funnelback.plugin.index;
 import java.util.List;
 import java.util.Map;
 
-import java.io.InputStream;
-
 import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
 import com.funnelback.plugin.index.consumers.GscopeByQueryConsumer;
 import com.funnelback.plugin.index.consumers.GscopeByRegexConsumer;
@@ -66,8 +64,7 @@ public interface IndexingConfigProvider {
      * 
      * 
      */
-    public default InputStream externalMetadata(IndexConfigProviderContext context, ExternalMetadataConsumer consumer) {
-        return null;
+    public default void externalMetadata(IndexConfigProviderContext context, ExternalMetadataConsumer consumer) {
     }
     
     /**
@@ -170,8 +167,6 @@ public interface IndexingConfigProvider {
      * 
      */
     public default void killByExactMatch(IndexConfigProviderContext context, KillByExactMatchConsumer consumer) {
-        consumer.killByExactMatch("http://example.com/list.xml");
-        consumer.killByExactMatch("http://example.com/notthisone.html");
     }
     
     /**
