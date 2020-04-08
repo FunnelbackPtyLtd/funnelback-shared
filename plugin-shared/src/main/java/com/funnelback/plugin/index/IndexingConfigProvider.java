@@ -198,7 +198,7 @@ public interface IndexingConfigProvider {
      * 'example.com/documents/ set:
      * 
      * <code>
-     * consumer.accept("isDocument", "example\\.com/documents/"); 
+     * consumer.applyGscopeWhenRegexMatches("isDocument", "example\\.com/documents/"); 
      * </code>
      * 
      * Note that the regex special character '.' is escaped with '\' which is a java character
@@ -226,7 +226,7 @@ public interface IndexingConfigProvider {
      * "word document"
      * 
      * <code>
-     * consumer.accept("isDocument", "word document"); 
+     * consumer.applyGscopeWhenQueryMatches("isDocument", "word document"); 
      * </code>
      * 
      * Multiple queries can be supplied and query language may be used. For example, 
