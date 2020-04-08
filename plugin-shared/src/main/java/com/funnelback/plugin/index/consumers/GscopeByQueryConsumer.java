@@ -1,9 +1,7 @@
 package com.funnelback.plugin.index.consumers;
 
-import java.util.function.BiConsumer;
-
 @FunctionalInterface
-public interface GscopeByQueryConsumer extends BiConsumer<String, String> {
+public interface GscopeByQueryConsumer {
 
     /**
      * A plugin may call this to supply a gscope which should be set for all documents that match the query.
@@ -13,6 +11,5 @@ public interface GscopeByQueryConsumer extends BiConsumer<String, String> {
      * with 'Fun' in any upper or lower case form are reserved for internal use.
      * @param query The query which will be run.
      */
-    @Override
-    void accept(String gscopeName, String query);
+    void applyGscopeWhenQueryMatches(String gscopeName, String query);
 }

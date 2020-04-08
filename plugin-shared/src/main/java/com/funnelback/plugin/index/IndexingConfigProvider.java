@@ -2,12 +2,14 @@ package com.funnelback.plugin.index;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import java.io.InputStream;
 
+import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
 import com.funnelback.plugin.index.consumers.GscopeByQueryConsumer;
 import com.funnelback.plugin.index.consumers.GscopeByRegexConsumer;
+import com.funnelback.plugin.index.consumers.KillByExactMatchConsumer;
+import com.funnelback.plugin.index.consumers.KillByPartialMatchConsumer;
 import com.funnelback.plugin.index.model.indexingconfig.XmlIndexingConfig;
 import com.funnelback.plugin.index.model.querycompletion.QueryCompletionCSV;
 
@@ -18,20 +20,42 @@ import com.funnelback.plugin.index.model.querycompletion.QueryCompletionCSV;
 public interface IndexingConfigProvider {
 
     /**
-     * Return external metadata in the raw format as defined in documentation.
+     * Allows supplying external metadata.
      * 
-     * Invalid formats are likely to cause indexing errors.
+     * Example:
+     * <code>
+     * // Apply metadata to documents with URLs starting with https://foo.com/documents/
+     * consumer.addMetadataToPrefix("https://foo.com/documents/", ImmutableListMultimap.of(
+     *     "type", "doc", 
+     *     "notes", "informative",
+     *     "notes", "boring"));
+     * 
+     * // Apply metadata to documents with URLs starting with https://foo.com/videos/
+     * ListMultimap<String, String> metadata = ArrayListMultimap.create();
+     * metadata.put("type", "video");
+     * metadata.put("notes", "sometimes informative");
+     * consumer.addMetadataToPrefix("https://foo.com/videos/", metadata);
+     * </code>
+     * 
+     * This would result in a URL such as https://foo.com/documents/apollo11owenermanual.pdf 
+     * as having the metadata: type=doc, notes=informative and notes=boring. The document 
+     * would match the following queries:
+     * <p><ul>
+     * <li>type:doc
+     * <li>notes:informative
+     * <li>notes:boring
+     * </ul><p>
      * 
      * Each external metadata provided by plugins and from conf, do no interact with 
      * each other. This means if two plugins provided an entry for the same URL pattern
      * and the same metadata, both values would be applied. e.g.
      * Plugin 1 provides:
      * <code>
-     * http://example.com/a foo:bar
+     * consumer.accept("http://example.com/a", ImmutableListMultimap.of("foo", "bar"));
      * </code>
      * plugin 2 provides:
      * <code>
-     * http://example.com/a foo:foobar
+     * consumer.accept("http://example.com/a", ImmutableListMultimap.of("foo", "foobar"));
      * </code>
      * 
      * A document like:
@@ -42,7 +66,7 @@ public interface IndexingConfigProvider {
      * 
      * 
      */
-    public default InputStream externalMetadata(IndexConfigProviderContext context) {
+    public default InputStream externalMetadata(IndexConfigProviderContext context, ExternalMetadataConsumer consumer) {
         return null;
     }
     
@@ -130,39 +154,41 @@ public interface IndexingConfigProvider {
     }
     
     /**
-     * Supply a stream of URLs to kill by exact match.
+     * Supply URLs to kill by exact match.
      * 
      * The behaviour of the returned URLs matches the behaviour as if they where
      * appended to kill_exact.cfg.
      * 
-     * A Stream can be made from a list if the list is small for example:
+     * Example:
+     * To kill both documents "http://example.com/list.xml" and 
+     * "http://example.com/notthisone.html".
+     * 
      * <code>
-     *     return List.of("http://example.com/index.html").stream();
+     * consumer.killByExactMatch("http://example.com/list.xml");
+     * consumer.killByExactMatch("http://example.com/notthisone.html");
      * </code>
      * 
-     * @return a Stream of URLs to kill by "exact" match.
-     * 
      */
-    public default Stream<String> killByExactMatch(IndexConfigProviderContext context) {
-        return Stream.of();
+    public default void killByExactMatch(IndexConfigProviderContext context, KillByExactMatchConsumer consumer) {
+        consumer.killByExactMatch("http://example.com/list.xml");
+        consumer.killByExactMatch("http://example.com/notthisone.html");
     }
     
     /**
-     * Supply a stream of URLs to kill by partial match.
+     * Supply URLs to kill by partial match.
      * 
      * The behaviour of the returned URLs matches the behaviour as if they where
      * appended to kill_partial.cfg.
      * 
-     * A Stream can be made from a list if the list is small for example:
+     * Example:
+     * Kill URLs in example.com that are under the "/beta/" or "/invalid/" paths.
      * <code>
-     *     return List.of("http://example.com/").stream();
+     * consumer.killByPartialMatch("https://example.com/beta/");
+     * consumer.killByPartialMatch("https://example.com/invalid/");
      * </code>
      * 
-     * @return a Stream of URLs to kill by "partial" match.
-     * 
      */
-    public default Stream<String>  killByPartialMatch(IndexConfigProviderContext context) {
-        return Stream.of();
+    public default void killByPartialMatch(IndexConfigProviderContext context, KillByPartialMatchConsumer consumer) {   
     }
     
     /**
@@ -182,9 +208,9 @@ public interface IndexingConfigProvider {
      * set by various regular expressions. For example:
      * 
      * <code>
-     * consumer.accept("cat", ".*cat.*");
-     * consumer.accept("cat", ".*kitty.*");
-     * consumer.accept("dog", ".*dog.*");
+     * consumer.applyGscopeWhenRegexMatches("cat", ".*cat.*");
+     * consumer.applyGscopeWhenRegexMatches("cat", ".*kitty.*");
+     * consumer.applyGscopeWhenRegexMatches("dog", ".*dog.*");
      * </code>
      * 
      * @param consumer Accepts gscopes that will be set when the URL matches the regex.
@@ -208,9 +234,9 @@ public interface IndexingConfigProvider {
      * and gscope 'public' on documents containing both 'public' and 'internet'.
      * 
      * <code>
-     * consumer.accept("org", "[enterprise organisation]"); 
+     * consumer.applyGscopeWhenQueryMatches("org", "[enterprise organisation]"); 
      * // Use mandatory inclusion operator to ensure both terms are present.
-     * consumer.accept("public", "|public |internet"); 
+     * consumer.applyGscopeWhenQueryMatches("public", "|public |internet"); 
      * </code>
      * 
      * @param consumer Accepts gscopes that will be set then the document matches the query.
