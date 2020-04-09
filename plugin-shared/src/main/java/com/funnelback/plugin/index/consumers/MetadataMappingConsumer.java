@@ -16,7 +16,9 @@ public interface MetadataMappingConsumer {
      * @param locator the location to get the metadata from e.g. when getting metadata from HTML: 
      * <code>&#x3C;meta name="author" content="John Doe"&#x3E;</code> the locator would be
      * "author".
+     * @throws IllegalArgumentException when one or more of the arguments is not valid.
      */
-    public void map(String metadataClass, MetadataType type, MetadataSourceType sourceType, String locator);
+    public void map(String metadataClass, MetadataType type, MetadataSourceType sourceType, String locator)
+        throws IllegalArgumentException;
     
 }

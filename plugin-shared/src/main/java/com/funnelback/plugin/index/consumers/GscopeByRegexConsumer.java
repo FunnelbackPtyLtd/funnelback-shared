@@ -10,6 +10,8 @@ public interface GscopeByRegexConsumer {
      * characters and must be no longer than 64 characters. Additionally gscope names which start 
      * with 'Fun' in any upper or lower case form are reserved for internal use.
      * @param perlRegularExpression The regular expression that will be matched against the URL.
+     * @throws IllegalArgumentException when one or more of the arguments is not valid.
      */
-    void applyGscopeWhenRegexMatches(String gscopeName, String perlRegularExpression);
+    void applyGscopeWhenRegexMatches(String gscopeName, String perlRegularExpression)
+        throws IllegalArgumentException;
 }
