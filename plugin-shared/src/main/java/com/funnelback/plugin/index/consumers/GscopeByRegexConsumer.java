@@ -1,9 +1,7 @@
 package com.funnelback.plugin.index.consumers;
 
-import java.util.function.BiConsumer;
-
 @FunctionalInterface
-public interface GscopeByRegexConsumer extends BiConsumer<String, String> {
+public interface GscopeByRegexConsumer {
 
     /**
      * A plugin may call this to supply a gscope which should be set when the regular expression matches the URL.
@@ -12,7 +10,8 @@ public interface GscopeByRegexConsumer extends BiConsumer<String, String> {
      * characters and must be no longer than 64 characters. Additionally gscope names which start 
      * with 'Fun' in any upper or lower case form are reserved for internal use.
      * @param perlRegularExpression The regular expression that will be matched against the URL.
+     * @throws IllegalArgumentException when one or more of the arguments is not valid.
      */
-    @Override
-    void accept(String gscopeName, String perlRegularExpression);
+    void applyGscopeWhenRegexMatches(String gscopeName, String perlRegularExpression)
+        throws IllegalArgumentException;
 }
