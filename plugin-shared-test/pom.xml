@@ -11,6 +11,54 @@
     </parent>
     <build>
         <finalName>funnelback-${project.artifactId}-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <!-- JavaDoc doesn't understand lombok, so we must delombok first.
+                     See https://stackoverflow.com/a/51947792/797 and https://github.com/rzwitserloot/lombok/issues/1033 --> 
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>1.18.2.0</version>
+                <configuration>
+                    <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+                    <outputDirectory>${project.basedir}/target/delombok</outputDirectory>
+                    <addOutputDirectory>false</addOutputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <configuration>
+                    <show>private</show>
+                    <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
+                    <sourcepath>${project.basedir}/target/delombok</sourcepath>
+                    <sourceFileIncludes>
+                        <include>com/**/*.java</include>
+                    </sourceFileIncludes>
+                    <sourceFileExcludes>
+                    </sourceFileExcludes>
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <failOnError>false</failOnError>
+                    <additionalparam>--allow-script-in-comments</additionalparam>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>
