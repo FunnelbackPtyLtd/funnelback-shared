@@ -1,8 +1,9 @@
-package com.funnelback.plugin.gatherer;
+package com.funnelback.plugin.gatherer.mock;
 
 import java.io.File;
 
 import com.funnelback.mock.helpers.MapBackedConfig;
+import com.funnelback.plugin.gatherer.PluginGatherContext;
 
 import lombok.Getter;
 import lombok.Setter;
