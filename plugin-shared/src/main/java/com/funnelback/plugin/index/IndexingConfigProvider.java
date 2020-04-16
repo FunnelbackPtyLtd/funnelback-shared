@@ -239,7 +239,7 @@ public interface IndexingConfigProvider {
      * have some profiles get their query completion CSV by contacting a remote server.
      *   
      * 
-     * @param contextForAllProfiles The context for all profiles which exists.
+     * @param contextForProfilesThatRunThisPlugin The context for all profiles which run this plugin.
      * @return A list of QueryCompletionCSV objects each of which contain the profiles
      * it should apply to along with the CSV. For example, to apply the CSV from a remote
      * web server to the profiles "_default" and "news" you could do something similar to:
@@ -250,7 +250,7 @@ public interface IndexingConfigProvider {
      * </code>
      * 
      */
-    public default List<QueryCompletionCSV> queryCompletionCSVForProfile(List<IndexConfigProviderContext> contextForAllProfiles) {
+    public default List<QueryCompletionCSV> queryCompletionCSVForProfile(List<IndexConfigProviderContext> contextForProfilesThatRunThisPlugin) {
         return List.of();
     }
     
