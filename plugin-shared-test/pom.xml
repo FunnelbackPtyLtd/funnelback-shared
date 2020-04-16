@@ -38,13 +38,13 @@
                 <version>2.10.4</version>
                 <configuration>
                     <show>private</show>
-                    <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
+                    
                     <sourcepath>${project.basedir}/target/delombok</sourcepath>
                     <sourceFileIncludes>
                         <include>com/**/*.java</include>
                     </sourceFileIncludes>
-                    <sourceFileExcludes>
-                    </sourceFileExcludes>
+                    <!-- It can be tempting to turn this to false, don't-->
+                    <failOnError>true</failOnError>
                     <docfilessubdirs>true</docfilessubdirs>
                     <failOnError>false</failOnError>
                     <additionalparam>--allow-script-in-comments</additionalparam>
