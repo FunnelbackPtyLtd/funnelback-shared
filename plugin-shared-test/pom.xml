@@ -7,8 +7,45 @@
     <parent>
         <groupId>com.funnelback</groupId>
         <artifactId>funnelback-shared-parent</artifactId>
-        <version>15.25.2015-SNAPSHOT</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
+
+    <description>Utilities and supporting classes for testing plugins for the Funnelback Enterprise Search Engine</description>
+    <url>https://github.com/FunnelbackPtyLtd/funnelback-shared</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Funnelback R&amp;D Team</name>
+            <email>dev@funnelback.com</email>
+            <organization>Funnelback</organization>
+            <organizationUrl>https://funnelback.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/FunnelbackPtyLtd/funnelback-shared.git</connection>
+        <developerConnection>scm:git:ssh://github.com:FunnelbackPtyLtd/funnelback-shared.git</developerConnection>
+        <url>http://github.com/FunnelbackPtyLtd/funnelback-shared/tree/master</url>
+    </scm>
+
+    <distributionManagement>
+       <snapshotRepository>
+           <id>ossrh</id>
+           <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+       </snapshotRepository>
+       <repository>
+           <id>ossrh</id>
+           <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+       </repository>
+    </distributionManagement>
+
     <build>
         <finalName>funnelback-${project.artifactId}-${project.version}</finalName>
     </build>
