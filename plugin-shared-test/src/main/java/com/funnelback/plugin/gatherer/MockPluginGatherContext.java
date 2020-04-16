@@ -12,7 +12,7 @@ import lombok.experimental.Delegate;
  * TODO
  *
  */
-public class MockPluginGatherContext {
+public class MockPluginGatherContext implements PluginGatherContext {
 
     @Getter @Setter private File searchHome;
 
