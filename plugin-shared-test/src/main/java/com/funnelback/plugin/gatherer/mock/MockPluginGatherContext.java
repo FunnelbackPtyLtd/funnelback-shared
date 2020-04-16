@@ -24,7 +24,6 @@ import lombok.experimental.Delegate;
  * PluginGatherer underTest = new MyPluginGatherer();
  * 
  * underTest.gather(pluginGatherContext, pluginStore);
- * 
  * </code>
  *
  */
