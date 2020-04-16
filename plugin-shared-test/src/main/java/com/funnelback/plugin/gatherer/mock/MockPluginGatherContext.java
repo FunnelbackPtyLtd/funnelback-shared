@@ -10,7 +10,22 @@ import lombok.Setter;
 import lombok.experimental.Delegate;
 
 /**
- * TODO
+ * 
+ * A Mock PluginGatherContext that may be used when testing the PluginGatherer.
+ * 
+ * Example:
+ * <code>
+ * MockPluginGatherContext pluginGatherContext = new MockPluginGatherContext();
+ * // Set collection config setting 'foo=bar'.
+ * pluginGatherContext.setConfigSetting("foo", "bar");
+ * 
+ * MockPluginStore pluginStore = new MockPluginStore();
+ * 
+ * PluginGatherer underTest = new MyPluginGatherer();
+ * 
+ * underTest.gather(pluginGatherContext, pluginStore);
+ * 
+ * </code>
  *
  */
 public class MockPluginGatherContext implements PluginGatherContext {

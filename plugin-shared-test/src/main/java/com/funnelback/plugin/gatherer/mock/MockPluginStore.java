@@ -13,13 +13,33 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
+ * A mock PluginStore that may be used when testing the PluginGatherer.
+ * 
+ * Example:
+ * <code>
+ * MockPluginStore pluginStore = new MockPluginStore();
+ * 
+ * MockPluginGatherContext pluginGatherContext = new MockPluginGatherContext();
+ * 
+ * PluginGatherer underTest = new MyPluginGatherer();
+ * 
+ * underTest.gather(pluginGatherContext, pluginStore);
+ * 
+ * Assert.assertEquals("2 documents should have been gathered.", 2, pluginStore.getStored().size());
+ * 
+ * Assert.assertEquals("http://example.com/1", pluginStore.getStored().get(0).getUri().toASCIIString());
+ * Assert.assertEquals("http://example.com/2", pluginStore.getStored().get(1).getUri().toASCIIString());
+ * </code> 
+ * 
  * Stores records in memory, don't store too many documents into this.
+ * 
+ * 
  *
  */
 public class MockPluginStore implements PluginStore {
     
     /**
-     * 
+     * Holds the values that {@link MockPluginStore#store(URI, byte[], ListMultimap)} was called with.
      * 
      * Although this class is immutable, the fields are not.
      * 
