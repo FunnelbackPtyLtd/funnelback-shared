@@ -14,7 +14,7 @@ public class SearchQuestionTestHelperTest {
     public void setProfileConfigOptionsTest() {
         SearchTransaction transaction = new SearchTransaction();
         Map<String, String> profileConfig = new HashMap<>();
-        SearchQuestionTestHelper.setProfileConfigOptions(profileConfig, transaction.getQuestion());
+        SearchQuestionTestHelper.setCurrentProfileConfig(profileConfig, transaction.getQuestion());
 
         profileConfig.put("foo", "bar");
         profileConfig.put("a", "b");

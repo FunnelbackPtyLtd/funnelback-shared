@@ -36,7 +36,7 @@ public class SearchQuestionTestHelper {
      * @param question the SearchQuestion which will have its {@link SearchQuestion#getCurrentProfileConfig()} 
      * return a config which uses the given map. 
      */
-    public static void setProfileConfigOptions(Map<String, String> profileConfig, SearchQuestion question) {
+    public static void setCurrentProfileConfig(Map<String, String> profileConfig, SearchQuestion question) {
         question.setServiceConfigProvider(q -> new MyServiceConfig(new MapBackedConfig(profileConfig)));
     }
 
