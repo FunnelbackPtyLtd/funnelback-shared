@@ -9,8 +9,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+/**
+ * Internal class, not to be used directly.
+ *
+ */
+@NoArgsConstructor
+@AllArgsConstructor
 public class MapBackedConfig {
+    
     /**
      * This can be used to mock setting values in collection.cfg.
      * 
