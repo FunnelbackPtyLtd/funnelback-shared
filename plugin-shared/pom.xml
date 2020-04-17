@@ -102,14 +102,13 @@
                 <version>2.10.4</version>
                 <configuration>
                     <show>private</show>
-                    <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
+                    
                     <sourcepath>${project.basedir}/target/delombok</sourcepath>
                     <sourceFileIncludes>
-                        <include>com/funnelback/publicui/search/model/**/*.java</include>
+                        <include>com/**/*.java</include>
                     </sourceFileIncludes>
-                    <sourceFileExcludes>
-                        <exclude>com/funnelback/publicui/search/model/collection/delegate/**/*.java</exclude>
-                    </sourceFileExcludes>
+                    <!-- It can be tempting to turn this to false, don't-->
+                    <failOnError>true</failOnError>
                     <docfilessubdirs>true</docfilessubdirs>
                     <failOnError>false</failOnError>
                     <additionalparam>--allow-script-in-comments</additionalparam>
@@ -119,22 +118,6 @@
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <configuration>
-                    <tasks>
-                        <delete file="${project.basedir}/src/main/javadoc/overview.html" />
-                    </tasks>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>
