@@ -13,7 +13,6 @@ build linux:
     image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
 
     script:
-        - cat /root/.m2/settings.xml
         - mvn -B -U clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
         - rm -rf .m2/repository/com/funnelback/
 
