@@ -3,3 +3,4 @@ target/
 !.gitignore
 !.gitlab-ci.yml
 *.iml
+*.versionsBackup
