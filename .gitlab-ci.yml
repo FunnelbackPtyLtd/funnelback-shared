@@ -14,7 +14,7 @@ build linux:
 
     script:
         - ls -lRa ~/.gnupg
-        - GPG_TTY=$(tty) mvn -B -U clean verify -Dgpg.passphrase=$GPGPASSPHRASE
+        - GPG_TTY=$(tty) mvn -B -U clean verify -Dgpg.passphrase=invalid
         - rm -rf .m2/repository/com/funnelback/
 
     artifacts:
