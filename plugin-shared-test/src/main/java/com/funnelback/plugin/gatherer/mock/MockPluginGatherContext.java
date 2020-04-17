@@ -2,6 +2,7 @@ package com.funnelback.plugin.gatherer.mock;
 
 import java.io.File;
 
+import com.funnelback.mock.helpers.ConfigSettingMock;
 import com.funnelback.mock.helpers.MapBackedConfig;
 import com.funnelback.plugin.gatherer.PluginGatherContext;
 
@@ -27,7 +28,7 @@ import lombok.experimental.Delegate;
  * </code>
  *
  */
-public class MockPluginGatherContext implements PluginGatherContext {
+public class MockPluginGatherContext implements PluginGatherContext, ConfigSettingMock {
 
     @Getter @Setter private File searchHome;
 

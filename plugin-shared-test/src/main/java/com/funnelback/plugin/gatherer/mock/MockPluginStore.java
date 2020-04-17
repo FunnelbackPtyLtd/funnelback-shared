@@ -58,7 +58,7 @@ public class MockPluginStore implements PluginStore {
     @Getter private final List<MockPluginStoreResult> stored = new ArrayList<>();
     
     @Override
-    public void store(URI uri, byte[] content, ListMultimap<String, String> metadata) {
+    public synchronized void store(URI uri, byte[] content, ListMultimap<String, String> metadata) {
         this.stored.add(new MockPluginStoreResult(uri, content, metadata));
     }
 
