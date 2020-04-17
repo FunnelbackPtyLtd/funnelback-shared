@@ -21,7 +21,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.externalMetadata(mockContext, mockConsumer);
         
-        Assert.assertTrue("TODO assert something useful.", mockConsumer.getInvocations().size() >= 0);
+        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
     }
     
     @Test
@@ -32,7 +32,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.metadataMappings(mockContext, mockConsumer);
         
-        Assert.assertTrue("TODO assert something useful.", mockConsumer.getInvocations().size() >= 0);
+        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
     }
     
     @Test
@@ -43,7 +43,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.killByExactMatch(mockContext, mockConsumer);
         
-        Assert.assertTrue("TODO assert something useful.", mockConsumer.getInvocations().size() >= 0);
+        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
     }
     
     @Test
@@ -54,7 +54,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.killByPartialMatch(mockContext, mockConsumer);
         
-        Assert.assertTrue("TODO assert something useful.", mockConsumer.getInvocations().size() >= 0);
+        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
     }
     
     @Test
@@ -65,7 +65,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.supplyGscopesByRegex(mockContext, mockConsumer);
         
-        Assert.assertTrue("TODO assert something useful.", mockConsumer.getInvocations().size() >= 0);
+        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
     }
     
     @Test
@@ -76,6 +76,6 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.supplyGscopesByQuery(mockContext, mockConsumer);
         
-        Assert.assertTrue("TODO assert something useful.", mockConsumer.getInvocations().size() >= 0);
+        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
     }
 }
