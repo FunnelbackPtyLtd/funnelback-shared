@@ -23,8 +23,14 @@ Once we're ready to actually release a version, run it again without the -SNAPSH
     mvn versions:set -DnewVersion=1.2.3
 
 ...and then get that change merged into the master branch. Assuming everything goes well,
-gitlab-ci will build the change and deploy it out to maven central. The syncing process takes
-a little while, but you should expect to see your new version appear at 
-[https://repo1.maven.org/maven2/com/funnelback/](https://repo1.maven.org/maven2/com/funnelback/)
-within 15 minutes or so at worst. If not, you probably ought to check out master's pipeline
-to see if something went wrong.
+gitlab-ci will then build the change on the master branch.
+
+One the initial build is finished on the master branch, gitlab-ci's pipeline will show
+a play-button icon next to the release stage of the pipeline. If you're sure you're ready
+to release the new version to maven central, click the play button and the components here
+will be rebuilt, deployed into maven central and released.
+
+Maven central's syncing process takes a little while, but you should expect to see your new
+version appear at [https://repo1.maven.org/maven2/com/funnelback/](https://repo1.maven.org/maven2/com/funnelback/)
+within 15 minutes or so at worst. If not, start by looking at the result of the 'release' job
+in master's pipeline for what went wrong.
