@@ -9,8 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MapBackedConfig {
 
+public class MapBackedConfig {
     /**
      * This can be used to mock setting values in collection.cfg.
      * 

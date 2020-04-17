@@ -115,6 +115,7 @@ public class SearchTransaction {
 
     /**
      * Build a new transaction
+     * 
      * @param sq {@link SearchQuestion}
      * @param sr {@link SearchResponse}
      */
