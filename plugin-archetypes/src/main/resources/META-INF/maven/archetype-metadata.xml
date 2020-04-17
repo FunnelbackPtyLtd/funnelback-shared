@@ -15,10 +15,11 @@
                 <include>**/funnelback-plugin-__artifactId__.properties</include>
             </includes>
         </fileSet>
-        <fileSet>
+        <fileSet filtered="true">
             <directory/>
             <includes>
                 <include>BUILD.md</include>
+                <include>README.md</include>
             </includes>
         </fileSet>
         <fileSet filtered="true">
