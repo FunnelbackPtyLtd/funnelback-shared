@@ -52,7 +52,7 @@
             <plugin>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-json-schema-plugin</artifactId>
-                <version>2.4.4</version>
+                <version>2.4.4-SNAPSHOT/version>
                 <executions>
                     <execution>
                         <id>generate1</id>
