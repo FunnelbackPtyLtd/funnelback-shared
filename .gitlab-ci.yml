@@ -9,7 +9,37 @@ cache:
     paths:
         - .m2/repository
 
-build linux:
+stages:
+  - build
+  - release
+
+build:
+    stage: build
+    image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
+
+    script:
+        - mvn -B -U clean verify -Dgpg.passphrase=$GPGPASSPHRASE
+        - rm -rf .m2/repository/com/funnelback/
+
+    artifacts:
+        expire_in: 1 hr
+        paths:
+            - target/*
+        reports:
+            junit:
+                - "*/target/surefire-reports/TEST-*.xml"
+                - "*/target/failsafe-reports/TEST-*.xml"
+
+    tags:
+        - docker
+        - shared
+
+release:
+    stage: release
+    when: manual
+    only:
+        - maven-central-pom-files
+    # TODO - change that to master before this goes in!
     image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
 
     script:
