@@ -13,8 +13,7 @@ build linux:
     image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
 
     script:
-        - ls -lRa ~/.gnupg
-        - GPG_TTY=$(tty) mvn -B -U clean verify -Dgpg.passphrase=invalid
+        - GPG_TTY=$(tty) mvn -B -U clean verify -Dgpg.passphrase=$GPGPASSPHRASE
         - rm -rf .m2/repository/com/funnelback/
 
     artifacts:
