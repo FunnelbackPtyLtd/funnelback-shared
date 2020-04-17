@@ -15,7 +15,6 @@ import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -29,7 +28,6 @@ import lombok.extern.log4j.Log4j2;
  * @since 11.0
  */
 @Log4j2
-@NoArgsConstructor
 @JsonIgnoreProperties({"extraSearchesTasks", "extraSearchesQuestions", "extraSearchesAproxTimeSpent"})
 public class SearchTransaction {
 
@@ -124,7 +122,14 @@ public class SearchTransaction {
         this.question = sq;
         this.response = sr;
     }
-    
+
+    /**
+     * Build a new transaction
+     */
+    public SearchTransaction() {
+        this(new SearchQuestion(), new SearchResponse());
+    }
+
     /**
      * <p>Any additional extra search transactions performed during this transaction.<p>
      * 
