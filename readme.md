@@ -25,7 +25,7 @@ Once we're ready to actually release a version, run it again without the -SNAPSH
 ...and then get that change merged into the master branch. Assuming everything goes well,
 gitlab-ci will then build the change on the master branch.
 
-One the initial build is finished on the master branch, gitlab-ci's pipeline will show
+Once the initial build is finished on the master branch, gitlab-ci's pipeline will show
 a play-button icon next to the release stage of the pipeline. If you're sure you're ready
 to release the new version to maven central, click the play button and the components here
 will be rebuilt, deployed into maven central and released.
