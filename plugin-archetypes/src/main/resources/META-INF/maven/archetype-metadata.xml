@@ -55,11 +55,12 @@
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="groupId" >
-            <validationRegex><![CDATA[^[a-zA-Z0-9\.\-]+$]]></validationRegex>
+            <validationRegex><![CDATA[^[a-z0-9\.]+$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="artifactId" >
-            <validationRegex><![CDATA[^[a-zA-Z0-9\.\-]+$]]></validationRegex>
+            <validationRegex><![CDATA[^[a-z0-9\.\-]+$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="archetypeVersion"> </requiredProperty>
+        <requiredProperty key="package"><defaultValue>${groupId}.${artifactId.replaceAll("[^A-Za-z0-9]", "")}</defaultValue></requiredProperty>
     </requiredProperties>
 </archetype-descriptor>
