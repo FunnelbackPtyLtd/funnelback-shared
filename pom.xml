@@ -59,7 +59,7 @@
         <!-- with the top-level pom.xml in java-parent!-->
         <version.guava>21.0</version.guava>
         <version.hibernate-jpa-2.1>1.0.0.Final</version.hibernate-jpa-2.1>
-        <version.jackson2>2.9.6</version.jackson2>
+        <version.jackson2>2.9.10.3</version.jackson2>
         <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.jsoup>1.10.2</version.jsoup>
         <version.junit>4.12</version.junit>
