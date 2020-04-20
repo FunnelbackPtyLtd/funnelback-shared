@@ -49,6 +49,10 @@
     <build>
         <finalName>funnelback-${project.artifactId}-${project.version}</finalName>
         <plugins>
+            <!-- Disabled this - For some reason the plugin is failing to load from maven central
+                 Maybe we'll need to bring this back if it's output is really needed though.
+             --> 
+            <!--
             <plugin>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-json-schema-plugin</artifactId>
@@ -76,6 +80,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+        -->
             <plugin>
                 <!-- JavaDoc doesn't understand lombok, so we must delombok first.
                      See https://stackoverflow.com/a/51947792/797 and https://github.com/rzwitserloot/lombok/issues/1033 --> 
