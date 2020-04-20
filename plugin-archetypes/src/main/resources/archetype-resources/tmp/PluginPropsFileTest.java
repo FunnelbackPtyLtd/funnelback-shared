@@ -13,7 +13,7 @@ public class PluginPropsFileTest extends AbstractPluginPropertiesFileTest {
      */
     @Override
     public String getPluginName() {
-        return "${artifactId}";
+        return _ClassNamePrefix_PluginUtils.PLUGIN_NAME;
     }
 
     
