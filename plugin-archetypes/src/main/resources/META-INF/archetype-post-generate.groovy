@@ -39,44 +39,46 @@ resources = projectPath.resolve("src/main/resources")
 propertiesFile = resources.resolve("funnelback-plugin-" + request.artifactId + ".properties").toFile()
 
 if(isGathererEnabled) {
-    String pluginImplementation = "PluginGatherer"
+    String pluginImplementation = "_ClassNamePrefix_PluginGatherer"
     String pluginInterface = "com.funnelback.plugin.gatherer.PluginGatherer"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isIndexingEnabled) {
-    String pluginImplementation = "IndexingConfigProvider"
+    String pluginImplementation = "_ClassNamePrefix_IndexingConfigProvider"
     String pluginInterface = "com.funnelback.plugin.index.IndexingConfigProvider"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isFacetsEnabled) {
-    String pluginImplementation = "FacetProvider"
+    String pluginImplementation = "_ClassNamePrefix_FacetProvider"
     String pluginInterface = "com.funnelback.plugin.facets.FacetProvider"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isSearchLifeCycleEnabled) {
-    String pluginImplementation = "SearchLifeCyclePlugin"
+    String pluginImplementation = "_ClassNamePrefix_SearchLifeCyclePlugin"
     String pluginInterface = "com.funnelback.plugin.SearchLifeCyclePlugin"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
 if(isFilteringEnabled) {
-    String pluginImplementation = "StringFilter"
+    String pluginImplementation = "_ClassNamePrefix_StringFilter"
     enableImplementationAndTests(pluginImplementation)
 }
 
 if(isJsoupFilteringEnabled) {
-    String pluginImplementation = "JsoupFilter"
+    String pluginImplementation = "_ClassNamePrefix_JsoupFilter"
     enableImplementationAndTests(pluginImplementation)
 }
 
 writePluginPropsFileTest();
+
+enableSourceImplementation("PluginUtils");
 
 // Delete tmp directory and files
 Files.walkFileTree(tmp, new SimpleFileVisitor<Path>() {
@@ -96,41 +98,41 @@ Files.walkFileTree(tmp, new SimpleFileVisitor<Path>() {
     }
 })
 
-def enableImplementationAndTests(String impl) {
-    enableSourceImplementation(impl)
-    enableTests(impl)
+def enableImplementationAndTests(String originalClassName) {
+    enableSourceImplementation(originalClassName)
+    enableTests(originalClassName)
 }
 
-def enableSourceImplementation(String impl) {
+def enableSourceImplementation(String originalClassName) {
     srcTarget = projectPath.resolve("src/main/java/" + packagePath)
-    prepareSourceFiles(impl, impl + ".java", srcTarget)
+    prepareSourceFiles(originalClassName + ".java", srcTarget)
 }
 
-def enableTests(String impl) {
+def enableTests(String originalClassName) {
     testTarget = projectPath.resolve("src/test/java/" + packagePath)
-    prepareSourceFiles(impl, impl + "Test.java", testTarget)
+    prepareSourceFiles(originalClassName + "Test.java", testTarget)
 }
 
-def prepareSourceFiles(String impl, String className, Path target) {
-    Path source = tmp.resolve(className)
-    Path destination = target.resolve(pluginClassPrefix + className)
+def prepareSourceFiles(String originalClassName, Path target) {
+    Path source = tmp.resolve(originalClassName)
+    Path destination = target.resolve(originalClassName.replace("_ClassNamePrefix_", pluginClassPrefix));
     Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
     def fileCreated = destination.toFile()
     // Change the internal reference of class name inside file
     def newContent= fileCreated.text
-       //.replace("class " + impl, "class " + pluginClassPrefix + impl)
       .replace("_ClassNamePrefix_", pluginClassPrefix);
     
     fileCreated.text = newContent
 }
 
 // Write entry to funnelback-plugin properties file
-def writeToPropertiesFile(String impl, String qualifiedInterface) {
-    propertiesFile.append(qualifiedInterface + "=" + packageName + "." + pluginClassPrefix + impl + "\n")
+def writeToPropertiesFile(String originalClassName, String qualifiedInterface) {
+    propertiesFile.append(qualifiedInterface + "=" + packageName + "." + originalClassName.replace("_ClassNamePrefix_", pluginClassPrefix) + "\n")
 }
 
 def writePluginPropsFileTest() {
-    Path source = tmp.resolve("PluginPropsFileTest.java");
-    Path destination = testTarget.resolve("PluginPropsFileTest.java");
-    Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
+    enableTests("PluginPropsFile");
+    //Path source = tmp.resolve("PluginPropsFileTest.java");
+    //Path destination = testTarget.resolve("PluginPropsFileTest.java");
+    //Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
 }
