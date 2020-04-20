@@ -9,23 +9,20 @@ can easily be accessed by prospective plugin developers.
 ## Developing the shared components
 
 We have gitlab-ci set up to automatically build new versions of this project and to deploy them into maven central
-whenever a non-snapshot version is merged into the master branch.
+whenever a non-snapshot version is merged into a release-(version-number) branch.
 
-What that means in practice is that when you start developing changes you should run...
-
-    mvn versions:set -DnewVersion=1.2.3-SNAPSHOT
-
-...replacing in the appropriate newVersion value, which would generally be `(current-version + 1) + "-SNAPSHOT"`.
-That will change all the pom.xml files to have the appropriate new versions and you can start developing.
-
-Once we're ready to actually release a version, run it again without the -SNAPSHOT...
+What that means in practice is that when you are ready to release a new version, you should create
+an appropriate release branch (i.e. with the intended version number) and run...
 
     mvn versions:set -DnewVersion=1.2.3
 
-...and then get that change merged into the master branch. Assuming everything goes well,
-gitlab-ci will then build the change on the master branch.
+...to set a non-snapshot version of the intended version in the pom files.
 
-Once the initial build is finished on the master branch, gitlab-ci's pipeline will show
+Then you should get that change merged into a release branch with the matching version
+(in this example release-1.2.3.x). Assuming everything goes well, gitlab-ci will then
+build the change on the release branch.
+
+Once the initial build is finished on the release branch, gitlab-ci's pipeline will show
 a play-button icon next to the release stage of the pipeline. If you're sure you're ready
 to release the new version to maven central, click the play button and the components here
 will be rebuilt, deployed into maven central and released.
@@ -34,3 +31,10 @@ Maven central's syncing process takes a little while, but you should expect to s
 version appear at [https://repo1.maven.org/maven2/com/funnelback/](https://repo1.maven.org/maven2/com/funnelback/)
 within 15 minutes or so at worst. If not, start by looking at the result of the 'release' job
 in master's pipeline for what went wrong.
+
+After updating the version, you might also want to update the version in master
+to reflect the intended 'next' version by running something like...
+
+    mvn versions:set -DnewVersion=1.2.4-SNAPSHOT
+
+...and getting that change merged into master.

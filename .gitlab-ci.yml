@@ -38,7 +38,7 @@ release:
     stage: release
     when: manual
     only:
-        - master
+        - /^release-.*$/
     image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
 
     script:
