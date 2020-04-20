@@ -19,7 +19,7 @@ import lombok.experimental.Delegate;
  * A mock {@link IndexConfigProviderContext} that may be used when testig the {@link IndexingConfigProvider}.
  * 
  * Example:
- * <code>
+ * <pre>{@code 
  * MockIndexConfigProviderContext mockContext = new MockIndexConfigProviderContext();
  * // Set collection or profile config setting 'foo=bar'.
  * mockContext.setConfigSetting("foo", "bar");
@@ -27,7 +27,7 @@ import lombok.experimental.Delegate;
  * // This conext is for a profile and the method being tested needs to know the
  * // profile name, so set that with the mock.
  * mockContext.setProfile(Optional.of("dummy-profile"));
- * </code>
+ * }</pre>
  *
  */
 public class MockIndexConfigProviderContext implements IndexConfigProviderContext, ConfigSettingMock {

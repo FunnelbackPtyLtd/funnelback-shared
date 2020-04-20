@@ -15,7 +15,7 @@ import lombok.Getter;
  * A mock {@link GscopeByQueryConsumer} that may be used when testing {@link IndexingConfigProvider#supplyGscopesByQuery(IndexConfigProviderContext, GscopeByQueryConsumer)}.
  * 
  * Example:
- * <code>
+ * <pre>{@code 
  * MockIndexConfigProviderContext mockContext = new MockIndexConfigProviderContext();
  * MockGscopeByQueryConsumer mockConsumer = new MockGscopeByQueryConsumer();
  * ExamplePluginIndexingConfigProvider underTest = new ExamplePluginIndexingConfigProvider();
@@ -23,7 +23,7 @@ import lombok.Getter;
  * underTest.supplyGscopesByQuery(mockContext, mockConsumer);
  * 
  * Assert.assertTrue("Assert something useful.", mockConsumer.getInvocations().size() >= 0);
- * </code>
+ * }</pre>
  */
 public class MockGscopeByQueryConsumer implements GscopeByQueryConsumer {
 

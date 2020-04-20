@@ -18,7 +18,7 @@ import lombok.Getter;
  * A mock {@link KillByPartialMatchConsumer} that may be used when testing {@link IndexingConfigProvider#metadataMappings(IndexConfigProviderContext, MetadataMappingConsumer)}.
  * 
  * Example:
- * <code>
+ * <pre>{@code 
  * MockIndexConfigProviderContext mockContext = new MockIndexConfigProviderContext();
  * MockMetadataMappingConsumer mockConsumer = new MockMetadataMappingConsumer();
  * ExamplePluginIndexingConfigProvider underTest = new ExamplePluginIndexingConfigProvider();
@@ -26,7 +26,7 @@ import lombok.Getter;
  * underTest.metadataMappings(mockContext, mockConsumer);
  * 
  * Assert.assertTrue("Assert something useful.", mockConsumer.getInvocations().size() >= 0);
- * </code>
+ * }</pre>
  *
  */
 public class MockMetadataMappingConsumer implements MetadataMappingConsumer {

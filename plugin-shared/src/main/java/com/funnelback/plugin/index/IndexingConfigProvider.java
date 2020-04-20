@@ -24,7 +24,7 @@ public interface IndexingConfigProvider {
      * Allows supplying external metadata.
      * 
      * Example:
-     * <code>
+     * <pre>{@code 
      * // Apply metadata to documents with URLs starting with https://foo.com/documents/
      * consumer.addMetadataToPrefix("https://foo.com/documents/", ImmutableListMultimap.of(
      *     "type", "doc", 
@@ -36,7 +36,7 @@ public interface IndexingConfigProvider {
      * metadata.put("type", "video");
      * metadata.put("notes", "sometimes informative");
      * consumer.addMetadataToPrefix("https://foo.com/videos/", metadata);
-     * </code>
+     * }</pre>
      * 
      * This would result in a URL such as https://foo.com/documents/apollo11owenermanual.pdf 
      * as having the metadata: type=doc, notes=informative and notes=boring. The document 
@@ -51,18 +51,18 @@ public interface IndexingConfigProvider {
      * each other. This means if two plugins provided an entry for the same URL pattern
      * and the same metadata, both values would be applied. e.g.
      * Plugin 1 provides:
-     * <code>
+     * <pre>{@code 
      * consumer.addMetadataToPrefix("http://example.com/a", ImmutableListMultimap.of("foo", "bar"));
-     * </code>
+     * }</pre>
      * plugin 2 provides:
-     * <code>
+     * <pre>{@code 
      * consumer.addMetadataToPrefix("http://example.com/a", ImmutableListMultimap.of("foo", "foobar"));
-     * </code>
+     * }</pre>
      * 
      * A document like:
-     * <code>
+     * <pre>{@code 
      * http://example.com/a
-     * </code>
+     * }</pre>
      * Would have both metadata values "bar" and "foobar" in the metadata class "foo".
      * 
      * 
@@ -84,11 +84,11 @@ public interface IndexingConfigProvider {
      * To map HTML metadata "author" and "publisher" to metadata class "a"
      * and map XML path /root/secure to 'SECURITY' field 'S':
      * 
-     * <code>
+     * <pre>{@code 
      * consumer.map("a", MetadataType.TEXT_INDEXED_AS_DOCUMENT_CONTENT, MetadataSourceType.HTML_OR_HTTP_HEADERS, "author");
      * consumer.map("a", MetadataType.TEXT_NOT_INDEXED_AS_DOCUMENT_CONTENT, MetadataSourceType.HTML_OR_HTTP_HEADERS, "publisher");
      * consumer.map("S", MetadataType.SECURITY, MetadataSourceType.HTML_OR_HTTP_HEADERS, "/root/secure");
-     * </code>
+     * }</pre>
      * 
      * 
      * Should any conflicts arise, the first definition will be accepted. In the above example metadata class
@@ -96,10 +96,10 @@ public interface IndexingConfigProvider {
      * some other type.
      * 
      * The same applies for MetadataSourceType and the locator, the first definition of a locator will win thus for:
-     * <code>
+     * <pre>{@code 
      * consumer.map("x", MetadataType.TEXT_INDEXED_AS_DOCUMENT_CONTENT, MetadataSourceType.HTML_OR_HTTP_HEADERS, "author");
      * consumer.map("y", MetadataType.TEXT_INDEXED_AS_DOCUMENT_CONTENT, MetadataSourceType.HTML_OR_HTTP_HEADERS, "author");
-     * </code>
+     * }</pre>
      * "author" from HTML metadata or HTTP headers will be written into metadata "x" only. This may change in the future.
      * 
      * Plugins always have a lower priority then what is set in a collection's configuration.
@@ -118,7 +118,7 @@ public interface IndexingConfigProvider {
      * what it is set to.
      * 
      * Example:
-     * <code>
+     * <pre>{@code 
      * import com.funnelback.plugin.index.model.indexingconfig.*;
      * 
      * XmlIndexingConfig xmlIndexingConfig = new XmlIndexingConfig();
@@ -130,7 +130,7 @@ public interface IndexingConfigProvider {
      * // This plugin requires that all unmapped content is indexed as document content.
      * // If your plugin doesn't care what this is set to leave it null.
      * xmlIndexingConfig.setWhenNoContentPathsAreSet(WhenNoContentPathsAreSet.INDEX_ALL_UNMAPPED_AS_CONTENT);
-     * </code>
+     * }</pre>
      * 
      * Note that this model is a sub set of the model returned by the API, refer to the API
      * for further details.
@@ -151,10 +151,10 @@ public interface IndexingConfigProvider {
      * To kill both documents "http://example.com/list.xml" and 
      * "http://example.com/notthisone.html".
      * 
-     * <code>
+     * <pre>{@code 
      * consumer.killByExactMatch("http://example.com/list.xml");
      * consumer.killByExactMatch("http://example.com/notthisone.html");
-     * </code>
+     * }</pre>
      * 
      */
     public default void killByExactMatch(IndexConfigProviderContext context, KillByExactMatchConsumer consumer) {
@@ -168,10 +168,10 @@ public interface IndexingConfigProvider {
      * 
      * Example:
      * Kill URLs in example.com that are under the "/beta/" or "/invalid/" paths.
-     * <code>
+     * <pre>{@code 
      * consumer.killByPartialMatch("https://example.com/beta/");
      * consumer.killByPartialMatch("https://example.com/invalid/");
-     * </code>
+     * }</pre>
      * 
      */
     public default void killByPartialMatch(IndexConfigProviderContext context, KillByPartialMatchConsumer consumer) {   
@@ -183,9 +183,9 @@ public interface IndexingConfigProvider {
      * For example, to set the gscope 'isDocument' for all documents within:
      * 'example.com/documents/ set:
      * 
-     * <code>
+     * <pre>{@code 
      * consumer.applyGscopeWhenRegexMatches("isDocument", "example\\.com/documents/"); 
-     * </code>
+     * }</pre>
      * 
      * Note that the regex special character '.' is escaped with '\' which is a java character
      * which must be escaped with another '\' thus '\\.'.
@@ -193,11 +193,11 @@ public interface IndexingConfigProvider {
      * The consumer may be called multiple times to configure multiple gscopes to be 
      * set by various regular expressions. For example:
      * 
-     * <code>
+     * <pre>{@code 
      * consumer.applyGscopeWhenRegexMatches("cat", ".*cat.*");
      * consumer.applyGscopeWhenRegexMatches("cat", ".*kitty.*");
      * consumer.applyGscopeWhenRegexMatches("dog", ".*dog.*");
-     * </code>
+     * }</pre>
      * 
      * @param consumer Accepts gscopes that will be set when the URL matches the regex.
      */
@@ -211,19 +211,19 @@ public interface IndexingConfigProvider {
      * For example, to set the gscope 'isDocument' for all documents matching the query:
      * "word document"
      * 
-     * <code>
+     * <pre>{@code 
      * consumer.applyGscopeWhenQueryMatches("isDocument", "word document"); 
-     * </code>
+     * }</pre>
      * 
      * Multiple queries can be supplied and query language may be used. For example, 
      * set gscope 'org' on documents containing the term 'enterprise' or 'organisation', 
      * and gscope 'public' on documents containing both 'public' and 'internet'.
      * 
-     * <code>
+     * <pre>{@code 
      * consumer.applyGscopeWhenQueryMatches("org", "[enterprise organisation]"); 
      * // Use mandatory inclusion operator to ensure both terms are present.
      * consumer.applyGscopeWhenQueryMatches("public", "|public |internet"); 
-     * </code>
+     * }</pre>
      * 
      * @param consumer Accepts gscopes that will be set then the document matches the query.
      */
@@ -243,11 +243,11 @@ public interface IndexingConfigProvider {
      * @return A list of QueryCompletionCSV objects each of which contain the profiles
      * it should apply to along with the CSV. For example, to apply the CSV from a remote
      * web server to the profiles "_default" and "news" you could do something similar to:
-     * <code>
+     * <pre>{@code 
      * List.of(
      *  new QueryCompletionCSV(List.of("_default", "news"),  () -> {return new URLFetchingInputStream("https://example.com/);})
      *  );
-     * </code>
+     * }</pre>
      * 
      */
     public default List<QueryCompletionCSV> queryCompletionCSVForProfile(List<IndexConfigProviderContext> contextForProfilesThatRunThisPlugin) {

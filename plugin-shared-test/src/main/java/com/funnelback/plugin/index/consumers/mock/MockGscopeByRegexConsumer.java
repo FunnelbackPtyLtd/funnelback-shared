@@ -15,7 +15,7 @@ import lombok.Getter;
  * A mock {@link GscopeByRegexConsumer} that may be used when testing {@link IndexingConfigProvider#supplyGscopesByRegex(IndexConfigProviderContext, GscopeByRegexConsumer)}.
  * 
  * Example:
- * <code>
+ * <pre>{@code 
  * MockIndexConfigProviderContext mockContext = new MockIndexConfigProviderContext();
  * MockGscopeByRegexConsumer mockConsumer = new MockGscopeByRegexConsumer();
  * ExamplePluginIndexingConfigProvider underTest = new ExamplePluginIndexingConfigProvider();
@@ -23,7 +23,7 @@ import lombok.Getter;
  * underTest.supplyGscopesByRegex(mockContext, mockConsumer);
  * 
  * Assert.assertTrue("Assert something useful.", mockConsumer.getInvocations().size() >= 0);
- * </code>
+ * }</pre>
  */
 public class MockGscopeByRegexConsumer implements GscopeByRegexConsumer {
 
