@@ -78,7 +78,7 @@ if(isJsoupFilteringEnabled) {
 
 writePluginPropsFileTest();
 
-enableSourceImplementation("_ClassNamePrefix_PluginUtils");
+enableSourceImplementation("PluginUtils");
 
 // Delete tmp directory and files
 Files.walkFileTree(tmp, new SimpleFileVisitor<Path>() {
