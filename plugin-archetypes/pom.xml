@@ -2,14 +2,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>plugin-archetypes</artifactId>
     <parent>
         <artifactId>funnelback-shared-parent</artifactId>
         <groupId>com.funnelback</groupId>
-        <version>15.25.2015-SNAPSHOT</version>
+        <version>0.0.5-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>plugin-archetypes</artifactId>
+    <description>Archetype for a plugin for the Funnelback Enterprise Search Engine</description>
+    <url>https://github.com/FunnelbackPtyLtd/funnelback-shared</url>
 
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Funnelback R&amp;D Team</name>
+            <email>dev@funnelback.com</email>
+            <organization>Funnelback</organization>
+            <organizationUrl>https://funnelback.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/FunnelbackPtyLtd/funnelback-shared.git</connection>
+        <developerConnection>scm:git:ssh://github.com:FunnelbackPtyLtd/funnelback-shared.git</developerConnection>
+        <url>http://github.com/FunnelbackPtyLtd/funnelback-shared/tree/master</url>
+    </scm>
+
+    <distributionManagement>
+       <snapshotRepository>
+           <id>ossrh</id>
+           <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+       </snapshotRepository>
+       <repository>
+           <id>ossrh</id>
+           <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+       </repository>
+    </distributionManagement>
 
 </project>
