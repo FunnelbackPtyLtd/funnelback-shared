@@ -16,7 +16,7 @@ import lombok.Getter;
  * A mock PluginStore that may be used when testing the PluginGatherer.
  * 
  * Example:
- * <code>
+ * <pre>{@code 
  * MockPluginStore pluginStore = new MockPluginStore();
  * 
  * MockPluginGatherContext pluginGatherContext = new MockPluginGatherContext();
@@ -29,7 +29,7 @@ import lombok.Getter;
  * 
  * Assert.assertEquals("http://example.com/1", pluginStore.getStored().get(0).getUri().toASCIIString());
  * Assert.assertEquals("http://example.com/2", pluginStore.getStored().get(1).getUri().toASCIIString());
- * </code> 
+ * }</pre> 
  * 
  * Stores records in memory, don't store too many documents into this.
  * 

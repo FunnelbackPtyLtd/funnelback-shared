@@ -15,7 +15,7 @@ import lombok.Getter;
  * A mock {@link KillByExactMatchConsumer} that may be used when testing {@link IndexingConfigProvider#killByExactMatch(IndexConfigProviderContext, KillByExactMatchConsumer)}.
  * 
  * Example:
- * <code>
+ * <pre>{@code 
  * MockIndexConfigProviderContext mockContext = new MockIndexConfigProviderContext();
  * MockKillByExactMatchConsumer mockConsumer = new MockKillByExactMatchConsumer();
  * ExamplePluginIndexingConfigProvider underTest = new ExamplePluginIndexingConfigProvider();
@@ -23,7 +23,7 @@ import lombok.Getter;
  * underTest.killByExactMatch(mockContext, mockConsumer);
  * 
  * Assert.assertTrue("Assert something useful.", mockConsumer.getInvocations().size() >= 0);
- * </code>
+ * }</pre>
  */
 public class MockKillByExactMatchConsumer implements KillByExactMatchConsumer {
 
