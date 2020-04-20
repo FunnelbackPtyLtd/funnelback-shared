@@ -13,7 +13,7 @@ public class PluginPropsFileTest extends AbstractPluginPropertiesFileTest {
      */
     @Override
     public String getPluginName() {
-        return _ClassNamePrefix_PluginUtils.PLUGIN_NAME;
+        return PluginUtils.PLUGIN_NAME;
     }
 
     

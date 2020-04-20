@@ -1,6 +1,6 @@
 package ${package};
 
-public class _ClassNamePrefix_PluginUtils {
+public class PluginUtils {
 
     /**
      * The name of the plugin.
