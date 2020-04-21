@@ -2,6 +2,7 @@ package com.funnelback.common.filter.jsoup;
 
 import java.io.File;
 
+import com.funnelback.mock.helpers.ConfigSettingMock;
 import com.funnelback.mock.helpers.MapBackedConfig;
 
 import lombok.Getter;
@@ -24,7 +25,7 @@ import lombok.experimental.Delegate;
  * 
  *
  */
-public class MockJsoupSetupContext implements SetupContext {
+public class MockJsoupSetupContext implements SetupContext, ConfigSettingMock {
 
     @Getter @Setter private File searchHome;
 
