@@ -18,7 +18,7 @@ build:
     image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
 
     script:
-        - mvn -B -U clean verify -Dgpg.passphrase=$GPGPASSPHRASE
+        - mvn -B -U clean verify
         - rm -rf .m2/repository/com/funnelback/
 
     artifacts:
@@ -42,7 +42,7 @@ release:
     image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
 
     script:
-        - mvn -B -U clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
+        - mvn -B -U -P central-release clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
         - rm -rf .m2/repository/com/funnelback/
 
     artifacts:
