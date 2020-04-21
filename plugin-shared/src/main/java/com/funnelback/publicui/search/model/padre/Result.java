@@ -15,6 +15,7 @@ import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +29,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Result implements ResultType {
     
     /** Rank of the result (From 1 to n) */
