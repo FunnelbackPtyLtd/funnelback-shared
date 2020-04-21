@@ -10,6 +10,6 @@
             <AppenderRef ref="Console" />
         </Root>
         <!-- By default when tests run print debug or higher log messages. -->
-        <Logger name="${package}" level="debug"/>
+        <Logger name="__fixed_package__" level="debug"/>
     </Loggers>
 </Configuration>
