@@ -1,4 +1,4 @@
-package ${package};
+package __fixed_package__;
 
 public class PluginUtils {
 

@@ -61,6 +61,12 @@
             <validationRegex><![CDATA[^[a-z0-9\.\-]+$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="archetypeVersion"> </requiredProperty>
-        <requiredProperty key="package"><defaultValue>${groupId}.${artifactId.replaceAll("[^A-Za-z0-9]", "")}</defaultValue></requiredProperty>
+        <!-- It would be better to have artifactId.replaceAll to remove "-" and "." 
+        however that is not possible. See: https://issues.apache.org/jira/browse/ARCHETYPE-406 
+        This means that package can't really be used instead set: __fixed_package__ in your files
+        and archetype-post-generate.groovy will fix it up.
+        -->
+        
+        <requiredProperty key="package"><defaultValue>${groupId}.${artifactId}</defaultValue></requiredProperty>
     </requiredProperties>
 </archetype-descriptor>

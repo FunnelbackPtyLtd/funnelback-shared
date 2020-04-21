@@ -5,6 +5,7 @@ import java.nio.file.Paths
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.BasicFileAttributes
+import java.lang.RuntimeException;
 @Grab(group='org.apache.commons', module='commons-text', version='1.8')
 import org.apache.commons.text.WordUtils
 
@@ -14,11 +15,15 @@ projectPath = Paths.get(request.outputDirectory, request.artifactId)
 // the properties available to the archetype
 properties = request.properties
 
-// the Java package of the generated project, e.g. com.acme
-packageName = request.packageName
+// Clean up the existing packageName which is probably wrong, I don't know what males it.
+// this is because we can not clean up the artifact ID in archetpe-metadata.xml
+deletePackageFolders(request.packageName);
 
-// convert it into a path, e.g. com/acme
-packagePath = packageName.replace(".", "/")
+// The fixed package name.
+packageName = request.packageName.replaceAll("[^A-Za-z0-9\\.]", "");
+
+toMainSrcPath(packageName).toFile().mkdirs();
+toTestSrcPath(packageName).toFile().mkdirs();
 
 boolean isGathererEnabled = Boolean.parseBoolean(properties.get("gatherer"))
 boolean isIndexingEnabled = Boolean.parseBoolean(properties.get("indexing"))
@@ -33,6 +38,8 @@ pluginPrefix = request.artifactId.replaceAll("[^a-zA-Z0-9]"," ")
 
 // make the first letter of each word capitalized for the class name
 pluginClassPrefix = WordUtils.capitalizeFully(pluginPrefix).replaceAll(" ", "")
+
+
 
 tmp = projectPath.resolve("tmp")
 resources = projectPath.resolve("src/main/resources")
@@ -98,31 +105,58 @@ Files.walkFileTree(tmp, new SimpleFileVisitor<Path>() {
     }
 })
 
+
+// Replace contents of all files
+Files.walkFileTree(projectPath.resolve("src"), new SimpleFileVisitor<Path>() {
+
+    //delete all files inside tmp
+    @Override
+    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        def f = file.toFile();
+        f.text = correctPackageName(f.text);
+        
+        return FileVisitResult.CONTINUE
+    }
+
+    // delete directory
+    @Override
+    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+        return FileVisitResult.CONTINUE
+    }
+})
+
 def enableImplementationAndTests(String originalClassName) {
     enableSourceImplementation(originalClassName)
     enableTests(originalClassName)
 }
 
 def enableSourceImplementation(String originalClassName) {
-    srcTarget = projectPath.resolve("src/main/java/" + packagePath)
+    srcTarget = toMainSrcPath(packageName);
     prepareSourceFiles(originalClassName + ".java", srcTarget)
 }
 
 def enableTests(String originalClassName) {
-    testTarget = projectPath.resolve("src/test/java/" + packagePath)
+    testTarget = toTestSrcPath(packageName);
     prepareSourceFiles(originalClassName + "Test.java", testTarget)
 }
 
 def prepareSourceFiles(String originalClassName, Path target) {
     Path source = tmp.resolve(originalClassName)
     Path destination = target.resolve(originalClassName.replace("_ClassNamePrefix_", pluginClassPrefix));
+    print "Copy " + source + " to  " + destination + "\n";
     Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
     def fileCreated = destination.toFile()
     // Change the internal reference of class name inside file
     def newContent= fileCreated.text
       .replace("_ClassNamePrefix_", pluginClassPrefix);
+      
+    newContent = correctPackageName(newContent);
     
     fileCreated.text = newContent
+}
+
+def correctPackageName(String text) {
+  return text.replace("__fixed_package__", packageName);
 }
 
 // Write entry to funnelback-plugin properties file
@@ -130,9 +164,32 @@ def writeToPropertiesFile(String originalClassName, String qualifiedInterface) {
     propertiesFile.append(qualifiedInterface + "=" + packageName + "." + originalClassName.replace("_ClassNamePrefix_", pluginClassPrefix) + "\n")
 }
 
+
+
 def writePluginPropsFileTest() {
     enableTests("PluginPropsFile");
     //Path source = tmp.resolve("PluginPropsFileTest.java");
     //Path destination = testTarget.resolve("PluginPropsFileTest.java");
     //Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
+}
+
+def toMainSrcPath(String packageName) {
+    return projectPath.resolve("src/main/java/" + packageName.replace(".", "/"));
+}
+
+def toTestSrcPath(String packageName) {
+    return projectPath.resolve("src/test/java/" + packageName.replace(".", "/"));
+}
+
+def deletePackageFolders(String packageName) {
+    deleteEmptyDir(toMainSrcPath(packageName));
+    deleteEmptyDir(toTestSrcPath(packageName));
+}
+
+def deleteEmptyDir(Path dir) {
+    print "deleting: " + dir + "\n";
+    Files.delete(dir);
+    if(Files.exists(dir)) {
+        throw new RuntimeException("Expected to be able to delete: " + dir);
+    }
 }

@@ -1,4 +1,4 @@
-package ${package};
+package __fixed_package__;
 
 import com.funnelback.plugin.SearchLifeCyclePlugin;
 
