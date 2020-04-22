@@ -19,4 +19,5 @@ public class _ClassNamePrefix_SearchLifeCyclePluginTest {
         Assert.assertEquals("Change this assert statement to check something useful",
             "hello", searchTransaction.getResponse().getResultPacket().getResults().get(0).getTitle());
     }
+    
 }

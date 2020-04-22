@@ -20,7 +20,7 @@ public interface SearchLifeCyclePlugin {
      * 
      * @param transaction
      */
-    default void preProcess(SearchTransaction transaction) {}
+    public default void preProcess(SearchTransaction transaction) {}
     
     /**
      * Runs just after the <code>hook_pre_datafetch.groovy</code> hook and
@@ -31,7 +31,7 @@ public interface SearchLifeCyclePlugin {
      * 
      * @param transaction
      */
-    default void preDatafetch(SearchTransaction transaction) {}
+    public default void preDatafetch(SearchTransaction transaction) {}
     
     /**
      * Runs just after the <code>hook_post_datafetch.groovy</code> hook which is just 
@@ -41,7 +41,7 @@ public interface SearchLifeCyclePlugin {
      * 
      * @param transaction
      */
-    default void postDatafetch(SearchTransaction transaction) {}
+    public default void postDatafetch(SearchTransaction transaction) {}
     
     /**
      * Runs just after the <code>hook_post_process.groovy</code> hook. This is used to 
@@ -49,5 +49,5 @@ public interface SearchLifeCyclePlugin {
      * 
      * @param transaction
      */
-    default void postProcess(SearchTransaction transaction) {}
+    public default void postProcess(SearchTransaction transaction) {}
 }
