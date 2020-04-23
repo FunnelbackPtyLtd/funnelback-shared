@@ -4,11 +4,11 @@ Description of what your plugin does.
 
 ## Usage
 
-Add the following to your `collection.cfg` to enable the plugin.
+Add the following to `collection.cfg` to enable the plugin.
 
 ```ini
 plugin.${artifactId}.enabled=true
-plugin.${artifactId}=${version}
+plugin.${artifactId}.version=${version}
 ```
 
 The following `collection.cfg` settings can be used to configure the plugin:

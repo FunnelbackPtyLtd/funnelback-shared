@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.transaction.testutils;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,6 +39,26 @@ public class SearchQuestionTestHelper {
      */
     public static void setCurrentProfileConfig(Map<String, String> profileConfig, SearchQuestion question) {
         question.setServiceConfigProvider(q -> new MyServiceConfig(new MapBackedConfig(profileConfig)));
+    }
+    
+    /**
+     * Sets a profile config setting on the search question.
+     *  
+     * @param question
+     * @param key
+     * @param value
+     */
+    public static void setProfileConfigSetting(SearchQuestion question, String key, String value) {
+        if(question.getCurrentProfileConfig() == null) {
+            setCurrentProfileConfig(new HashMap<>(), question);
+        }
+        if(question.getCurrentProfileConfig() instanceof MyServiceConfig) {
+            MyServiceConfig myServiceConfig = (MyServiceConfig) question.getCurrentProfileConfig();
+            myServiceConfig.getMapBackedConfig().setConfigSetting(key, value);
+        } else {
+            throw new IllegalArgumentException("The ServiceConfig returned by getCurrentProfileConfig() is not one "
+                + "which can be edited by this method. Perhaps something else has already configured ServiceConfig.");
+        }
     }
 
 

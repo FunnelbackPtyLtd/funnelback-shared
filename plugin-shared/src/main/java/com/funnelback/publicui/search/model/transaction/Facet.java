@@ -26,6 +26,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -373,7 +374,7 @@ public class Facet {
             this.selected = selected;
         }
         
-        
+        @Builder
         public CategoryValue(String data, String label, Integer count, 
             String queryStringParam, String constraint, boolean selected,
             String queryStringParamName, String queryStringParamValue) {

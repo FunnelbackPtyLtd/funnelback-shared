@@ -5,7 +5,7 @@
     <name>Funnelback Shared Parent</name>
     <groupId>com.funnelback</groupId>
     <artifactId>funnelback-shared-parent</artifactId>
-    <version>15.25.2015</version>
+    <version>15.25.2015.1</version>
 
     <description>Parent project for the shared plugin interfaces used in the Funnelback Enterprise Search Engine</description>
     <url>https://github.com/FunnelbackPtyLtd/funnelback-shared</url>
@@ -33,14 +33,14 @@
     </scm>
 
     <distributionManagement>
-       <snapshotRepository>
-           <id>ossrh</id>
-           <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-       </snapshotRepository>
-       <repository>
-           <id>ossrh</id>
-           <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-       </repository>
+        <snapshotRepository>
+            <id>funnelback-snapshots</id>
+            <url>http://maven-repo.cbr.au.funnelback.com:8081/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
 
     <modules>
@@ -59,7 +59,7 @@
         <!-- with the top-level pom.xml in java-parent!-->
         <version.guava>21.0</version.guava>
         <version.hibernate-jpa-2.1>1.0.0.Final</version.hibernate-jpa-2.1>
-        <version.jackson2>2.9.6</version.jackson2>
+        <version.jackson2>2.10.3</version.jackson2>
         <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.jsoup>1.10.2</version.jsoup>
         <version.junit>4.12</version.junit>
@@ -160,17 +160,6 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-            <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-source-plugin</artifactId>
                <version>2.2.1</version>
@@ -202,26 +191,48 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-gpg-plugin</artifactId>
-               <version>1.6</version>
-               <executions>
-                <execution>
-                    <id>sign-artifacts</id>
-                    <phase>verify</phase>
-                    <goals>
-                        <goal>sign</goal>
-                    </goals>
-                    <configuration>
-                        <gpgArguments>
-                            <arg>--pinentry-mode</arg>
-                            <arg>loopback</arg>
-                        </gpgArguments>
-                    </configuration>
-                </execution>
-               </executions>
-            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>central-release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.7</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                       <groupId>org.apache.maven.plugins</groupId>
+                       <artifactId>maven-gpg-plugin</artifactId>
+                       <version>1.6</version>
+                       <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                            <configuration>
+                                <gpgArguments>
+                                    <arg>--pinentry-mode</arg>
+                                    <arg>loopback</arg>
+                                </gpgArguments>
+                            </configuration>
+                        </execution>
+                       </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.funnelback</groupId>
         <artifactId>funnelback-shared-parent</artifactId>
-        <version>15.25.2015</version>
+        <version>15.25.2015.1</version>
     </parent>
 
     <description>Utilities and supporting classes for testing plugins for the Funnelback Enterprise Search Engine</description>
@@ -36,14 +36,14 @@
     </scm>
 
     <distributionManagement>
-       <snapshotRepository>
-           <id>ossrh</id>
-           <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-       </snapshotRepository>
-       <repository>
-           <id>ossrh</id>
-           <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-       </repository>
+        <snapshotRepository>
+            <id>funnelback-snapshots</id>
+            <url>http://maven-repo.cbr.au.funnelback.com:8081/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
 
     <build>
