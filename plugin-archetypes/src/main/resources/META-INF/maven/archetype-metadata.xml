@@ -31,27 +31,21 @@
     </fileSets>
     <requiredProperties>
         <requiredProperty key="gatherer" >
-            <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="facets" >
-            <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="indexing" >
-            <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="searchLifeCycle" >
-            <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="filtering" >
-            <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="jsoup-filtering" >
-            <defaultValue>true</defaultValue>
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="groupId" >
