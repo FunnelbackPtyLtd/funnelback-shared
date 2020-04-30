@@ -20,8 +20,8 @@ public class PluginUtils {
      * </code>
      * The resulting key would be:
      * <code>
-     * plugin.${artifactId}.foos-count
+     * plugin.${artifactId}.config.foos-count
      * </code>
      */
-    public static final String KEY_PREFIX = "plugin." + PLUGIN_NAME + "." ;
+    public static final String KEY_PREFIX = "plugin." + PLUGIN_NAME + ".config." ;
 }
