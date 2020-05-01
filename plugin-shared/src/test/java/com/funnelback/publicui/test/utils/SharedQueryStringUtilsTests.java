@@ -2,13 +2,12 @@ package com.funnelback.publicui.test.utils;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.publicui.utils.SharedQueryStringUtils;
+import com.google.common.collect.ListMultimap;
 
 public class SharedQueryStringUtilsTests {
     
@@ -24,25 +23,25 @@ public class SharedQueryStringUtilsTests {
             + "&param7=something%26with%26ampersands"
             + "&foo";
         
-        Map<String, List<String>> map = SharedQueryStringUtils.toMap("?" + input);
+        ListMultimap<String, String> map = SharedQueryStringUtils.toMap("?" + input);
         
-        Assert.assertEquals(Arrays.asList(new String[] {"value1"}), map.get("param1"));
-        Assert.assertEquals(Arrays.asList(new String[] {"first value", "second value"}), map.get("param2"));
-        Assert.assertEquals(Arrays.asList(new String[] {"\n\t"}), map.get("param3"));
-        Assert.assertEquals(Arrays.asList(new String[] {""}), map.get("param4"));
-        Assert.assertEquals(Arrays.asList(new String[] {"null"}), map.get("param5"));
-        Assert.assertEquals(Arrays.asList(new String[] {"something=with=equals"}), map.get("param6"));
-        Assert.assertEquals(Arrays.asList(new String[] {"something&with&ampersands"}), map.get("param7"));
+        Assert.assertEquals(Arrays.asList("value1"), map.get("param1"));
+        Assert.assertEquals(Arrays.asList("first value", "second value"), map.get("param2"));
+        Assert.assertEquals(Arrays.asList("\n\t"), map.get("param3"));
+        Assert.assertEquals(Arrays.asList(""), map.get("param4"));
+        Assert.assertEquals(Arrays.asList("null"), map.get("param5"));
+        Assert.assertEquals(Arrays.asList("something=with=equals"), map.get("param6"));
+        Assert.assertEquals(Arrays.asList("something&with&ampersands"), map.get("param7"));
         
         map = SharedQueryStringUtils.toMap(input);
 
-        Assert.assertEquals(Arrays.asList(new String[] {"value1"}), map.get("param1"));
-        Assert.assertEquals(Arrays.asList(new String[] {"first value", "second value"}), map.get("param2"));
-        Assert.assertEquals(Arrays.asList(new String[] {"\n\t"}), map.get("param3"));
-        Assert.assertEquals(Arrays.asList(new String[] {""}), map.get("param4"));
-        Assert.assertEquals(Arrays.asList(new String[] {"null"}), map.get("param5"));
-        Assert.assertEquals(Arrays.asList(new String[] {"something=with=equals"}), map.get("param6"));
-        Assert.assertEquals(Arrays.asList(new String[] {"something&with&ampersands"}), map.get("param7"));
+        Assert.assertEquals(Arrays.asList("value1"), map.get("param1"));
+        Assert.assertEquals(Arrays.asList("first value", "second value"), map.get("param2"));
+        Assert.assertEquals(Arrays.asList("\n\t"), map.get("param3"));
+        Assert.assertEquals(Arrays.asList(""), map.get("param4"));
+        Assert.assertEquals(Arrays.asList("null"), map.get("param5"));
+        Assert.assertEquals(Arrays.asList("something=with=equals"), map.get("param6"));
+        Assert.assertEquals(Arrays.asList("something&with&ampersands"), map.get("param7"));
     }
     
     @Test

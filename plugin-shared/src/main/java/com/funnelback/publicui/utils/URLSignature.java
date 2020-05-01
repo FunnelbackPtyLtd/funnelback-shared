@@ -1,15 +1,15 @@
 package com.funnelback.publicui.utils;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import lombok.SneakyThrows;
+import com.google.common.collect.ListMultimap;
 
 /**
  * Utilities to compute a signature for a given URL
@@ -46,18 +46,16 @@ public class URLSignature {
      * @param queryString
      * @return
      */
-    @SneakyThrows(UnsupportedEncodingException.class)
     public static String canonicaliseQueryStringToBeHashed(String queryString) {
         List<String> keyList = new ArrayList<String>();
         List<String> valueList = new ArrayList<String>();
         
-        Map<String, String[]> params = SharedQueryStringUtils.toArrayMap(queryString);
+        ListMultimap<String, String> params = SharedQueryStringUtils.toMap(queryString);
         SortedSet<String> sortedKeys = new TreeSet<String>(params.keySet());
         for (String key: sortedKeys) {
-            keyList.add(URLDecoder.decode(key, "UTF-8"));
-            String[] values = params.get(key);
-            if (values != null) {
-                for (String value: values) {
+            keyList.add(URLDecoder.decode(key, UTF_8));
+            if (params.containsKey(key)) {
+                for (String value: params.get(key)) {
                     valueList.add(value);
                 }
             }

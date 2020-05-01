@@ -1,18 +1,19 @@
 package com.funnelback.publicui.test.utils;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.publicui.utils.MapKeyFilter;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 
 public class MapKeyFilterTests {
 
     @Test
     public void test() {
-        HashMap<String, String> params = new HashMap<String, String>();
+        ListMultimap<String, String> params = MultimapBuilder.hashKeys().arrayListValues().build();
         
         params.put("param1", "");
         params.put("param2", "");

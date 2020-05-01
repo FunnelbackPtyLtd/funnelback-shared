@@ -2,20 +2,19 @@ package com.funnelback.publicui.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
+
+import com.google.common.collect.ListMultimap;
 
 /**
  * Filters the keys of a Map depending of a regex.
  */
 public class MapKeyFilter {
-
-    private static final String[] CONVERSION_ARRAY = new String[0];
     
     private String[] keys;
     
-    public MapKeyFilter(Map<String, ?> parameters) {
-        keys = parameters.keySet().toArray(CONVERSION_ARRAY);
+    public MapKeyFilter(ListMultimap<String, ?> parameters) {
+        keys = parameters.keySet().toArray(new String[0]);
     }
     
     public String[] filter(Pattern p) {
@@ -25,7 +24,7 @@ public class MapKeyFilter {
                 out.add(name);
             }
         }
-        return out.toArray(CONVERSION_ARRAY);
+        return out.toArray(new String[0]);
     }
     
     public String[] filter(String regex){
