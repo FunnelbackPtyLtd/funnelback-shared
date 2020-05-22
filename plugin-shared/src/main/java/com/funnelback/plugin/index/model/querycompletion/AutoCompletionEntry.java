@@ -3,10 +3,12 @@ package com.funnelback.plugin.index.model.querycompletion;
 import com.funnelback.plugin.index.model.querycompletion.action.AutoCompletionAction;
 import com.funnelback.plugin.index.model.querycompletion.display.AutoCompletionDisplay;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Getter
 public class AutoCompletionEntry {
     /**
      * Contains the text against which the partial query entered by the user is matched. Note that the

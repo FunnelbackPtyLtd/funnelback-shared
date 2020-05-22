@@ -10,4 +10,12 @@ import java.net.URI;
 @Getter
 public class OpenUrl implements AutoCompletionAction {
     @NonNull private URI urlToOpen;
+
+    @Override public String getContent() {
+        return urlToOpen.toString();
+    }
+
+    @Override public String getTypeCode() {
+        return "U";
+    }
 }

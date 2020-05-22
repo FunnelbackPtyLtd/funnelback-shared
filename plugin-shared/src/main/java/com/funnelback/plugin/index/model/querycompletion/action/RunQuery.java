@@ -8,4 +8,12 @@ import lombok.NonNull;
 @Getter
 public class RunQuery implements AutoCompletionAction {
     @NonNull private String queryToRun;
+
+    @Override public String getContent() {
+        return queryToRun;
+    }
+
+    @Override public String getTypeCode() {
+        return "Q";
+    }
 }

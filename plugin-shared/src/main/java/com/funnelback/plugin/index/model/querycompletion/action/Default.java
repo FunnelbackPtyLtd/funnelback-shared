@@ -4,4 +4,11 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class Default implements AutoCompletionAction {
+    @Override public String getContent() {
+        return "";
+    }
+
+    @Override public String getTypeCode() {
+        return "";
+    }
 }
