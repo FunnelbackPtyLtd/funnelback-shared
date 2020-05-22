@@ -1,6 +1,10 @@
 package com.funnelback.plugin.index;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
 import com.funnelback.plugin.index.consumers.GscopeByQueryConsumer;
@@ -11,7 +15,8 @@ import com.funnelback.plugin.index.consumers.MetadataMappingConsumer;
 import com.funnelback.plugin.index.model.indexingconfig.XmlIndexingConfig;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataSourceType;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataType;
-import com.funnelback.plugin.index.model.querycompletion.QueryCompletionCSV;
+import com.funnelback.plugin.index.model.querycompletion.AutoCompletionCSV;
+import com.funnelback.plugin.index.model.querycompletion.AutoCompletionEntry;
 
 /**
  * An interface that my be implemented in a plugin to control indexing.
@@ -231,27 +236,23 @@ public interface IndexingConfigProvider {
     }
     
     /**
-     * Supply query completion CSV files to use on profiles.
+     * Supply auto completion entries to use on profiles.
      * 
-     * The QueryCompletionCSV supports defining a single CSV "file" for many profiles. The
-     * CSV is actually given as a supplier of a InputStream. This means for example you could 
-     * have some profiles get their query completion CSV by contacting a remote server.
+     * The Map supports defining a single stream of entries for many profiles, which
+     * can be used to avoid repeating expensive operations to generate the data (e.g.
+     * fetching form a remote server) if many profiles will share the same entries.
      *   
-     * 
      * @param contextForProfilesThatRunThisPlugin The context for all profiles which run this plugin.
-     * @return A list of QueryCompletionCSV objects each of which contain the profiles
-     * it should apply to along with the CSV. For example, to apply the CSV from a remote
-     * web server to the profiles "_default" and "news" you could do something similar to:
+     * @return A map of a set of profile IDs to streams of AutoCompletionEntry objects.
      * <pre>{@code 
-     * List.of(
-     *  new QueryCompletionCSV(List.of("_default", "news"),  () -> {return new URLFetchingInputStream("https://example.com/);})
-     *  );
+     *     Stream.Builder<AutoCompletionEntry> builder = Stream.builder();
+     *     builder.add(new AutoCompletionEntry("key", 3.14));
+     *
+     *     return Map.of(Set.of("_default", "news"), builder.build());
      * }</pre>
      * 
      */
-    public default List<QueryCompletionCSV> queryCompletionCSVForProfile(List<IndexConfigProviderContext> contextForProfilesThatRunThisPlugin) {
-        return List.of();
+    public default Map<Set<String>, Stream<AutoCompletionEntry>> autoCompletionEntriesForProfiles(List<IndexConfigProviderContext> contextForProfilesThatRunThisPlugin) {
+        return Map.of();
     }
-    
-    
 }
