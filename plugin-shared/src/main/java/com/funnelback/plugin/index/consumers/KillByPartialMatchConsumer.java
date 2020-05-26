@@ -1,6 +1,5 @@
 package com.funnelback.plugin.index.consumers;
 
-@FunctionalInterface
 public interface KillByPartialMatchConsumer {
     
     /**

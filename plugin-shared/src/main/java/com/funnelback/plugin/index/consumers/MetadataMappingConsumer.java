@@ -3,7 +3,6 @@ package com.funnelback.plugin.index.consumers;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataSourceType;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataType;
 
-@FunctionalInterface
 public interface MetadataMappingConsumer {
 
     /**
