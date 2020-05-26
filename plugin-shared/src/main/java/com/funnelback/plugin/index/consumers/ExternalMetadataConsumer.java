@@ -2,7 +2,6 @@ package com.funnelback.plugin.index.consumers;
 
 import com.google.common.collect.ListMultimap;
 
-@FunctionalInterface
 public interface ExternalMetadataConsumer {
 
     /**
