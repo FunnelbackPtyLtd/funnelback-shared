@@ -8,12 +8,4 @@ import lombok.NonNull;
 @Getter
 public class PlainText implements AutoCompletionDisplay {
     @NonNull private String text;
-
-    @Override public String getContent() {
-        return text;
-    }
-
-    @Override public String getTypeCode() {
-        return "T";
-    }
 }

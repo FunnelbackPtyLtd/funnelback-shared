@@ -8,12 +8,4 @@ import lombok.NonNull;
 @Getter
 public class ExtendQuery implements AutoCompletionAction {
     @NonNull private String querySuffixToAdd;
-
-    @Override public String getContent() {
-        return querySuffixToAdd;
-    }
-
-    @Override public String getTypeCode() {
-        return "E";
-    }
 }

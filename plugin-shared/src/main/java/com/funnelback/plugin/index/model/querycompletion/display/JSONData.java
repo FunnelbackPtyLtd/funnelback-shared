@@ -8,12 +8,4 @@ import lombok.NonNull;
 @Getter
 public class JSONData implements AutoCompletionDisplay {
     @NonNull private String json;
-
-    @Override public String getContent() {
-        return json;
-    }
-
-    @Override public String getTypeCode() {
-        return "J";
-    }
 }

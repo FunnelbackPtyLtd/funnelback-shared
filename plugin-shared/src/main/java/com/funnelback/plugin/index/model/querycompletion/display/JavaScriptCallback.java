@@ -8,12 +8,4 @@ import lombok.NonNull;
 @Getter
 public class JavaScriptCallback implements AutoCompletionDisplay {
     @NonNull private String code;
-
-    @Override public String getContent() {
-        return code;
-    }
-
-    @Override public String getTypeCode() {
-        return "C";
-    }
 }

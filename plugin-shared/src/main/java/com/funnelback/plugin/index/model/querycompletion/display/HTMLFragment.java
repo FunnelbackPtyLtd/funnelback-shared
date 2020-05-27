@@ -8,12 +8,4 @@ import lombok.NonNull;
 @Getter
 public class HTMLFragment implements AutoCompletionDisplay {
     @NonNull private String html;
-
-    @Override public String getContent() {
-        return html;
-    }
-
-    @Override public String getTypeCode() {
-        return "H";
-    }
 }

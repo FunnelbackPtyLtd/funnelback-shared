@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import com.funnelback.plugin.index.consumers.AutoCompletionConsumer;
 import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
 import com.funnelback.plugin.index.consumers.GscopeByQueryConsumer;
 import com.funnelback.plugin.index.consumers.GscopeByRegexConsumer;
@@ -237,22 +238,31 @@ public interface IndexingConfigProvider {
     
     /**
      * Supply auto completion entries to use on profiles.
-     * 
-     * The Map supports defining a single stream of entries for many profiles, which
-     * can be used to avoid repeating expensive operations to generate the data (e.g.
-     * fetching form a remote server) if many profiles will share the same entries.
-     *   
-     * @param contextForProfilesThatRunThisPlugin The context for all profiles which run this plugin.
-     * @return A map of a set of profile IDs to streams of AutoCompletionEntry objects.
-     * <pre>{@code 
-     *     Stream.Builder<AutoCompletionEntry> builder = Stream.builder();
-     *     builder.add(new AutoCompletionEntry("key", 3.14));
      *
-     *     return Map.of(Set.of("_default", "news"), builder.build());
+     * The method is supplied with a list of contexts, one for each profile which can accept
+     * auto completion data, and must provide the consumer with any desired auto-completion
+     * entries for each of the given profiles before returning.
+     *
+     * Note that there may be a performance benefit to:
+     * - Providing entries which apply to many profiles over providing the same entries repeatedly for each profile.
+     * - Providing all entries for a given set of profiles before providing others.
+     *
+     * The following example provides a single entry with the key `key` for the profile `profileId`.
+     * <pre>{@code
+     *     consumer.applyAutoCompletionEntryToProfiles(new AutoCompletionEntry("key", 3.14), Set.of("profileId"));
      * }</pre>
-     * 
+     *
+     * The following example converts the given list of contexts into the complete set of profiles, which may be helpful
+     * if all profiles should share the same auto-completion entries.
+     * <pre>{@code
+     *  Set<String> profiles = contextForProfilesThatRunThisPlugin.stream().flatMap(i -> i.getProfile().stream()).collect(Collectors.toSet());
+     * }</pre>
+     *
+     * @param contextForProfilesThatRunThisPlugin A list of the contexts for each profile which can accept auto-completion entries
+     * @param consumer Accepts AutoCompletionEntry objects and a set of profiles to which each should apply
      */
-    public default Map<Set<String>, Stream<AutoCompletionEntry>> autoCompletionEntriesForProfiles(List<IndexConfigProviderContext> contextForProfilesThatRunThisPlugin) {
-        return Map.of();
+    public default void supplyAutoCompletionEntriesForProfiles(List<IndexConfigProviderContext> contextForProfilesThatRunThisPlugin,
+        AutoCompletionConsumer consumer) {
     }
+
 }
