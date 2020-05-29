@@ -5,6 +5,7 @@ import com.funnelback.plugin.index.IndexingConfigProvider;
 import com.funnelback.plugin.index.consumers.AutoCompletionConsumer;
 import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
 import com.funnelback.plugin.index.model.querycompletion.AutoCompletionEntry;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -12,6 +13,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -41,11 +43,16 @@ public class MockAutoCompletionConsumer implements AutoCompletionConsumer {
      */
     @EqualsAndHashCode
     @ToString
-    @AllArgsConstructor
     @Getter
     public static class MockAutoCompletionInvocation {
         private final AutoCompletionEntry entry;
         private final Set<String> profiles;
+
+        public MockAutoCompletionInvocation(AutoCompletionEntry entry, Set<String> profiles) {
+            this.entry = entry;
+            // Ensure no one can accidentally provide the set then modify it
+            this.profiles = ImmutableSet.copyOf(profiles);
+        }
     }
     
     @Getter private final List<MockAutoCompletionInvocation> invocations = new ArrayList<>();
