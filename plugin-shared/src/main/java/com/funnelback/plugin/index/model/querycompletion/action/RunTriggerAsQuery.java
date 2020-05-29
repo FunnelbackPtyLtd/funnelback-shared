@@ -2,18 +2,17 @@ package com.funnelback.plugin.index.model.querycompletion.action;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
 
 /**
  * An auto-completion action type which
  * replaces the user's current query with
- * the supplied one, causing a search results
- * page with the supplied query to be shown.
+ * the entry's trigger, causing a search results
+ * page for the trigger to be shown.
+ *
+ * This is the default if no other action is
+ * supplied.
  */
 @AllArgsConstructor
-@Getter
 @EqualsAndHashCode
-public class RunQuery implements AutoCompletionAction {
-    @NonNull private String queryToRun;
+public class RunTriggerAsQuery implements AutoCompletionAction {
 }

@@ -4,7 +4,6 @@ import com.funnelback.plugin.index.model.querycompletion.AutoCompletionEntry;
 
 import java.util.Set;
 
-@FunctionalInterface
 public interface AutoCompletionConsumer {
 
     /**

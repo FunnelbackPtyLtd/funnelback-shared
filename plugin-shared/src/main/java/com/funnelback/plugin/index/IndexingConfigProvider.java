@@ -1,10 +1,6 @@
 package com.funnelback.plugin.index;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import com.funnelback.plugin.index.consumers.AutoCompletionConsumer;
 import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
@@ -16,8 +12,6 @@ import com.funnelback.plugin.index.consumers.MetadataMappingConsumer;
 import com.funnelback.plugin.index.model.indexingconfig.XmlIndexingConfig;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataSourceType;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataType;
-import com.funnelback.plugin.index.model.querycompletion.AutoCompletionCSV;
-import com.funnelback.plugin.index.model.querycompletion.AutoCompletionEntry;
 
 /**
  * An interface that my be implemented in a plugin to control indexing.
@@ -247,15 +241,16 @@ public interface IndexingConfigProvider {
      * - Providing entries which apply to many profiles over providing the same entries repeatedly for each profile.
      * - Providing all entries for a given set of profiles before providing others.
      *
-     * The following example provides a single entry with the key `key` for the profile `profileId`.
+     * The following example provides a single entry with the trigger `funnelback` for the profile `profileId`.
      * <pre>{@code
-     *     consumer.applyAutoCompletionEntryToProfiles(new AutoCompletionEntry("key", 3.14), Set.of("profileId"));
+     *     consumer.applyAutoCompletionEntryToProfiles(AutoCompletionEntry.builder().trigger("funnelback").build(), Set.of("profileId"));
      * }</pre>
      *
      * The following example converts the given list of contexts into the complete set of profiles, which may be helpful
      * if all profiles should share the same auto-completion entries.
      * <pre>{@code
-     *  Set<String> profiles = contextForProfilesThatRunThisPlugin.stream().flatMap(i -> i.getProfile().stream()).collect(Collectors.toSet());
+     *  Set<String> profiles = contextForProfilesThatRunThisPlugin.stream().flatMap(i -> i.getProfileWithView().stream())
+     *      .collect(Collectors.toSet());
      * }</pre>
      *
      * @param contextForProfilesThatRunThisPlugin A list of the contexts for each profile which can accept auto-completion entries
