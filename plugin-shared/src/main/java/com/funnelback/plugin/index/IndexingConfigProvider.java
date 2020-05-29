@@ -2,6 +2,7 @@ package com.funnelback.plugin.index;
 
 import java.util.List;
 
+import com.funnelback.plugin.index.consumers.AutoCompletionConsumer;
 import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
 import com.funnelback.plugin.index.consumers.GscopeByQueryConsumer;
 import com.funnelback.plugin.index.consumers.GscopeByRegexConsumer;
@@ -11,7 +12,6 @@ import com.funnelback.plugin.index.consumers.MetadataMappingConsumer;
 import com.funnelback.plugin.index.model.indexingconfig.XmlIndexingConfig;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataSourceType;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataType;
-import com.funnelback.plugin.index.model.querycompletion.QueryCompletionCSV;
 
 /**
  * An interface that my be implemented in a plugin to control indexing.
@@ -231,27 +231,33 @@ public interface IndexingConfigProvider {
     }
     
     /**
-     * Supply query completion CSV files to use on profiles.
-     * 
-     * The QueryCompletionCSV supports defining a single CSV "file" for many profiles. The
-     * CSV is actually given as a supplier of a InputStream. This means for example you could 
-     * have some profiles get their query completion CSV by contacting a remote server.
-     *   
-     * 
-     * @param contextForProfilesThatRunThisPlugin The context for all profiles which run this plugin.
-     * @return A list of QueryCompletionCSV objects each of which contain the profiles
-     * it should apply to along with the CSV. For example, to apply the CSV from a remote
-     * web server to the profiles "_default" and "news" you could do something similar to:
-     * <pre>{@code 
-     * List.of(
-     *  new QueryCompletionCSV(List.of("_default", "news"),  () -> {return new URLFetchingInputStream("https://example.com/);})
-     *  );
+     * Supply auto completion entries to use on profiles.
+     *
+     * The method is supplied with a list of contexts, one for each profile which can accept
+     * auto completion data, and must provide the consumer with any desired auto-completion
+     * entries for each of the given profiles before returning.
+     *
+     * Note that there may be a performance benefit to:
+     * - Providing entries which apply to many profiles over providing the same entries repeatedly for each profile.
+     * - Providing all entries for a given set of profiles before providing others.
+     *
+     * The following example provides a single entry with the trigger `funnelback` for the profile `profileId`.
+     * <pre>{@code
+     *     consumer.applyAutoCompletionEntryToProfiles(AutoCompletionEntry.builder().trigger("funnelback").build(), Set.of("profileId"));
      * }</pre>
-     * 
+     *
+     * The following example converts the given list of contexts into the complete set of profiles, which may be helpful
+     * if all profiles should share the same auto-completion entries.
+     * <pre>{@code
+     *  Set<String> profiles = contextForProfilesThatRunThisPlugin.stream().flatMap(i -> i.getProfileWithView().stream())
+     *      .collect(Collectors.toSet());
+     * }</pre>
+     *
+     * @param contextForProfilesThatRunThisPlugin A list of the contexts for each profile which can accept auto-completion entries
+     * @param consumer Accepts AutoCompletionEntry objects and a set of profiles to which each should apply
      */
-    public default List<QueryCompletionCSV> queryCompletionCSVForProfile(List<IndexConfigProviderContext> contextForProfilesThatRunThisPlugin) {
-        return List.of();
+    public default void supplyAutoCompletionEntriesForProfiles(List<IndexConfigProviderContext> contextForProfilesThatRunThisPlugin,
+        AutoCompletionConsumer consumer) {
     }
-    
-    
+
 }
