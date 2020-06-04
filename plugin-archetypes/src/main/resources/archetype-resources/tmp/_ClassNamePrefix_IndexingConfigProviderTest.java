@@ -11,6 +11,8 @@ import com.funnelback.plugin.index.consumers.mock.MockKillByPartialMatchConsumer
 import com.funnelback.plugin.index.consumers.mock.MockMetadataMappingConsumer;
 import com.funnelback.plugin.index.mock.MockIndexConfigProviderContext;
 
+import java.util.List;
+
 public class _ClassNamePrefix_IndexingConfigProviderTest {
 
     @Test
@@ -76,6 +78,17 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.supplyGscopesByQuery(mockContext, mockConsumer);
         
+        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+    }
+
+    @Test
+    public void supplyAutoCompletionEntriesForProfilesTest() {
+        MockIndexConfigProviderContext mockContext = new MockIndexConfigProviderContext();
+        MockAutoCompletionConsumer mockConsumer = new MockAutoCompletionConsumer();
+        _ClassNamePrefix_IndexingConfigProvider underTest = new _ClassNamePrefix_IndexingConfigProvider();
+
+        underTest.supplyAutoCompletionEntriesForProfiles(List.of(mockContext), mockConsumer);
+
         Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
     }
 }

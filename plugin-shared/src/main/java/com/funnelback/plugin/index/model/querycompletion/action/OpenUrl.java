@@ -22,4 +22,16 @@ import java.net.URI;
 @EqualsAndHashCode
 public class OpenUrl implements AutoCompletionAction {
     @NonNull private URI urlToOpen;
+
+    /**
+     * Convenience constructor which converts the given string
+     * to a URI. The caller must ensure the string is a valid
+     * string representation of a URI.
+     *
+     * @throws  IllegalArgumentException
+     *          If the given string it not a valid URI (i.e. it violates RFC 2396)
+     */
+    public OpenUrl(String url) throws IllegalArgumentException {
+        this(URI.create(url));
+    }
 }
