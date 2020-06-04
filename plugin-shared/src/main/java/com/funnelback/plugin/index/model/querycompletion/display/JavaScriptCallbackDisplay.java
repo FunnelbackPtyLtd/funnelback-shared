@@ -30,6 +30,6 @@ import lombok.NonNull;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class JavaScriptCallback implements AutoCompletionDisplay {
-    @NonNull private String code;
+public class JavaScriptCallbackDisplay implements AutoCompletionDisplay {
+    @NonNull private String callbackCode;
 }

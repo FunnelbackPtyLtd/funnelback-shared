@@ -32,6 +32,6 @@ import lombok.NonNull;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class JavaScriptCallback implements AutoCompletionAction {
+public class JavaScriptCallbackAction implements AutoCompletionAction {
     @NonNull private String callbackCode;
 }

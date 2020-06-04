@@ -8,7 +8,7 @@ package com.funnelback.plugin.index.model.querycompletion.display;
  * Funnelback supports the following types of content being displayed in auto completion suggestions
  * {@link DisplayTrigger}
  * {@link HTMLFragment}
- * {@link JavaScriptCallback}
+ * {@link JavaScriptCallbackDisplay}
  * {@link JSONData}
  * {@link PlainText}
  *

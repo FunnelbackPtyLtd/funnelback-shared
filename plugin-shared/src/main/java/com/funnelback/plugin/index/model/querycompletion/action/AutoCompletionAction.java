@@ -7,7 +7,7 @@ package com.funnelback.plugin.index.model.querycompletion.action;
  *
  * Funnelback supports the following types of actions occurring when an auto completion suggestion is selected
  * {@link ExtendQuery}
- * {@link JavaScriptCallback}
+ * {@link JavaScriptCallbackAction}
  * {@link OpenUrl}
  * {@link RunQuery}
  * {@link RunTriggerAsQuery}
