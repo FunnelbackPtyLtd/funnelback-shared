@@ -12,6 +12,20 @@ import lombok.NonNull;
  *
  * Note that the HTML is not sanitised by Funnelback
  * so this should only be used for trusted sources.
+ *
+ * An example value might be `fetchStockPrice('some-suggestion-specific-code')`
+ * in the context of a results page which defines the following function...
+ *
+ * <pre>{@code
+ * function fetchStockPrice(symbol) {
+ *    // Fetch stock market data
+ *    var data = remoteServiceCall(symbol);
+ *    ...
+ *
+ *    return data.companyName + ' (' + symbol + ') $' + data.currentPrice + ' (Higher: ' + data.hiPrice + ')';
+ * }
+ * }</pre>
+
  */
 @AllArgsConstructor
 @Getter

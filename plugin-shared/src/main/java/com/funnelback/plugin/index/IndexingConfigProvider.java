@@ -237,9 +237,13 @@ public interface IndexingConfigProvider {
      * auto completion data, and must provide the consumer with any desired auto-completion
      * entries for each of the given profiles before returning.
      *
-     * Note that there may be a performance benefit to:
-     * - Providing entries which apply to many profiles over providing the same entries repeatedly for each profile.
-     * - Providing all entries for a given set of profiles before providing others.
+     * Note that with large sets of entries and/or many different profiles there is a performance benefit to:
+     * - Providing entries which apply to a set profiles over providing the same entries repeatedly for each profile
+     *   individually.
+     * - Providing all entries for a given set of profiles before providing entries for a new set of profiles.
+     *   i.e. try to avoid supplying an entry for profile `a`, then one for `b` ...so on through the alphabet...
+     *   and then providing another entry for `a`. Instead provide all the entries for `a`,
+     *   then all the entries for `b` and so on.
      *
      * The following example provides a single entry with the trigger `funnelback` for the profile `profileId`.
      * <pre>{@code
