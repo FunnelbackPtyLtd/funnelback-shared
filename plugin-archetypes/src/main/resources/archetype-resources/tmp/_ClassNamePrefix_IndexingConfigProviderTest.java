@@ -3,7 +3,6 @@ package __fixed_package__;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.funnelback.plugin.index.consumers.mock.MockAutoCompletionConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockExternalMetadataConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockGscopeByQueryConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockGscopeByRegexConsumer;
