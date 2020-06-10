@@ -54,7 +54,6 @@
                 <version>1.0.1</version>
                 <executions>
                     <execution>
-                        <id>one</id>
                         <phase>package</phase>
                         <goals>
                             <goal>write-properties-file</goal>
