@@ -18,7 +18,7 @@ build:
     image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
 
     script:
-        - mvn -B -U clean verify
+        - mvn -B -U clean install
         - rm -rf .m2/repository/com/funnelback/
 
     artifacts:
