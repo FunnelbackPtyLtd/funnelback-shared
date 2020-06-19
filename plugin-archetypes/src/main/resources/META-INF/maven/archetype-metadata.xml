@@ -20,6 +20,8 @@
             <includes>
                 <include>BUILD.md</include>
                 <include>README.md</include>
+                <include>.gitignore</include>
+                <include>.gitlab-ci.yml</include>
             </includes>
         </fileSet>
         <fileSet filtered="true">
