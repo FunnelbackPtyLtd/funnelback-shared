@@ -1,0 +1,34 @@
+image: maven:3.6-adoptopenjdk-11
+
+stages:
+  - build
+  - test
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+build:
+  stage: build
+  script:
+    - mvn -B -U clean compile
+    - rm -rf .m2/repository/*
+  artifacts:
+    expire_in: 1 hr
+    paths:
+      - target/*
+
+test:
+  stage: test
+  script:
+    - mvn -B -U clean test
+    - rm -rf .m2/repository/*
+  artifacts:
+    expire_in: 1 hr
+    paths:
+      - target/*
+    reports:
+      junit:
+        - "*/target/surefire-reports/TEST-*.xml"
+        - "*/target/failsafe-reports/TEST-*.xml"
