@@ -2,7 +2,6 @@ image: maven:3.6-adoptopenjdk-11
 
 stages:
   - build
-  - test
 
 cache:
   paths:
@@ -12,17 +11,7 @@ cache:
 build:
   stage: build
   script:
-    - mvn -B -U clean compile
-    - rm -rf .m2/repository/*
-  artifacts:
-    expire_in: 1 hr
-    paths:
-      - target/*
-
-test:
-  stage: test
-  script:
-    - mvn -B -U clean test
+    - mvn -B -U clean verify
     - rm -rf .m2/repository/*
   artifacts:
     expire_in: 1 hr
