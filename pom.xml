@@ -66,7 +66,7 @@
         <version.log4j2>2.6.2</version.log4j2>
         <version.lombok>1.18.12</version.lombok>
         <version.mockito>2.21.0</version.mockito>
-        <version.xstream>1.4.8</version.xstream>
+        <version.xstream>1.4.12</version.xstream>
     </properties>
 
    <dependencyManagement>
