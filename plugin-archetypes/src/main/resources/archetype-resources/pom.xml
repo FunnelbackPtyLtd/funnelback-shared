@@ -75,6 +75,29 @@
                     <outputDirectory>target/${project.version}/libs</outputDirectory>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-readme</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                
+                                <mkdir dir="target/${project.version}" />
+                                <mkdir dir="target/${project.version}/docs" />
+
+                                <copy tofile="target/${project.version}/docs/README.md" overwrite="true">
+                                    <fileset file="README.md" />
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     
