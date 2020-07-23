@@ -2,6 +2,7 @@ package com.funnelback.publicui.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ListMultimap;
@@ -14,6 +15,10 @@ public class MapKeyFilter {
     private String[] keys;
     
     public MapKeyFilter(ListMultimap<String, ?> parameters) {
+        keys = parameters.keySet().toArray(new String[0]);
+    }
+    
+    public MapKeyFilter(Map<String, ?> parameters) {
         keys = parameters.keySet().toArray(new String[0]);
     }
     
