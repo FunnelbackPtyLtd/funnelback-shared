@@ -5,9 +5,10 @@ import java.nio.file.Paths
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.BasicFileAttributes
-import java.lang.RuntimeException;
 @Grab(group='org.apache.commons', module='commons-text', version='1.8')
 import org.apache.commons.text.WordUtils
+@Grab(group='com.funnelback', module='funnelback-shared', version='15.25.2028')
+import com.funnelback.plugin.PluginDetailsConstants;
 
 // the path where the project got generated
 projectPath = Paths.get(request.outputDirectory, request.artifactId)
@@ -169,10 +170,10 @@ def writeToPropertiesFile(String originalClassName, String qualifiedInterface) {
 // Write out the plugin properties for later exposure in the plugins api
 def writeOutProps() {
     def props = projectPath.resolve("docs/plugin-details.properties").toFile();
-    props.append("name=${properties.get("plugin-name")}\n")
-    props.append("description=${properties.get("plugin-description")}\n")
-    props.append("runs-on.datasource=${properties.get("runs-on-datasource")}\n")
-    props.append("runs-on.results-page=${properties.get("runs-on-results-page")}\n")
+    props.append("${PluginDetailsConstants.NAME}=${properties.get("plugin-name")}\n")
+    props.append("${PluginDetailsConstants.DESCRIPTION}=${properties.get("plugin-description")}\n")
+    props.append("${PluginDetailsConstants.RUNS_ON_DATASOURCE}=${properties.get("runs-on-datasource")}\n")
+    props.append("${PluginDetailsConstants.RUNS_ON_RESULTS_PAGE}=${properties.get("runs-on-results-page")}\n")
 }
 
 def writePluginPropsFileTest() {
