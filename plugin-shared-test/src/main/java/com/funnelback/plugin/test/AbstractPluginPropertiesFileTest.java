@@ -17,9 +17,14 @@ public abstract class AbstractPluginPropertiesFileTest {
     public void testDefinedClassesInPropsExist() {
         new CheckPropertiesFileIsValidHelper().checkClassesDefinedInProps(getPluginName());
     }
-    
+
     @Test
     public void testPropsFileExist() {
         new CheckPropertiesFileIsValidHelper().checkPropertiesFileExists(getPluginName(), this.getClass());
+    }
+
+    @Test
+    public void testPluginDetailsProperties() {
+        new CheckPluginDetailsPropertiesHelper().checkPropertiesOk();
     }
 }

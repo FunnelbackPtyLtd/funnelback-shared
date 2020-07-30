@@ -46,7 +46,7 @@ tmp = projectPath.resolve("tmp")
 resources = projectPath.resolve("src/main/resources")
 propertiesFile = resources.resolve("funnelback-plugin-" + request.artifactId + ".properties").toFile()
 
-writeOutProps();
+writeOutPluginDetailsProperties();
 
 if(isGathererEnabled) {
     String pluginImplementation = "_ClassNamePrefix_PluginGatherer"
@@ -167,9 +167,9 @@ def writeToPropertiesFile(String originalClassName, String qualifiedInterface) {
     propertiesFile.append(qualifiedInterface + "=" + packageName + "." + originalClassName.replace("_ClassNamePrefix_", pluginClassPrefix) + "\n")
 }
 
-// Write out the plugin properties for later exposure in the plugins api
-def writeOutProps() {
-    def props = projectPath.resolve("docs/plugin-details.properties").toFile();
+// Write out the plugin details properties for later exposure in the plugins api
+def writeOutPluginDetailsProperties() {
+    def props = projectPath.resolve(PluginDetailsConstants.PROPERTY_DETAILS_FILE).toFile();
     props.append("${PluginDetailsConstants.NAME}=${properties.get("plugin-name")}\n")
     props.append("${PluginDetailsConstants.DESCRIPTION}=${properties.get("plugin-description")}\n")
     props.append("${PluginDetailsConstants.RUNS_ON_DATASOURCE}=${properties.get("runs-on-datasource")}\n")
