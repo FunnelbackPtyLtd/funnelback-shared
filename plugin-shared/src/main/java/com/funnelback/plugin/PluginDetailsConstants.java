@@ -1,9 +1,24 @@
 package com.funnelback.plugin;
 
+/**
+ * Constants for plugin details; extra information about the plugin
+ * that is stored in a properties file, and exposed in the admin api
+ * GET /plugins endpoint
+ */
 public interface PluginDetailsConstants {
-    public static final String PROPERTY_DETAILS_FILE = "docs/plugin-details.properties";
-    public static final String NAME = "name";
-    public static final String DESCRIPTION = "description";
-    public static final String RUNS_ON_DATASOURCE = "runs-on.datasource";
-    public static final String RUNS_ON_RESULTS_PAGE = "runs-on.results-page";
+    // Path to the plugin details property file
+    String[] PROPERTY_DETAILS_FILE_PATH = new String[] { "docs","plugin-details.properties" };
+
+    // Property key for human readable name for the plugin
+    String NAME = "name";
+    // Property key for brief description of the plugin
+    String DESCRIPTION = "description";
+
+    // For the following property keys, at least one must be set to
+    // true for the plugin to be considered valid.
+
+    // Property key for whether the plugin runs on datasources
+    String RUNS_ON_DATASOURCE = "runs-on.datasource";
+    // Property key for whether the plugin runs on results pages
+    String RUNS_ON_RESULTS_PAGE = "runs-on.results-page";
 }
