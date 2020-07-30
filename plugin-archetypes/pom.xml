@@ -74,7 +74,7 @@
                                 <property><name>plugin-name</name><value>some name</value></property>
                                 <property><name>plugin-description</name><value>some description</value></property>
                                 <property><name>runs-on-datasource</name><value>true</value></property>
-                                <property><name>runs-on-results-page</name><value>false</value></property>
+                                <property><name>runs-on-results-page</name><value>true</value></property>
                                 <!--
                                 This is the one that makes this not a static file, we must generate it
                                 to have the current project version :(
