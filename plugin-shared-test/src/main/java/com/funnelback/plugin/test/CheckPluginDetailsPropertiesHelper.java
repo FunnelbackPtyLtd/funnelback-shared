@@ -6,8 +6,9 @@ import lombok.extern.log4j.Log4j2;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -28,13 +29,9 @@ public class CheckPluginDetailsPropertiesHelper {
 
     public void checkPropertiesOk() {
         File expectedPluginDetailsFile =
-                Path.of(
-                        // Should be the root directory of the plugin project, tested in mvn, intellij and eclipse.
-                        // The issue here is that we're checking for a file at a specific location in the project,
-                        // rather than the usual situation of a file that's in a resources folder,
-                        // and hence at a known location in the classpath.
-                        System.getProperty("user.dir"),
-                        PluginDetailsConstants.PROPERTY_DETAILS_FILE_PATH).toFile();
+                new File(Arrays.stream(
+                        PluginDetailsConstants.PROPERTY_DETAILS_FILE_PATH).collect(Collectors.joining(File.separator)));
+
         Properties properties = new Properties();
         try {
             properties.load(new FileInputStream(expectedPluginDetailsFile));
