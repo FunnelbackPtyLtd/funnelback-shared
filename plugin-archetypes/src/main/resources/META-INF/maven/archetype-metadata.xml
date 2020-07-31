@@ -16,6 +16,12 @@
             </includes>
         </fileSet>
         <fileSet filtered="true">
+            <directory>docs</directory>
+            <includes>
+                <include>**/plugin-details.properties</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true">
             <directory/>
             <includes>
                 <include>BUILD.md</include>
@@ -56,8 +62,18 @@
         <requiredProperty key="artifactId" >
             <validationRegex><![CDATA[^[a-z0-9\.\-]+$]]></validationRegex>
         </requiredProperty>
+        <requiredProperty key="plugin-name" >
+            <validationRegex><![CDATA[^[a-z0-9\.\- ]+$]]></validationRegex>
+        </requiredProperty>
+        <requiredProperty key="plugin-description" />
         <requiredProperty key="archetypeVersion"> </requiredProperty>
-        <!-- It would be better to have artifactId.replaceAll to remove "-" and "." 
+        <requiredProperty key="runs-on-datasource" >
+            <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
+        </requiredProperty>
+        <requiredProperty key="runs-on-results-page" >
+            <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
+        </requiredProperty>
+        <!-- It would be better to have artifactId.replaceAll to remove "-" and "."
         however that is not possible. See: https://issues.apache.org/jira/browse/ARCHETYPE-406 
         This means that package can't really be used instead set: __fixed_package__ in your files
         and archetype-post-generate.groovy will fix it up.

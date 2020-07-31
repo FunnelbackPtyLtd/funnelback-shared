@@ -89,7 +89,9 @@
                                 
                                 <mkdir dir="target/${project.version}" />
                                 <mkdir dir="target/${project.version}/docs" />
-
+                                <copy todir="target/${project.version}/docs" overwrite="true">
+                                    <fileset dir="docs" />
+                                </copy>
                                 <copy tofile="target/${project.version}/docs/README.md" overwrite="true">
                                     <fileset file="README.md" />
                                 </copy>
