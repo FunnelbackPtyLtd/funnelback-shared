@@ -171,7 +171,7 @@ def writeOutPluginDetailsProperties() {
     props.append("name=${properties.get("plugin-name")}\n")
     props.append("description=${properties.get("plugin-description")}\n")
     props.append("runs-on.datasource=${properties.get("runs-on-datasource")}\n")
-    props.append("runs-on.results-page=${properties.get("runs-on-results-page")}\n")
+    props.append("runs-on.result-page=${properties.get("runs-on-result-page")}\n")
 }
 
 def writePluginPropsFileTest() {

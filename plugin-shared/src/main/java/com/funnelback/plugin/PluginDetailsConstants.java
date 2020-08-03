@@ -19,6 +19,6 @@ public interface PluginDetailsConstants {
 
     // Property key for whether the plugin runs on datasources
     String RUNS_ON_DATASOURCE = "runs-on.datasource";
-    // Property key for whether the plugin runs on results pages
-    String RUNS_ON_RESULTS_PAGE = "runs-on.results-page";
+    // Property key for whether the plugin runs on result pages
+    String RUNS_ON_RESULT_PAGE = "runs-on.result-page";
 }

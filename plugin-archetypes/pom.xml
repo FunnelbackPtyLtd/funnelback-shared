@@ -74,7 +74,7 @@
                                 <property><name>plugin-name</name><value>A human friendly name for the plugin displayed in the UI</value></property>
                                 <property><name>plugin-description</name><value>A brief description of the plugin</value></property>
                                 <property><name>runs-on-datasource</name><value>true</value></property>
-                                <property><name>runs-on-results-page</name><value>false</value></property>
+                                <property><name>runs-on-result-page</name><value>false</value></property>
                                 <!--
                                 This is the one that makes this not a static file, we must generate it
                                 to have the current project version :(
