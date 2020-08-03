@@ -24,8 +24,8 @@ public class CheckPluginDetailsPropertiesHelper {
                     PluginDetailsConstants.DESCRIPTION + "=A Plugin Description\n" +
                     "# Whether the plugin should run on datasources - this plugin does\n" +
                     PluginDetailsConstants.RUNS_ON_DATASOURCE + "=true\n" +
-                    "# Whether the plugin should run on results pages - this plugin doesn't\n" +
-                    PluginDetailsConstants.RUNS_ON_RESULTS_PAGE + "=false\n";
+                    "# Whether the plugin should run on result pages - this plugin doesn't\n" +
+                    PluginDetailsConstants.RUNS_ON_RESULT_PAGE + "=false\n";
 
     public void checkPropertiesOk() {
         File expectedPluginDetailsFile =
@@ -59,14 +59,14 @@ public class CheckPluginDetailsPropertiesHelper {
         assertTrue(
                 "should have one of " + PluginDetailsConstants.RUNS_ON_DATASOURCE
                         + " or "
-                        + PluginDetailsConstants.RUNS_ON_RESULTS_PAGE
+                        + PluginDetailsConstants.RUNS_ON_RESULT_PAGE
                         + " set boolean values, to indicate where the plugin should run.\n" +
-                        "e.g. If the plugin should run on datasources, but not on the results page, set \n" +
+                        "e.g. If the plugin should run on datasources, but not on the result page, set \n" +
                         PluginDetailsConstants.RUNS_ON_DATASOURCE + "=true\n" +
-                        PluginDetailsConstants.RUNS_ON_DATASOURCE + "=false\n" +
+                        PluginDetailsConstants.RUNS_ON_RESULT_PAGE + "=false\n" +
                         " in " + expectedPluginDetailsFile,
                 getBooleanPropertyValue(properties, PluginDetailsConstants.RUNS_ON_DATASOURCE) ||
-                        getBooleanPropertyValue(properties, PluginDetailsConstants.RUNS_ON_RESULTS_PAGE));
+                        getBooleanPropertyValue(properties, PluginDetailsConstants.RUNS_ON_RESULT_PAGE));
     }
 
     private Boolean getBooleanPropertyValue(Properties properties, String property) {

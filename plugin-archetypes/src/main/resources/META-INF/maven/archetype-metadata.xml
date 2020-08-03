@@ -70,7 +70,7 @@
         <requiredProperty key="runs-on-datasource" >
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
-        <requiredProperty key="runs-on-results-page" >
+        <requiredProperty key="runs-on-result-page" >
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <!-- It would be better to have artifactId.replaceAll to remove "-" and "."
