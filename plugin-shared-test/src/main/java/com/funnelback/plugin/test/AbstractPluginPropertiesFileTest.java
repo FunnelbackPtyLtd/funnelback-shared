@@ -2,6 +2,10 @@ package com.funnelback.plugin.test;
 
 import org.junit.Test;
 
+import static com.funnelback.plugin.PluginUtil.getCurrentProjectVersion;
+import static com.funnelback.plugin.PluginUtil.matchesSemver;
+import static org.junit.Assert.assertTrue;
+
 /**
  * An abstract test which most plugins should have.
  * 
@@ -27,4 +31,18 @@ public abstract class AbstractPluginPropertiesFileTest {
     public void testPluginDetailsProperties() {
         new CheckPluginDetailsPropertiesHelper().checkPropertiesOk();
     }
+
+    @Test
+    public void testVersionIsSemver() {
+        String checkVersionHelp = "Check the <version> node of " +
+                        "the project pom.xml, it should be of the form MAJOR.MINOR.PATCH, " +
+                        "see https://semver.org/ for more details";
+        String pluginVersion = getCurrentProjectVersion().orElseThrow(
+                () -> new AssertionError(
+                        "unable find a version from the plugin pom.xml file. " + checkVersionHelp));
+        assertTrue(
+                "Plugin version '" + pluginVersion + "' is not a valid semver version; " + checkVersionHelp,
+                matchesSemver(pluginVersion));
+    }
+
 }
