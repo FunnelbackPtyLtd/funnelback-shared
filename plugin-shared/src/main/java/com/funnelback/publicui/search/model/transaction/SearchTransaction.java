@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
+import com.funnelback.publicui.search.model.transaction.extrasearch.ExtraSearchFuture;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -169,7 +170,7 @@ public class SearchTransaction {
      * <em>Internal use</em>: Holds the extra searches tasks being executed.
      */
     @XStreamOmitField
-    @Getter private final Map<String, FutureTask<SearchTransaction>> extraSearchesTasks = new ConcurrentHashMap<String, FutureTask<SearchTransaction>>();
+    @Getter private final Map<String, ExtraSearchFuture> extraSearchesTasks = new ConcurrentHashMap<>();
     
     /**
      * Custom data placeholder allowing any arbitrary data to be
