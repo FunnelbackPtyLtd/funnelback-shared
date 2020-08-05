@@ -70,7 +70,7 @@
                                 <property><name>groupId</name><value>testGroupId</value></property>
                                 <property><name>artifactId</name><value>testArtifactId</value></property>
                                 <property><name>package</name><value>com.example.test</value></property>
-                                <property><name>version</name><value>1.0</value></property>
+                                <property><name>version</name><value>1.0.0-SNAPSHOT</value></property>
                                 <property><name>plugin-name</name><value>A human friendly name for the plugin displayed in the UI</value></property>
                                 <property><name>plugin-description</name><value>A brief description of the plugin</value></property>
                                 <property><name>runs-on-datasource</name><value>true</value></property>

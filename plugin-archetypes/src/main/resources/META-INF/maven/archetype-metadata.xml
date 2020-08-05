@@ -38,6 +38,13 @@
         </fileSet>
     </fileSets>
     <requiredProperties>
+        <requiredProperty key="version" >
+            <!-- semver regex from https://semver.org/, unfortunately will be confusing for interactive
+                 archetype creation -->
+            <validationRegex><![CDATA[^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$]]></validationRegex>
+            <!-- have to set default to nothing, otherwise default of 1.0-SNAPSHOT will be used, which isn't semver -->
+            <defaultValue></defaultValue>
+        </requiredProperty>
         <requiredProperty key="gatherer" >
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
@@ -63,7 +70,7 @@
             <validationRegex><![CDATA[^[a-z0-9\.\-]+$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="plugin-name" >
-            <validationRegex><![CDATA[^[a-z0-9\.\- ]+$]]></validationRegex>
+            <validationRegex><![CDATA[^[a-zA-Z0-9\.\- ]+$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="plugin-description" />
         <requiredProperty key="archetypeVersion"> </requiredProperty>
