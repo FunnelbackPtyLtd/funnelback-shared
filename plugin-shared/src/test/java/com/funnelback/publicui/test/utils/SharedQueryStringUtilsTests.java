@@ -1,7 +1,6 @@
 package com.funnelback.publicui.test.utils;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,7 +45,7 @@ public class SharedQueryStringUtilsTests {
     
     @Test
     public void testToMapEmptyString() {
-        Assert.assertEquals(new HashMap<>(), SharedQueryStringUtils.toMap(""));
+        Assert.assertTrue(SharedQueryStringUtils.toMap("").isEmpty());
     }
     
 }
