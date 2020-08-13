@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -99,10 +98,10 @@ public class SearchTransaction {
     }
     
     /** The question containing the input parameters. */
-    @Getter private SearchQuestion question;
+    @Getter @NonNull private SearchQuestion question;
     
     /** The response containing result data. */
-    @Getter private SearchResponse response;
+    @Getter @NonNull private SearchResponse response;
     
     /** Any error if the search wasn't successful. */
     @Getter @Setter private SearchError error;
@@ -121,8 +120,8 @@ public class SearchTransaction {
      * @param sr {@link SearchResponse}
      */
     public SearchTransaction(SearchQuestion sq, SearchResponse sr) {
-        this.question = sq;
-        this.response = sr;
+        this.question = sq != null ? sq : new SearchQuestion();
+        this.response = sr != null ? sr : new SearchResponse();
     }
 
     /**
@@ -186,15 +185,5 @@ public class SearchTransaction {
     public void addExtraSearch(String key, SearchQuestion q) {
         extraSearchesQuestions.put(key, q);
     }    
-    
-    /**
-     * @return true if the {@link #question} is not null.
-     */
-    public boolean hasResponse() { return response != null; }
-    
-    /**
-     * @return true if the {@link #response} is not null.
-     */
-    public boolean hasQuestion() { return question != null; }
     
 }
