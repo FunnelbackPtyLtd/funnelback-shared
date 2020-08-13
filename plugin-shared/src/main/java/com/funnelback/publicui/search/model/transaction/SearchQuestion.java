@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import java.security.Principal;
 
@@ -20,8 +19,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.collection.SearchPackageConfig;
 import com.funnelback.publicui.search.model.collection.ServiceConfig;
 import com.funnelback.publicui.search.model.geolocation.Location;
-import com.funnelback.publicui.utils.SingleValueMapWrapper;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -166,11 +165,11 @@ public class SearchQuestion {
      * at all by the Modern UI. Only parameters relevant to PADRE should be injected here.</p>
      * 
      * <p>Depending on the parameters you want to inject or manipulate, consider using
-     * {@link #inputParameterMap} or {@link #rawInputParameters}. Those parameters will be
-     * processed by the Modern UI (For example to inject faceted navigation constraints).</p> 
+     * {@link #inputParameters}. Those parameters will be processed by the Modern UI 
+     * (For example to inject faceted navigation constraints).</p> 
      * 
      * <p>Note that this map is populated <strong>before</strong> the first hook script is run: Any
-     * additional parameter injected in {@link #inputParameterMap} or {@link #rawInputParameters}
+     * additional parameter injected in {@link #inputParameters}
      * in a hook script won't be copied to this map.</p> 
      */
     @Getter final private Map<String, String[]> additionalParameters = new HashMap<String, String[]>();
@@ -276,48 +275,47 @@ public class SearchQuestion {
      * <p>Raw input parameters</p>
      * 
      * <p>Contains all the input parameters (query string / request parameters).</p>
+     * TODO query string posted form data
      * 
-     * <p>Be aware that the value type is <code>String array</code>, allowing for multiple
-     * value of the same parameter (e.g. <code>&amp;param=value1&amp;param=value2</code>).
-     * Putting a single valued <code>String</code> in this Map will not work, it must be
-     * an array of size one. Example in a Groovy hook script:
-     * </p>
-     * <pre>
-     * transaction.question.rawInputParameters["param"] = [ "value" ]
-     * </pre>
+     * <p>Be aware that the value type is <code>ListMultimap</code>, thus a single 
+     * key can have multiple values also {@link ListMultimap#get(Object)} will never 
+     * return null.</p>
      * 
-     * <p>{@link #inputParameterMap} provides a simpler way to inject or retrieve simple mono-valued
-     * parameters. {@link #inputParameterMap} and {@link #rawInputParameters} are backed by the same Map: Any
-     * change made in one will be reflected in the other.</p>
+     * A clone of this map can be made with {@link #getInputParametersCopy()}.
      * 
-     * @see #inputParameterMap
+     * <p>To convert such a map into a query string suitable for URLs,
+     * see {@link QueryStringUtils#toString(ListMultimap, boolean)}</p>
+     * 
+     * @since 15.26
      */
-    private final Map<String, String[]> rawInputParameters = new HashMap<String, String[]>();
+    @Getter
+    private final ListMultimap<String, String> inputParameters = MultimapBuilder.hashKeys().arrayListValues().build();
     
-    public Map<String, String[]> getRawInputParameters() {
-        return this.rawInputParameters;
+    /**
+     * <p>Returns a copy of the {@link #getInputParameters()} map</p>
+     * 
+     * <p>Be aware that the value type is <code>ListMultimap</code>, thus a single 
+     * key can have multiple values also {@link ListMultimap#get(Object)} will never 
+     * return null.</p>
+     * 
+     * @return 
+     */
+    public ListMultimap<String, String> getInputParametersCopy() {
+        return MultimapBuilder.hashKeys().arrayListValues().build(inputParameters);
     }
-
-    /**
-     * <p>Input parameters map.</p>
-     * 
-     * <p>Contains all the input parameters (query string / request parameters) in a
-     * convenient fashion: Only the first value of each parameter is returned to avoid
-     * having to deal with arrays of Strings.</p>
-     * 
-     * <p>For example if the query string is <code>&amp;param=value1&amp;param=value2</code> 
-     * then this map will contain only one key-value pair: <tt>param=value1</tt>. The <tt>value2</tt>
-     * won't be available unless you use {@link #rawInputParameters}.</p>
-     * 
-     * <p>{@link #rawInputParameters} provides a way to inject or retrieve multi-valued parameters. Both
-     * {@link #inputParameterMap} and {@link #rawInputParameters} are backed by the same Map: Any change made
-     * in one will be reflected in the other.</p>
-     * 
-     * @see #rawInputParameters
-     */
-    @Getter private final Map<String, String> inputParameterMap = new SingleValueMapWrapper(rawInputParameters);
     
     /**
+     * <p>Sets the query string parameter map.</p>
+     * 
+     * <p>This is for internal use only and shouldn't be called outside of
+     * initializing the search question. Changing the query string map will
+     * affect all the URLs that are constructed in the data model</p>
+     * 
+     * @since 15.26
+     */
+    @Setter @NonNull private ListMultimap<String, String> queryStringMap = MultimapBuilder.hashKeys().arrayListValues().build();
+    
+     /**
      * <p>Query string parameters as a Map</p>
      * 
      * <p>Return a copy of the internal map representing the query string,
@@ -328,31 +326,16 @@ public class SearchQuestion {
      * query string parameters.</p>
      * 
      * <p>To convert such a map into a query string suitable for URLs,
-     * see {@link QueryStringUtils#toString(Map, boolean)}</p>
+     * see {@link QueryStringUtils#toString(MultiMap, boolean)}</p> // TODO include it.
      * 
      * @return Query string parameters
      * 
      * @since 15.10
      */
-    public Map<String, List<String>> getQueryStringMapCopy() {
-        return queryStringMap.entrySet()
-            .stream()
-            .collect(Collectors.toMap(
-                e -> e.getKey(),
-                // Copy the values into a new list
-                e -> new ArrayList<>(e.getValue())));
+    public ListMultimap<String, String> getQueryStringMapCopy() {
+        return MultimapBuilder.hashKeys().arrayListValues().build(queryStringMap);
     }
-    
-    /**
-     * <p>Sets the query string parameter map.</p>
-     * 
-     * <p>This is for internal use only and shouldn't be called outside of
-     * initializing the search question. Changing the query string map will
-     * affect all the URLs that are constructed in the data model</p>
-     * 
-     * @since 15.10
-     */
-    @Setter private Map<String, List<String>> queryStringMap = new HashMap<>();
+
 
     /**
      * <p>Indicates the 'type' of question, which may trigger special processing in the search lifecycle.</p>

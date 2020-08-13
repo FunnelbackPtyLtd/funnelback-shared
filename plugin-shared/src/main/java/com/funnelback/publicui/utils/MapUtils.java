@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import com.google.common.collect.ListMultimap;
+
 public class MapUtils {
 
     /**
@@ -23,6 +25,10 @@ public class MapUtils {
         } else {
             return defaultValue;
         }
+    }
+    
+    public static String getFirstString(ListMultimap<String, String> map, String key, String defaultValue) {
+        return map.get(key).stream().findFirst().orElse(defaultValue);
     }
 
     public static String getString(Map<String, String> map, Object key, String defaultValue) {
@@ -42,6 +48,12 @@ public class MapUtils {
     public static void putAsStringArrayIfNotNull(Map<String, String[]> out, String key, String data) {
         if (data != null) {
             out.put(key, new String[] {data});
+        }
+    }
+    
+    public static void putIfNotNull(ListMultimap<String, String> out, String key, String data) {
+        if (data != null) {
+            out.put(key, data);
         }
     }
     
