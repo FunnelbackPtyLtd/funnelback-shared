@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.funnelback.publicui.search.model.util.map.AutoConvertingMap;
 import com.funnelback.publicui.search.model.util.map.Converters;
 import com.google.common.collect.HashMultimap;
@@ -364,6 +365,7 @@ public class ResultPacket {
      * @return A list containing both {@link Result} and {@link TierBar}, in
      * the order returned by PADRE.
      */
+    @JsonIgnore
     public List<ResultType> getResultsWithTierBars() {
         if (tierBars != null && tierBars.size() > 0) {
             ArrayList<ResultType> out = new ArrayList<ResultType>();
