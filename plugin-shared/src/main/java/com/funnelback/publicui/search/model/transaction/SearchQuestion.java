@@ -275,7 +275,6 @@ public class SearchQuestion {
      * <p>Raw input parameters</p>
      * 
      * <p>Contains all the input parameters (query string / request parameters).</p>
-     * TODO query string posted form data
      * 
      * <p>Be aware that the value type is <code>ListMultimap</code>, thus a single 
      * key can have multiple values also {@link ListMultimap#get(Object)} will never 
