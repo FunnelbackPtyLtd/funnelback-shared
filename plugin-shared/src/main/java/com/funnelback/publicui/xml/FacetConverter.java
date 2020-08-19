@@ -8,7 +8,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-// TODO make a ticket this does not belong here.
+
 public class FacetConverter implements Converter {
     
     @Override
