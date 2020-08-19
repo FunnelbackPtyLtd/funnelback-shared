@@ -25,6 +25,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.ToString;
 /**
  * <p>Facets, generated from the result data (Metadata counts,
  * GScope counts, URL counts).</p>
@@ -192,19 +193,18 @@ public class Facet {
      * 
      */
     @AllArgsConstructor
+    @ToString
     public static class CategoryValue {
         
         @Builder
         public CategoryValue(String data, String label, Integer count, 
-            String queryStringParam, String constraint, boolean selected,
+            boolean selected,
             String queryStringParamName, String queryStringParamValue,
             int categoryDefinitionIndex) {
           super();
           this.data = data;
           this.label = label;
           this.count = count;
-          this.queryStringParam = queryStringParam;
-          this.constraint = constraint;
           this.selected = selected;
           this.queryStringParamName = queryStringParamName;
           this.queryStringParamValue = queryStringParamValue;
@@ -220,19 +220,19 @@ public class Facet {
         /** Count of occurrences for this value */
         @Getter @Setter private Integer count;
         
-        /**
-         * Query String parameters to use to select this value
-         * (Ex: <code>f.Location|X=Sydney</code>).
-         **/
-        @Getter @Setter private String queryStringParam;
+//        /**
+//         * Query String parameters to use to select this value
+//         * (Ex: <code>f.Location|X=Sydney</code>).
+//         **/
+//        @Getter @Setter private String queryStringParam;
         
-        /**
-         * Constraint used to get this value. Can be a metadata class
-         * or a GScope number, depending of the facet type.
-         * 
-         * @since 11.2
-         */
-        @Getter @Setter private String constraint;
+//        /**
+//         * Constraint used to get this value. Can be a metadata class
+//         * or a GScope number, depending of the facet type.
+//         * 
+//         * @since 11.2
+//         */
+//        @Getter @Setter private String constraint;
         
         /**
          * Indicates if this value is currently selected
@@ -241,16 +241,26 @@ public class Facet {
          */
         @Getter @Setter private boolean selected;
         
-        /** Name of the query string parameter for this value (e.g. <code>f.Location|X</code>)
+        /** 
+         * Name of the query string parameter for this value (e.g. <code>f.Location|X</code>)
+         * 
+         * For internal use.
          * 
          * @Since 15.12 
          */
+        @XStreamOmitField
+        @JsonIgnore
         @Getter @Setter private String queryStringParamName;
         
-        /** Value of the query string parameter for this value (e.g. <code>Syndey</code>)
-         *  
+        /** 
+         * Value of the query string parameter for this value (e.g. <code>Syndey</code>)
+         * 
+         * For internal use.
+         * 
          * @Since 15.12 
          */
+        @XStreamOmitField
+        @JsonIgnore
         @Getter @Setter private String queryStringParamValue;
         
         /** URL to use to toggle the select status of the facet value.
@@ -277,9 +287,5 @@ public class Facet {
         @JsonIgnore
         @Getter private final int categoryDefinitionIndex;
 
-        @Override
-        public String toString() {
-            return label + " (" + count + "). data=[" + data + "], queryStringParam=[" + queryStringParam + "], selected=" + selected;
-        }
     }
 }
