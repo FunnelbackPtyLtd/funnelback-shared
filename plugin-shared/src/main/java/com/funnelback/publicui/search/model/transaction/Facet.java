@@ -1,12 +1,9 @@
 package com.funnelback.publicui.search.model.transaction;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,9 +15,7 @@ import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
 import com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType;
-import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
 import com.funnelback.publicui.xml.FacetConverter;
-import com.google.common.base.Function;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -50,15 +45,6 @@ public class Facet {
      *  @Since 15.12
      */
     @Getter @Setter private String unselectAllUrl;
-    
-    /**
-     * Categories definitions of this facet, for example
-     * a GScope category, or a Metadata field fill category.
-     * 
-     * <p>This should not be used when displaying facets. Instead use
-     *  allValues and selectedValues.</p> 
-     */
-    @Getter private final List<Category> categories = new ArrayList<Category>();
     
     /**
      * Custom data placeholder allowing any arbitrary data to be
@@ -125,6 +111,13 @@ public class Facet {
     @JsonIgnore @XStreamOmitField
     @Getter @Setter private Comparator<CategoryValue> customComparator = null;
     
+    /**
+     * 
+     * @return List of all facet values both selected and unselected.
+     * @Since 15.12
+     */
+    @Getter private final List<Facet.CategoryValue> allValues = new ArrayList<>();
+    
     public Facet(String name, 
             FacetSelectionType selectionType, 
             FacetConstraintJoin constraintJoin, 
@@ -163,16 +156,7 @@ public class Facet {
      * @Since 15.12
      */
     public List<CategoryValue> getSelectedValues() {
-        return getValuesAsStream().filter(CategoryValue::isSelected).collect(Collectors.toList());
-    }
-    
-    /**
-     * 
-     * @return List of all facet values both selected and unselected.
-     * @Since 15.12
-     */
-    public List<Facet.CategoryValue> getAllValues() {
-        return getValuesAsStream().collect(Collectors.toList());
+        return allValues.stream().filter(CategoryValue::isSelected).collect(Collectors.toList());
     }
     
     /**
@@ -180,35 +164,7 @@ public class Facet {
      * @return true if the facet possess at least one value.
      */
     public boolean hasValues() {
-        for (Category category: categories) {
-            if (category.hasValues() ) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    /**
-     * Recursively finds the deepest category.
-     * @param categoryParamNames
-     * @return The deepest {@link Category} matching the parameter names.
-     */
-    public Category findDeepestCategory(List<String> categoryParamNames) {
-        for (Category category: categories) {
-            Category deepest = category.findDeepest(categoryParamNames);
-            if (deepest != null) {
-                return deepest;
-            }
-        }
-        return null;
-    }
-    
-    private Stream<Facet.CategoryValue> getValuesAsStream() {
-         return this.getCategories().stream()
-            .flatMap(mapper(Category::getCategories))
-            .map(Category::getValues)
-            .flatMap(List::stream)
-            .sorted(comparatorForSorting());
+        return !allValues.isEmpty();
     }
     
     /**
@@ -222,127 +178,13 @@ public class Facet {
         if(a == null) return Stream.empty();
         return Stream.of(a);
     }
-    
-    /**
-     * Clone from com.funnelback.common.function.Flattener.flatten(T, Function<T, Collection<T>>)
-     * 
-     * @param <T>
-     * @param value
-     * @param getChildren
-     * @return
-     */
-    private static <T>  Stream<T> flatten(T value, Function<T, Collection<T>> getChildren) {
-        // This is a more generic form of:
-        // https://stackoverflow.com/questions/32656888/recursive-use-of-stream-flatmap
-        return Stream.concat(ofNullableSingle(value), 
-            Optional.ofNullable(value).map(getChildren::apply).orElse(Collections.emptyList()).stream()
-                .flatMap(child -> flatten(child, getChildren)));
-    }
-    
-    /**
-     * Clone from com.funnelback.common.function.Flattener.mapper(Function<T, Collection<T>>)
-     * 
-     * @param <T>
-     * @param getChildren
-     * @return
-     */
-    private static <T> Function<T, Stream<T>> mapper(Function<T, Collection<T>> getChildren) {
-        return (value) -> flatten(value, getChildren);
-    }
-    
-    @JsonIgnore
-    private final Comparator<CategoryValue> comparatorForSorting() {
-        return new FacetComparatorProvider()
-            .getComparatorWhenSortingAllValus(order, Optional.ofNullable(customComparator));
-    }
 
     /**
      * @return True if any of the values of this facet is selected
      * @Since 15.12
      */
     public boolean isSelected() {
-        return getValuesAsStream().anyMatch(CategoryValue::isSelected);
-    }
-    
-    /**
-     * <p>Category of a facet, such as "Location, based on the metadata class X".</p>
-     * 
-     * <p>Correspond to the <i>definition</i> of a category,
-     * not the value itself.</p>
-     */
-    public static class Category {
-        
-        /**
-         * Label for this category.
-         */
-        @Getter @Setter private String label;
-        
-        /**
-         * Name of the query string parameter for this category.
-         * (Ex: <code>f.Location|X).</code>
-         */
-        @Getter @Setter private String queryStringParamName;
-        
-        /**
-         * <p>Values for this category.</p>
-         * 
-         */
-        @Getter private final List<CategoryValue> values = new ArrayList<CategoryValue>();
-        
-        /**
-         * Sub categories, in case of a hierarchical definition.
-         */
-        @Getter private final List<Category> categories = new ArrayList<Category>();
-        
-        public Category(String label, String queryStringParamName) {
-            this.label = label;
-            this.queryStringParamName = queryStringParamName;
-        }
-        
-        /**
-         * Recursively check if this category or any of its sub-categories
-         * has values.
-         * @return true if this category or a nested one has at least one value.
-         */
-        public boolean hasValues() {
-            if (values.size() > 0) {
-                return true;
-            } else {
-                for (Category subCategory: categories) {
-                    if (subCategory.hasValues()) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-        
-        /**
-         * Recursively find the deepest category.
-         * @param categoryParamNames
-         * @return @return The deepest {@link Category} matching the parameter names.
-         */
-        public Category findDeepest(List<String> categoryParamNames) {
-            Category out = null;
-            if (categoryParamNames.contains(this.queryStringParamName)) {
-                out = this;
-            }
-            
-            for (Category c: categories) {
-                Category deepest = c.findDeepest(categoryParamNames);
-                if (deepest != null) {
-                    out = deepest;
-                    break;
-                }
-            }
-            return out;
-        }
-        
-        @Override
-        public String toString() {
-            return "Category '" + label + "' (" + values.size() + " values, " + categories.size() + " sub-categories)";
-        }
-
+        return getAllValues().stream().anyMatch(CategoryValue::isSelected);
     }
     
     /**
@@ -352,32 +194,11 @@ public class Facet {
     @AllArgsConstructor
     public static class CategoryValue {
         
-        /**
-         * Backwards compatible constructor where not all fields are set, may result in problems.
-         * 
-         * @param data
-         * @param label
-         * @param count
-         * @param queryStringParam
-         * @param constraint
-         * @param selected
-         */
-        @Deprecated
-        public CategoryValue(String data, String label, Integer count, String queryStringParam, String constraint,
-            boolean selected) {
-            super();
-            this.data = data;
-            this.label = label;
-            this.count = count;
-            this.queryStringParam = queryStringParam;
-            this.constraint = constraint;
-            this.selected = selected;
-        }
-        
         @Builder
         public CategoryValue(String data, String label, Integer count, 
             String queryStringParam, String constraint, boolean selected,
-            String queryStringParamName, String queryStringParamValue) {
+            String queryStringParamName, String queryStringParamValue,
+            int categoryDefinitionIndex) {
           super();
           this.data = data;
           this.label = label;
@@ -387,6 +208,7 @@ public class Facet {
           this.selected = selected;
           this.queryStringParamName = queryStringParamName;
           this.queryStringParamValue = queryStringParamValue;
+          this.categoryDefinitionIndex = categoryDefinitionIndex;
       }
 
         /** Actual value of the category (Ex: "Sydney"). */
@@ -438,13 +260,23 @@ public class Facet {
         @Getter @Setter private String toggleUrl;
         
         /**
-         * The depth of the category definition, used for sorting.
+         * The depth of the category value, used for sorting.
          * 
-         * @since 15.12
+         * @since 16.0
          */
         @XStreamOmitField
         @JsonIgnore
-        @Getter @Setter private int categoryDepth =  Integer.MAX_VALUE;
+        @Getter @Setter private int categoryValueDepth =  Integer.MAX_VALUE;
+        
+        /**
+         * The category definition index, used for sorting by category definition.
+         * 
+         * // TODO sort on this. 
+         * @since 16.0
+         */
+        @XStreamOmitField
+        @JsonIgnore
+        @Getter private final int categoryDefinitionIndex;
 
         @Override
         public String toString() {

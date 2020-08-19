@@ -15,7 +15,7 @@ public class FacetConfigOrder implements Comparator<Facet.CategoryValue> {
     
     @Override
     public int compare(Facet.CategoryValue c1, Facet.CategoryValue c2) {
-        return 0;
+        return Integer.compare(c1.getCategoryDefinitionIndex(), c2.getCategoryDefinitionIndex());
     }
 
 }

@@ -12,7 +12,7 @@ public class BySelectedFirst implements Comparator<Facet.CategoryValue> {
         if(o1.isSelected() && o2.isSelected()) {
             // If both are selected we want to ensure selected category values
             // which some from nested category definitions preserve the nested order.
-            return Integer.compare(o1.getCategoryDepth(), o2.getCategoryDepth());
+            return Integer.compare(o1.getCategoryValueDepth(), o2.getCategoryValueDepth());
         }
         if(o1.isSelected()) {
             return -1;

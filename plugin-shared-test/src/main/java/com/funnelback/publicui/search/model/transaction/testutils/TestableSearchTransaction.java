@@ -128,11 +128,8 @@ public class TestableSearchTransaction extends SearchTransaction {
         Assert.assertNotNull("Facet names must not be null", facetToAdd.getName());
         // Clear out any existing facets with the same name.
         this.getResponse().getFacets().removeIf(f -> facetToAdd.getName().equals(f.getName()));
-        if(facetToAdd.getCategories().isEmpty()) {
-            facetToAdd.getCategories().add(new Facet.Category(null, null));
-        }
         
-        facetToAdd.getCategories().get(0).getValues().addAll(values);
+        facetToAdd.getAllValues().addAll(values);
         
         this.getResponse().getFacets().add(facetToAdd);
         

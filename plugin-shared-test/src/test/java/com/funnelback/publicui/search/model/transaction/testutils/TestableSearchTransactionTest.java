@@ -1,5 +1,8 @@
 package com.funnelback.publicui.search.model.transaction.testutils;
 
+import java.util.Collections;
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -8,6 +11,7 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
 
 public class TestableSearchTransactionTest {
 
@@ -52,6 +56,9 @@ public class TestableSearchTransactionTest {
         
         Assert.assertEquals(2, f.getAllValues().size());
         Assert.assertEquals(1, f.getSelectedValues().size());
+        
+        Collections.sort(f.getAllValues(), 
+            new FacetComparatorProvider().getComparatorWhenSortingAllValus(f.getOrder(), Optional.ofNullable(f.getCustomComparator())));
         
         Assert.assertEquals("Note the default sorting", "Bob", f.getAllValues().get(1).getLabel());
         Assert.assertEquals("Note the default sorting", "Alice", f.getAllValues().get(0).getLabel());

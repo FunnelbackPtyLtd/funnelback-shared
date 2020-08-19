@@ -105,7 +105,7 @@ public class FacetComparatorProviderTest {
         List<CategoryValue> expectedOrder) {
         List<CategoryValue> ordered = new ArrayList<>(toSort);
         
-        Collections.sort(ordered, new FacetComparatorProvider().getComparatorWhenSortingValuesFromSingleCategory(order));
+        Collections.sort(ordered, new FacetComparatorProvider().getComparatorWhenSortingAllValus(order, Optional.empty()));
         
         Assert.assertEquals(toSort.size(), expectedOrder.size());
         
@@ -130,7 +130,7 @@ public class FacetComparatorProviderTest {
     private CategoryValue categoryWithSelection(boolean selected, int depth) {
         CategoryValue catVal = mock(CategoryValue.class);
         when(catVal.isSelected()).thenReturn(selected);
-        when(catVal.getCategoryDepth()).thenReturn(depth);
+        when(catVal.getCategoryValueDepth()).thenReturn(depth);
         return catVal;
     }
 }

@@ -90,7 +90,7 @@ public class BySelectedFirstTest extends FacetComparatorBaseTest {
     static CategoryValue categoryWithSelection(boolean selected, int depth) {
         CategoryValue catVal = mock(CategoryValue.class);
         when(catVal.isSelected()).thenReturn(selected);
-        when(catVal.getCategoryDepth()).thenReturn(depth);
+        when(catVal.getCategoryValueDepth()).thenReturn(depth);
         when(catVal.toString()).thenReturn("Selected: " + selected + " depth: " + depth);
         return catVal;
     }
