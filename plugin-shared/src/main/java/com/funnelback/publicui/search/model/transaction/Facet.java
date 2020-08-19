@@ -270,8 +270,7 @@ public class Facet {
         
         /**
          * The category definition index, used for sorting by category definition.
-         * 
-         * // TODO sort on this. 
+         *  
          * @since 16.0
          */
         @XStreamOmitField
