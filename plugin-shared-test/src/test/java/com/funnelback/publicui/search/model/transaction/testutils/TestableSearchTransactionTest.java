@@ -58,7 +58,7 @@ public class TestableSearchTransactionTest {
         Assert.assertEquals(1, f.getSelectedValues().size());
         
         Collections.sort(f.getAllValues(), 
-            new FacetComparatorProvider().getComparatorWhenSortingAllValus(f.getOrder(), Optional.ofNullable(f.getCustomComparator())));
+            new FacetComparatorProvider().getComparatorWhenSortingAllValues(f.getOrder(), Optional.ofNullable(f.getCustomComparator())));
         
         Assert.assertEquals("Note the default sorting", "Bob", f.getAllValues().get(1).getLabel());
         Assert.assertEquals("Note the default sorting", "Alice", f.getAllValues().get(0).getLabel());

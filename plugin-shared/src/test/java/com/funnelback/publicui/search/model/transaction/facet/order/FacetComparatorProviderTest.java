@@ -105,7 +105,7 @@ public class FacetComparatorProviderTest {
         List<CategoryValue> expectedOrder) {
         List<CategoryValue> ordered = new ArrayList<>(toSort);
         
-        Collections.sort(ordered, new FacetComparatorProvider().getComparatorWhenSortingAllValus(order, Optional.empty()));
+        Collections.sort(ordered, new FacetComparatorProvider().getComparatorWhenSortingAllValues(order, Optional.empty()));
         
         Assert.assertEquals(toSort.size(), expectedOrder.size());
         

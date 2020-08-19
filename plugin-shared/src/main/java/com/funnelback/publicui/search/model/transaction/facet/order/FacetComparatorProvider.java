@@ -74,7 +74,7 @@ public class FacetComparatorProvider {
      * @param ordersToSortBy
      * @return
      */
-    public Comparator<Facet.CategoryValue> getComparatorWhenSortingAllValus(List<FacetValuesOrder> ordersToSortBy, 
+    public Comparator<Facet.CategoryValue> getComparatorWhenSortingAllValues(List<FacetValuesOrder> ordersToSortBy, 
             Optional<Comparator<Facet.CategoryValue>> customComparator) {
         return makeComparatorChain(ordersToSortBy, customComparator);
     }

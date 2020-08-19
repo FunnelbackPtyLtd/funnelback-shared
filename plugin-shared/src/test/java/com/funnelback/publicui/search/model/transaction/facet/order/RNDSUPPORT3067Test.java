@@ -56,7 +56,7 @@ public class RNDSUPPORT3067Test {
         values.add(new CategoryValue("a", "a", 0, "", "", true, "", "", "", 0, 0));
         
         Collections.sort(values, 
-            comparatorProvider.getComparatorWhenSortingAllValus(order, Optional.empty()));
+            comparatorProvider.getComparatorWhenSortingAllValues(order, Optional.empty()));
         
     }
 }

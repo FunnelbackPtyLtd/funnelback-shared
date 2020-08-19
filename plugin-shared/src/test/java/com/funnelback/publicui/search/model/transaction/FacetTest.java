@@ -63,7 +63,7 @@ public class FacetTest {
     
     public void expectOrderOfValues(String msg, Facet facet, String ... values) {
         Collections.sort(facet.getAllValues(), 
-            new FacetComparatorProvider().getComparatorWhenSortingAllValus(facet.getOrder(), Optional.ofNullable(facet.getCustomComparator())));
+            new FacetComparatorProvider().getComparatorWhenSortingAllValues(facet.getOrder(), Optional.ofNullable(facet.getCustomComparator())));
         
         List<String> actualValues = facet.getAllValues()
             .stream()
