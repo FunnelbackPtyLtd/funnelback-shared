@@ -67,41 +67,16 @@ public class FacetComparatorProvider {
         
     }
     
-    
-    /**
-     * This is the comparator to use when we are sorting values that come from a Single CategoryDefinition.
-     * 
-     * <p>This one needs to ensure that even caparators that come after
-     * CATEGORY_DEFINITION_ORDER are used as we are comparing within
-     * the category definition.</p>
-     * @param ordersToSortBy
-     * @return
-     */
-    public Comparator<Facet.CategoryValue> getComparatorWhenSortingValuesFromSingleCategory(List<FacetValuesOrder> ordersToSortBy) {
-        return makeComparatorChain(ordersToSortBy, Optional.empty());
-    }
-    
     /**
      * Gets the comparator to use when we are sorting on ALL category values.
      * 
-     * This comparator is expected to be able to sort values from all sources
-     * (ie all category definitions). In this case we need to be careful 
-     * to ensure that sorting by CATEGORY_DEFINITION_ORDER still works.
      * 
      * @param ordersToSortBy
      * @return
      */
-    public Comparator<Facet.CategoryValue> getComparatorWhenSortingAllValus(List<FacetValuesOrder> ordersToSortBy, 
+    public Comparator<Facet.CategoryValue> getComparatorWhenSortingAllValues(List<FacetValuesOrder> ordersToSortBy, 
             Optional<Comparator<Facet.CategoryValue>> customComparator) {
-        // As we are sorting all values don't use any comparator that comes after
-        // sorting by CATEGORY_DEFINITION_ORDER as that sort is already done
-        // (as we sort the values returned by the category definition). We need to
-        // do this as the comparator CATEGORY_DEFINITION_ORDER allways returns zero
-        // as it wants to preserve the ordering, that will result in the following
-        // comparators being used, so we remove them.
-        return makeComparatorChain(
-            ordersToSortBy.stream().takeWhile(o -> o != FacetValuesOrder.CATEGORY_DEFINITION_ORDER).collect(Collectors.toList()),
-            customComparator);
+        return makeComparatorChain(ordersToSortBy, customComparator);
     }
     
     private static class AsIsComparator implements Comparator<Facet.CategoryValue> {

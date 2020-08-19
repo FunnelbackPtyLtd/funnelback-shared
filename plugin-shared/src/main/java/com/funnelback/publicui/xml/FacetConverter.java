@@ -29,7 +29,6 @@ public class FacetConverter implements Converter {
      */
     static class FacetWithFields extends Facet {
         
-        private List<CategoryValue> allValues;
         private List<CategoryValue> selectedValues;
         
         protected FacetWithFields(Facet facet) {
@@ -37,12 +36,11 @@ public class FacetConverter implements Converter {
                 facet.getConstraintJoin(), facet.getOrder(), facet.getFacetValues(), 
                 facet.getGuessedDisplayType(), facet.getCustomComparator());
             // For anything where the class has a defined field e.g. List categories = new List(); we need to re-add everything.
-            this.getCategories().addAll(facet.getCategories());
             this.getCustomData().putAll(facet.getCustomData());
             
+            this.getAllValues().addAll(facet.getAllValues());
             // Now add set the fields that we want serialised.
             this.selectedValues = facet.getSelectedValues();
-            this.allValues = facet.getAllValues();
         }
         
     }

@@ -5,7 +5,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
@@ -15,8 +17,8 @@ import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
-import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
 import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparators;
 
 public class FacetTest {
@@ -28,8 +30,8 @@ public class FacetTest {
                     FacetValues.FROM_SCOPED_QUERY,
                     new ArrayList<>(Arrays.asList(FacetValuesOrder.LABEL_ASCENDING, FacetValuesOrder.COUNT_DESCENDING)));
         
-        facet.getCategories().add(new Category("", ""));
-        facet.getCategories().get(0).getValues().addAll(Arrays.asList(
+        
+        facet.getAllValues().addAll(Arrays.asList(
             categoryWithLabel("b", "b", 10),
             categoryWithLabel("a", "a2", 2 ),
             categoryWithLabel("a", "a1", 1 ),
@@ -60,6 +62,9 @@ public class FacetTest {
     }
     
     public void expectOrderOfValues(String msg, Facet facet, String ... values) {
+        Collections.sort(facet.getAllValues(), 
+            new FacetComparatorProvider().getComparatorWhenSortingAllValues(facet.getOrder(), Optional.ofNullable(facet.getCustomComparator())));
+        
         List<String> actualValues = facet.getAllValues()
             .stream()
             .map(CategoryValue::getData)
