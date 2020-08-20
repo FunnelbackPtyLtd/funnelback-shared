@@ -56,27 +56,6 @@ public class ClickHistory extends SessionResult {
     private final Map<String, String> metaData = new HashMap<>();
 
     /**
-     * Builds a {@link ClickHistory} from a {@link Result}
-     * @param r The {@link Result} to build from
-     * @return A {@link ClickHistory}
-     */
-    public static ClickHistory fromResult(Result r, Set<String> metadataClassToRecord) {
-        ClickHistory ch = new ClickHistory();
-        ch.setCollection(r.getCollection());
-        ch.setIndexUrl(URI.create(r.getIndexUrl()));
-        ch.setTitle(r.getTitle());
-        ch.setSummary(r.getSummary());
-        ch.getMetaData().putAll(r.getMetaData()
-                .entrySet()
-                .stream()
-                .filter(e -> metadataClassToRecord.contains(e.getKey()))
-                .collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
-        
-        return ch;
-
-    }
-
-    /**
      * Truncate metadata to maximum size allowed in the database
      * before saving to database
      */

@@ -4,10 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import java.net.URI;
-
-import com.funnelback.publicui.search.model.padre.Result;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -56,17 +52,4 @@ public class CartResult extends SessionResult {
     public String getCollection() {
         return super.getCollection();
     }
-    
-    
-    public static CartResult fromResult(Result r) {
-        CartResult cr = new CartResult();
-        cr.setCollection(r.getCollection());
-        cr.setIndexUrl(URI.create(r.getIndexUrl()));
-        cr.setTitle(r.getTitle());
-        cr.setSummary(r.getSummary());
-        cr.getMetaData().putAll(r.getMetaData());
-        
-        return cr;
-    }
-    
 }
