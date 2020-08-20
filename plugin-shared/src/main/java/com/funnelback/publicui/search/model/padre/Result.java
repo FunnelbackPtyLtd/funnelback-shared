@@ -9,7 +9,6 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.funnelback.publicui.search.model.related.RelatedDocument;
-import com.funnelback.publicui.utils.MultimapToSingleStringMapWrapper;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -175,9 +174,6 @@ public class Result implements ResultType {
      *    may be added here also. Some separator from the definedMetadataSeparators list will be used
      *    for any added metadata if this map lacks sufficient values.</p>
      * 
-     * <p>Note that changes to this multi-map will be reflected in the legacy metaData map, which
-     *    presents all values as a single string instead of pre-split, and changes to the legacy
-     *    map will likewise be reflected here.</p>
      *
      * @see <code>Metadata classes</code>
      * @since 15.16
@@ -185,18 +181,6 @@ public class Result implements ResultType {
     @JsonIgnore
     @XStreamOmitField
     @Getter private final ListMultimap<String, String> listMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
-
-    /**
-     * <p>Map containing the metadata fields for the result.</p>
-     * 
-     * <p>The key is the metadata class name as defined in the metadata mappings.</p>
-     * 
-     * @deprecated  As of release 15.16, replaced by {@link #listMetadata}
-     * 
-     * @see <code>Metadata classes</code>
-     */
-    @Deprecated
-    @Getter private final Map<String, String> metaData = new MultimapToSingleStringMapWrapper(listMetadata, listMetadataSeparators, definedMetadataSeparators);
 
     /**
      * <p>Tags associated with a result.</p>
