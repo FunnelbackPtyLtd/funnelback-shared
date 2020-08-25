@@ -280,12 +280,17 @@ public class SearchQuestion {
      * key can have multiple values also {@link ListMultimap#get(Object)} will never 
      * return null.</p>
      * 
+     * <p> In freemarker to get the first value for a key or empty:
+     * <pre>{@code 
+     * question.inputParameters["query"]?first!
+     * }</pre>
+     * </p>
      * A clone of this map can be made with {@link #getInputParametersCopy()}.
      * 
      * <p>To convert such a map into a query string suitable for URLs,
      * see {@link QueryStringUtils#toString(ListMultimap, boolean)}</p>
      * 
-     * @since 15.26
+     * @since 16.0
      */
     @Getter
     private final ListMultimap<String, String> inputParameters = MultimapBuilder.hashKeys().arrayListValues().build();
@@ -325,7 +330,7 @@ public class SearchQuestion {
      * query string parameters.</p>
      * 
      * <p>To convert such a map into a query string suitable for URLs,
-     * see {@link QueryStringUtils#toString(MultiMap, boolean)}</p> // TODO include it.
+     * see {@link QueryStringUtils#toString(MultiMap, boolean)}</p>
      * 
      * @return Query string parameters
      * 
