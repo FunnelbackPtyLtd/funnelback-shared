@@ -285,6 +285,12 @@ public class SearchQuestion {
      * question.inputParameters["query"]?first!
      * }</pre>
      * </p>
+     * 
+     * <p> In Java to replace all values for a key:
+     * <pre>{@code 
+     * inputParameters.replaceValues("query", List.of("my new query"))
+     * }</pre>
+     * </p>
      * A clone of this map can be made with {@link #getInputParametersCopy()}.
      * 
      * <p>To convert such a map into a query string suitable for URLs,
