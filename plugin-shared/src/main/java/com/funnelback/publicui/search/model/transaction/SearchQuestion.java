@@ -286,10 +286,17 @@ public class SearchQuestion {
      * }</pre>
      * </p>
      * 
+     * <p> In freemarker to test if the key exists and therefore has values:
+     * <pre>{@code 
+     * question.inputParameters?keys?seq_contains("query")
+     * }</pre>
+     * </p>
+     * 
      * <p> In Java to replace all values for a key:
      * <pre>{@code 
      * inputParameters.replaceValues("query", List.of("my new query"))
      * }</pre>
+     * 
      * </p>
      * A clone of this map can be made with {@link #getInputParametersCopy()}.
      * 
