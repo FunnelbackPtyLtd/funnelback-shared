@@ -317,6 +317,7 @@ public class SearchQuestion {
      * 
      * @return 
      */
+    @JsonIgnore
     public ListMultimap<String, String> getInputParametersCopy() {
         return MultimapBuilder.hashKeys().arrayListValues().build(inputParameters);
     }
@@ -349,6 +350,7 @@ public class SearchQuestion {
      * 
      * @since 15.10
      */
+    @JsonIgnore
     public ListMultimap<String, String> getQueryStringMapCopy() {
         return MultimapBuilder.hashKeys().arrayListValues().build(queryStringMap);
     }
