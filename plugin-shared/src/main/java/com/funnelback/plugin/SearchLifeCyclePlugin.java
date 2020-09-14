@@ -1,6 +1,8 @@
 package com.funnelback.plugin;
 
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 
 /**
  * Plugins can implement this to add logic to a search life cycle.
@@ -50,4 +52,19 @@ public interface SearchLifeCyclePlugin {
      * @param transaction
      */
     public default void postProcess(SearchTransaction transaction) {}
+    
+    /**
+     * Runs just after the search life cycle section <code>extraSearchesInputProcessor</code>
+     * which adds configured extra searches from <code>ui.modern.extra_searches</code> to
+     * the main search transaction.
+     * 
+     * This will run on all search transactions just before extra searches are executed.
+     * 
+     * This hook can be used for adding or removing extra searches that would be executed under
+     * the given transaction. This hook does not need to be used for editing the {@link SearchQuestion}
+     * of the extra searches since that can be done with the other hooks.
+     * 
+     * @param transaction
+     */
+    public default void preExtraSearchExecution(SearchTransaction transaction) {}
 }
