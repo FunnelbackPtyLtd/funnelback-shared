@@ -67,6 +67,7 @@
         <version.lombok>1.18.12</version.lombok>
         <version.mockito>2.21.0</version.mockito>
         <version.xstream>1.4.12</version.xstream>
+        <version.javax.servlet>3.1.0</version.javax.servlet>
     </properties>
 
    <dependencyManagement>
@@ -115,6 +116,11 @@
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>${version.jsoup}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${version.javax.servlet}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
