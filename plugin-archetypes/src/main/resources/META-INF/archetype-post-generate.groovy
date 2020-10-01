@@ -1,3 +1,4 @@
+
 import java.nio.file.FileVisitResult
 import java.nio.file.Files
 import java.nio.file.Path
@@ -17,7 +18,6 @@ properties = request.properties
 // Clean up the existing packageName which is probably wrong, I don't know what males it.
 // this is because we can not clean up the artifact ID in archetpe-metadata.xml
 deletePackageFolders(request.packageName);
-
 // The fixed package name.
 packageName = request.packageName.replaceAll("[^A-Za-z0-9\\.]", "");
 
@@ -30,6 +30,7 @@ boolean isFacetsEnabled = Boolean.parseBoolean(properties.get("facets"))
 boolean isSearchLifeCycleEnabled = Boolean.parseBoolean(properties.get("searchLifeCycle"))
 boolean isFilteringEnabled = Boolean.parseBoolean(properties.get("filtering"))
 boolean isJsoupFilteringEnabled = Boolean.parseBoolean(properties.get("jsoup-filtering"))
+boolean isServletFilteringEnabled = Boolean.parseBoolean(properties.get("servlet-filtering"))
 
 
 // Remove non alpha numeric chars
@@ -37,7 +38,6 @@ pluginPrefix = request.artifactId.replaceAll("[^a-zA-Z0-9]"," ")
 
 // make the first letter of each word capitalized for the class name
 pluginClassPrefix = WordUtils.capitalizeFully(pluginPrefix).replaceAll(" ", "")
-
 
 
 tmp = projectPath.resolve("tmp")
@@ -84,6 +84,14 @@ if(isJsoupFilteringEnabled) {
     enableImplementationAndTests(pluginImplementation)
 }
 
+if(isServletFilteringEnabled) {
+    String pluginImplementation = "_ClassNamePrefix_ServletFilterPlugin"
+    String pluginInterface = "com.funnelback.plugin.servlet.filter.ServletFilterHook";
+    enableImplementationAndTests(pluginImplementation)
+    writeToPropertiesFile(pluginImplementation, pluginInterface)
+}
+
+
 writePluginPropsFileTest();
 
 enableSourceImplementation("PluginUtils");
@@ -115,7 +123,7 @@ Files.walkFileTree(projectPath.resolve("src"), new SimpleFileVisitor<Path>() {
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
         def f = file.toFile();
         f.text = correctPackageName(f.text);
-        
+
         return FileVisitResult.CONTINUE
     }
 
@@ -150,9 +158,9 @@ def prepareSourceFiles(String originalClassName, Path target) {
     // Change the internal reference of class name inside file
     def newContent= fileCreated.text
       .replace("_ClassNamePrefix_", pluginClassPrefix);
-      
+
     newContent = correctPackageName(newContent);
-    
+
     fileCreated.text = newContent
 }
 

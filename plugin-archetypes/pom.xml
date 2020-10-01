@@ -67,6 +67,7 @@
                                 <property><name>searchLifeCycle</name><value>true</value></property>
                                 <property><name>filtering</name><value>true</value></property>
                                 <property><name>jsoup-filtering</name><value>true</value></property>
+                                <property><name>servlet-filtering</name><value>true</value></property>
                                 <property><name>groupId</name><value>testGroupId</value></property>
                                 <property><name>artifactId</name><value>testArtifactId</value></property>
                                 <property><name>package</name><value>com.example.test</value></property>

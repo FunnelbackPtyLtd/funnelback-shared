@@ -24,6 +24,7 @@ public class CheckPropertiesFileIsValidHelper {
         knownPluginClasses.add(com.funnelback.plugin.index.IndexingConfigProvider.class);
         knownPluginClasses.add(com.funnelback.plugin.gatherer.PluginGatherer.class);
         knownPluginClasses.add(com.funnelback.plugin.facets.FacetProvider.class);
+        knownPluginClasses.add(com.funnelback.plugin.servlet.filter.ServletFilterHook.class);
         return Collections.unmodifiableList(knownPluginClasses);
     }
     
