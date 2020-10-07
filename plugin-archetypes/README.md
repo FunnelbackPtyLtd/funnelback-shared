@@ -13,12 +13,12 @@ You can enable or disable one or more implementations inside the same plugin usi
 - `indexing` 
 - `facets` 
 - `searchLifeCycle`
+- `search-servlet-filtering`
 
 #### Filtering flags
 
 - `filtering`
 - `jsoup-filtering`
-- `search-servlet-filtering`
 
 ### Instructions
 
