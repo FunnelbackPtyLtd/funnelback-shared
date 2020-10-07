@@ -30,7 +30,7 @@ boolean isFacetsEnabled = Boolean.parseBoolean(properties.get("facets"))
 boolean isSearchLifeCycleEnabled = Boolean.parseBoolean(properties.get("searchLifeCycle"))
 boolean isFilteringEnabled = Boolean.parseBoolean(properties.get("filtering"))
 boolean isJsoupFilteringEnabled = Boolean.parseBoolean(properties.get("jsoup-filtering"))
-boolean isServletFilteringEnabled = Boolean.parseBoolean(properties.get("servlet-filtering"))
+boolean isServletFilteringEnabled = Boolean.parseBoolean(properties.get("search-servlet-filtering"))
 
 
 // Remove non alpha numeric chars
