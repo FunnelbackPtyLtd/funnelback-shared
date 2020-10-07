@@ -13,11 +13,12 @@ You can enable or disable one or more implementations inside the same plugin usi
 - `indexing` 
 - `facets` 
 - `searchLifeCycle`
-- `servlet-filtering`
 
 #### Filtering flags
 
 - `filtering`
+- `jsoup-filtering`
+- `search-servlet-filtering`
 
 ### Instructions
 
@@ -42,7 +43,7 @@ mvn archetype:generate -DarchetypeGroupId=com.funnelback    \
     -Dindexing=true                                         \
     -Dfacets=false                                          \
     -DsearchLifeCycle=false                                 \
-    -Dservlet-filtering=false                                 \
+    -Dsearch-servlet-filtering=false                                 \
     -Dfiltering=false
 ```
 

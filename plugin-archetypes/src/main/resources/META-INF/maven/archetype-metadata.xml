@@ -63,7 +63,7 @@
         <requiredProperty key="jsoup-filtering" >
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
-        <requiredProperty key="servlet-filtering" >
+        <requiredProperty key="search-servlet-filtering" >
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
         <requiredProperty key="groupId" >
