@@ -3,7 +3,7 @@ package __fixed_package__;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.funnelback.plugin.servlet.filter.ServletFilterHook;
+import com.funnelback.plugin.servlet.filter.SearchServletFilterHook;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,10 +15,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class _ClassNamePrefix_ServletFilterPluginTest {
+public class _ClassNamePrefix_SearchServletFilterPluginTest {
 
     @Test
-    public void testSerlvetFilterPlugin_PrefilterTest(){
+    public void testSearchSerlvetFilterPlugin_PrefilterTest(){
 
         // Setup a mock servlet request
         HttpServletRequest mockServerHttpRequest = mock(HttpServletRequest.class);
@@ -30,7 +30,7 @@ public class _ClassNamePrefix_ServletFilterPluginTest {
 
         // Update this to call the method(s) that should be tested. 
         HttpServletRequest updateRequest =
-                (HttpServletRequest) new _ClassNamePrefix_ServletFilterPlugin().preFilterRequest(mockServerHttpRequest);
+                (HttpServletRequest) new _ClassNamePrefix_SearchServletFilterPlugin().preFilterRequest(mockServerHttpRequest);
 
         Assert.assertEquals("Change this assert to check something useful about preFilterRequest",
                 "bar", updateRequest.getHeader("x-foo"));

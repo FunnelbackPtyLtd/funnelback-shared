@@ -12,7 +12,7 @@ import javax.servlet.ServletResponse;
  * One instance of this class will be created per request processed.
  *
  */
-public interface ServletFilterHook {
+public interface SearchServletFilterHook {
 
     /**
      * Allows the ServletFilterHook implementation to perform actions on

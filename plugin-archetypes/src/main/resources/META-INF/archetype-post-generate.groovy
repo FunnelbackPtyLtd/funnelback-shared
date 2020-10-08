@@ -85,8 +85,8 @@ if(isJsoupFilteringEnabled) {
 }
 
 if(isServletFilteringEnabled) {
-    String pluginImplementation = "_ClassNamePrefix_ServletFilterPlugin"
-    String pluginInterface = "com.funnelback.plugin.servlet.filter.ServletFilterHook";
+    String pluginImplementation = "_ClassNamePrefix_SearchServletFilterPlugin"
+    String pluginInterface = "com.funnelback.plugin.servlet.filter.SearchServletFilterHook";
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
