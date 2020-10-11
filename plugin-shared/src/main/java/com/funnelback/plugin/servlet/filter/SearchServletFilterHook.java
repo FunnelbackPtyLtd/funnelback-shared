@@ -1,5 +1,7 @@
 package com.funnelback.plugin.servlet.filter;
 
+import com.funnelback.publicui.search.model.collection.ServiceConfig;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -24,7 +26,7 @@ public interface SearchServletFilterHook {
      * @return By default, the request provided. Potentially an alternate or
      *         wrapped request.
      */
-    default ServletRequest preFilterRequest(ServletRequest request) {
+    default ServletRequest preFilterRequest(ServiceConfig config, ServletRequest request) {
         return request;
     }
 
@@ -47,7 +49,7 @@ public interface SearchServletFilterHook {
      *         further processing on the request (and postFilterResponse will
      *         not be run).
      */
-    default ServletResponse preFilterResponse(ServletRequest request, ServletResponse response) {
+    default ServletResponse preFilterResponse(ServiceConfig config, ServletRequest request, ServletResponse response) {
         return response;
     }
 
@@ -67,6 +69,6 @@ public interface SearchServletFilterHook {
      *            content to the user may have been delayed, making changing of
      *            response headers or even content possible here.
      */
-    default void postFilterResponse(ServletRequest request, ServletResponse response) { }
+    default void postFilterResponse(ServiceConfig config, ServletRequest request, ServletResponse response) { }
 
 }
