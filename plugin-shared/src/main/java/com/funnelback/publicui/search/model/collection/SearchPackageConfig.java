@@ -11,5 +11,5 @@ public interface SearchPackageConfig {
      * 
      * @return The list of component collections for the collection being searched.
      */
-    public List<String> getComponentCollections();
+    public List<String> getMetaComponents();
 }
