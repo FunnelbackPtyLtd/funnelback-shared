@@ -18,13 +18,16 @@ public interface SearchServletFilterHook {
      * Allows the ServletFilterHook implementation to perform actions on
      * the request before it is populated by Funnelback.
      *
+     * @param context under which the request is running. Contains Funnelback specific
+     *                details not available in the Servlet APIs.
      * @param request
      *            Representation of the user's original request. May be wrapped
      *            and returned to affect request processing.
      * @return By default, the request provided. Potentially an alternate or
      *         wrapped request.
      */
-    default ServletRequest preFilterRequest(ServletRequest request) {
+    default ServletRequest preFilterRequest(
+            SearchServletFilterHookContext context, ServletRequest request) {
         return request;
     }
 
@@ -33,6 +36,8 @@ public interface SearchServletFilterHook {
      * the response before it is populated by Funnelback, or prevent further
      * processing (by returning null).
      *
+     * @param context under which the request is running. Contains Funnelback specific
+     *                details not available in the Servlet APIs.
      * @param request
      *            Representation of the user's request (useful in limiting
      *            actions to only certain types of requests).
@@ -47,7 +52,8 @@ public interface SearchServletFilterHook {
      *         further processing on the request (and postFilterResponse will
      *         not be run).
      */
-    default ServletResponse preFilterResponse(ServletRequest request, ServletResponse response) {
+    default ServletResponse preFilterResponse(
+            SearchServletFilterHookContext context, ServletRequest request, ServletResponse response) {
         return response;
     }
 
@@ -55,6 +61,8 @@ public interface SearchServletFilterHook {
      * Allows the ServletFilterHook implementation to perform actions
      * after Funnelback has processed the request.
      *
+     * @param context under which the request is running. Contains Funnelback specific
+     *                details not available in the Servlet APIs.
      * @param request
      *            Representation of the user's original request. Useful as a
      *            reference, but it will be too late to meaningfully modify the
@@ -67,6 +75,7 @@ public interface SearchServletFilterHook {
      *            content to the user may have been delayed, making changing of
      *            response headers or even content possible here.
      */
-    default void postFilterResponse(ServletRequest request, ServletResponse response) { }
+    default void postFilterResponse(
+            SearchServletFilterHookContext context, ServletRequest request, ServletResponse response) { }
 
 }
