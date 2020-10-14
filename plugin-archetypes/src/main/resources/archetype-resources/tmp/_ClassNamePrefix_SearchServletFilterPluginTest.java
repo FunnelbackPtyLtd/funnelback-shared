@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHook;
-import com.funnelback.publicui.search.model.collection.ServiceConfig;
+import com.funnelback.plugin.servlet.filter.SearchServletFilterHookContext;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +30,7 @@ public class _ClassNamePrefix_SearchServletFilterPluginTest {
         // Update this to call the method(s) that should be tested. 
         HttpServletRequest updateRequest =
                 (HttpServletRequest) new _ClassNamePrefix_SearchServletFilterPlugin()
-                        .preFilterRequest(mock(ServiceConfig.class), mockServerHttpRequest);
+                        .preFilterRequest(mock(SearchServletFilterHookContext.class), mockServerHttpRequest);
 
         Assert.assertEquals("Change this assert to check something useful about preFilterRequest",
                 "bar", updateRequest.getHeader("x-foo"));

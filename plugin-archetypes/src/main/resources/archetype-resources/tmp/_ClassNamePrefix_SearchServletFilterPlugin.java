@@ -1,7 +1,7 @@
 package __fixed_package__;
 
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHook;
-import com.funnelback.publicui.search.model.collection.ServiceConfig;
+import com.funnelback.plugin.servlet.filter.SearchServletFilterHookContext;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -14,7 +14,7 @@ public class _ClassNamePrefix_SearchServletFilterPlugin implements SearchServlet
     private static final Logger log = LogManager.getLogger(_ClassNamePrefix_SearchServletFilterPlugin.class);
 
     @Override
-    public ServletRequest preFilterRequest(ServiceConfig config, ServletRequest request) {
+    public ServletRequest preFilterRequest(SearchServletFilterHookContext context, ServletRequest request) {
         log.trace(
                 "Modify the servlet request; ServletFilterHook has other places " +
                         "where the request and response can be modified.");
