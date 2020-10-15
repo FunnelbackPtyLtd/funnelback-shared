@@ -155,10 +155,6 @@ public class Result implements ResultType {
      *
      * <p>The values are each mapped metadata value, split based on any defined separators.</p>
      * 
-     * <p>Note that changes to this multi-map will be reflected in the legacy metaData map, which
-     *    presents all values as a single string instead of pre-split, and changes to the legacy
-     *    map will likewise be reflected here.</p>
-     * 
      * @see <code>Metadata classes</code>
      * @since 15.16
      */
