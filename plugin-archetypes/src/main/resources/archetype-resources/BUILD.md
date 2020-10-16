@@ -7,7 +7,7 @@ mvn clean install
 That will build, run the tests and assemble the plugin into:
 
 ```
-target/version
+target/<version>
 ```
 
 ## Installing
@@ -41,5 +41,5 @@ That can be installed into Funnelback
 e.g.
 
 ```
-cp -a target/version /opt/funnelback/share/plugins/<plugin-name>/
+cp -a target/<version> /opt/funnelback/share/plugins/<plugin-name>/
 ```
