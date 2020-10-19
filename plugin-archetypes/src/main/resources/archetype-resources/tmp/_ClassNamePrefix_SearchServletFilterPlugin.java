@@ -16,7 +16,7 @@ public class _ClassNamePrefix_SearchServletFilterPlugin implements SearchServlet
     @Override
     public ServletRequest preFilterRequest(SearchServletFilterHookContext context, ServletRequest request) {
         log.trace(
-                "Modify the servlet request; ServletFilterHook has other places " +
+                "Modify the servlet request; see SearchServletFilterHook for other places " +
                         "where the request and response can be modified.");
         return request;
     }
