@@ -220,20 +220,6 @@ public class Facet {
         /** Count of occurrences for this value */
         @Getter @Setter private Integer count;
         
-//        /**
-//         * Query String parameters to use to select this value
-//         * (Ex: <code>f.Location|X=Sydney</code>).
-//         **/
-//        @Getter @Setter private String queryStringParam;
-        
-//        /**
-//         * Constraint used to get this value. Can be a metadata class
-//         * or a GScope number, depending of the facet type.
-//         * 
-//         * @since 11.2
-//         */
-//        @Getter @Setter private String constraint;
-        
         /**
          * Indicates if this value is currently selected
          * 
