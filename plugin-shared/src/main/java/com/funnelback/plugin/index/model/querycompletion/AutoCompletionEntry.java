@@ -8,7 +8,10 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Singular;
 import lombok.ToString;
+
+import java.util.Set;
 
 /**
  * Represents an entry to be provided as additional data for auto-completion.
@@ -57,9 +60,14 @@ public class AutoCompletionEntry {
      * matching is performance case-insensitively.
      *
      * For example if this column contains "Australia", this suggestion will trigger if a user enters "aus".
+     *
+     * Multiple triggers for a single entry may be declared, which will behave identically to
+     * defining many AutoCompletionEntry records which differ only on the trigger field, however
+     * future versions of Funnelback may offer improved performance in this case.
      */
+    @Singular
     @NonNull
-    private final String trigger;
+    private final Set<String> triggers;
 
     /**
      * Used to rank suggestions which matches the partial query, in case multiple suggestion matches a given partial query.
