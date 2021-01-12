@@ -85,7 +85,6 @@ public class SearchQuestion {
      * The profile to search with, defaulting to "_default".
      */
     @NonNull
-    @javax.validation.constraints.Pattern(regexp="[\\w-_]+")
     @Getter @Setter private String profile = "_default";
 
     /**
@@ -121,8 +120,7 @@ public class SearchQuestion {
     /**
      * Display form (template)
      */
-    @NonNull
-    @javax.validation.constraints.Pattern(regexp="[\\w-_]+")        
+    @NonNull    
     @Getter @Setter private String form = "simple";
     
     /**
