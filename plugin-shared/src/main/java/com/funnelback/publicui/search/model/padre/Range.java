@@ -9,7 +9,7 @@ import lombok.Setter;
  * A range of values (used for numeric metadata ranges)
  * 
  * @since 11.0
- * @see <code>best_bets.cfg</code>
+ *
  */
 @RequiredArgsConstructor
 @AllArgsConstructor
