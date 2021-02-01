@@ -90,9 +90,6 @@ public class ResultPacket {
     /** Spelling suggestions. */
     @Getter @Setter private Spell spell;
     
-    /** List of best bets matching the query. */
-    @Getter final private List<BestBet> bestBets = new ArrayList<BestBet>();
-    
     /** List of results. */
     @Getter final private List<Result> results = new ArrayList<Result>();
     
