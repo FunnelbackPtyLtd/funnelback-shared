@@ -81,7 +81,7 @@ public interface IndexingConfigProvider {
      * A locator is used to find the metadata within the source e.g. XML or HTML_OR_HTTP_HEADERS.
      * 
      * To map HTML metadata "author" and "publisher" to metadata class "a"
-     * and map XML path /root/secure to 'SECURITY' field 'S':
+     * and map XPath /root/secure to 'SECURITY' field 'S':
      * 
      * <pre>{@code 
      * consumer.map("a", MetadataType.TEXT_INDEXED_AS_DOCUMENT_CONTENT, MetadataSourceType.HTML_OR_HTTP_HEADERS, "author");
