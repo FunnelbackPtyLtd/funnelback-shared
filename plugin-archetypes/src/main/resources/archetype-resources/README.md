@@ -27,4 +27,25 @@ plugin.${artifactId}.other-config-setting=something else.
 
 which will result in....
 
+## Upgrade Notes
 
+Provide guidance on how to upgrade between versions, especially if some breakable changes have been introduced.
+Recommended structure:
+
+### Upgrading to version x.y.z
+Instructions how to upgrade from previous to next version of the plugin
+
+## Changelog
+
+Provide log what has changed in each version of the plugin.
+Recommended structure (see https://keepachangelog.com/en/1.0.0/):
+
+### [x.y.z]
+#### Added
+- new configuration key
+
+#### Changed
+- Changed behaviour of x to y
+
+#### Fixed
+- Some bug
