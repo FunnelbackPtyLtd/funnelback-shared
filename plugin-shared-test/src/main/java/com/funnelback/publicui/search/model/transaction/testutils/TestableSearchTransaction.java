@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.transaction.testutils;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -45,6 +46,12 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public class TestableSearchTransaction extends SearchTransaction {
 
+    public TestableSearchTransaction() {
+        super();
+        // Set the profile config to empty by default, since a profile config will always be defined in practice
+        SearchQuestionTestHelper.setCurrentProfileConfig(new HashMap<>(), getQuestion());
+    }
+    
     /**
      * Adds a result to the list of results in the search transaction.
      * 
