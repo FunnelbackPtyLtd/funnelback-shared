@@ -71,4 +71,11 @@ public class TestableSearchTransactionTest {
         
         Assert.assertEquals("b", transaction.getCustomData().get("a"));
     }
+    
+    @Test
+    public void accessDefaultConfigTest() {
+        SearchTransaction transaction = new TestableSearchTransaction();
+        
+        Assert.assertNull(transaction.getQuestion().getCurrentProfileConfig().get("hello"));
+    }
 }
