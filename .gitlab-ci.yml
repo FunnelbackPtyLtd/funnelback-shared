@@ -55,5 +55,5 @@ release:
                 - "*/target/failsafe-reports/TEST-*.xml"
 
     tags:
-        - docker
-        - shared
+        - purpose/general
+        - access/squiz-network
