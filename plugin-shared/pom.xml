@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.funnelback</groupId>
         <artifactId>funnelback-shared-parent</artifactId>
-        <version>16.3.2120-SNAPSHOT</version>
+        <version>16.3.2121-SNAPSHOT</version>
     </parent>
 
     <description>Shared interfaces and other supporting components for building plugins for the Funnelback Enterprise Search Engine</description>
