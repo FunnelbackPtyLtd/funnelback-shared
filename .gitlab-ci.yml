@@ -3,6 +3,7 @@ variables:
   # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
   # Lifted from https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Maven.gitlab-ci.yml
   MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+  FUNNELBACK_SHARED_VERSION: LATEST
 
 cache:
     key: "$CI_JOB_NAME"
@@ -11,6 +12,7 @@ cache:
 
 stages:
   - build
+  - deploy
   - release
 
 build:
@@ -19,6 +21,11 @@ build:
 
     script:
         - mvn -B -U clean install
+        # https://stackoverflow.com/questions/52188457/gitlab-ci-get-pom-version-in-pipeline
+        # https://stackoverflow.com/questions/52928915/cant-share-global-variable-value-between-jobs-in-gitlab-ci-yaml-file
+        - FUNNELBACK_SHARED_VERSION=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*')
+        - echo $FUNNELBACK_SHARED_VERSION
+        - echo "FUNNELBACK_SHARED_VERSION=$FUNNELBACK_SHARED_VERSION" >> build.env
         - rm -rf .m2/repository/com/funnelback/
 
     artifacts:
@@ -29,10 +36,20 @@ build:
             junit:
                 - "*/target/surefire-reports/TEST-*.xml"
                 - "*/target/failsafe-reports/TEST-*.xml"
+            dotenv: build.env
 
     tags:
         - purpose/general
         - access/squiz-network
+
+staging:
+    stage: deploy
+    trigger:
+        project: funnelback-rnd/funnelback-plugins-mono-repo
+        branch: master
+    needs:
+        - job: build
+          artifacts: true
 
 release:
     stage: release
