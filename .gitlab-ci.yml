@@ -21,9 +21,7 @@ build:
 
     script:
         - mvn -B -U clean install
-        # https://stackoverflow.com/questions/52188457/gitlab-ci-get-pom-version-in-pipeline
-        # https://stackoverflow.com/questions/52928915/cant-share-global-variable-value-between-jobs-in-gitlab-ci-yaml-file
-        - FUNNELBACK_SHARED_VERSION=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*')
+        - FUNNELBACK_SHARED_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.1:evaluate -Dexpression=project.version -q -DforceStdout)
         - echo $FUNNELBACK_SHARED_VERSION
         - echo "FUNNELBACK_SHARED_VERSION=$FUNNELBACK_SHARED_VERSION" >> build.env
         - rm -rf .m2/repository/com/funnelback/
