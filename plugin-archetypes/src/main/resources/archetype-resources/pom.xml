@@ -10,19 +10,19 @@
         <version.log4j2>2.6.2</version.log4j2>
         <version.junit>4.12</version.junit>
         <version.mockito>2.21.0</version.mockito>
-        <FUNNELBACK_SHARED_VERSION>${archetypeVersion}</FUNNELBACK_SHARED_VERSION>
+        <version.funnelback-shared>${archetypeVersion}</version.funnelback-shared>
     </properties>
     <dependencies>
         <dependency>
             <artifactId>funnelback-shared</artifactId>
             <groupId>com.funnelback</groupId>
-            <version>${FUNNELBACK_SHARED_VERSION}</version>
+            <version>${version.funnelback-shared}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <artifactId>funnelback-shared-test</artifactId>
             <groupId>com.funnelback</groupId>
-            <version>${FUNNELBACK_SHARED_VERSION}</version>
+            <version>${version.funnelback-shared}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
