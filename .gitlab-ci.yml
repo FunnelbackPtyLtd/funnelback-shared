@@ -20,13 +20,10 @@ build:
 
     script:
         - mvn -B -U clean install
-        # we need to read the funnelback-shared version from the pom.xml and pass it to the downstream funnelback-plugins-mono-repo pipeline
-        # following command is to read the funnelback-shared-version from the pom.xml. This has been taken from https://stackoverflow.com/a/3545363/2473756
-        - FUNNELBACK_SHARED_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.1:evaluate -Dexpression=project.version -q -DforceStdout)
-        - echo $FUNNELBACK_SHARED_VERSION
+        - echo $CI_COMMIT_BRANCH
         - rm -rf .m2/repository/com/funnelback/
         # use curl to trigger downstream pipeline (funnelback-rnd/funnelback-plugins-mono-repo)
-        - "curl -X POST -F token=$CI_JOB_TOKEN -F ref=master -F variables[FUNNELBACK_SHARED_VERSION]=$FUNNELBACK_SHARED_VERSION https://gitlab.squiz.net/api/v4/projects/9857/trigger/pipeline"
+        - "curl -X POST -F token=$CI_JOB_TOKEN -F ref=master -F variables[FUNNELBACK_SHARED_BRANCH]=$CI_COMMIT_BRANCH https://gitlab.squiz.net/api/v4/projects/9857/trigger/pipeline"
 
     artifacts:
         expire_in: 1 hr
