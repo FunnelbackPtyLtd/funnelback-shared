@@ -24,8 +24,9 @@ build:
         # following command is to read the funnelback-shared-version from the pom.xml. This has been taken from https://stackoverflow.com/a/3545363/2473756
         - FUNNELBACK_SHARED_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.1:evaluate -Dexpression=project.version -q -DforceStdout)
         - echo $FUNNELBACK_SHARED_VERSION
-        - echo "FUNNELBACK_SHARED_VERSION=$FUNNELBACK_SHARED_VERSION" >> build.env
         - rm -rf .m2/repository/com/funnelback/
+        # use curl to trigger downstream pipeline (funnelback-rnd/funnelback-plugins-mono-repo)
+        - "curl -X POST -F token=$CI_JOB_TOKEN -F ref=master -F variables[FUNNELBACK_SHARED_VERSION]=$FUNNELBACK_SHARED_VERSION https://gitlab.squiz.net/api/v4/projects/9857/trigger/pipeline"
 
     artifacts:
         expire_in: 1 hr
@@ -35,20 +36,10 @@ build:
             junit:
                 - "*/target/surefire-reports/TEST-*.xml"
                 - "*/target/failsafe-reports/TEST-*.xml"
-            dotenv: build.env
 
     tags:
         - purpose/general
         - access/squiz-network
-
-staging:
-    stage: deploy
-    trigger:
-        project: funnelback-rnd/funnelback-plugins-mono-repo
-        branch: master
-    needs:
-        - job: build
-          artifacts: true
 
 release:
     stage: release
