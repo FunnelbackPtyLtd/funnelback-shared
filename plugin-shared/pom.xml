@@ -116,6 +116,16 @@
                     <failOnError>true</failOnError>
                     <docfilessubdirs>true</docfilessubdirs>
                     <failOnError>false</failOnError>
+                    <!-- https://stackoverflow.com/a/57284322 -->
+                    <bottom>
+                    <![CDATA[
+                        <script>
+                        if (typeof useModuleDirectories !== 'undefined') {
+                          useModuleDirectories = false;
+                        }
+                        </script>
+                    ]]>
+                    </bottom>
                     <additionalparam>--allow-script-in-comments</additionalparam>
                 </configuration>
                 <executions>
