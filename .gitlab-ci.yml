@@ -22,8 +22,6 @@ build:
         - mvn -B -U clean install
         - echo $CI_COMMIT_BRANCH
         - rm -rf .m2/repository/com/funnelback/
-        # use curl to trigger downstream pipeline (funnelback-rnd/funnelback-plugins-mono-repo)
-        - "curl -X POST -F token=$CI_JOB_TOKEN -F ref=master -F variables[FUNNELBACK_SHARED_BRANCH]=$CI_COMMIT_BRANCH https://gitlab.squiz.net/api/v4/projects/9857/trigger/pipeline"
 
     artifacts:
         expire_in: 1 hr
@@ -37,6 +35,15 @@ build:
     tags:
         - purpose/general
         - access/squiz-network
+
+Trigger plugins mono repo:
+    stage: deploy
+    variables:
+        FUNNELBACK_SHARED_BRANCH: $CI_COMMIT_BRANCH
+    trigger:
+        project: funnelback-rnd/funnelback-plugins-mono-repo
+        branch: master
+        strategy: depend
 
 release:
     stage: release
