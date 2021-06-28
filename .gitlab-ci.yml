@@ -54,8 +54,7 @@ release:
     before_script:
         - ./pre-release.sh
     script:
-        - mvn -B -U -P central-release clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
-        - rm -rf .m2/repository/com/funnelback/
+        - echo "should fail"
 
     artifacts:
         expire_in: 1 hr
