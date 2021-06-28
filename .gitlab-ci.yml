@@ -51,7 +51,8 @@ release:
     only:
         - /^release-.*$/
     image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
-
+    before_script:
+        - ./pre-release.sh
     script:
         - mvn -B -U -P central-release clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
         - rm -rf .m2/repository/com/funnelback/
