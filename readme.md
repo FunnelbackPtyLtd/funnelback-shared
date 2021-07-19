@@ -38,3 +38,5 @@ to reflect the intended 'next' version by running something like...
     mvn versions:set -DnewVersion=1.2.4-SNAPSHOT
 
 ...and getting that change merged into master.
+
+After releasing the new version to maven central, change the version back to snapshot.
