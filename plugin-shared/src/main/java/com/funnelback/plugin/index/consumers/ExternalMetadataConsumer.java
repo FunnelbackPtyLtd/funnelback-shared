@@ -21,10 +21,13 @@ public interface ExternalMetadataConsumer {
      * The format is defined in:
      * https://docs.squiz.net/funnelback/docs/latest/build/data-sources/indexer-configuration/metadata/external-metadata.html
      * 
+     * Deprecated, use the addMetadataToPrefix() method since this format is ill-defined,
+     * and invalid lines may not always be detected you expect them to be.
      * 
      * @param externalMetadataLine a single external metadata line.
      * @throws IllegalArgumentException if the externalMetadataLine is invalid.
      */
+    @Deprecated
     public void addExternalMetadataLine(String externalMetadataLine)
         throws IllegalArgumentException;
 }
