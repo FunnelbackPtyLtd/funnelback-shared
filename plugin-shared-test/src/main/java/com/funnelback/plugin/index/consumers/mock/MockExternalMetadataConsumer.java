@@ -44,9 +44,16 @@ public class MockExternalMetadataConsumer implements ExternalMetadataConsumer {
     
     @Getter private final List<MockExternalMetadataInvocation> invocations = new ArrayList<>();
     
+    @Getter private final List<String> addExternalMetadataLineInvocations = new ArrayList<>();
+    
     @Override
     public synchronized void addMetadataToPrefix(String URL, ListMultimap<String, String> metadata) throws IllegalArgumentException {
         this.invocations.add(new MockExternalMetadataInvocation(URL, metadata));
+    }
+
+    @Override
+    public synchronized void addExternalMetadataLine(String externalMetadataLine) throws IllegalArgumentException {
+        this.addExternalMetadataLineInvocations.add(externalMetadataLine);
     }
 
 }
