@@ -14,4 +14,17 @@ public interface ExternalMetadataConsumer {
      */
     public void addMetadataToPrefix(String URL, ListMultimap<String, String> metadata)
         throws IllegalArgumentException;
+    
+    /**
+     * Adds an external metadata mapping line in the external-metadata.cfg format.
+     * 
+     * The format is defined in:
+     * https://docs.squiz.net/funnelback/docs/latest/build/data-sources/indexer-configuration/metadata/external-metadata.html
+     * 
+     * 
+     * @param externalMetadataLine a single external metadata line.
+     * @throws IllegalArgumentException if the externalMetadataLine is invalid.
+     */
+    public void addExternalMetadataLine(String externalMetadataLine)
+        throws IllegalArgumentException;
 }
