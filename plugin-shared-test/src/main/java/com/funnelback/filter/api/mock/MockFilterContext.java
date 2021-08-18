@@ -1,5 +1,6 @@
 package com.funnelback.filter.api.mock;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -44,7 +45,11 @@ public class MockFilterContext implements FilterContext {
     public Optional<String> getConfigValue(String key) {
         return Optional.ofNullable(config.get(key));
     }
-    
+
+    @Override public File getCollectionConfigFile(String filename) {
+        throw new RuntimeException("Not mocked.");
+    }
+
     public void setConfigValue(String key, String value) {
         config.put(key, value);
     }

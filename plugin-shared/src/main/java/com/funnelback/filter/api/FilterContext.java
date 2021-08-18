@@ -1,5 +1,6 @@
 package com.funnelback.filter.api;
 
+import java.io.File;
 import java.util.Optional;
 import java.util.Set;
 
@@ -50,4 +51,14 @@ public interface FilterContext {
      * @return
      */
     public DocumentTypeFactory getDocumentTypeFactory();
+
+    /**
+     * <p>Provides access to configuration files inside the collection configuration folder.</p>
+     *
+     * <p>This is useful to access custom collection-level configuration files</p>
+     *
+     * @param filename Name of the file to access
+     * @return A {@link File} path pointing to the desired file inside the collection configuration folder
+     */
+    public File getCollectionConfigFile(String filename);
 }
