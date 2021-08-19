@@ -1,20 +1,21 @@
 package com.funnelback.filter.api.mock;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+
 import java.util.Optional;
-import java.util.Set;
+
+import java.io.File;
 
 import com.funnelback.filter.api.DocumentTypeFactory;
 import com.funnelback.filter.api.FilterContext;
 import com.funnelback.filter.api.FilterDocumentFactory;
+import com.funnelback.mock.helpers.MapBackedConfig;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.With;
+import lombok.experimental.Delegate;
 
 /**
  * A Filter context suitable for testing.
@@ -25,7 +26,7 @@ public class MockFilterContext implements FilterContext {
 
     @Getter @Setter private String collectionName;
     
-    private final Map<String, String> config;
+    @Delegate private final MapBackedConfig mapBackedConfig = new MapBackedConfig();
     
     @Getter @Setter @With private FilterDocumentFactory filterDocumentFactory = new MockFilterDocumentFactory();
     
@@ -33,17 +34,11 @@ public class MockFilterContext implements FilterContext {
     
     public MockFilterContext() {
         collectionName = "dummy-filtering-mock-collection-"+System.currentTimeMillis();
-        config = new HashMap<>();
     }
-
-    @Override
-    public Set<String> getConfigKeys() {
-        return config.keySet();
-    }
-
+    
     @Override
     public Optional<String> getConfigValue(String key) {
-        return Optional.ofNullable(config.get(key));
+        return Optional.ofNullable(mapBackedConfig.getConfigSetting(key));
     }
 
     @Override public File getCollectionConfigFile(String filename) {
@@ -51,7 +46,7 @@ public class MockFilterContext implements FilterContext {
     }
 
     public void setConfigValue(String key, String value) {
-        config.put(key, value);
+        mapBackedConfig.setConfigSetting(key, value);
     }
     
     public static MockFilterContext getEmptyContext() {

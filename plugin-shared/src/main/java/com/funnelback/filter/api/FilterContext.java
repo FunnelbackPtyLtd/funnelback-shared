@@ -1,8 +1,11 @@
 package com.funnelback.filter.api;
 
-import java.io.File;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import java.io.File;
 
 /**
  * An immutable context supplied to the filters.
@@ -35,6 +38,45 @@ public interface FilterContext {
      * otherwise returns empty.
      */
     public Optional<String> getConfigValue(String key);
+    
+    /**
+     * Provides a list of config setting keys which have some prefix.
+     * 
+     * This is useful in cases where you need to process some set of config
+     * values (e.g. one setting per data source).
+     * 
+     * Example:
+     * A prefix of 'myfilter' will match 'myfilter.foo' and 'myfilter.foo.bar'.
+     */
+    Set<String> getConfigKeysWithPrefix(String prefix);
+
+    /**
+     * Provides config settings which match the given key pattern.
+     * 
+     * The pattern is the same pattern used for configuration permissions.
+     * 
+     * Some examples are:
+     * pattern 'a.*' matches 'a.foo' but does not match 'a.foo.bar'
+     * pattern 'a.*.*' matches 'a.foo.bar' but does not match 'a.foo'
+     * 
+     * The key within the returned map is the full key and the value is a 
+     * list of the parameters for the key. For example if config has:
+     * 'a.foo.bar' and 'a.b.c' and the pattern is 'a.*.*' the resulting map 
+     * will contain:
+     * 'a.foo.bar': ["foo", "bar"]
+     * 'a.b.c': ["a", "b"]
+     * 
+     * Note that if the config key contains '.' or '\' it will be escaped as 
+     * it is in config. For example if config contains 'a.c:\\bar\.jpg' then
+     * for the pattern 'a.*' the resulting map would contain:
+     * 'a.c:\\bar\.jpg': ["c:\bar.jpg"]
+     * The key remains escaped however the paramaters in the list are left unescaped.
+     * 
+     * @param pattern
+     * @return a map of all matching config keys where the key in the map is the config key
+     * and the value is a list of all parameters.
+     */
+    Map<String, List<String>> getConfigKeysMatchingPattern(String pattern);
     
     /**
      * Provides a DocumentTypeConverter, used to convert between filterable document types.
