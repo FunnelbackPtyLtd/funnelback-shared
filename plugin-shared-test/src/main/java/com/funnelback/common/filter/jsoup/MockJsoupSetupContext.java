@@ -4,6 +4,8 @@ import java.io.File;
 
 import com.funnelback.mock.helpers.ConfigSettingMock;
 import com.funnelback.mock.helpers.MapBackedConfig;
+import com.funnelback.mock.helpers.MapBackedPluginConfigurationFiles;
+import com.funnelback.mock.helpers.PluginConfigurationFileSettingMock;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,13 +27,15 @@ import lombok.experimental.Delegate;
  * 
  *
  */
-public class MockJsoupSetupContext implements SetupContext, ConfigSettingMock {
+public class MockJsoupSetupContext implements SetupContext, ConfigSettingMock, PluginConfigurationFileSettingMock {
 
     @Getter @Setter private File searchHome;
 
     @Getter @Setter private String collectionName;
 
     @Delegate private final MapBackedConfig mapBackedConfig = new MapBackedConfig();
+    
+    @Delegate private final MapBackedPluginConfigurationFiles mapBackedPluginConfigurationFiles = new MapBackedPluginConfigurationFiles();
 
     @Override
     public File getCollectionConfigFile(String filename) {

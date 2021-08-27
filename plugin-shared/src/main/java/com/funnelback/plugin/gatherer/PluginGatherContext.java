@@ -2,6 +2,7 @@ package com.funnelback.plugin.gatherer;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import java.io.File;
@@ -60,4 +61,29 @@ public interface PluginGatherContext {
      * and the value is a list of all parameters.
      */
     public Map<String, List<String>> getConfigKeysMatchingPattern(String pattern);
+    
+    /**
+     * Reads a configuration file for the currently running plugin.
+     * 
+     * The configuration file read is for the currently running plugin and 
+     * either the data source or search package the plugin is currently 
+     * running on. When a plugin is run during a search, this will be the 
+     * results page (profile) the search is running on.  
+     * 
+     * Plugins can not read the configuration files for other plugins.
+     * 
+     * @param filename the name of the configuration file to read.
+     * @return empty if the file doesn't exist, otherwise the contents of the file.
+     */
+    public Optional<byte[]> pluginConfigurationFileAsBytes(String filename);
+
+    /**
+     * Reads a configuration file for the currently running plugin as a UTF-8 String.
+     * 
+     * See: {@link #pluginConfigurationFileAsBytes(String)}
+     * 
+     * @param filename the name of the configuration file to read.
+     * @return empty if the file doesn't exist, otherwise the contents of the file.
+     */
+    public Optional<String> pluginConfigurationFile(String filename);
 }

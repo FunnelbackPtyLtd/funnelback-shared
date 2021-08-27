@@ -52,4 +52,28 @@ public class MockJsoupSetupContextTest {
         Assert.assertEquals(List.of("b"), matchingPattern.get("a.b.c"));
         Assert.assertEquals(List.of("d"), matchingPattern.get("a.d.c"));
     }
+    
+    @Test
+    public void setAndReadPluginConfigurationFileAsString() {
+        MockJsoupSetupContext ctx = new MockJsoupSetupContext();
+        ctx.setPlugingConfigurationFileContent("foo.cfg", "hello");
+        
+        Assert.assertEquals("hello", ctx.pluginConfigurationFile("foo.cfg").get());
+    }
+    
+    @Test
+    public void setAndReadPluginConfigurationFileAsBytes() {
+        MockJsoupSetupContext ctx = new MockJsoupSetupContext();
+        ctx.setPlugingConfigurationFileContentAsBytes("foo.cfg", "hello".getBytes());
+        
+        Assert.assertEquals("hello", new String(ctx.pluginConfigurationFileAsBytes("foo.cfg").get()));
+        Assert.assertEquals("hello", ctx.pluginConfigurationFile("foo.cfg").get());
+    }
+    
+    @Test
+    public void readMissingPluginConfigurationFile() {
+        MockJsoupSetupContext ctx = new MockJsoupSetupContext();
+        Assert.assertFalse(ctx.pluginConfigurationFile("foo.cfg").isPresent());
+        Assert.assertFalse(ctx.pluginConfigurationFileAsBytes("foo.cfg").isPresent());
+    }
 }
