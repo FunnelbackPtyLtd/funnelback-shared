@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import com.funnelback.mock.helpers.ConfigSettingMock;
 import com.funnelback.mock.helpers.MapBackedConfig;
+import com.funnelback.mock.helpers.MapBackedPluginConfigurationFiles;
+import com.funnelback.mock.helpers.PluginConfigurationFileSettingMock;
 import com.funnelback.plugin.index.IndexConfigProviderContext;
 import com.funnelback.plugin.index.IndexingConfigProvider;
 
@@ -30,7 +32,9 @@ import lombok.experimental.Delegate;
  * }</pre>
  *
  */
-public class MockIndexConfigProviderContext implements IndexConfigProviderContext, ConfigSettingMock {
+public class MockIndexConfigProviderContext implements IndexConfigProviderContext, 
+                                                        ConfigSettingMock, 
+                                                        PluginConfigurationFileSettingMock {
 
     @Getter @Setter private File searchHome;
 
@@ -42,6 +46,8 @@ public class MockIndexConfigProviderContext implements IndexConfigProviderContex
         
     
     @Delegate private final MapBackedConfig mapBackedConfig = new MapBackedConfig();
+    
+    @Delegate private final MapBackedPluginConfigurationFiles mapBackedPluginConfigurationFiles = new MapBackedPluginConfigurationFiles();
 
     @Override
     public Optional<byte[]> readCollectionConfigFile(String... pathsBelowConf) throws IOException {

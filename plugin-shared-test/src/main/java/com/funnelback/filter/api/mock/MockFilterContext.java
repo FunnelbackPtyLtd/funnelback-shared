@@ -9,6 +9,8 @@ import com.funnelback.filter.api.DocumentTypeFactory;
 import com.funnelback.filter.api.FilterContext;
 import com.funnelback.filter.api.FilterDocumentFactory;
 import com.funnelback.mock.helpers.MapBackedConfig;
+import com.funnelback.mock.helpers.MapBackedPluginConfigurationFiles;
+import com.funnelback.mock.helpers.PluginConfigurationFileSettingMock;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,11 +24,14 @@ import lombok.experimental.Delegate;
  *
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MockFilterContext implements FilterContext {
+public class MockFilterContext implements FilterContext,
+                                                PluginConfigurationFileSettingMock {
 
     @Getter @Setter private String collectionName;
     
     @Delegate private final MapBackedConfig mapBackedConfig = new MapBackedConfig();
+    
+    @Delegate private final MapBackedPluginConfigurationFiles mapBackedPluginConfigurationFiles = new MapBackedPluginConfigurationFiles();
     
     @Getter @Setter @With private FilterDocumentFactory filterDocumentFactory = new MockFilterDocumentFactory();
     
