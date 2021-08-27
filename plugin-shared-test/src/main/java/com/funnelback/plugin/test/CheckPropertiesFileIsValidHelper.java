@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
+import com.funnelback.plugin.SearchLifeCyclePlugin;
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHook;
 import org.junit.Assert;
 
@@ -21,7 +22,7 @@ public class CheckPropertiesFileIsValidHelper {
     
     private static List<Class<?>> knownPluginClasses() {
         List<Class<?>> knownPluginClasses = new ArrayList<>();
-        knownPluginClasses.add(com.funnelback.plugin.SearchLifeCyclePlugin.class);
+        knownPluginClasses.add(SearchLifeCyclePlugin.class);
         knownPluginClasses.add(com.funnelback.plugin.index.IndexingConfigProvider.class);
         knownPluginClasses.add(com.funnelback.plugin.gatherer.PluginGatherer.class);
         knownPluginClasses.add(com.funnelback.plugin.facets.FacetProvider.class);
