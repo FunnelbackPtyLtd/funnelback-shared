@@ -1,10 +1,10 @@
 package com.funnelback.mock.helpers;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class MapBackedPluginConfigurationFiles {
     
