@@ -5,7 +5,7 @@
     <name>Funnelback Shared Parent</name>
     <groupId>com.funnelback</groupId>
     <artifactId>funnelback-shared-parent</artifactId>
-    <version>16.6.0-SNAPSHOT</version>
+    <version>16.6.0</version>
 
     <description>Parent project for the shared plugin interfaces used in the Funnelback Enterprise Search Engine</description>
     <url>https://github.com/FunnelbackPtyLtd/funnelback-shared</url>
