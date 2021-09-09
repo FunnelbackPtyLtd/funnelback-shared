@@ -15,7 +15,7 @@ public class _ClassNamePrefix_StringFilterTest {
 
     @Test
     public void testCanFilter(){
-        FilterContext mockContext = MockFilterContext.getEmptyContext();
+        MockFilterContext mockContext = MockFilterContext.getEmptyContext();
         StringDocument doc = MockDocuments.mockStringDoc("http://foo.com/",
                                             DocumentType.MIME_HTML_TEXT, 
                                             "hello");
@@ -29,7 +29,7 @@ public class _ClassNamePrefix_StringFilterTest {
     
     @Test
     public void testFilter(){
-        FilterContext mockContext = MockFilterContext.getEmptyContext();
+        MockFilterContext mockContext = MockFilterContext.getEmptyContext();
         StringDocument doc = MockDocuments.mockStringDoc("http://foo.com/", DocumentType.MIME_HTML_TEXT, "hello");
         
         _ClassNamePrefix_StringFilter underTest = new _ClassNamePrefix_StringFilter();
