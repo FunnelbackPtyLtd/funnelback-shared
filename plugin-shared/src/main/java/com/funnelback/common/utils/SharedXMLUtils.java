@@ -18,8 +18,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * XML utility routines.
- * @author msheppard@funnelback.com
+ * Shared XML Utilities that can help parse documents and transform them in a safe
+ * way that aims to avoid common OWASP vulnerabilities.
  */
 @Log4j2
 public class SharedXMLUtils {
@@ -33,11 +33,13 @@ public class SharedXMLUtils {
     private static TransformerFactory tf = TransformerFactory.newInstance();
 
     /**
-     * Note that:
-     * An object of this class may not be used in multiple threads
-     * hence do not cache the result.
+     * Get a transformer that can be used for transforming a Document back out into an output stream.
+     * Note that the returned Transformer is not threadsafe. What that means is that it should not be used in
+     * multiple threads. Note: The filter framework is inherintly called by multiple crawler threads, so when using it
+     * for a plugin should call this method repeatedly and use a fresh transformer each time rather than
+     * getting one in the constructor for re-use.
      * @param encoding
-     * @return
+     * @return A new transformer instance.
      */
     public static Transformer getTransformer(String encoding) {
         Transformer transformer;
@@ -54,9 +56,12 @@ public class SharedXMLUtils {
     }
 
     /**
+     * Parse a Document from an inputSource.
      *
-     * @param is
-     * @return
+     * Internally uses a custom documentBuilder instance with many security settings enabled.
+     *
+     * @param inputSource - e.g. new InputSource(bufferedReader)
+     * @return Document - for use with a transformer, or xpath evaluation.
      * @throws IllegalArgumentException when the XML from the input source is bad.
      * @throws RuntimeException when somethnig is wrong with the parser itself.
      */
@@ -69,6 +74,25 @@ public class SharedXMLUtils {
         }
     }
 
+    /**
+     * Parse a Document from an inputStream.
+     *
+     * Internally uses a custom documentBuilder instance with many security settings enabled.
+     *
+     * Example usage from the filter framework:
+     * public FilterResult filterAsBytesDocument(BytesDocument document, FilterContext filterContext) {
+     *   Document doc = SharedXMLUtils.fromInputStream(document.contentAsInputStream())
+     *   // Do some processing to change or query the document.
+     *   var bos = new ByteArrayOutputStream();
+     *   SharedXMLUtils.getTransformer("UTF-8").transform(new DOMSource(doc), new StreamResult(bos));
+     *   byte[] documentContentsAsBytes = bos.toByteArray();
+     * }
+     *
+     * @param InputStream - document to read/parse
+     * @return Document - after parsing.
+     * @throws IllegalArgumentException
+     * @throws RuntimeException
+     */
     public static Document fromInputStream(InputStream is)
             throws IllegalArgumentException, RuntimeException{
         try {
@@ -78,6 +102,14 @@ public class SharedXMLUtils {
         }
     }
 
+    /**
+     * Parse a Document from a given File path. Useful for testing.
+     *
+     * Internally uses a custom documentBuilder instance with many security settings enabled.
+     *
+     * @param file to parse into a Document
+     * @return Document after parsing.
+     */
     public static Document fromFile(File file) {
         Document document = null;
         BufferedReader br = null;
@@ -102,7 +134,12 @@ public class SharedXMLUtils {
         return document;
     }
 
-
+    /**
+     * Converts a given Document back out to a String. Useful for testing/debugging.
+     *
+     * @param document
+     * @return
+     */
     public static String toString(Document document) {
         try {
             return new String(toBytes(document, "UTF-8"), "UTF-8");
@@ -111,6 +148,12 @@ public class SharedXMLUtils {
         }
     }
 
+    /**
+     * Converts a given Document back out to a byte array. Useful for testing/debugging.
+     * @param document
+     * @param charcterEncodingOfBytes - e.g. UTF-8
+     * @return
+     */
     public static byte[] toBytes(Document document, String charcterEncodingOfBytes){
         try {
             document.setXmlStandalone(true);
@@ -130,15 +173,36 @@ public class SharedXMLUtils {
         }
     }
 
+    /**
+     * Round trip conversion of a given XML string back into XML with the secure transformations applied.
+     * @param xml
+     * @return
+     */
     public static String toString(String xml) {
         Document document = fromString(xml);
         return toString(document);
     }
 
+    /**
+     * Parse a Document from a given String. Useful for testing.
+     *
+     * Internally uses a custom documentBuilder instance with many security settings enabled.
+     *
+     * @param xmlString to parse into a Document
+     * @return Document after parsing.
+     */
     public static Document fromString(String xmlString) {
         return fromInputSource(new InputSource(new StringReader(xmlString)));
     }
 
+    /**
+     * Parse a Document from a given byte[]. Useful for testing.
+     *
+     * Internally uses a custom documentBuilder instance with many security settings enabled.
+     *
+     * @param xml to parse into a Document
+     * @return Document after parsing.
+     */
     public static Document fromBytes(byte[] xml) {
         return fromInputSource(new InputSource(new ByteArrayInputStream(xml)));
     }
@@ -202,6 +266,7 @@ public class SharedXMLUtils {
 
     private static final NoOpEntityResolver NOOP_ENTITY_RESOLVER = new NoOpEntityResolver();
 
+    // https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#no-op-entityresolver
     private static class NoOpEntityResolver implements EntityResolver {
         public InputSource resolveEntity(String publicId, String systemId) {
             return new InputSource(new StringReader(""));
