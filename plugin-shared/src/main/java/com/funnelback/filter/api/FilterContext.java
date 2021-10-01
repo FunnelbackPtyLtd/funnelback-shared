@@ -1,13 +1,9 @@
 package com.funnelback.filter.api;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import java.io.File;
 
 /**
  * An immutable context supplied to the filters.
@@ -16,8 +12,8 @@ import java.io.File;
  * is running under.</p>
  *
  */
-public interface FilterContext {
-    
+public interface FilterContext extends InternalFilterContext {
+
     /**
      * Gets the name of the collection under which the filter is run.
      * 
@@ -96,16 +92,6 @@ public interface FilterContext {
      */
     public DocumentTypeFactory getDocumentTypeFactory();
 
-    /**
-     * <p>Provides access to configuration files inside the collection configuration folder.</p>
-     *
-     * <p>This is useful to access custom collection-level configuration files</p>
-     *
-     * @param filename Name of the file to access
-     * @return A {@link File} path pointing to the desired file inside the collection configuration folder
-     */
-    public File getCollectionConfigFile(String filename);
-    
     /**
      * Reads a configuration file for the currently running plugin.
      * 
