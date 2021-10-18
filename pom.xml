@@ -61,7 +61,7 @@
         <version.hibernate-jpa-2.1>1.0.0.Final</version.hibernate-jpa-2.1>
         <version.jackson2>2.12.5</version.jackson2>
         <version.javax.validation>2.0.1.Final</version.javax.validation>
-        <version.jsoup>1.10.2</version.jsoup>
+        <version.jsoup>1.14.3</version.jsoup>
         <version.junit>4.12</version.junit>
         <version.log4j2>2.13.3</version.log4j2>
         <version.lombok>1.18.12</version.lombok>
