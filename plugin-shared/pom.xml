@@ -56,7 +56,7 @@
             <plugin>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-json-schema-plugin</artifactId>
-                <version>16.8.1-SNAPSHOT</version>
+                <version>16.8.3-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>generate1</id>
