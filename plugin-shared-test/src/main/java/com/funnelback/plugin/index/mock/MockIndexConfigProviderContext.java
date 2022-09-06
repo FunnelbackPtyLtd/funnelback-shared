@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.io.File;
 import java.io.IOException;
 
-import com.funnelback.mock.helpers.ConfigSettingMock;
 import com.funnelback.mock.helpers.MapBackedConfig;
 import com.funnelback.mock.helpers.MapBackedPluginConfigurationFiles;
 import com.funnelback.mock.helpers.PluginConfigurationFileSettingMock;
@@ -32,9 +31,8 @@ import lombok.experimental.Delegate;
  * }</pre>
  *
  */
-public class MockIndexConfigProviderContext implements IndexConfigProviderContext, 
-                                                        ConfigSettingMock, 
-                                                        PluginConfigurationFileSettingMock {
+public class MockIndexConfigProviderContext implements IndexConfigProviderContext,
+                                                       PluginConfigurationFileSettingMock {
 
     @Getter @Setter private File searchHome;
 

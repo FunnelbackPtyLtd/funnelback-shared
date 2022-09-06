@@ -25,6 +25,14 @@ public interface PluginGatherContext {
      * @return The value as set for the current install and collection context
      */
     public String getConfigSetting(String key);
+
+    /**
+     * Set the config settings for the current collection.
+     *
+     * @param key The name of the collection.cfg or global.cfg parameter
+     * @param value The value to be set for the collection.cfg or global.cfg parameter
+     */
+    public void setConfigSetting(String key, String value);
     
     /**
      * Provides a list of config setting keys which have some prefix.

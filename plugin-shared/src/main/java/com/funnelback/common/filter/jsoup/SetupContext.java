@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import java.io.File;
 
 /**
@@ -30,6 +29,14 @@ public interface SetupContext {
      * @return The value as set for the current install and collection context
      */
     String getConfigSetting(String key);
+
+    /**
+     * Set the config settings for the current collection.
+     *
+     * @param key The name of the collection.cfg or global.cfg parameter
+     * @param value The value to be set for the collection.cfg or global.cfg parameter
+     */
+     void setConfigSetting(String key, String value);
 
     /**
      * Provides a list of config setting keys which have some prefix.

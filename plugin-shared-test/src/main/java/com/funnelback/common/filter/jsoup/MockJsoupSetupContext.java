@@ -1,8 +1,7 @@
+
 package com.funnelback.common.filter.jsoup;
 
 import java.io.File;
-
-import com.funnelback.mock.helpers.ConfigSettingMock;
 import com.funnelback.mock.helpers.MapBackedConfig;
 import com.funnelback.mock.helpers.MapBackedPluginConfigurationFiles;
 import com.funnelback.mock.helpers.PluginConfigurationFileSettingMock;
@@ -27,7 +26,7 @@ import lombok.experimental.Delegate;
  * 
  *
  */
-public class MockJsoupSetupContext implements SetupContext, ConfigSettingMock, PluginConfigurationFileSettingMock {
+public class MockJsoupSetupContext implements SetupContext,  PluginConfigurationFileSettingMock {
 
     @Getter @Setter private File searchHome;
 
@@ -42,5 +41,4 @@ public class MockJsoupSetupContext implements SetupContext, ConfigSettingMock, P
         throw new RuntimeException("Not mocked.");
     }
 
-    
 }
