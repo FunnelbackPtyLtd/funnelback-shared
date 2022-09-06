@@ -2,7 +2,6 @@ package com.funnelback.plugin.gatherer.mock;
 
 import java.io.File;
 
-import com.funnelback.mock.helpers.ConfigSettingMock;
 import com.funnelback.mock.helpers.MapBackedConfig;
 import com.funnelback.mock.helpers.MapBackedPluginConfigurationFiles;
 import com.funnelback.mock.helpers.PluginConfigurationFileSettingMock;
@@ -30,15 +29,17 @@ import lombok.experimental.Delegate;
  * }</pre>
  *
  */
-public class MockPluginGatherContext implements PluginGatherContext, 
-                                                ConfigSettingMock,
+public class MockPluginGatherContext implements PluginGatherContext,
                                                 PluginConfigurationFileSettingMock {
 
     @Getter @Setter private File searchHome;
 
     @Getter @Setter private String collectionName;
 
+    @Getter @Setter private String configSetting;
+
     @Delegate private final MapBackedConfig mapBackedConfig = new MapBackedConfig();
     
     @Delegate private final MapBackedPluginConfigurationFiles mapBackedPluginConfigurationFiles = new MapBackedPluginConfigurationFiles();
+
 }
