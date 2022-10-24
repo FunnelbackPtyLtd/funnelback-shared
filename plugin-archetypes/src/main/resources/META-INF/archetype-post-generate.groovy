@@ -1,4 +1,3 @@
-
 import java.nio.file.FileVisitResult
 import java.nio.file.Files
 import java.nio.file.Path
@@ -6,7 +5,7 @@ import java.nio.file.Paths
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.BasicFileAttributes
-@Grab(group='org.apache.commons', module='commons-text', version='1.8')
+@Grab(group='org.apache.commons', module='commons-text', version='1.10.0')
 import org.apache.commons.text.WordUtils
 
 // the path where the project got generated
