@@ -1,3 +1,8 @@
+include:
+  - project: funnelback-rnd/gitlab-templates
+    ref: main
+    file: all.yml
+
 variables:
   # This will supress any download for dependencies and plugins or upload messages which would clutter the console log.
   # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
@@ -35,6 +40,12 @@ build:
     tags:
         - purpose/general
         - access/squiz-network
+
+# Release a version of funnelback-shared to the gitlab package registry
+publish_to_gitlab:
+ extends:
+    - .template:funnelback:mvn-publish:push
+
 
 Trigger plugins mono repo:
     stage: deploy
