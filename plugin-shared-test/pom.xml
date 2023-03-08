@@ -37,8 +37,8 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>funnelback-snapshots</id>
-            <url>http://maven-repo.cbr.au.funnelback.com:8081/nexus/content/repositories/snapshots</url>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.squiz.net/api/v4/projects/11481/packages/maven</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
@@ -51,7 +51,7 @@
         <plugins>
             <plugin>
                 <!-- JavaDoc doesn't understand lombok, so we must delombok first.
-                     See https://stackoverflow.com/a/51947792/797 and https://github.com/rzwitserloot/lombok/issues/1033 --> 
+                     See https://stackoverflow.com/a/51947792/797 and https://github.com/rzwitserloot/lombok/issues/1033 -->
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok-maven-plugin</artifactId>
                 <version>1.18.2.0</version>
@@ -75,7 +75,7 @@
                 <version>2.10.4</version>
                 <configuration>
                     <show>private</show>
-                    
+
                     <sourcepath>${project.basedir}/target/delombok</sourcepath>
                     <sourceFileIncludes>
                         <include>com/**/*.java</include>

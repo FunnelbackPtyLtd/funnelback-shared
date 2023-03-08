@@ -37,8 +37,8 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>funnelback-snapshots</id>
-            <url>http://maven-repo.cbr.au.funnelback.com:8081/nexus/content/repositories/snapshots</url>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.squiz.net/api/v4/projects/11481/packages/maven</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
