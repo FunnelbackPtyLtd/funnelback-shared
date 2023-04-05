@@ -2,6 +2,9 @@ package com.funnelback.plugin.docs.model;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * List of subtopic types, see {@link ProductSubtopicCategory}
+ */
 public class ProductSubtopic {
 
     /**
