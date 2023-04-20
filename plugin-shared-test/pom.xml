@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.funnelback</groupId>
         <artifactId>funnelback-shared-parent</artifactId>
-        <version>16.19.2316-SNAPSHOT</version>
+        <version>16.19.2315-SNAPSHOT</version>
     </parent>
 
     <description>Utilities and supporting classes for testing plugins for the Funnelback Enterprise Search Engine</description>
@@ -110,6 +110,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${version.commons.lang}</version>
+        </dependency>
+        <dependency>
             <groupId>com.funnelback</groupId>
             <artifactId>funnelback-shared</artifactId>
             <version>${project.version}</version>
@@ -132,6 +137,11 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

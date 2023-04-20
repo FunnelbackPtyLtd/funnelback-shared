@@ -143,5 +143,4 @@ public class ProductSubtopic {
 
         private final String topic;
     }
-
 }

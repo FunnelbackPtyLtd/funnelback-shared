@@ -8,6 +8,7 @@ import com.funnelback.common.filter.jsoup.IJSoupFilter;
 
 public class _ClassNamePrefix_JsoupFilter implements IJSoupFilter {
 
+    final PluginUtils pluginUtils = new PluginUtils();
     private static final Logger log = LogManager.getLogger(_ClassNamePrefix_JsoupFilter.class);
     
     @Override

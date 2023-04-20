@@ -12,6 +12,7 @@ import com.funnelback.filter.api.filters.StringDocumentFilter;
 
 public class _ClassNamePrefix_StringFilter implements StringDocumentFilter {
 
+    final PluginUtils pluginUtils = new PluginUtils();
     private static final Logger log = LogManager.getLogger(_ClassNamePrefix_StringFilter.class);
     
     @Override

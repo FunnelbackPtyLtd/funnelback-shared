@@ -17,9 +17,6 @@
         </fileSet>
         <fileSet filtered="true">
             <directory>docs</directory>
-            <includes>
-                <include>**/plugin-details.properties</include>
-            </includes>
         </fileSet>
         <fileSet filtered="true">
             <directory/>

@@ -27,10 +27,6 @@ public abstract class AbstractPluginPropertiesFileTest {
         new CheckPropertiesFileIsValidHelper().checkPropertiesFileExists(getPluginName(), this.getClass());
     }
 
-    @Test
-    public void testPluginDetailsProperties() {
-        new CheckPluginDetailsPropertiesHelper().checkPropertiesOk();
-    }
 
     @Test
     public void testVersionIsSemver() {

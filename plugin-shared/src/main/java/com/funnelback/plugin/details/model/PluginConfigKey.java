@@ -31,18 +31,18 @@ import lombok.NonNull;
  */
 public class PluginConfigKey<T> extends PluginConfigKeyBase {
     /**
-     * Define the default value of plugin configuration key
+     * Defines the default value of plugin configuration key
      */
     @Getter private final T defaultValue;
 
     /**
-     * Define restriction on allowed plugin configuration key values,
+     * Defines range of allowed plugin configuration key values,
      * for details see {@link PluginConfigKeyAllowedValue}
      */
     @Getter private final PluginConfigKeyAllowedValue<T> allowedValue;
 
     /**
-     * Define conditional usage of plugin configuration key based on other key's value,
+     * Defines conditional usage of plugin configuration key based on other key's value,
      * for details see {@link PluginConfigKeyConditional}
      */
     @Getter private final PluginConfigKeyConditional showIfKeyHasValue;

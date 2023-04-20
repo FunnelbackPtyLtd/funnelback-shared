@@ -9,6 +9,7 @@ import com.funnelback.plugin.gatherer.PluginStore;
 
 public class _ClassNamePrefix_PluginGatherer implements PluginGatherer {
 
+    final PluginUtils pluginUtils = new PluginUtils();
     private static final Logger log = LogManager.getLogger(_ClassNamePrefix_PluginGatherer.class);
     
     @Override

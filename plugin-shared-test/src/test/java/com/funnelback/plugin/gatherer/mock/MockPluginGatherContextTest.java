@@ -1,5 +1,6 @@
 package com.funnelback.plugin.gatherer.mock;
 
+import com.funnelback.plugin.details.model.PluginConfigKey;
 import org.junit.Assert;
 import org.junit.Test;
 
