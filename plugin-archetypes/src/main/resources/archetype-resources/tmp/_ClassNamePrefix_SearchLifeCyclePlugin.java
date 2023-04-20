@@ -9,6 +9,7 @@ import com.funnelback.plugin.search.SearchLifeCycleContext;
 
 public class _ClassNamePrefix_SearchLifeCyclePlugin implements SearchLifeCyclePlugin {
 
+    final PluginUtils pluginUtils = new PluginUtils();
     private static final Logger log = LogManager.getLogger(_ClassNamePrefix_SearchLifeCyclePlugin.class);
     
     @Override

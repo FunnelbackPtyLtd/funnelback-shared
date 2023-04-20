@@ -9,6 +9,7 @@ import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
 
 public class _ClassNamePrefix_IndexingConfigProvider implements IndexingConfigProvider {
 
+    final PluginUtils pluginUtils = new PluginUtils();
     private static final Logger log = LogManager.getLogger(_ClassNamePrefix_IndexingConfigProvider.class);
     
     @Override

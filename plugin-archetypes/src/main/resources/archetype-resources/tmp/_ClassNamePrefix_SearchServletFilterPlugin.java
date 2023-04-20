@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 public class _ClassNamePrefix_SearchServletFilterPlugin implements SearchServletFilterHook {
 
+    final PluginUtils pluginUtils = new PluginUtils();
     private static final Logger log = LogManager.getLogger(_ClassNamePrefix_SearchServletFilterPlugin.class);
 
     @Override

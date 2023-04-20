@@ -5,8 +5,8 @@ import java.nio.file.Paths
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.BasicFileAttributes
-@Grab(group='org.apache.commons', module='commons-text', version='1.10.0')
-import org.apache.commons.text.WordUtils
+@Grab(group='org.apache.commons', module='commons-lang3', version='3.12.0')
+import org.apache.commons.lang3.StringUtils
 
 // the path where the project got generated
 projectPath = Paths.get(request.outputDirectory, request.artifactId)
@@ -36,14 +36,13 @@ boolean isServletFilteringEnabled = Boolean.parseBoolean(properties.get("search-
 pluginPrefix = request.artifactId.replaceAll("[^a-zA-Z0-9]"," ")
 
 // make the first letter of each word capitalized for the class name
-pluginClassPrefix = WordUtils.capitalizeFully(pluginPrefix).replaceAll(" ", "")
+pluginClassPrefix = StringUtils.capitalize(pluginPrefix).replaceAll(" ", "")
 
 
 tmp = projectPath.resolve("tmp")
 resources = projectPath.resolve("src/main/resources")
 propertiesFile = resources.resolve("funnelback-plugin-" + request.artifactId + ".properties").toFile()
 
-writeOutPluginDetailsProperties();
 
 if(isGathererEnabled) {
     String pluginImplementation = "_ClassNamePrefix_PluginGatherer"
@@ -92,6 +91,8 @@ if(isServletFilteringEnabled) {
 
 
 writePluginPropsFileTest();
+
+writePluginUtilsTest();
 
 enableSourceImplementation("PluginUtils");
 
@@ -160,6 +161,9 @@ def prepareSourceFiles(String originalClassName, Path target) {
 
     newContent = correctPackageName(newContent);
 
+    if (originalClassName.equals("PluginUtils.java")) {
+        newContent = replaceTargetType(newContent);
+    }
     fileCreated.text = newContent
 }
 
@@ -167,18 +171,21 @@ def correctPackageName(String text) {
   return text.replace("__fixed_package__", packageName);
 }
 
+def replaceTargetType(String text) {
+    def result = new ArrayList<String>();
+
+    if (Boolean.parseBoolean(properties.get("runs-on-datasource"))){
+        result.add("PluginTarget.DATA_SOURCE")
+    }
+    if (Boolean.parseBoolean(properties.get("runs-on-result-page"))){
+        result.add("PluginTarget.RESULTS_PAGE");
+    }
+    return text.replace("__plugin_target__", StringUtils.join(result, ", "));
+}
+
 // Write entry to funnelback-plugin properties file
 def writeToPropertiesFile(String originalClassName, String qualifiedInterface) {
     propertiesFile.append(qualifiedInterface + "=" + packageName + "." + originalClassName.replace("_ClassNamePrefix_", pluginClassPrefix) + "\n")
-}
-
-// Write out the plugin details properties for later exposure in the plugins api
-def writeOutPluginDetailsProperties() {
-    def props = projectPath.resolve("docs/plugin-details.properties").toFile();
-    props.append("name=${properties.get("plugin-name")}\n")
-    props.append("description=${properties.get("plugin-description")}\n")
-    props.append("runs-on.datasource=${properties.get("runs-on-datasource")}\n")
-    props.append("runs-on.result-page=${properties.get("runs-on-result-page")}\n")
 }
 
 def writePluginPropsFileTest() {
@@ -186,6 +193,10 @@ def writePluginPropsFileTest() {
     //Path source = tmp.resolve("PluginPropsFileTest.java");
     //Path destination = testTarget.resolve("PluginPropsFileTest.java");
     //Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
+}
+
+def writePluginUtilsTest(){
+    enableTests("PluginUtils");
 }
 
 def toMainSrcPath(String packageName) {

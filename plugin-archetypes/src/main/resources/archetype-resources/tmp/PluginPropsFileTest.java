@@ -6,6 +6,7 @@ import com.funnelback.plugin.test.AbstractPluginPropertiesFileTest;
  *  Tests to check that the plugin properties file is valid.
  */
 public class PluginPropsFileTest extends AbstractPluginPropertiesFileTest {
+    PluginUtils pluginUtils = new PluginUtils();
 
     /**
      * Originally set to the maven artifact id, if the name of the plugin changes
@@ -13,8 +14,6 @@ public class PluginPropsFileTest extends AbstractPluginPropertiesFileTest {
      */
     @Override
     public String getPluginName() {
-        return PluginUtils.PLUGIN_NAME;
+        return pluginUtils.getPluginId();
     }
-
-    
 }
