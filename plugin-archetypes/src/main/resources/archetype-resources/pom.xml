@@ -8,7 +8,7 @@
     <name>Funnelback plugin</name>
     <properties>
         <version.log4j2>2.17.1</version.log4j2>
-        <version.junit>4.12</version.junit>
+        <version.junit>4.13.1</version.junit>
         <version.mockito>2.21.0</version.mockito>
         <version.funnelback-shared>${archetypeVersion}</version.funnelback-shared>
     </properties>
