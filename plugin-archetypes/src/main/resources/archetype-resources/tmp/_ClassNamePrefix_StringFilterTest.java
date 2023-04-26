@@ -26,7 +26,6 @@ public class _ClassNamePrefix_StringFilterTest {
             PreFilterCheck.ATTEMPT_FILTER, underTest.canFilter(doc, mockContext));
     }
     
-    
     @Test
     public void testFilter(){
         MockFilterContext mockContext = MockFilterContext.getEmptyContext();
@@ -44,7 +43,6 @@ public class _ClassNamePrefix_StringFilterTest {
         StringDocument resultingDocument = (StringDocument) res.getFilteredDocuments().get(0);
         
         Assert.assertEquals("hello", resultingDocument.getContentAsString());
-
     }
     
 }

@@ -55,5 +55,5 @@ public class PluginConfigFile {
      * Mark plugin configuration file as required or optional in plugin configuration admin UI
      * and in auto-generated documentation
      */
-    @NonNull private final boolean required;
+    private final boolean required;
 }

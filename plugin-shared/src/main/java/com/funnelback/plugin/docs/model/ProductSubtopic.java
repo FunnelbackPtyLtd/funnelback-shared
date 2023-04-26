@@ -1,5 +1,6 @@
 package com.funnelback.plugin.docs.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -25,6 +26,11 @@ public class ProductSubtopic {
         SQUIZ_MATRIX("Squiz Matrix");
 
         private final String topic;
+
+        @JsonValue
+        public String getTopic() {
+            return topic;
+        }
     }
 
     /**
@@ -51,6 +57,11 @@ public class ProductSubtopic {
         SESSIONS_HISTORY("Search sessions and history");
 
         private final String topic;
+
+        @JsonValue
+        public String getTopic() {
+            return topic;
+        }
     }
 
     /**
@@ -65,6 +76,11 @@ public class ProductSubtopic {
         DATA_REPORTING("Data reporting");
 
         private final String topic;
+
+        @JsonValue
+        public String getTopic() {
+            return topic;
+        }
     }
 
     /**
@@ -76,6 +92,11 @@ public class ProductSubtopic {
         USER_MANAGEMENT("User management");
 
         private final String topic;
+
+        @JsonValue
+        public String getTopic() {
+            return topic;
+        }
     }
 
     /**
@@ -92,6 +113,11 @@ public class ProductSubtopic {
         WORKFLOW_SCRIPTS("Workflow scripts");
 
         private final String topic;
+
+        @JsonValue
+        public String getTopic() {
+            return topic;
+        }
     }
 
     /**
@@ -104,6 +130,11 @@ public class ProductSubtopic {
         PLUGIN("Plugins");
 
         private final String topic;
+
+        @JsonValue
+        public String getTopic() {
+            return topic;
+        }
     }
 
     /**
@@ -123,6 +154,11 @@ public class ProductSubtopic {
         SYNONYMS("Synonyms");
 
         private final String topic;
+
+        @JsonValue
+        public String getTopic() {
+            return topic;
+        }
     }
 
     /**
@@ -142,5 +178,10 @@ public class ProductSubtopic {
         UPGRADES("Upgrades");
 
         private final String topic;
+
+        @JsonValue
+        public String getTopic() {
+            return topic;
+        }
     }
 }

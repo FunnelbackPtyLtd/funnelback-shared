@@ -1,5 +1,6 @@
 package com.funnelback.plugin.details.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.funnelback.common.utils.SharedConfigKeyUtils;
 import lombok.Getter;
 import lombok.NonNull;
@@ -12,7 +13,7 @@ public abstract class PluginConfigKeyBase implements PluginConfigKeyDetails {
     /**
      * ID of a current plugin
      */
-    @Getter @NonNull private final String pluginId;
+    @Getter @NonNull @JsonIgnore private final String pluginId;
 
     /**
      * ID of key to create plugin configuration key

@@ -8,16 +8,12 @@
     <name>Funnelback plugin</name>
     <properties>
         <version.log4j2>2.17.1</version.log4j2>
-        <version.junit>4.12</version.junit>
+        <version.junit>4.13.2</version.junit>
         <version.mockito>2.21.0</version.mockito>
         <version.funnelback-shared>${archetypeVersion}</version.funnelback-shared>
     </properties>
+
     <dependencies>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.4</version>
-        </dependency>
         <dependency>
             <artifactId>funnelback-shared</artifactId>
             <groupId>com.funnelback</groupId>
@@ -50,6 +46,7 @@
         </dependency>
         <!-- add your dependencies here -->
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -58,6 +55,22 @@
                 <version>3.8.1</version>
                 <configuration>
                     <release>11</release>
+                </configuration>
+            </plugin>
+            <!-- genetate plugin schema in JSON format based on PluginUtils class -->
+            <plugin>
+                <groupId>com.funnelback</groupId>
+                <artifactId>plugin-config-builder-maven-plugin</artifactId>
+                <version>${version.funnelback-shared}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>schema-generator</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <packageName>${package}</packageName>
                 </configuration>
             </plugin>
             <!-- copy the non provided non test libs into the libs directory -->
@@ -134,17 +147,13 @@
                                 <configuration>
                                     <tasks>
                                         <fail message="Environment variable SEARCH_HOME must be set." unless="env.SEARCH_HOME"/>
-                                        
                                         <echo message="Installing plugin into '${env.SEARCH_HOME}'" />
-
                                         <mkdir dir="${env.SEARCH_HOME}/share/plugins" />
                                         <mkdir dir="${env.SEARCH_HOME}/share/plugins/${project.artifactId}" />
                                         <mkdir dir="${env.SEARCH_HOME}/share/plugins/${project.artifactId}/${project.version}" />
-                                        
                                         <delete>
                                             <fileset dir="${env.SEARCH_HOME}/share/plugins/${project.artifactId}/${project.version}" includes="**/*" />
                                         </delete>
-
                                         <copy todir="${env.SEARCH_HOME}/share/plugins/${project.artifactId}/${project.version}" overwrite="true">
                                             <fileset dir="target/${project.version}" />
                                         </copy>
@@ -173,7 +182,6 @@
                                     <tasks>
                                         <fail message="Environment variable SEARCH_HOME_REMOTE must be set to the full path of SEARCH_HOME on the remote host." unless="env.SEARCH_HOME_REMOTE"/>
                                         <fail message="Environment variable SEARCH_USER_AND_HOST must be set to the user and hostname of the remote host in the form user@host" unless="env.SEARCH_USER_AND_HOST"/>
-                                        
                                         <exec executable="rsync">
                                             <arg value="-avz"/>
                                             <arg value="target/${project.version}"/>

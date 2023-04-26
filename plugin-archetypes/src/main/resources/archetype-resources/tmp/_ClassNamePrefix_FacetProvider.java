@@ -7,6 +7,7 @@ import com.funnelback.plugin.facets.FacetProvider;
 import com.funnelback.plugin.index.IndexConfigProviderContext;
 
 import java.util.Optional;
+
 public class _ClassNamePrefix_FacetProvider implements FacetProvider {
 
     final PluginUtils pluginUtils = new PluginUtils();

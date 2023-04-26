@@ -12,8 +12,7 @@ public class _ClassNamePrefix_PluginGathererTest {
     public void testCustomGatherPlugin() throws Exception {
         MockPluginGatherContext mockContext = new MockPluginGatherContext();
         MockPluginStore mockStore = new MockPluginStore();
-        
-        
+
         _ClassNamePrefix_PluginGatherer underTest = new _ClassNamePrefix_PluginGatherer();
         // As the plugin gatherer is likely to interact with an external system you may need
         // to mock those interactions out. Until that is done you can still use this test to

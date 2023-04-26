@@ -12,6 +12,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * And must not implement both the old and new methods with the same name.
  *
  */
+@Deprecated
 public interface DeprecatedSearchLifeCyclePlugin {
     
     /**
