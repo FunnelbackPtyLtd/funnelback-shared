@@ -15,13 +15,15 @@ projectPath = Paths.get(request.outputDirectory, request.artifactId)
 properties = request.properties
 
 // Clean up the existing packageName which is probably wrong, I don't know what males it.
-// this is because we can not clean up the artifact ID in archetpe-metadata.xml
-deletePackageFolders(request.packageName);
-// The fixed package name.
-packageName = request.packageName.replaceAll("[^A-Za-z0-9\\.]", "");
+// this is because we can not clean up the artifact ID in archetype-metadata.xml
+deletePackageFolders(request.packageName)
 
-toMainSrcPath(packageName).toFile().mkdirs();
-toTestSrcPath(packageName).toFile().mkdirs();
+// The fixed package name
+packageName = request.packageName.replaceAll("[^A-Za-z0-9\\.]", "")
+
+// Create directory structure
+toMainSrcPath(packageName).toFile().mkdirs()
+toTestSrcPath(packageName).toFile().mkdirs()
 
 boolean isGathererEnabled = Boolean.parseBoolean(properties.get("gatherer"))
 boolean isIndexingEnabled = Boolean.parseBoolean(properties.get("indexing"))
@@ -31,70 +33,69 @@ boolean isFilteringEnabled = Boolean.parseBoolean(properties.get("filtering"))
 boolean isJsoupFilteringEnabled = Boolean.parseBoolean(properties.get("jsoup-filtering"))
 boolean isServletFilteringEnabled = Boolean.parseBoolean(properties.get("search-servlet-filtering"))
 
-
 // Remove non alpha numeric chars
 pluginPrefix = request.artifactId.replaceAll("[^a-zA-Z0-9]"," ")
 
 // make the first letter of each word capitalized for the class name
 pluginClassPrefix = StringUtils.capitalize(pluginPrefix).replaceAll(" ", "")
 
-
 tmp = projectPath.resolve("tmp")
 resources = projectPath.resolve("src/main/resources")
 propertiesFile = resources.resolve("funnelback-plugin-" + request.artifactId + ".properties").toFile()
+pluginUtilsFilterClass = null
+pluginUtilsJsoupFilterClass = null
 
-
-if(isGathererEnabled) {
+if (isGathererEnabled) {
     String pluginImplementation = "_ClassNamePrefix_PluginGatherer"
     String pluginInterface = "com.funnelback.plugin.gatherer.PluginGatherer"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
-if(isIndexingEnabled) {
+if (isIndexingEnabled) {
     String pluginImplementation = "_ClassNamePrefix_IndexingConfigProvider"
     String pluginInterface = "com.funnelback.plugin.index.IndexingConfigProvider"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
-if(isFacetsEnabled) {
+if (isFacetsEnabled) {
     String pluginImplementation = "_ClassNamePrefix_FacetProvider"
     String pluginInterface = "com.funnelback.plugin.facets.FacetProvider"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
-if(isSearchLifeCycleEnabled) {
+if (isSearchLifeCycleEnabled) {
     String pluginImplementation = "_ClassNamePrefix_SearchLifeCyclePlugin"
     String pluginInterface = "com.funnelback.plugin.SearchLifeCyclePlugin"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
-if(isFilteringEnabled) {
+if (isFilteringEnabled) {
     String pluginImplementation = "_ClassNamePrefix_StringFilter"
     enableImplementationAndTests(pluginImplementation)
+    pluginUtilsFilterClass = pluginImplementation;
 }
 
-if(isJsoupFilteringEnabled) {
+if (isJsoupFilteringEnabled) {
     String pluginImplementation = "_ClassNamePrefix_JsoupFilter"
     enableImplementationAndTests(pluginImplementation)
+    pluginUtilsJsoupFilterClass = pluginImplementation;
 }
 
-if(isServletFilteringEnabled) {
+if (isServletFilteringEnabled) {
     String pluginImplementation = "_ClassNamePrefix_SearchServletFilterPlugin"
     String pluginInterface = "com.funnelback.plugin.servlet.filter.SearchServletFilterHook";
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
 
+writePluginPropsFileTest()
+writePluginUtilsTest()
 
-writePluginPropsFileTest();
-
-writePluginUtilsTest();
-
-enableSourceImplementation("PluginUtils");
+enableSourceImplementation("PluginUtils")
 
 // Delete tmp directory and files
 Files.walkFileTree(tmp, new SimpleFileVisitor<Path>() {
@@ -114,15 +115,14 @@ Files.walkFileTree(tmp, new SimpleFileVisitor<Path>() {
     }
 })
 
-
 // Replace contents of all files
 Files.walkFileTree(projectPath.resolve("src"), new SimpleFileVisitor<Path>() {
 
     //delete all files inside tmp
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        def f = file.toFile();
-        f.text = correctPackageName(f.text);
+        def f = file.toFile()
+        f.text = correctPackageName(f.text)
 
         return FileVisitResult.CONTINUE
     }
@@ -134,88 +134,103 @@ Files.walkFileTree(projectPath.resolve("src"), new SimpleFileVisitor<Path>() {
     }
 })
 
+def correctPackageName(String text) {
+    return text.replace("__fixed_package__", packageName)
+}
+
+def getPluginClassName(String originalClassName) {
+    return originalClassName.replace("_ClassNamePrefix_", pluginClassPrefix)
+}
+
+def getPluginFullyQualifiedClassName(String originalClassName) {
+    return packageName + "." + getPluginClassName(originalClassName)
+}
+
 def enableImplementationAndTests(String originalClassName) {
     enableSourceImplementation(originalClassName)
     enableTests(originalClassName)
 }
 
 def enableSourceImplementation(String originalClassName) {
-    srcTarget = toMainSrcPath(packageName);
+    srcTarget = toMainSrcPath(packageName)
     prepareSourceFiles(originalClassName + ".java", srcTarget)
 }
 
 def enableTests(String originalClassName) {
-    testTarget = toTestSrcPath(packageName);
+    testTarget = toTestSrcPath(packageName)
     prepareSourceFiles(originalClassName + "Test.java", testTarget)
 }
 
 def prepareSourceFiles(String originalClassName, Path target) {
     Path source = tmp.resolve(originalClassName)
-    Path destination = target.resolve(originalClassName.replace("_ClassNamePrefix_", pluginClassPrefix));
-    print "Copy " + source + " to  " + destination + "\n";
+    Path destination = target.resolve(getPluginClassName(originalClassName))
+    println "Copy " + source + " to " + destination
     Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
     def fileCreated = destination.toFile()
+
     // Change the internal reference of class name inside file
-    def newContent= fileCreated.text
-      .replace("_ClassNamePrefix_", pluginClassPrefix);
+    def newContent= fileCreated.text.replace("_ClassNamePrefix_", pluginClassPrefix)
+    newContent = correctPackageName(newContent)
 
-    newContent = correctPackageName(newContent);
-
-    if (originalClassName.equals("PluginUtils.java")) {
-        newContent = replaceTargetType(newContent);
+    if (originalClassName == "PluginUtils.java") {
+        newContent = replaceTargetType(newContent)
+        newContent = replaceFilterClasses(newContent, originalClassName)
     }
     fileCreated.text = newContent
 }
 
-def correctPackageName(String text) {
-  return text.replace("__fixed_package__", packageName);
-}
-
+// Replace plugin targets (scope) in PluginUtils.class
 def replaceTargetType(String text) {
-    def result = new ArrayList<String>();
+    def result = new ArrayList<String>()
 
-    if (Boolean.parseBoolean(properties.get("runs-on-datasource"))){
+    if (Boolean.parseBoolean(properties.get("runs-on-datasource"))) {
         result.add("PluginTarget.DATA_SOURCE")
     }
-    if (Boolean.parseBoolean(properties.get("runs-on-result-page"))){
-        result.add("PluginTarget.RESULTS_PAGE");
+    if (Boolean.parseBoolean(properties.get("runs-on-result-page"))) {
+        result.add("PluginTarget.RESULTS_PAGE")
     }
-    return text.replace("__plugin_target__", StringUtils.join(result, ", "));
+
+    return text.replace("__plugin_target__", StringUtils.join(result, ", "))
+}
+
+// Replace filter classes entry in PluginUtils.class
+def replaceFilterClasses(String text, String originalClassName) {
+    def filterClass =  {s -> s ? '"' + getPluginFullyQualifiedClassName(s) + '"' : 'null'}
+    return text
+            .replace("__plugin_filterClass__", filterClass(pluginUtilsFilterClass))
+            .replace("__plugin_jsoupFilterClass__", filterClass(pluginUtilsJsoupFilterClass))
 }
 
 // Write entry to funnelback-plugin properties file
 def writeToPropertiesFile(String originalClassName, String qualifiedInterface) {
-    propertiesFile.append(qualifiedInterface + "=" + packageName + "." + originalClassName.replace("_ClassNamePrefix_", pluginClassPrefix) + "\n")
+    propertiesFile.append(qualifiedInterface + "=" + getPluginFullyQualifiedClassName(originalClassName) + "\n")
 }
 
 def writePluginPropsFileTest() {
-    enableTests("PluginPropsFile");
-    //Path source = tmp.resolve("PluginPropsFileTest.java");
-    //Path destination = testTarget.resolve("PluginPropsFileTest.java");
-    //Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
+    enableTests("PluginPropsFile")
 }
 
-def writePluginUtilsTest(){
-    enableTests("PluginUtils");
+def writePluginUtilsTest() {
+    enableTests("PluginUtils")
 }
 
 def toMainSrcPath(String packageName) {
-    return projectPath.resolve("src/main/java/" + packageName.replace(".", "/"));
+    return projectPath.resolve("src/main/java/" + packageName.replace(".", "/"))
 }
 
 def toTestSrcPath(String packageName) {
-    return projectPath.resolve("src/test/java/" + packageName.replace(".", "/"));
+    return projectPath.resolve("src/test/java/" + packageName.replace(".", "/"))
 }
 
 def deletePackageFolders(String packageName) {
-    deleteEmptyDir(toMainSrcPath(packageName));
-    deleteEmptyDir(toTestSrcPath(packageName));
+    deleteEmptyDir(toMainSrcPath(packageName))
+    deleteEmptyDir(toTestSrcPath(packageName))
 }
 
 def deleteEmptyDir(Path dir) {
-    print "deleting: " + dir + "\n";
-    Files.delete(dir);
-    if(Files.exists(dir)) {
-        throw new RuntimeException("Expected to be able to delete: " + dir);
+    println "deleting: " + dir
+    Files.delete(dir)
+    if (Files.exists(dir)) {
+        throw new RuntimeException("Expected to be able to delete: " + dir)
     }
 }

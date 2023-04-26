@@ -8,7 +8,6 @@ import java.util.List;
 
 public class PluginUtils implements PluginUtilsBase {
 
-
     /**
      *   Example key of type String:
      *   PluginConfigKey builder accepts all values needed to create a key such as:
@@ -106,21 +105,21 @@ public class PluginUtils implements PluginUtilsBase {
     }
 
     /**
-     *    Returns plugin id  which should match artifactId from pom.xml
+     *    Returns plugin ID which should match artifactId from pom.xml
      */
     @Override public String getPluginId() {
         return "${artifactId}";
     }
 
     /**
-     *    Returns plugin name  which should match plugin-name from pom.xml
+     *    Returns plugin name which should match plugin-name from pom.xml
      */
     @Override public String getPluginName() {
         return "${plugin-name}";
     }
 
     /**
-     *    Returns plugin description  which should match plugin-description from pom.xml
+     *    Returns plugin description which should match plugin-description from pom.xml
      */
     @Override public String getPluginDescription() {
         return "${plugin-description}";
@@ -133,4 +132,13 @@ public class PluginUtils implements PluginUtilsBase {
     @Override public List <PluginTarget> getPluginTarget() {
         return List.of(__plugin_target__);
     }
+
+    @Override public String getFilterClass() {
+        return __plugin_filterClass__;
+    }
+
+    @Override public String getJsoupFilterClass() {
+        return __plugin_jsoupFilterClass__;
+    }
+
 }

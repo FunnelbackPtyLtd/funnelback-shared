@@ -183,7 +183,7 @@ public class Result implements ResultType {
      * 
      * <p>See the <tt>url_tagger</tt> program.</p>
      */
-    @Getter private final List<String> tags = new ArrayList<String>();
+    @Getter private final List<String> tags = new ArrayList<>();
     
     /** Quick links associated with the result. */
     @Getter @Setter private QuickLinks quickLinks;
@@ -223,7 +223,7 @@ public class Result implements ResultType {
      * Custom data placeholder allowing any arbitrary data to be
      * stored by hook scripts.
      */
-    @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
+    @Getter private final Map<String, Object> customData = new HashMap<>();
 
     /**
      * Documents related to this result which have been fetched by RelatedDocumentFetcher.
@@ -236,14 +236,14 @@ public class Result implements ResultType {
      */
     @Getter private final Map<String, Set<RelatedDocument>> relatedDocuments = new HashMap<>();
 
-    @Getter @Setter private boolean documentVisibleToUser = true;
+    @Builder.Default @Getter @Setter private boolean documentVisibleToUser = true;
     
     /**
      * Set true if the URL was promoted using -promote_urls.
      * 
      * @since 15.12
      */
-    @Getter @Setter private boolean promoted = false;
+    @Builder.Default @Getter @Setter private boolean promoted = false;
     
     /**
      * Set true if the URL was down weighted by result diversification.
@@ -252,6 +252,6 @@ public class Result implements ResultType {
      * 
      * @since 15.12
      */
-    @Getter @Setter private boolean diversified = false;
+    @Builder.Default @Getter @Setter private boolean diversified = false;
 }
 

@@ -4,6 +4,7 @@ import com.funnelback.plugin.details.model.PluginConfigFile;
 import com.funnelback.plugin.details.model.PluginConfigKeyDetails;
 import com.funnelback.plugin.details.model.PluginDetailsBase;
 import com.funnelback.plugin.details.model.PluginTarget;
+import com.funnelback.plugin.docs.model.ProductSubtopicCategory;
 
 import java.util.List;
 
@@ -27,6 +28,12 @@ public interface PluginDetails extends PluginDetailsBase {
     List<PluginTarget> getPluginTarget();
 
     /**
+     * Define a list of metadata tags describing purpose of plugin
+     * See {@link com.funnelback.plugin.docs.model.ProductSubtopic}
+     */
+    List<ProductSubtopicCategory> getMetadataTags();
+
+    /**
      * Define a list of all plugin configuration keys to display in plugin configuration admin UI
      * and in auto-generated documentation
      */
@@ -37,4 +44,16 @@ public interface PluginDetails extends PluginDetailsBase {
      * and in auto-generated documentation
      */
     List<PluginConfigFile> getConfigFiles();
+
+    /**
+     * Define fully-qualified class name of filter to display in plugin configuration admin UI
+     * and in auto-generated documentation
+     */
+    String getFilterClass();
+
+    /**
+     * Define fully-qualified class name of jsoup filter to display in plugin configuration admin UI
+     * and in auto-generated documentation
+     */
+    String getJsoupFilterClass();
 }

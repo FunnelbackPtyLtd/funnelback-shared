@@ -18,14 +18,12 @@ public class _ClassNamePrefix_SearchServletFilterPluginTest {
 
     @Test
     public void testSearchSerlvetFilterPlugin_PrefilterTest(){
-
         // Setup a mock servlet request
         HttpServletRequest mockServerHttpRequest = mock(HttpServletRequest.class);
         when(mockServerHttpRequest.getHeader(eq("x-foo"))).thenReturn("bar");
 
         // confirm mock behaviour
-        Assert.assertEquals("should override default header value",
-                "bar", mockServerHttpRequest.getHeader("x-foo"));
+        Assert.assertEquals("should override default header value", "bar", mockServerHttpRequest.getHeader("x-foo"));
 
         // Update this to call the method(s) that should be tested. 
         HttpServletRequest updateRequest =
