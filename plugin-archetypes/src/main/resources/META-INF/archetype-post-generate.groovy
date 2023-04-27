@@ -14,12 +14,12 @@ projectPath = Paths.get(request.outputDirectory, request.artifactId)
 // the properties available to the archetype
 properties = request.properties
 
+// The plugin package name
+packageName = request.package
+
 // Clean up the existing packageName which is probably wrong, I don't know what males it.
 // this is because we can not clean up the artifact ID in archetype-metadata.xml
-deletePackageFolders(request.packageName)
-
-// The fixed package name
-packageName = request.packageName.replaceAll("[^A-Za-z0-9\\.]", "")
+deletePackageFolders(packageName)
 
 // Create directory structure
 toMainSrcPath(packageName).toFile().mkdirs()
@@ -76,18 +76,18 @@ if (isSearchLifeCycleEnabled) {
 if (isFilteringEnabled) {
     String pluginImplementation = "_ClassNamePrefix_StringFilter"
     enableImplementationAndTests(pluginImplementation)
-    pluginUtilsFilterClass = pluginImplementation;
+    pluginUtilsFilterClass = pluginImplementation
 }
 
 if (isJsoupFilteringEnabled) {
     String pluginImplementation = "_ClassNamePrefix_JsoupFilter"
     enableImplementationAndTests(pluginImplementation)
-    pluginUtilsJsoupFilterClass = pluginImplementation;
+    pluginUtilsJsoupFilterClass = pluginImplementation
 }
 
 if (isServletFilteringEnabled) {
     String pluginImplementation = "_ClassNamePrefix_SearchServletFilterPlugin"
-    String pluginInterface = "com.funnelback.plugin.servlet.filter.SearchServletFilterHook";
+    String pluginInterface = "com.funnelback.plugin.servlet.filter.SearchServletFilterHook"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
@@ -121,9 +121,6 @@ Files.walkFileTree(projectPath.resolve("src"), new SimpleFileVisitor<Path>() {
     //delete all files inside tmp
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        def f = file.toFile()
-        f.text = correctPackageName(f.text)
-
         return FileVisitResult.CONTINUE
     }
 
@@ -133,10 +130,6 @@ Files.walkFileTree(projectPath.resolve("src"), new SimpleFileVisitor<Path>() {
         return FileVisitResult.CONTINUE
     }
 })
-
-def correctPackageName(String text) {
-    return text.replace("__fixed_package__", packageName)
-}
 
 def getPluginClassName(String originalClassName) {
     return originalClassName.replace("_ClassNamePrefix_", pluginClassPrefix)
@@ -170,11 +163,10 @@ def prepareSourceFiles(String originalClassName, Path target) {
 
     // Change the internal reference of class name inside file
     def newContent= fileCreated.text.replace("_ClassNamePrefix_", pluginClassPrefix)
-    newContent = correctPackageName(newContent)
 
     if (originalClassName == "PluginUtils.java") {
         newContent = replaceTargetType(newContent)
-        newContent = replaceFilterClasses(newContent, originalClassName)
+        newContent = replaceFilterClasses(newContent)
     }
     fileCreated.text = newContent
 }
@@ -194,7 +186,7 @@ def replaceTargetType(String text) {
 }
 
 // Replace filter classes entry in PluginUtils.class
-def replaceFilterClasses(String text, String originalClassName) {
+def replaceFilterClasses(String text) {
     def filterClass =  {s -> s ? '"' + getPluginFullyQualifiedClassName(s) + '"' : 'null'}
     return text
             .replace("__plugin_filterClass__", filterClass(pluginUtilsFilterClass))

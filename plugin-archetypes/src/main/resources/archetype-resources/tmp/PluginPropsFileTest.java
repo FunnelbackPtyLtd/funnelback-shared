@@ -1,4 +1,4 @@
-package __fixed_package__;
+package ${package};
 
 import com.funnelback.plugin.test.AbstractPluginPropertiesFileTest;
 

@@ -1,4 +1,4 @@
-package __fixed_package__;
+package ${package};
 
 import com.funnelback.plugin.PluginUtilsBase;
 import com.funnelback.plugin.test.AbstractPluginUtilsTest;

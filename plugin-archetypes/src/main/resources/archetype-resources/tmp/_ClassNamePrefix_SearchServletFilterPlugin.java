@@ -1,4 +1,4 @@
-package __fixed_package__;
+package ${package};
 
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHook;
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHookContext;
