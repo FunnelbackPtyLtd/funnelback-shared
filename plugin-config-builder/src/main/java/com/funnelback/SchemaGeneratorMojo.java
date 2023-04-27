@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
+
 @Mojo(
     name = "schema-generator",
     defaultPhase = LifecyclePhase.COMPILE,

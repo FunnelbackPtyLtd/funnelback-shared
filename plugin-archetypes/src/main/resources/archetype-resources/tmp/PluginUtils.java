@@ -1,4 +1,4 @@
-package __fixed_package__;
+package ${package};
 
 import com.funnelback.plugin.details.model.*;
 import com.funnelback.plugin.docs.model.*;

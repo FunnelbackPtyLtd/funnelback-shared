@@ -1,4 +1,4 @@
-package __fixed_package__;
+package ${package};
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
