@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * Defines plugin configuration file properties
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 @Builder
+@Jacksonized
 public class PluginConfigFile {
     /**
      * Plugin configuration file name
