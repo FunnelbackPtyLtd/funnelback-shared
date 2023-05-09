@@ -32,6 +32,7 @@ boolean isSearchLifeCycleEnabled = Boolean.parseBoolean(properties.get("searchLi
 boolean isFilteringEnabled = Boolean.parseBoolean(properties.get("filtering"))
 boolean isJsoupFilteringEnabled = Boolean.parseBoolean(properties.get("jsoup-filtering"))
 boolean isServletFilteringEnabled = Boolean.parseBoolean(properties.get("search-servlet-filtering"))
+boolean isStartUrlProviderEnabled = Boolean.parseBoolean(properties.get("start-url-provider"))
 
 // Remove non alpha numeric chars
 pluginPrefix = request.artifactId.replaceAll("[^a-zA-Z0-9]"," ")
@@ -88,6 +89,13 @@ if (isJsoupFilteringEnabled) {
 if (isServletFilteringEnabled) {
     String pluginImplementation = "_ClassNamePrefix_SearchServletFilterPlugin"
     String pluginInterface = "com.funnelback.plugin.servlet.filter.SearchServletFilterHook"
+    enableImplementationAndTests(pluginImplementation)
+    writeToPropertiesFile(pluginImplementation, pluginInterface)
+}
+
+if (isStartUrlProviderEnabled) {
+    String pluginImplementation = "_ClassNamePrefix_StartUrlProviderPlugin"
+    String pluginInterface = "com.funnelback.plugin.starturl.StartUrlProvider"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }

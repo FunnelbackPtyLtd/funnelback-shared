@@ -14,6 +14,7 @@ You can enable or disable one or more implementations inside the same plugin usi
 - `facets` 
 - `searchLifeCycle`
 - `search-servlet-filtering`
+- `start-url-provider`
 
 #### Filtering flags
 
@@ -43,7 +44,8 @@ mvn archetype:generate -DarchetypeGroupId=com.funnelback    \
     -Dindexing=true                                         \
     -Dfacets=false                                          \
     -DsearchLifeCycle=false                                 \
-    -Dsearch-servlet-filtering=false                                 \
+    -Dsearch-servlet-filtering=false                        \
+    -Dsearch-start-url-provider=false                       \
     -Dfiltering=false
 ```
 
