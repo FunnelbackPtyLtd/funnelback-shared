@@ -3,6 +3,7 @@ package com.funnelback.plugin.details.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * Define a type of plugin configuration key
@@ -34,6 +35,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @Builder
+@Jacksonized
 public class PluginConfigKeyType {
     /**
      * Allowed types of plugin configuration key

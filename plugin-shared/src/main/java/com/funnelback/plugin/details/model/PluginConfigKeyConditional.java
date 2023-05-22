@@ -1,6 +1,7 @@
 package com.funnelback.plugin.details.model;
 
 import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 @Builder
+@Jacksonized
 public class PluginConfigKeyConditional<T> {
     /**
      * Plugin configuration key
