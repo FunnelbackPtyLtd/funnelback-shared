@@ -31,7 +31,7 @@ public class PluginConfigKeyEncrypted extends PluginConfigKeyBase {
     }
 
     public String getKeyPrefix() {
-        return "plugin." + getPluginId() + ".encrypted.";
+        return PLUGIN_PREFIX + getPluginId() + PLUGIN_ENCRYPTED_QUALIFIER;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.funnelback.plugin.details.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.funnelback.common.utils.SharedConfigKeyUtils;
 import lombok.Getter;
 import lombok.NonNull;
@@ -25,7 +26,7 @@ public abstract class PluginConfigKeyBase implements PluginConfigKeyDetails {
      * - key with wildcard `plugin.pluginID.config.foo.*.baz` provide `id="foo.*.baz"`
      * - key with wildcard `plugin.pluginID.config.*.*.foo` provide `id="*.*.foo"`
      */
-    @NonNull protected final String id;
+    @NonNull @JsonProperty( access = JsonProperty.Access.READ_WRITE) protected final String id;
 
     /**
      * Label for plugin configuration key to display in plugin configuration admin UI

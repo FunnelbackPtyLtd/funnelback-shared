@@ -1,8 +1,10 @@
 package com.funnelback.plugin.details.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -45,6 +47,15 @@ public class PluginConfigKeyAllowedValue<T> {
      * to determine if a value is allowed to display in plugin configuration admin UI
      */
     private final Pattern regex;
+
+    /**
+     * This private constructor is required for JSOM deserializer
+     */
+    @JsonCreator private PluginConfigKeyAllowedValue() {
+        this.regex = null;
+        this.values = Collections.emptyList();
+        this.type = AllowedType.FIXED_LIST;
+    }
 
     public PluginConfigKeyAllowedValue(@NonNull List <T> values) {
         this.regex = null;
