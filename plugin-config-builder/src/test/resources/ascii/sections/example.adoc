@@ -1,0 +1,3 @@
+== Example
+
+Provide examples of plugin configuration and usage.

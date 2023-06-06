@@ -1,6 +1,7 @@
 package com.funnelback.plugin.docs.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -177,11 +178,8 @@ public class ProductSubtopic {
         SYSTEM_SERVICES("System services"),
         UPGRADES("Upgrades");
 
+        @Getter
         private final String topic;
 
-        @JsonValue
-        public String getTopic() {
-            return topic;
-        }
     }
 }

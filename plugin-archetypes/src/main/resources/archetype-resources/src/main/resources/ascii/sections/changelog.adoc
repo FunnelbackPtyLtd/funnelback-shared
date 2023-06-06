@@ -1,0 +1,17 @@
+== Plugin upgrade instructions
+
+Provide log what has changed in each version of the plugin.
+
+Recommended structure (see https://keepachangelog.com/en/1.0.0/):
+
+Itemize your changes under the following headings:
+
+* Added ...
+
+* Changed ...
+
+* Deprecated ... (for soon-to-be-removed items)
+
+* Removed ... (for items that are now removed)
+
+* Fixed ...

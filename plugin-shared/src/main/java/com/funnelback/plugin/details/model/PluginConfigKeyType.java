@@ -51,6 +51,7 @@ public class PluginConfigKeyType {
         PASSWORD("password"),
         STRING("string");
 
+        @Getter
         private final String type;
     }
 

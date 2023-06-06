@@ -1,5 +1,7 @@
 package com.funnelback.plugin.docs.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -14,5 +16,7 @@ public enum MarketplaceSubtype {
     SERVLET_FILTER("Search servlet filter"),
     SEARCH_LIFECYCLE("Search lifecycle");
 
+    @Getter
     private final String type;
+
 }
