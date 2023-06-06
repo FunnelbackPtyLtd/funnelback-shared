@@ -16,6 +16,12 @@
             </includes>
         </fileSet>
         <fileSet filtered="true">
+            <directory>src/main/resources/ascii/sections</directory>
+            <includes>
+                <include>*.adoc</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true">
             <directory>docs</directory>
         </fileSet>
         <fileSet filtered="true">

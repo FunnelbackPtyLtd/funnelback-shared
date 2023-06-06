@@ -1,5 +1,7 @@
 package com.funnelback.plugin.docs.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -12,5 +14,6 @@ public enum Audience {
     DEVELOPER("Developer"),
     SITE_BUILDER("Site builder");
 
+    @Getter
     private final String type;
 }

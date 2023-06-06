@@ -1,5 +1,6 @@
 package com.funnelback.plugin.docs.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -18,5 +19,7 @@ public enum ProductTopic {
     RANKING_SORTING("Search ranking and sorting"),
     SYSTEM_ADMINISTRATION("System administration");
 
+    @Getter
     private final String topic;
+
 }

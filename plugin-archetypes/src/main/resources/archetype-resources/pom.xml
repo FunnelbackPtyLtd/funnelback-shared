@@ -66,6 +66,7 @@
                     <execution>
                         <goals>
                             <goal>schema-generator</goal>
+                            <goal>ascii-doc-generator</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -122,6 +123,9 @@
                                 </copy>
                                 <copy todir="target/${project.version}/docs/" overwrite="true">
                                     <fileset dir="${project.build.resources[0].directory}" file="plugin-schema.json" />
+                                </copy>
+                                <copy todir="target/${project.version}/docs/" overwrite="true">
+                                    <fileset dir="${project.build.resources[0].directory}" file="index.adoc" />
                                 </copy>
                             </tasks>
                         </configuration>
