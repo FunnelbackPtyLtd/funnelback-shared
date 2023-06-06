@@ -15,4 +15,6 @@ public interface PluginGatherer {
      * @throws Exception
      */
     public void gather(PluginGatherContext pluginGatherContext, PluginStore store) throws Exception;
+
+    public void gather(PluginGatherContext pluginGatherContext, PluginStore store, VirusScanner virusScanner) throws Exception;
 }

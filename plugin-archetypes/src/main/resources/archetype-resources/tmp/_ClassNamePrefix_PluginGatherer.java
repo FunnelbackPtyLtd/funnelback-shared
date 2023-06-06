@@ -16,4 +16,10 @@ public class _ClassNamePrefix_PluginGatherer implements PluginGatherer {
     public void gather(PluginGatherContext pluginGatherContext, PluginStore store) throws Exception {
         log.debug("Gathering documents");
     }
+
+    @Override
+    public void gather(PluginGatherContext pluginGatherContext, PluginStore store, VirusScanner virusScanner) throws Exception {
+        log.debug("Gathering documents with virus scanner);
+    }
+
 }
