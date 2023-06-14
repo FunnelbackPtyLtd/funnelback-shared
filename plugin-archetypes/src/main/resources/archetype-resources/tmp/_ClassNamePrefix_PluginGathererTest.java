@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import com.funnelback.plugin.gatherer.mock.MockPluginGatherContext;
 import com.funnelback.plugin.gatherer.mock.MockPluginStore;
+import com.funnelback.plugin.gatherer.mock.MockVirusScanner;
 
 public class _ClassNamePrefix_PluginGathererTest {
 

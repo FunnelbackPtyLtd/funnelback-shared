@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import com.funnelback.plugin.gatherer.PluginGatherContext;
 import com.funnelback.plugin.gatherer.PluginGatherer;
 import com.funnelback.plugin.gatherer.PluginStore;
+import com.funnelback.plugin.gatherer.VirusScanner;
 
 public class _ClassNamePrefix_PluginGatherer implements PluginGatherer {
 
@@ -19,7 +20,7 @@ public class _ClassNamePrefix_PluginGatherer implements PluginGatherer {
 
     @Override
     public void gather(PluginGatherContext pluginGatherContext, PluginStore store, VirusScanner virusScanner) throws Exception {
-        log.debug("Gathering documents with virus scanner);
+        log.debug("Gathering documents with virus scanner");
     }
 
 }
