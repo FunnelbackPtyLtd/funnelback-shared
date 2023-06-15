@@ -15,4 +15,8 @@ public interface PluginGatherer {
      * @throws Exception
      */
     public void gather(PluginGatherContext pluginGatherContext, PluginStore store) throws Exception;
+
+    default void gather(PluginGatherContext pluginGatherContext, PluginStore store, VirusScanner virusScanner) throws Exception {
+        // backward compatibility
+    }
 }
