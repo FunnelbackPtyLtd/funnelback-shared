@@ -16,5 +16,7 @@ public interface PluginGatherer {
      */
     public void gather(PluginGatherContext pluginGatherContext, PluginStore store) throws Exception;
 
-    public void gather(PluginGatherContext pluginGatherContext, PluginStore store, VirusScanner virusScanner) throws Exception;
+    default void gather(PluginGatherContext pluginGatherContext, PluginStore store, VirusScanner virusScanner) throws Exception {
+        this.gather(pluginGatherContext, store);
+    }
 }
