@@ -1,0 +1,19 @@
+Example: HTML source input file (http://example.com/itemdirectory/search.html)
+[source, xml]
+----
+<html>
+<body>
+<div>
+<ul class="item-list">
+<li class="item"> Item 1 </li>
+<li class="item"> Item 2 </li>
+<li class="item"> Item 3 </li>
+<li class="item"> Item 4 </li>
+<li class="item"> Item 5 </li>
+<li class="item"> Item 6 </li>
+</ul>
+</div>
+</body>
+</html>
+
+----

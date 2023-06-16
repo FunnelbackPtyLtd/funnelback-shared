@@ -1,0 +1,11 @@
+// ==========
+// This file contains a detailed description of the plugin.
+//
+// See: https://docs.squiz.net/funnelback/docs/latest/develop/plugins/documentation/index.html#detailed-desription for more details and examples.
+// ==========
+
+This is a detailed description for test plugin.
+
+This is a super cool plugin which can do wonders !!!
+
+Happy plugining !!

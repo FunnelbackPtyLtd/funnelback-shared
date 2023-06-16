@@ -1,7 +1,7 @@
 === Additional configuration settings
 
-Additional information about plugin configuration settings is listed here:
-
-* `Option 1/ Plugin config key 1` : Additional information about usage or implementation of this option or key.
-* `Option 2/ Plugin config key 2` : Additional information about usage or implementation of this option or key.
-* `Option 3/ Plugin config key 3` : Additional information about usage or implementation of this option or key.
+// ==========
+// Additional information about plugin configuration settings to be listed here.
+//
+// See: https://docs.squiz.net/funnelback/docs/latest/develop/plugins/documentation/index.html#additional-config-settings more details and examples.
+// ==========
