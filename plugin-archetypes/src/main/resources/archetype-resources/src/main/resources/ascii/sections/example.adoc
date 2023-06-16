@@ -1,3 +1,6 @@
-== Example
-
-Provide examples of plugin configuration and usage.
+// ==========
+// Examples showing how to use this plugin. All plugins should include a minimum of one example. More complex plugins
+// will require a set of plugins.
+//
+// See: https://docs.squiz.net/funnelback/docs/latest/develop/plugins/documentation/index.html#examples more details and examples.
+// ==========

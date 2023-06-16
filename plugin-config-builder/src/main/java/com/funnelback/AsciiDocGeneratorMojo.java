@@ -41,7 +41,7 @@ public class AsciiDocGeneratorMojo extends AbstractMojo {
         try {
             Class<?> clazz = getClassLoader(project).loadClass(packageName + ".PluginUtils");
             PluginUtilsBase pluginUtils = (PluginUtilsBase) clazz.getDeclaredConstructor().newInstance();
-            new AsciiDocGenerator(pluginUtils, resourcesPath, packageName, project.getResources().get(0).getDirectory()).generateASCIIDocument();
+            new AsciiDocGenerator(pluginUtils, resourcesPath, packageName, project.getVersion(), project.getResources().get(0).getDirectory()).generateASCIIDocument();
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             getLog().error("Failed to execute plugin");
             throw new MojoExecutionException(e.getMessage(), e);
