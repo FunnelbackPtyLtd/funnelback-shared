@@ -1,15 +1,15 @@
 package com.funnelback.plugin.gatherer.mock;
 
-import com.funnelback.plugin.gatherer.VirusScanner;
+import com.funnelback.plugin.gatherer.FileScanner;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * 
- * A Mock VirusScanner that may be used when testing the PluginGatherer.
+ * A Mock FileScanner that may be used when testing the PluginGatherer.
  *
  */
-public class MockVirusScanner implements VirusScanner{
+public class MockFileScanner implements FileScanner {
 
     @Getter
     @Setter
