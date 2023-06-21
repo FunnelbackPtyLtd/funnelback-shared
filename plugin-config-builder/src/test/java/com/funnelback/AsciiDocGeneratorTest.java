@@ -7,7 +7,7 @@ import com.funnelback.plugin.docs.model.MarketplaceSubtype;
 import com.funnelback.plugin.docs.model.ProductSubtopic;
 import com.funnelback.plugin.docs.model.ProductTopic;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONException;
+
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,7 +18,6 @@ import org.junit.runners.Parameterized;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -98,7 +97,7 @@ public class AsciiDocGeneratorTest {
     }
 
     @Test
-    public void test() throws IOException, JSONException {
+    public void test() throws IOException {
         File resourcesFolder = tmpFolder.newFolder();
         File projectResourcesFolder = new File("src/test/resources");
         new AsciiDocGenerator(pluginUtils, resourcesFolder.getCanonicalPath(),"example", "1.0.0", projectResourcesFolder.getCanonicalPath()).generateASCIIDocument();
@@ -164,7 +163,7 @@ public class AsciiDocGeneratorTest {
                 "\n" +
                 "[NOTE]\n" +
                 "====\n" +
-                "* The test-plugin-jsoup-filter1 filter should be placed at an appropriate position in the Jsoup filter chain. In most circumstances, this should be located toward the end of the Jsoup filter chain.\n" +
+                "* The `test-plugin-jsoup-filter1` filter should be placed at an appropriate position in the Jsoup filter chain. In most circumstances, this should be located toward the end of the Jsoup filter chain.\n" +
                 "* Jsoup filtering must be also enabled for this plugin to function. Check to see if there is a `filter.classes` set in the data source configuration. If it is set, the filter classes must include `JSoupProcessingFilterProvider` in the list of filters. If `filter.classes` is not set, then the default filter chain is applied and JSoup filtering is enabled.\n" +
                 "====\n" +
                 "\n" +
