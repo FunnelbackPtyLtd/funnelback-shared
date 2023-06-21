@@ -140,7 +140,7 @@ public class AsciiDocGenerator {
             content.append("\nAdd `").append(pluginUtils.getJsoupFilterClass()).append("` to the jsoup filter chain (`filter.jsoup.classes`):").append("\n\n")
                     .append("[NOTE]\n")
                     .append("====\n")
-                    .append("* The ").append(pluginUtils.getJsoupFilterClass()).append(" filter should be placed at an appropriate position in the Jsoup filter chain. In most circumstances, this should be located toward the end of the Jsoup filter chain.\n")
+                    .append("* The `").append(pluginUtils.getJsoupFilterClass()).append("` filter should be placed at an appropriate position in the Jsoup filter chain. In most circumstances, this should be located toward the end of the Jsoup filter chain.\n")
                     .append("* Jsoup filtering must be also enabled for this plugin to function. Check to see if there is a `filter.classes` set in the data source configuration. If it is set, the filter classes must include `JSoupProcessingFilterProvider` in the list of filters. If `filter.classes` is not set, then the default filter chain is applied and JSoup filtering is enabled.\n")
                     .append("====\n")
                     .append("\n----\n")
