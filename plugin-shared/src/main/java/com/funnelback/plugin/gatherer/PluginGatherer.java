@@ -1,6 +1,6 @@
 package com.funnelback.plugin.gatherer;
-
 /**
+ *
  * A plugin may implement this if the plugin is to support gathering of documents.
  * 
  * The plugin will only be called on custom collections.
@@ -18,5 +18,6 @@ public interface PluginGatherer {
 
     default void gather(PluginGatherContext pluginGatherContext, PluginStore store, FileScanner fileScanner) throws Exception {
         // backward compatibility
+        this.gather(pluginGatherContext, store);
     }
 }
