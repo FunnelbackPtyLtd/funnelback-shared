@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.funnelback</groupId>
     <artifactId>funnelback-shared-parent</artifactId>
-    <version>16.19.2327-SNAPSHOT</version>
+    <version>16.19.2328-SNAPSHOT</version>
   </parent>
 
   <description>Maven plugin to generate plugin configuration scheme for building plugins for the Funnelback Enterprise Search Engine</description>
