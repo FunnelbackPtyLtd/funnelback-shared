@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface StartUrlProvider {
 
-    default List<URL> extraStartUrls(StartUrlProviderContext context) {
+    default List<URL> extraStartUrls(StartUrlProviderContext context) throws Exception {
         return Collections.emptyList();
     }
 
