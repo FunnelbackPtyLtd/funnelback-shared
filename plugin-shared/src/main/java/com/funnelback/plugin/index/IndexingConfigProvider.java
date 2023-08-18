@@ -199,16 +199,16 @@ public interface IndexingConfigProvider {
     }
 
     /**
-     * Supply QIE weight that must be set on a document when the URL matches a query.
+     * Supply the QIE weight to a given URL.
      *
-     * For example, to set the QIE weight 0.3 for all documents mapping:
+     * For example, to set the QIE weight 0.3  to url, www.example.com:
      * www.example.com:
      *
      * <pre>{@code
      * consumer.applyQieWhenQueryMatches(0.3, "www.example.com");
      * }</pre>
      *
-     * The consumer may be called multiple times to configure multiple QIE weight to be
+     * The consumer may be called multiple times to configure multiple QIE weights to be
      * set by various URLs. For example:
      *
      * <pre>{@code

@@ -12,15 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A mock {@link QieByQueryConsumer} that may be used when testing {@link IndexingConfigProvider#supplyQieByQuery(IndexConfigProviderContext, QieByQueryConsumer)}.
+ * A mock {@link QieByQueryConsumer} that may be used when testing {@link IndexingConfigProvider#supplyQieByURL(IndexConfigProviderContext, QieByQueryConsumer)}.
  * 
  * Example:
  * <pre>{@code 
  * MockIndexConfigProviderContext mockContext = new MockIndexConfigProviderContext();
- * MockQieByQueryConsumer mockConsumer = new MockQieByQueryConsumer();
+ * MockQieByUrlConsumer mockConsumer = new MockQieByUrlConsumer();
  * ExamplePluginIndexingConfigProvider underTest = new ExamplePluginIndexingConfigProvider();
  * 
- * underTest.supplyQieByQuery(mockContext, mockConsumer);
+ * underTest.supplyQieByUrl(mockContext, mockConsumer);
  * 
  * Assert.assertTrue("Assert something useful.", mockConsumer.getInvocations().size() >= 0);
  * }</pre>
