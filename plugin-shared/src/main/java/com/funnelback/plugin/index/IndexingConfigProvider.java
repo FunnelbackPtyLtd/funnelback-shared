@@ -1,17 +1,11 @@
 package com.funnelback.plugin.index;
 
-import java.util.List;
-
-import com.funnelback.plugin.index.consumers.AutoCompletionConsumer;
-import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
-import com.funnelback.plugin.index.consumers.GscopeByQueryConsumer;
-import com.funnelback.plugin.index.consumers.GscopeByRegexConsumer;
-import com.funnelback.plugin.index.consumers.KillByExactMatchConsumer;
-import com.funnelback.plugin.index.consumers.KillByPartialMatchConsumer;
-import com.funnelback.plugin.index.consumers.MetadataMappingConsumer;
+import com.funnelback.plugin.index.consumers.*;
 import com.funnelback.plugin.index.model.indexingconfig.XmlIndexingConfig;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataSourceType;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataType;
+
+import java.util.List;
 
 /**
  * An interface that my be implemented in a plugin to control indexing.
@@ -202,6 +196,56 @@ public interface IndexingConfigProvider {
      */
     public default void supplyGscopesByRegex(IndexConfigProviderContext context, GscopeByRegexConsumer consumer) {
         
+    }
+
+    /**
+     * Supply QIE weight that must be set on a document when the URL matches a query.
+     *
+     * For example, to set the QIE weight 0.3 for all documents mapping:
+     * www.example.com:
+     *
+     * <pre>{@code
+     * consumer.applyQieWhenQueryMatches(0.3, "www.example.com");
+     * }</pre>
+     *
+     * The consumer may be called multiple times to configure multiple QIE weight to be
+     * set by various URLs. For example:
+     *
+     * <pre>{@code
+     * consumer.applyQieWhenQueryMatches(0.3, "www.example.com");
+     * consumer.applyQieWhenQueryMatches(0.6, "www.example1.com");
+     * consumer.applyQieWhenQueryMatches(0.1, "www.example2.com");
+     * }</pre>
+     *
+     * @param consumer Accepts only the first QIE weight that will be set when multiple QIe weights were set to the same URL.
+     */
+    public default void supplyQieByURL(IndexConfigProviderContext context, QieByUrlConsumer consumer) {
+
+    }
+
+    /**
+     * Supply QIE weight that must be set on a document when the URL matches a query.
+     *
+     * For example, to set the QIE weight 0.3 for all documents mapping:
+     * 'example':
+     *
+     * <pre>{@code
+     * consumer.applyQieWhenQueryMatches(0.3, "example");
+     * }</pre>
+     *
+     * The consumer may be called multiple times to configure multiple QIE weight to be
+     * set by various queries. For example:
+     *
+     * <pre>{@code
+     * consumer.applyQieWhenQueryMatches(0.3, "cat");
+     * consumer.applyQieWhenQueryMatches(0.6, "kitty");
+     * consumer.applyQieWhenQueryMatches(0.1, "dog");
+     * }</pre>
+     *
+     * @param consumer Accepts only the first QIE weight that will be set when the URL matches the query.
+     */
+    public default void supplyQieByQuery(IndexConfigProviderContext context, QieByQueryConsumer consumer) {
+
     }
     
     /**
