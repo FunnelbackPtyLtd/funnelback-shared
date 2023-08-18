@@ -3,6 +3,7 @@ package com.funnelback.plugin.index.consumers.mock;
 import com.funnelback.plugin.index.IndexConfigProviderContext;
 import com.funnelback.plugin.index.IndexingConfigProvider;
 import com.funnelback.plugin.index.consumers.QieByQueryConsumer;
+import com.funnelback.plugin.index.consumers.QieByUrlConsumer;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,10 +25,10 @@ import java.util.List;
  * Assert.assertTrue("Assert something useful.", mockConsumer.getInvocations().size() >= 0);
  * }</pre>
  */
-class MockQieByQueryConsumer implements QieByQueryConsumer {
+class MockQieByUrlConsumer implements QieByUrlConsumer {
 
     /**
-     * Holds the values that {@link MockQieByQueryConsumer#applyQieWhenQueryMatches(double, String)} was called with.
+     * Holds the values that {@link MockQieByUrlConsumer#applyQieWhenUrlMatches(double, String)} was called with.
      * 
      * Although this class is immutable, the fields are not.
      * 
@@ -37,18 +38,18 @@ class MockQieByQueryConsumer implements QieByQueryConsumer {
     @Getter
     public static class MockQieByQueryInvocation {
         private final double qieWeight;
-        private final String query;
+        private final String url;
     }
 
     /**
-     * Hold the values of all invocations of {@link MockQieByQueryConsumer#applyQieWhenQueryMatches(double, String)} .
+     * Hold the values of all invocations of {@link MockQieByUrlConsumer#applyQieWhenUrlMatches(double, String)} .
      * 
      */
     @Getter private final List<MockQieByQueryInvocation> invocations = new ArrayList<>();
     
     @Override
-    public synchronized void applyQieWhenQueryMatches(double qieWeight, String query) throws IllegalArgumentException {
-        this.invocations.add(new MockQieByQueryInvocation(qieWeight, query));
+    public synchronized void applyQieWhenUrlMatches(double qieWeight, String url) throws IllegalArgumentException {
+        this.invocations.add(new MockQieByQueryInvocation(qieWeight, url));
     }
 
 

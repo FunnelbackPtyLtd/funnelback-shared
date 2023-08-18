@@ -9,8 +9,9 @@ public interface QieByUrlConsumer {
      * @param url The URL whose QIE weight is to be set.
      * @throws IllegalArgumentException when one or more of the arguments is not valid.
      */
-    void applyQieWhenRegexMatches(double qieWeight, String url)
+    void applyQieWhenUrlMatches(double qieWeight, String url)
         throws IllegalArgumentException;
 }
+
 
 
