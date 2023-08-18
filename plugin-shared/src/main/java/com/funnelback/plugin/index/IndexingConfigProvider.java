@@ -8,7 +8,7 @@ import com.funnelback.plugin.index.model.metadatamapping.MetadataType;
 import java.util.List;
 
 /**
- * An interface that maybe implemented in a plugin to control indexing.
+ * An interface that may be implemented in a plugin to control indexing.
  *
  */
 public interface IndexingConfigProvider {
