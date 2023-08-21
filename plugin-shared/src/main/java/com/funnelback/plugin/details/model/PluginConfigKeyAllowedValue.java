@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * To define set `regex` {@link #regex}.
  * For example, to allow value to be in format 'number.number' ie. 1.2, 3.4:
  * <pre>{@code
- * new PluginConfigKeyAllowedValue(Pattern.compile("\\d\\.\\d")
+ * new PluginConfigKeyAllowedValue(Pattern.compile("\\d\\.\\d"))
  * }</pre>
  *
  * @param <T> type of key value
