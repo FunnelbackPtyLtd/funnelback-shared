@@ -22,9 +22,6 @@
             </includes>
         </fileSet>
         <fileSet filtered="true">
-            <directory>docs</directory>
-        </fileSet>
-        <fileSet filtered="true">
             <directory/>
             <includes>
                 <include>BUILD.md</include>
