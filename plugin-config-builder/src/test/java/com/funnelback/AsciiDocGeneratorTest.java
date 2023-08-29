@@ -107,7 +107,6 @@ public class AsciiDocGeneratorTest {
 
     private String getExpectedFile(){
         return "= Plugin: test\n" +
-                "\n" +
                 ":page-description: test desc\n" +
                 ":page-keywords: keyword1, keyword2, keyword3\n" +
                 ":page-content-type: Documentation|Plugins\n" +
