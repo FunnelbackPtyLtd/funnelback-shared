@@ -44,7 +44,7 @@ public class AsciiDocGenerator {
         try {
             getPluginTargets();
             // This section appends all metadata tags for the plugin
-            content.append("= Plugin: ").append(pluginUtils.getPluginName()).append("\n");
+            content.append("= Plugin: ").append(pluginUtils.getPluginName());
             content.append("\n:page-description: ").append(pluginUtils.getPluginDescription());
             content.append("\n:page-keywords: ");
             String result = readAsciiFile(projectResourcePath + KEYWORDS);
