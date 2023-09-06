@@ -150,7 +150,7 @@ public class AsciiDocGeneratorTest {
                 "\n" +
                 "=== Configuration settings\n" +
                 "\n" +
-                "The *configuration keys* section is where you do most of the configuration for your plugin. The settings enable you to control how the plugin behaves.\n" +
+                "The *configuration settings* section is where you do most of the configuration for your plugin. The settings enable you to control how the plugin behaves.\n" +
                 "\n" +
                 "NOTE: The configuration key names below are only used if you are configuring this plugin manually. The configuration keys are set in the data source or results page configuration to configure the plugin. When setting the keys manually you need to type in (or copy and paste) the key name and value.\n" +
                 "\n" +
