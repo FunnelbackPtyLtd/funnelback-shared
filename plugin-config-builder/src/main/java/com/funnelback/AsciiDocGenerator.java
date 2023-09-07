@@ -160,7 +160,7 @@ public class AsciiDocGenerator {
                        ". From the *Location* section, select the data source to which you would like to enable this plugin from the _Select a data source_ select list.\n" +
                        "\n");
 
-        content.append("NOTE: The plugin will take effect after setup steps are completed, and an advanced > full update of the data source has completed.\n" +
+        content.append("NOTE: The plugin will take effect after setup steps and an advanced > full update of the data source has completed.\n" +
                        "\n");
     }
     private void addResultsPageConfigurations(){
