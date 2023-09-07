@@ -95,6 +95,10 @@ public class AsciiDocGenerator {
                     content.append("\n=== Filter chain configuration\n" +
                             "\n" +
                             "This plugin uses filters which are used to apply transformations to the gathered content.\n" +
+                            "\n" +
+                            "The filters run in sequence and need be set in an order that makes sense. The plugin supplied filter(s) (as indicated in the listing) should be re-ordered to an appropriate point in the sequence.\n" +
+                            "\n" +
+                            "WARNING: Changes to the filter order affects the way the data source processes gathered documents. See: xref:build/data-sources/document-filtering/index.adoc[document filters documentation].\n" +
                             "\n");
                     // Document filters
                     if (StringUtils.isNotEmpty(pluginUtils.getFilterClass())) {
@@ -143,7 +147,7 @@ public class AsciiDocGenerator {
     private void addDataSourceResultsPageConfigurations() {
         // Plugin supports both data sources and results pages
         content.append(". Select menu:Plugins[] from the side navigation pane and click on the *" + pluginUtils.getPluginName() + "* tile.\n" +
-                       ". From the *Where would you like to apply this plugin?* section, decide if you wish to enable this plugin on a *data source* or a *results page* and select the corresponding radio button.\n" +
+                       ". From the *Location* section, decide if you wish to enable this plugin on a *data source* or a *results page* and select the corresponding radio button.\n" +
                        ". Select the data source or results page to which you would like to enable this plugin from the drop-down menu.\n" +
                        "\n" +
                        "NOTE: If enabled on a data source, the plugin will take effect as soon as the setup steps are completed, and an advanced > full update of the data source has completed. If enabled on a results page the plugin will take effect as soon as the setup steps are completed.\n" +
@@ -153,15 +157,15 @@ public class AsciiDocGenerator {
     private void addDataSourceConfigurations() {
 
         content.append(". Select menu:Plugins[] from the side navigation pane and click on the *" + pluginUtils.getPluginName() + "* tile.\n" +
-                       ". From the *Where would you like to apply this plugin?* section, select the data source to which you would like to enable this plugin from the _Select a data source_ select list.\n" +
+                       ". From the *Location* section, select the data source to which you would like to enable this plugin from the _Select a data source_ select list.\n" +
                        "\n");
 
-        content.append("NOTE: The plugin will take effect setup steps are completed, and an advanced > full update of the data source has completed.\n" +
+        content.append("NOTE: The plugin will take effect after setup steps are completed, and an advanced > full update of the data source has completed.\n" +
                        "\n");
     }
     private void addResultsPageConfigurations(){
         content.append(". Select menu:Plugins[] from the side navigation pane and click on the *" + pluginUtils.getPluginName() + "* tile.\n" +
-                ". From the *Where would you like to apply this plugin?* section, select the results page to which you would like to enable this plugin from the _Select a results page_ select list.\n" +
+                ". From the Location* section, select the results page to which you would like to enable this plugin from the _Select a results page_ select list.\n" +
                 "\n" +
                 "NOTE: The plugin will take effect as soon as you finish running through the plugin setup steps.\n" +
                 "\n");
@@ -170,35 +174,23 @@ public class AsciiDocGenerator {
     private void addDocumentFilter() {
         if (StringUtils.isNotEmpty(pluginUtils.getFilterClass())) {
             // Add note for append it to end of filter
-            content.append("Add `" + pluginUtils.getFilterClass() + "` to the filter chain (`filter.classes`):\n" +
-                           "\n" +
-                           "NOTE: The `" + pluginUtils.getFilterClass() + "` filter should be placed at an appropriate position in the filter chain. In most circumstances this should be located towards the end of the filter chain.\n" +
-                           "\n" +
-                           "----\n" +
-                           "filter.classes=<OTHER-FILTERS>:").append(pluginUtils.getFilterClass()).append(":<OTHER-FILTERS> //<1>\n" +
-                           "----\n" +
-                           "<1> `<OTHER-FILTERS>` is a colon-delimited list of zero or more filters in the existing filter chain. \n" +
-                           "\n");
+            content.append("==== Filter classes\n" +
+                            "\n" +
+                            "This plugin supplies a filter that runs in the main document filter chain: `+" + pluginUtils.getFilterClass() +"+`\n" +
+                            "\n" +
+                            "Drag the *+" + pluginUtils.getFilterClass() + "+* plugin filter to where you wish it to run in the filter chain sequence\n" +
+                            "\n");
         }
     }
     private void addJsoupFilter(){
         if (StringUtils.isNotEmpty(pluginUtils.getJsoupFilterClass())){
-            content.append("Add `" + pluginUtils.getJsoupFilterClass() + "` to the jsoup filter chain (`filter.jsoup.classes`):\n" +
+            content.append("==== Jsoup filter classes\n" +
                            "\n" +
-                           "[NOTE]\n" +
-                           "====\n" +
-                           "* The `" + pluginUtils.getJsoupFilterClass() + "` filter should be placed at an appropriate position in the Jsoup filter chain. In most circumstances, this should be located toward the end of the Jsoup filter chain.\n" +
-                           "* Jsoup filtering must be also enabled for this plugin to function. Check to see if there is a `filter.classes` set in the data source configuration. If it is set, the filter classes must include `JSoupProcessingFilterProvider` in the list of filters. If `filter.classes` is not set, then the default filter chain is applied and JSoup filtering is enabled.\n" +
-                           "====\n" +
+                           "This plugin supplies a filter that needs to run in the HTML document (Jsoup) filter chain:`+" + pluginUtils.getJsoupFilterClass() + "+`\n" +
                            "\n" +
-                           "----\n" +
-                           "filter.jsoup.classes=<OTHER-JSOUP-FILTERS>,").append(pluginUtils.getJsoupFilterClass()).append(",<OTHER-JSOUP-FILTERS> //<1>\n" +
-                           "----\n" +
-                           "<1> `<OTHER-JSOUP-FILTERS>` is a comma-delimited list of zero or more filters in the existing Jsoup filter chain.\n" +
+                           "Drag the *+" + pluginUtils.getJsoupFilterClass() + "+* plugin filter to where you wish it to run in the filter chain sequence\n" +
                            "\n");
         }
-        content.append("NOTE: The plugin will take effect after the configuration is published, and a full update of the data source has completed.\n" +
-                       "\n");
     }
 
 
@@ -315,11 +307,11 @@ public class AsciiDocGenerator {
             throw new RuntimeException("File '/src/main/resources/ascii/sections/" + EXAMPLE + "' with plugin examples needs to exist for successful compilation of plugin.");
         }
         String blankExample = "// ==========\n" +
-                "// Examples showing how to use this plugin. All plugins should include a minimum of one example. More complex plugins\n" +
-                "// will require a set of plugins.\n" +
-                "//\n" +
-                "// See: https://docs.squiz.net/funnelback/docs/latest/develop/plugins/documentation/index.html#examples more details and examples.\n" +
-                "// ==========\n";
+                              "// Examples showing how to use this plugin. All plugins should include a minimum of one example. More complex plugins\n" +
+                              "// will require a set of plugins.\n" +
+                              "//\n" +
+                              "// See: https://docs.squiz.net/funnelback/docs/latest/develop/plugins/documentation/index.html#examples more details and examples.\n" +
+                              "// ==========\n";
 
         String examples = readAsciiFile(projectResourcePath + EXAMPLE);
         content.append("\n").append("== Examples\n\n");

@@ -143,7 +143,7 @@ public class AsciiDocGeneratorTest {
                 "=== Enable the plugin\n" +
                 "\n" +
                 ". Select menu:Plugins[] from the side navigation pane and click on the *test* tile.\n" +
-                ". From the *Where would you like to apply this plugin?* section, decide if you wish to enable this plugin on a *data source* or a *results page* and select the corresponding radio button.\n" +
+                ". From the *Location* section, decide if you wish to enable this plugin on a *data source* or a *results page* and select the corresponding radio button.\n" +
                 ". Select the data source or results page to which you would like to enable this plugin from the drop-down menu.\n" +
                 "\n" +
                 "NOTE: If enabled on a data source, the plugin will take effect as soon as the setup steps are completed, and an advanced > full update of the data source has completed. If enabled on a results page the plugin will take effect as soon as the setup steps are completed.\n" +
@@ -213,29 +213,21 @@ public class AsciiDocGeneratorTest {
                 "\n" +
                 "This plugin uses filters which are used to apply transformations to the gathered content.\n" +
                 "\n" +
-                "Add `test-plugin-filter1:filter2` to the filter chain (`filter.classes`):\n" +
+                "The filters run in sequence and need be set in an order that makes sense. The plugin supplied filter(s) (as indicated in the listing) should be re-ordered to an appropriate point in the sequence.\n" +
                 "\n" +
-                "NOTE: The `test-plugin-filter1:filter2` filter should be placed at an appropriate position in the filter chain. In most circumstances this should be located towards the end of the filter chain.\n" +
+                "WARNING: Changes to the filter order affects the way the data source processes gathered documents. See: xref:build/data-sources/document-filtering/index.adoc[document filters documentation].\n" +
                 "\n" +
-                "----\n" +
-                "filter.classes=<OTHER-FILTERS>:test-plugin-filter1:filter2:<OTHER-FILTERS> //<1>\n" +
-                "----\n" +
-                "<1> `<OTHER-FILTERS>` is a colon-delimited list of zero or more filters in the existing filter chain. \n" +
+                "==== Filter classes\n" +
                 "\n" +
-                "Add `test-plugin-jsoup-filter1` to the jsoup filter chain (`filter.jsoup.classes`):\n" +
+                "This plugin supplies a filter that runs in the main document filter chain: `+test-plugin-filter1:filter2+`\n" +
                 "\n" +
-                "[NOTE]\n" +
-                "====\n" +
-                "* The `test-plugin-jsoup-filter1` filter should be placed at an appropriate position in the Jsoup filter chain. In most circumstances, this should be located toward the end of the Jsoup filter chain.\n" +
-                "* Jsoup filtering must be also enabled for this plugin to function. Check to see if there is a `filter.classes` set in the data source configuration. If it is set, the filter classes must include `JSoupProcessingFilterProvider` in the list of filters. If `filter.classes` is not set, then the default filter chain is applied and JSoup filtering is enabled.\n" +
-                "====\n" +
+                "Drag the *+test-plugin-filter1:filter2+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
                 "\n" +
-                "----\n" +
-                "filter.jsoup.classes=<OTHER-JSOUP-FILTERS>,test-plugin-jsoup-filter1,<OTHER-JSOUP-FILTERS> //<1>\n" +
-                "----\n" +
-                "<1> `<OTHER-JSOUP-FILTERS>` is a comma-delimited list of zero or more filters in the existing Jsoup filter chain.\n" +
+                "==== Jsoup filter classes\n" +
                 "\n" +
-                "NOTE: The plugin will take effect after the configuration is published, and a full update of the data source has completed.\n" +
+                "This plugin supplies a filter that needs to run in the HTML document (Jsoup) filter chain:`+test-plugin-jsoup-filter1+`\n" +
+                "\n" +
+                "Drag the *+test-plugin-jsoup-filter1+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
                 "\n" +
                 "=== Configuration files\n" +
                 "\n" +
