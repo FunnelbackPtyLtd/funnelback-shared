@@ -4,3 +4,5 @@ target
 .settings/
 .project
 .DS_Store
+src/main/resources/index.adoc
+src/main/resources/plugin-schema.json

@@ -140,68 +140,66 @@ public class AsciiDocGeneratorTest {
                 "\n" +
                 "== Usage\n" +
                 "\n" +
-                "=== Enable the plugin on data source\n" +
+                "=== Enable the plugin\n" +
                 "\n" +
-                "Enable the *test* plugin on your *data source* from the *plugins* screen in the search dashboard or add the following *data source configuration* to enable the plugin.\n" +
+                ". Select menu:Plugins[] from the side navigation pane and click on the *test* tile.\n" +
+                ". From the *Location* section, decide if you wish to enable this plugin on a *data source* or a *results page* and select the corresponding radio button.\n" +
+                ". Select the data source or results page to which you would like to enable this plugin from the drop-down menu.\n" +
                 "\n" +
-                "----\n" +
-                "plugin.test-id.enabled = true\n" +
-                "plugin.test-id.version = 1.0.0\n" +
-                "----\n" +
+                "NOTE: If enabled on a data source, the plugin will take effect as soon as the setup steps are completed, and an advanced > full update of the data source has completed. If enabled on a results page the plugin will take effect as soon as the setup steps are completed.\n" +
                 "\n" +
-                "Add `test-plugin-filter1:filter2` to the filter chain (`filter.classes`):\n" +
+                "=== Configuration settings\n" +
                 "\n" +
-                "NOTE: The `test-plugin-filter1:filter2` filter should be placed at an appropriate position in the filter chain. In most circumstances this should be located towards the end of the filter chain.\n" +
+                "The *configuration settings* section is where you do most of the configuration for your plugin. The settings enable you to control how the plugin behaves.\n" +
                 "\n" +
-                "----\n" +
-                "filter.classes=<OTHER-FILTERS>:test-plugin-filter1:filter2:<OTHER-FILTERS> //<1>\n" +
-                "----\n" +
-                "<1> `<OTHER-FILTERS>` is a colon-delimited list of zero or more filters in the existing filter chain. \n" +
+                "NOTE: The configuration key names below are only used if you are configuring this plugin manually. The configuration keys are set in the data source or results page configuration to configure the plugin. When setting the keys manually you need to type in (or copy and paste) the key name and value.\n" +
                 "\n" +
-                "Add `test-plugin-jsoup-filter1` to the jsoup filter chain (`filter.jsoup.classes`):\n" +
+                "==== key1\n" +
                 "\n" +
-                "[NOTE]\n" +
-                "====\n" +
-                "* The `test-plugin-jsoup-filter1` filter should be placed at an appropriate position in the Jsoup filter chain. In most circumstances, this should be located toward the end of the Jsoup filter chain.\n" +
-                "* Jsoup filtering must be also enabled for this plugin to function. Check to see if there is a `filter.classes` set in the data source configuration. If it is set, the filter classes must include `JSoupProcessingFilterProvider` in the list of filters. If `filter.classes` is not set, then the default filter chain is applied and JSoup filtering is enabled.\n" +
-                "====\n" +
+                "[%autowidth.spread]\n" +
+                "|===\n" +
+                "|Configuration key| `plugin.test.config.int.*`\n" +
+                "|Data type|integer\n" +
+                "|Default value|`+2+`\n" +
+                "|Allowed values|1,2,3\n" +
+                "|===\n" +
                 "\n" +
-                "----\n" +
-                "filter.jsoup.classes=<OTHER-JSOUP-FILTERS>,test-plugin-jsoup-filter1,<OTHER-JSOUP-FILTERS> //<1>\n" +
-                "----\n" +
-                "<1> `<OTHER-JSOUP-FILTERS>` is a comma-delimited list of zero or more filters in the existing Jsoup filter chain. \n" +
+                "desc1\n" +
                 "\n" +
-                "NOTE: The plugin will take effect after the configuration is published, and a full update of the data source has completed.\n" +
+                "==== key2\n" +
                 "\n" +
-                "=== Enable the plugin on results page\n" +
+                "[%autowidth.spread]\n" +
+                "|===\n" +
+                "|Configuration key| `plugin.test.config.int.*`\n" +
+                "|Data type|string\n" +
+                "|Default value|`+2+`\n" +
+                "|Value format|Allowed values must match the regular expression:\n" +
                 "\n" +
-                "Enable the *test* plugin on your *results page* from the *plugins* screen in the search dashboard or add the following *results page configuration* to enable the plugin.\n" +
+                "`++^[a-zA-Z0-9]+$++`\n" +
+                "|===\n" +
                 "\n" +
-                "----\n" +
-                "plugin.test-id.enabled = true\n" +
-                "plugin.test-id.version = 1.0.0\n" +
-                "----\n" +
+                "desc2\n" +
                 "\n" +
-                "NOTE: The plugin will take effect as soon as it is enabled and the configuration is published.\n" +
+                "==== key3\n" +
                 "\n" +
-                "=== Plugin configuration settings\n" +
+                "[%autowidth.spread]\n" +
+                "|===\n" +
+                "|Configuration key| `plugin.test.encrypted.pass`\n" +
+                "|Data type|Encrypted string\n" +
+                "|===\n" +
                 "\n" +
-                "The following options can be set in the data source or results page configuration to configure the plugin:\n" +
+                "desc3\n" +
                 "\n" +
-                "* `plugin.test.config.int.*`: (integer) desc1\n" +
-                "+\n" +
-                "Default value is `2`\n" +
-                "+\n" +
-                "Allowed values are: `1,2,3`\n" +
-                "* `plugin.test.config.int.*`: (string) desc2\n" +
-                "+\n" +
-                "Default value is `2`\n" +
-                "+\n" +
-                "Allowed values should adhere to regular expression: `++^[a-zA-Z0-9]+$++`\n" +
-                "* `plugin.test.encrypted.pass`: desc3\n" +
-                "* `plugin.test.config.list`: (array) Define a list of strings\n" +
-                "+\n" +
-                "Default value is `an empty list`\n" +
+                "==== List key\n" +
+                "\n" +
+                "[%autowidth.spread]\n" +
+                "|===\n" +
+                "|Configuration key| `plugin.test.config.list`\n" +
+                "|Data type|array\n" +
+                "|Default value|`+an empty list+`\n" +
+                "|===\n" +
+                "\n" +
+                "Define a list of strings\n" +
                 "\n" +
                 "=== Additional configuration settings\n" +
                 "\n" +
@@ -211,13 +209,37 @@ public class AsciiDocGeneratorTest {
                 "// See: https://docs.squiz.net/funnelback/docs/latest/develop/plugins/documentation/index.html#additional-config-settings more details and examples.\n" +
                 "// ==========\n" +
                 "\n" +
-                "=== Plugin configuration files\n" +
+                "=== Filter chain configuration\n" +
                 "\n" +
-                "==== Configuration file: config-rules.cfg\n" +
+                "This plugin uses filters which are used to apply transformations to the gathered content.\n" +
                 "\n" +
-                "*Description:* List of rules to gather data\n" +
+                "The filters run in sequence and need be set in an order that makes sense. The plugin supplied filter(s) (as indicated in the listing) should be re-ordered to an appropriate point in the sequence.\n" +
                 "\n" +
-                "*Configuration file format:* json\n" +
+                "WARNING: Changes to the filter order affects the way the data source processes gathered documents. See: xref:build/data-sources/document-filtering/index.adoc[document filters documentation].\n" +
+                "\n" +
+                "==== Filter classes\n" +
+                "\n" +
+                "This plugin supplies a filter that runs in the main document filter chain: `+test-plugin-filter1:filter2+`\n" +
+                "\n" +
+                "Drag the *+test-plugin-filter1:filter2+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
+                "\n" +
+                "==== Jsoup filter classes\n" +
+                "\n" +
+                "This plugin supplies a filter that needs to run in the HTML document (Jsoup) filter chain:`+test-plugin-jsoup-filter1+`\n" +
+                "\n" +
+                "Drag the *+test-plugin-jsoup-filter1+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
+                "\n" +
+                "=== Configuration files\n" +
+                "\n" +
+                "This plugin also uses the following configuration files to provide additional configuration.\n" +
+                "\n" +
+                "==== config-rules.cfg\n" +
+                "\n" +
+                "[%autowidth.spread]\n" +
+                "|===\n" +
+                "|Description|List of rules to gather data\n" +
+                "|Configuration file format|json\n" +
+                "|===\n" +
                 "\n" +
                 "Example: HTML source input file (http://example.com/itemdirectory/search.html)\n" +
                 "[source, xml]\n" +
@@ -240,17 +262,19 @@ public class AsciiDocGeneratorTest {
                 "----\n" +
                 "\n" +
                 "\n" +
+                "==== test.cfg\n" +
                 "\n" +
-                "==== Configuration file: test.cfg\n" +
-                "\n" +
-                "*Description:* test\n" +
-                "\n" +
-                "*Configuration file format:* json\n" +
+                "[%autowidth.spread]\n" +
+                "|===\n" +
+                "|Description|test\n" +
+                "|Configuration file format|json\n" +
+                "|===\n" +
                 "\n" +
                 "WARNING: Details for plugin configuration file `test.cfg` are not added. Please create the documentation in `/src/test/resources/ascii/sections/configfile_test.cfg.adoc`\n" +
                 "\n" +
                 "\n" +
                 "== Examples\n" +
+                "\n" +
                 "WARNING: It is recommended to include at least one example about usage of the plugin.\n" +
                 "\n" +
                 "== Change log\n" +
