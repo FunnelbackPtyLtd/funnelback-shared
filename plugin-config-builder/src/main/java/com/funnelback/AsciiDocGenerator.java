@@ -31,6 +31,7 @@ public class AsciiDocGenerator {
     private final String packageName;
     private final String projectVersion;
     private String pluginTargets;
+    private String pluginTargetsMetadata;
     private StringBuilder content = new StringBuilder();
     AsciiDocGenerator(PluginUtilsBase pluginUtils, String resourcesPath, String packageName, String projectVersion, String projectResourcePath) {
         this.pluginUtils = pluginUtils;
@@ -61,7 +62,7 @@ public class AsciiDocGenerator {
                                                                 .map(MarketplaceSubtype::getType)
                                                                 .collect(Collectors.joining("|")));
             content.append("\n:page-marketplace-version: ").append(projectVersion);
-            content.append("\n:page-plugin-scope: ").append(pluginTargets);
+            content.append("\n:page-plugin-scope: ").append(pluginTargetsMetadata);
             content.append("\n:page-plugin-package: ").append(packageName);
             content.append("\n:page-plugin-id: ").append(pluginUtils.getPluginId());
             content.append("\n:page-plugin-interface: ").append(getPluginInterfaces());
@@ -129,9 +130,11 @@ public class AsciiDocGenerator {
     private void getPluginTargets(){
         if (pluginUtils.getPluginTarget().contains(PluginTarget.DATA_SOURCE)){
             this.pluginTargets = PluginTarget.DATA_SOURCE.getTarget().toLowerCase();
+            this.pluginTargetsMetadata = PluginTarget.DATA_SOURCE.getTarget();
         }
         if (pluginUtils.getPluginTarget().contains(PluginTarget.RESULTS_PAGE)){
-            this.pluginTargets = StringUtils.join(this.pluginTargets, " or ", PluginTarget.RESULTS_PAGE.getTarget().toLowerCase());
+            this.pluginTargets = StringUtils.join(PluginTarget.DATA_SOURCE.getTarget().toLowerCase()," or ", PluginTarget.RESULTS_PAGE.getTarget().toLowerCase());
+            this.pluginTargetsMetadata = StringUtils.join(PluginTarget.DATA_SOURCE.getTarget(),"|", PluginTarget.RESULTS_PAGE.getTarget());
         }
     }
 

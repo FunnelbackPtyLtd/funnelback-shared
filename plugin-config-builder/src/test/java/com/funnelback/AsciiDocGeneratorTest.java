@@ -114,7 +114,7 @@ public class AsciiDocGeneratorTest {
                 ":page-marketplace-type: Plugin\n" +
                 ":page-marketplace-subtype: Custom gatherer|Search lifecycle\n" +
                 ":page-marketplace-version: 1.0.0\n" +
-                ":page-plugin-scope: data source or results page\n" +
+                ":page-plugin-scope: Data source|Results page\n" +
                 ":page-plugin-package: example\n" +
                 ":page-plugin-id: test-id\n" +
                 ":page-plugin-interface: gatherer|searchLifeCycle\n" +
