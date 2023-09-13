@@ -128,13 +128,15 @@ public class AsciiDocGenerator {
     }
 
     private void getPluginTargets(){
-        if (pluginUtils.getPluginTarget().contains(PluginTarget.DATA_SOURCE)){
-            this.pluginTargets = PluginTarget.DATA_SOURCE.getTarget().toLowerCase();
-            this.pluginTargetsMetadata = PluginTarget.DATA_SOURCE.getTarget();
-        }
-        if (pluginUtils.getPluginTarget().contains(PluginTarget.RESULTS_PAGE)){
+        if (pluginUtils.getPluginTarget().contains(PluginTarget.DATA_SOURCE) && pluginUtils.getPluginTarget().contains(PluginTarget.RESULTS_PAGE)){
             this.pluginTargets = StringUtils.join(PluginTarget.DATA_SOURCE.getTarget().toLowerCase()," or ", PluginTarget.RESULTS_PAGE.getTarget().toLowerCase());
             this.pluginTargetsMetadata = StringUtils.join(PluginTarget.DATA_SOURCE.getTarget(),"|", PluginTarget.RESULTS_PAGE.getTarget());
+        } else if (pluginUtils.getPluginTarget().contains(PluginTarget.DATA_SOURCE)){
+            this.pluginTargets = PluginTarget.DATA_SOURCE.getTarget().toLowerCase();
+            this.pluginTargetsMetadata = PluginTarget.DATA_SOURCE.getTarget();
+        } else if (pluginUtils.getPluginTarget().contains(PluginTarget.RESULTS_PAGE)){
+            this.pluginTargets = PluginTarget.RESULTS_PAGE.getTarget().toLowerCase();
+            this.pluginTargetsMetadata = PluginTarget.RESULTS_PAGE.getTarget();
         }
     }
 
