@@ -67,6 +67,7 @@ public class AsciiDocGeneratorTest {
                                         .defaultValue(2)
                                         .allowedValue(new PluginConfigKeyAllowedValue<>(List.of(1, 2, 3)))
                                         .label("key1")
+                                        .required(true)
                                         .description("desc1").build(),
                                 PluginConfigKey.<Integer>builder()
                                         .pluginId("test")
@@ -75,6 +76,7 @@ public class AsciiDocGeneratorTest {
                                         .defaultValue(2)
                                         .allowedValue(new PluginConfigKeyAllowedValue<>(Pattern.compile("^[a-zA-Z0-9]+$")))
                                         .label("key2")
+                                        .required(false)
                                         .description("desc2").build(),
                                 PluginConfigKeyEncrypted.builder()
                                         .pluginId("test")
@@ -162,6 +164,7 @@ public class AsciiDocGeneratorTest {
                 "|Data type|integer\n" +
                 "|Default value|`+2+`\n" +
                 "|Allowed values|1,2,3\n" +
+                "|Required|This setting is required\n" +
                 "|===\n" +
                 "\n" +
                 "desc1\n" +
@@ -176,6 +179,7 @@ public class AsciiDocGeneratorTest {
                 "|Value format|Allowed values must match the regular expression:\n" +
                 "\n" +
                 "`++^[a-zA-Z0-9]+$++`\n" +
+                "|Required|This setting is optional\n" +
                 "|===\n" +
                 "\n" +
                 "desc2\n" +
@@ -197,6 +201,7 @@ public class AsciiDocGeneratorTest {
                 "|Configuration key| `plugin.test.config.list`\n" +
                 "|Data type|array\n" +
                 "|Default value|`+an empty list+`\n" +
+                "|Required|This setting is optional\n" +
                 "|===\n" +
                 "\n" +
                 "Define a list of strings\n" +

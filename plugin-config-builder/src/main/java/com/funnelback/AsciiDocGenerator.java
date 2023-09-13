@@ -243,6 +243,11 @@ public class AsciiDocGenerator {
                                     "`++" + allowedValue.getRegex().toString() + "++`\n");
                         }
                     }
+                    if (key.isRequired()) {
+                        content.append("|Required|This setting is required\n");
+                    } else {
+                        content.append("|Required|This setting is optional\n");
+                    }
                     content.append("|===\n" +
                             "\n");
                     content.append(key.getDescription());
