@@ -168,7 +168,7 @@ public class AsciiDocGenerator {
     }
     private void addResultsPageConfigurations(){
         content.append(". Select menu:Plugins[] from the side navigation pane and click on the *" + pluginUtils.getPluginName() + "* tile.\n" +
-                ". From the Location* section, select the results page to which you would like to enable this plugin from the _Select a results page_ select list.\n" +
+                ". From the *Location* section, select the results page to which you would like to enable this plugin from the _Select a results page_ select list.\n" +
                 "\n" +
                 "NOTE: The plugin will take effect as soon as you finish running through the plugin setup steps.\n" +
                 "\n");
