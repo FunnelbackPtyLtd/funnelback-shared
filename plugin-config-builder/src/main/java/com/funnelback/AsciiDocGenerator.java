@@ -252,7 +252,10 @@ public class AsciiDocGenerator {
                     }
                     content.append("|===\n" +
                             "\n");
-                    content.append(key.getDescription());
+                    content.append(key.getDescription()).append("\n\n");
+                    if (key.getLongDescription() != null) {
+                        content.append(key.getLongDescription()).append("\n\n");;;
+                    }
                 } else if (configKey instanceof PluginConfigKeyEncrypted) {
                     PluginConfigKeyEncrypted encryptedKey = (PluginConfigKeyEncrypted) configKey;
                     content.append("==== " + encryptedKey.getLabel() + "\n" +
@@ -260,12 +263,19 @@ public class AsciiDocGenerator {
                                    "[%autowidth.spread]\n" +
                                    "|===\n" +
                                    "|Configuration key| `" + encryptedKey.getKey() +"`\n" +
-                                   "|Data type|Encrypted string\n" +
-                                   "|===\n" +
-                                   "\n" +
-                                   encryptedKey.getDescription());
+                                   "|Data type|Encrypted string\n");
+                    if (encryptedKey.isRequired()) {
+                        content.append("|Required|This setting is required\n");
+                    } else {
+                    content.append("|Required|This setting is optional\n");
+                    }
+                    content.append("|===\n" +
+                                   "\n");
+                    content.append(encryptedKey.getDescription()).append("\n\n");
+                    if (encryptedKey.getLongDescription() != null) {
+                        content.append(encryptedKey.getLongDescription()).append("\n\n");;
+                    }
                 }
-                content.append("\n\n");
             }
         }
     }

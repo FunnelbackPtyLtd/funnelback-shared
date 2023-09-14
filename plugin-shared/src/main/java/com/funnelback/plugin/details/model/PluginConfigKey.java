@@ -19,6 +19,7 @@ import lombok.NonNull;
  *      .id("foo.*")
  *      .label("Key label")
  *      .description("Key desc")
+ *      .longDescription("Longer more explanatory description of key")
  *      .required(true)
  *      .type(new PluginConfigKeyType(PluginConfigKeyType.Format.STRING))
  * }</pre>
@@ -47,10 +48,17 @@ public class PluginConfigKey<T> extends PluginConfigKeyBase {
      */
     @Getter private final PluginConfigKeyConditional showIfKeyHasValue;
 
+    public PluginConfigKey(@NonNull String pluginId, @NonNull String id, @NonNull String label, @NonNull String description,
+        boolean required, @NonNull PluginConfigKeyType type, T defaultValue,
+        PluginConfigKeyAllowedValue<T> allowedValue, PluginConfigKeyConditional showIfKeyHasValue) {
+        this(pluginId, id, label, description, null, required, type, defaultValue, allowedValue, showIfKeyHasValue);
+    }
+
     @Builder
-    public PluginConfigKey(@NonNull String pluginId, @NonNull String id, @NonNull String label, @NonNull String description, boolean required,
-        @NonNull PluginConfigKeyType type, T defaultValue, PluginConfigKeyAllowedValue<T> allowedValue, PluginConfigKeyConditional showIfKeyHasValue) {
-        super(pluginId, id, label, description, required, type);
+    public PluginConfigKey(@NonNull String pluginId, @NonNull String id, @NonNull String label, @NonNull String description,
+                           String longDescription, boolean required, @NonNull PluginConfigKeyType type, T defaultValue,
+                           PluginConfigKeyAllowedValue<T> allowedValue, PluginConfigKeyConditional showIfKeyHasValue) {
+        super(pluginId, id, label, description, longDescription, required, type);
         this.defaultValue = defaultValue;
         this.allowedValue = allowedValue;
         this.showIfKeyHasValue = showIfKeyHasValue;

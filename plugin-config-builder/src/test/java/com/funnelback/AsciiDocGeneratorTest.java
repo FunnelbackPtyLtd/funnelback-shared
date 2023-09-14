@@ -68,7 +68,17 @@ public class AsciiDocGeneratorTest {
                                         .allowedValue(new PluginConfigKeyAllowedValue<>(List.of(1, 2, 3)))
                                         .label("key1")
                                         .required(true)
-                                        .description("desc1").build(),
+                                        .description("desc1")
+                                        .longDescription("== H2 title\n" +
+                                                "\n" +
+                                                "This is a *long description* which includes _asciidoc formatting_.\n" +
+                                                "\n" +
+                                                "[source,json]\n" +
+                                                "----\n" +
+                                                "plugin.example=blah\n" +
+                                                "----\n" +
+                                                "\n" +
+                                                "NOTE: This is only an example!").build(),
                                 PluginConfigKey.<Integer>builder()
                                         .pluginId("test")
                                         .id("int.*")
@@ -83,6 +93,7 @@ public class AsciiDocGeneratorTest {
                                         .id("pass")
                                         .label("key3")
                                         .description("desc3")
+                                        .longDescription("This password must be 15 characters long with _special_ characters.")
                                         .required(true).build(),
                                 PluginConfigKey.<List<String>>builder()
                                         .pluginId("test")
@@ -169,6 +180,17 @@ public class AsciiDocGeneratorTest {
                 "\n" +
                 "desc1\n" +
                 "\n" +
+                "== H2 title\n" +
+                "\n" +
+                "This is a *long description* which includes _asciidoc formatting_.\n" +
+                "\n" +
+                "[source,json]\n" +
+                "----\n" +
+                "plugin.example=blah\n" +
+                "----\n" +
+                "\n" +
+                "NOTE: This is only an example!\n" +
+                "\n" +
                 "==== key2\n" +
                 "\n" +
                 "[%autowidth.spread]\n" +
@@ -190,9 +212,12 @@ public class AsciiDocGeneratorTest {
                 "|===\n" +
                 "|Configuration key| `plugin.test.encrypted.pass`\n" +
                 "|Data type|Encrypted string\n" +
+                "|Required|This setting is required\n" +
                 "|===\n" +
                 "\n" +
                 "desc3\n" +
+                "\n" +
+                "This password must be 15 characters long with _special_ characters.\n" +
                 "\n" +
                 "==== List key\n" +
                 "\n" +

@@ -58,8 +58,9 @@ public class SchemaGeneratorTest {
                         .id("pass")
                         .label("key2")
                         .description("desc2")
+                        .longDescription("longDesc2")
                         .required(true).build())).build(),
-            "{\"configFiles\":null,\"pluginName\":null,\"pluginId\":null,\"pluginDescription\":null,\"configKeys\":[{\"defaultValue\":2,\"showIfKeyHasValue\":null,\"description\":\"desc1\",\"id\":\"int.*\",\"allowedValue\":{\"regex\":null,\"values\":[1,2,3],\"type\":\"FIXED_LIST\"},\"label\":\"key1\",\"type\":{\"subtype\":null,\"type\":\"INTEGER\"},\"key\":\"plugin.test.config.int.*\",\"required\":false},{\"defaultValue\":null,\"showIfKeyHasValue\":null,\"description\":\"desc2\",\"id\":\"pass\",\"allowedValue\":null,\"label\":\"key2\",\"type\":{\"subtype\":null,\"type\":\"PASSWORD\"},\"key\":\"plugin.test.encrypted.pass\",\"required\":true}],\"metadataTags\":null,\"pluginTarget\":null,\"filterClass\":null,\"jsoupFilterClass\":null}",
+            "{\"configFiles\":null,\"pluginName\":null,\"pluginId\":null,\"pluginDescription\":null,\"configKeys\":[{\"defaultValue\":2,\"showIfKeyHasValue\":null,\"description\":\"desc1\",\"longDescription\":null,\"id\":\"int.*\",\"allowedValue\":{\"regex\":null,\"values\":[1,2,3],\"type\":\"FIXED_LIST\"},\"label\":\"key1\",\"type\":{\"subtype\":null,\"type\":\"INTEGER\"},\"key\":\"plugin.test.config.int.*\",\"required\":false},{\"defaultValue\":null,\"showIfKeyHasValue\":null,\"description\":\"desc2\",\"longDescription\":\"longDesc2\",\"id\":\"pass\",\"allowedValue\":null,\"label\":\"key2\",\"type\":{\"subtype\":null,\"type\":\"PASSWORD\"},\"key\":\"plugin.test.encrypted.pass\",\"required\":true}],\"metadataTags\":null,\"pluginTarget\":null,\"filterClass\":null,\"jsoupFilterClass\":null}",
             "With config keys"
         }, {
             PluginUtilsStub.builder()
