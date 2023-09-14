@@ -3,6 +3,7 @@ package com.funnelback.plugin.details.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.funnelback.common.utils.SharedConfigKeyUtils;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
+@AllArgsConstructor
 public abstract class PluginConfigKeyBase implements PluginConfigKeyDetails {
     /**
      * ID of a current plugin
@@ -34,10 +36,15 @@ public abstract class PluginConfigKeyBase implements PluginConfigKeyDetails {
     @Getter @NonNull private final String label;
 
     /**
-     * Description of plugin configuration key to display in plugin configuration admin UI
+     * Short description of plugin configuration key to display in plugin configuration admin UI
      * and in auto-generated documentation
      */
     @Getter @NonNull private final String description;
+
+    /**
+     * Longer description of plugin configuration key to display in plugin auto-generated documentation
+     */
+    @Getter private String longDescription;
 
     /**
      * Mark plugin configuration key as required or optional in plugin configuration admin UI

@@ -19,6 +19,7 @@ public class PluginConfigKeyDetailsDeserializer<T> {
     private PluginConfigKeyAllowedValue allowedValue;
     private String label;
     private String description;
+    private String longDescription;
     private boolean required;
     private PluginConfigKeyType type;
     private T defaultValue;
@@ -50,6 +51,11 @@ public class PluginConfigKeyDetailsDeserializer<T> {
 
     public PluginConfigKeyDetailsDeserializer constructDescription(String description) {
         this.description = description;
+        return this;
+    }
+
+    public PluginConfigKeyDetailsDeserializer constructLongDescription(String longDescription) {
+        this.longDescription = longDescription;
         return this;
     }
 

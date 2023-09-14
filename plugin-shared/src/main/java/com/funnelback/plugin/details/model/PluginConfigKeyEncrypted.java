@@ -24,10 +24,15 @@ import lombok.NonNull;
  */
 public class PluginConfigKeyEncrypted extends PluginConfigKeyBase {
 
+    public PluginConfigKeyEncrypted(@NonNull String pluginId, @NonNull String id, @NonNull String label,
+                                    @NonNull String description, boolean required) {
+        this(pluginId, id, label, description, null, required);
+    }
+
     @Builder
     public PluginConfigKeyEncrypted(@NonNull String pluginId, @NonNull String id, @NonNull String label,
-        @NonNull String description, boolean required) {
-        super(pluginId, id, label, description, required, new PluginConfigKeyType(PluginConfigKeyType.Format.PASSWORD));
+        @NonNull String description, String longDescription, boolean required) {
+        super(pluginId, id, label, description, longDescription, required, new PluginConfigKeyType(PluginConfigKeyType.Format.PASSWORD));
     }
 
     public String getKeyPrefix() {
