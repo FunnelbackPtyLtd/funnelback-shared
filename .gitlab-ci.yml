@@ -4,15 +4,15 @@ include:
     file: all.yml
 
 variables:
-  # This will supress any download for dependencies and plugins or upload messages which would clutter the console log.
+  # This will suppress any download for dependencies and plugins or upload messages which would clutter the console log.
   # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
   # Lifted from https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Maven.gitlab-ci.yml
   MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
 
 cache:
-    key: "$CI_JOB_NAME"
-    paths:
-        - .m2/repository
+  key: "$CI_JOB_NAME"
+  paths:
+    - .m2/repository
 
 stages:
   - build
@@ -20,65 +20,74 @@ stages:
   - release
 
 build:
-    stage: build
-    image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
+  stage: build
+  image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
+  script:
+    - mvn -B -U clean install
+    - echo $CI_COMMIT_BRANCH
+    - rm -rf .m2/repository/com/funnelback/
+  artifacts:
+    expire_in: 1 hr
+    paths:
+      - target/*
+    reports:
+      junit:
+        - "*/target/surefire-reports/TEST-*.xml"
+        - "*/target/failsafe-reports/TEST-*.xml"
+  tags:
+    - purpose/general
+    - access/squiz-network
 
-    script:
-        - mvn -B -U clean install
-        - echo $CI_COMMIT_BRANCH
-        - rm -rf .m2/repository/com/funnelback/
-
-    artifacts:
-        expire_in: 1 hr
-        paths:
-            - target/*
-        reports:
-            junit:
-                - "*/target/surefire-reports/TEST-*.xml"
-                - "*/target/failsafe-reports/TEST-*.xml"
-
-    tags:
-        - purpose/general
-        - access/squiz-network
+# Determine which job to run based on the branch name
+determine_job_to_run:
+  stage: deploy
+  script:
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "master" ]]; then
+        echo "Running 'release' job for master branch."
+        job_to_run="release"
+      elif [[ "$CI_COMMIT_BRANCH" == "develop" ]]; then
+        echo "Running 'publish_to_gitlab' job for develop branch."
+        job_to_run="publish_to_gitlab"
+      else
+        echo "Running 'release' job for other branches."
+        job_to_run="release"
+      fi
+    - echo "Job to run: $job_to_run"
+  tags:
+    - purpose/general
+    - access/squiz-network
 
 # Release a version of funnelback-shared to the gitlab package registry
 publish_to_gitlab:
-    only:
-        - /^(?!release-)/
-    extends:
-        - .template:funnelback:mvn-publish:push
-
-
-Trigger plugins mono repo:
-    stage: deploy
-    variables:
-        FUNNELBACK_SHARED_BRANCH: $CI_COMMIT_BRANCH
-    trigger:
-        project: funnelback-rnd/funnelback-plugins-mono-repo
-        branch: master
-        strategy: depend
+  extends:
+    - .template:funnelback:mvn-publish:push
+  stage: deploy
+  only:
+    - develop
+  tags:
+    - purpose/general
+    - access/squiz-network
 
 release:
-    stage: release
-    when: manual
-    only:
-        - /^release-.*$/
-    image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
-    before_script:
-        - ./pre-release.sh
-    script:
-        - mvn -B -U -P central-release clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
-        - rm -rf .m2/repository/com/funnelback/
-
-    artifacts:
-        expire_in: 1 hr
-        paths:
-            - target/*
-        reports:
-            junit:
-                - "*/target/surefire-reports/TEST-*.xml"
-                - "*/target/failsafe-reports/TEST-*.xml"
-
-    tags:
-        - purpose/general
-        - access/squiz-network
+  stage: release
+  when: manual
+  only:
+    - /^release-.*$/
+  image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
+  before_script:
+    - ./pre-release.sh
+  script:
+    - mvn -B -U -P central-release clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
+    - rm -rf .m2/repository/com/funnelback/
+  artifacts:
+    expire_in: 1 hr
+    paths:
+      - target/*
+    reports:
+      junit:
+        - "*/target/surefire-reports/TEST-*.xml"
+        - "*/target/failsafe-reports/TEST-*.xml"
+  tags:
+    - purpose/general
+    - access/squiz-network
