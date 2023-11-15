@@ -226,14 +226,15 @@ public class AsciiDocGenerator {
 
                     PluginConfigKeyAllowedValue allowedValue = configKey.getAllowedValue();
 
+                    // vertical bar replacements are to ensure the Asciidoc table formatting is not broken.
                     content.append("==== " + key.getLabel() + "\n" +
                                   "\n" +
                                   "[%autowidth.spread]\n" +
                                   "|===\n" +
-                                  "|Configuration key| `" + key.getKey() +"`\n" +
+                                  "|Configuration key| `" + key.getKey().replace("|","\\|") +"`\n" +
                                   "|Data type|" + keyTypeText +"\n");
                     if (defaultValue != null) {
-                        content.append("|Default value|`+" + defaultValue + "+`\n");
+                        content.append("|Default value|`+" + defaultValue.toString().replace("|","\\|") + "+`\n");
                     }
                     if (allowedValue != null){
                         if (allowedValue.getValues() != null && allowedValue.getValues().size() > 0) {
@@ -242,7 +243,8 @@ public class AsciiDocGenerator {
                         if (allowedValue.getRegex() != null) {
                             content.append("|Value format|Allowed values must match the regular expression:\n" +
                                     "\n" +
-                                    "`++" + allowedValue.getRegex().toString() + "++`\n");
+
+                                    "`++" + allowedValue.getRegex().toString().replace("|","\\|") + "++`\n");
                         }
                     }
                     if (key.isRequired()) {
@@ -262,7 +264,7 @@ public class AsciiDocGenerator {
                                    "\n" +
                                    "[%autowidth.spread]\n" +
                                    "|===\n" +
-                                   "|Configuration key| `" + encryptedKey.getKey() +"`\n" +
+                                   "|Configuration key| `" + encryptedKey.getKey().replace("|","\\|") +"`\n" +
                                    "|Data type|Encrypted string\n");
                     if (encryptedKey.isRequired()) {
                         content.append("|Required|This setting is required\n");
