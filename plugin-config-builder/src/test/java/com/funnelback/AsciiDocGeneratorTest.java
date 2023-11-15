@@ -84,7 +84,7 @@ public class AsciiDocGeneratorTest {
                                         .id("int.*")
                                         .type(PluginConfigKeyType.builder().type(PluginConfigKeyType.Format.STRING).build())
                                         .defaultValue(2)
-                                        .allowedValue(new PluginConfigKeyAllowedValue<>(Pattern.compile("^[a-zA-Z0-9]+$")))
+                                        .allowedValue(new PluginConfigKeyAllowedValue<>(Pattern.compile("^[a-zA-Z0-9]+|NULL$")))
                                         .label("key2")
                                         .required(false)
                                         .description("desc2").build(),
@@ -200,7 +200,7 @@ public class AsciiDocGeneratorTest {
                 "|Default value|`+2+`\n" +
                 "|Value format|Allowed values must match the regular expression:\n" +
                 "\n" +
-                "`++^[a-zA-Z0-9]+$++`\n" +
+                "`++^[a-zA-Z0-9]+\\|NULL$++`\n" +
                 "|Required|This setting is optional\n" +
                 "|===\n" +
                 "\n" +
