@@ -16,4 +16,6 @@ public class _ClassNamePrefix_IndexingConfigProvider implements IndexingConfigPr
     public void externalMetadata(IndexConfigProviderContext context, ExternalMetadataConsumer consumer) {
         log.trace("This method can be used to supply additional metadata, check IndexingConfigProvider for other methods.");
     }
+
+
 }

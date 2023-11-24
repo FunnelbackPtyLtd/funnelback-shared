@@ -3,7 +3,6 @@ package com.funnelback.plugin.index.consumers.mock;
 import com.funnelback.plugin.index.IndexConfigProviderContext;
 import com.funnelback.plugin.index.IndexingConfigProvider;
 import com.funnelback.plugin.index.consumers.QieByQueryConsumer;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -24,7 +23,7 @@ import java.util.List;
  * Assert.assertTrue("Assert something useful.", mockConsumer.getInvocations().size() >= 0);
  * }</pre>
  */
-class MockQieByQueryConsumer implements QieByQueryConsumer {
+public class MockQieByQueryConsumer implements QieByQueryConsumer {
 
     /**
      * Holds the values that {@link MockQieByQueryConsumer#applyQieWhenQueryMatches(double, String)} was called with.
@@ -33,11 +32,20 @@ class MockQieByQueryConsumer implements QieByQueryConsumer {
      * 
      */
     @EqualsAndHashCode
-    @AllArgsConstructor
     @Getter
     public static class MockQieByQueryInvocation {
         private final double qieWeight;
         private final String query;
+
+        MockQieByQueryInvocation(double qieWeight, String query) {
+            if ( qieWeight > 1 || qieWeight < 0 ) {
+                throw new IllegalArgumentException("Invalid QIE value: " + qieWeight + ". Its value shall be  0.0 - 1.0.");
+            }
+
+            this.qieWeight = qieWeight;
+            this.query = query;
+        }
+
     }
 
     /**

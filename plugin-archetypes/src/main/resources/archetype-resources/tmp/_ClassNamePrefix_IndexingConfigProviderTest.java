@@ -10,7 +10,10 @@ import com.funnelback.plugin.index.consumers.mock.MockGscopeByRegexConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockKillByExactMatchConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockKillByPartialMatchConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockMetadataMappingConsumer;
+import com.funnelback.plugin.index.consumers.mock.MockQieByUrlConsumer;
+import com.funnelback.plugin.index.consumers.mock.MockQieByQueryConsumer;
 import com.funnelback.plugin.index.mock.MockIndexConfigProviderContext;
+
 
 import java.util.List;
 
@@ -89,6 +92,28 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         _ClassNamePrefix_IndexingConfigProvider underTest = new _ClassNamePrefix_IndexingConfigProvider();
 
         underTest.supplyAutoCompletionEntriesForProfiles(List.of(mockContext), mockConsumer);
+
+        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+    }
+
+    @Test
+    public void supplyQIEByURLTest() {
+        MockIndexConfigProviderContext mockContext = new MockIndexConfigProviderContext();
+        MockQieByUrlConsumer mockConsumer = new MockQieByUrlConsumer();
+        _ClassNamePrefix_IndexingConfigProvider underTest = new _ClassNamePrefix_IndexingConfigProvider();
+
+        underTest.supplyQieByURL(mockContext, mockConsumer);
+
+        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+    }
+
+    @Test
+    public void supplyQIEByQueryTest() {
+        MockIndexConfigProviderContext mockContext = new MockIndexConfigProviderContext();
+        MockQieByQueryConsumer mockConsumer = new MockQieByQueryConsumer();
+        _ClassNamePrefix_IndexingConfigProvider underTest = new _ClassNamePrefix_IndexingConfigProvider();
+
+        underTest.supplyQieByQuery(mockContext, mockConsumer);
 
         Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
     }

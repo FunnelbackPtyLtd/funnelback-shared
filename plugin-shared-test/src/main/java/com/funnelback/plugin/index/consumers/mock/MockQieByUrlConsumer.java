@@ -4,7 +4,6 @@ import com.funnelback.plugin.index.IndexConfigProviderContext;
 import com.funnelback.plugin.index.IndexingConfigProvider;
 import com.funnelback.plugin.index.consumers.QieByQueryConsumer;
 import com.funnelback.plugin.index.consumers.QieByUrlConsumer;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A mock {@link QieByQueryConsumer} that may be used when testing {@link IndexingConfigProvider#supplyQieByURL(IndexConfigProviderContext, QieByQueryConsumer)}.
+ * A mock {@link QieByQueryConsumer} that may be used when testing {@link IndexingConfigProvider#supplyQieByURL(IndexConfigProviderContext, QieByUrlConsumer)}.
  * 
  * Example:
  * <pre>{@code 
@@ -25,7 +24,7 @@ import java.util.List;
  * Assert.assertTrue("Assert something useful.", mockConsumer.getInvocations().size() >= 0);
  * }</pre>
  */
-class MockQieByUrlConsumer implements QieByUrlConsumer {
+public class MockQieByUrlConsumer implements QieByUrlConsumer {
 
     /**
      * Holds the values that {@link MockQieByUrlConsumer#applyQieWhenUrlMatches(double, String)} was called with.
@@ -34,11 +33,19 @@ class MockQieByUrlConsumer implements QieByUrlConsumer {
      * 
      */
     @EqualsAndHashCode
-    @AllArgsConstructor
     @Getter
     public static class MockQieByQueryInvocation {
         private final double qieWeight;
         private final String url;
+
+        MockQieByQueryInvocation(double qieWeight, String url) {
+            if ( qieWeight > 1 || qieWeight < 0 ) {
+                throw new IllegalArgumentException("Invalid QIE value: " + qieWeight + ". Its value shall be  0.0 - 1.0.");
+            }
+
+            this.qieWeight = qieWeight;
+            this.url = url;
+        }
     }
 
     /**
