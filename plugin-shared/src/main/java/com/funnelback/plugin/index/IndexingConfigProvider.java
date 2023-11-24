@@ -201,23 +201,26 @@ public interface IndexingConfigProvider {
     /**
      * Supply the QIE weight to a given URL.
      *
-     * For example, to set the QIE weight 0.3  to url, www.example.com:
-     * www.example.com:
+     * For example, to set the QIE weight 0.3 for URL 'www.example.com' call:
      *
      * <pre>{@code
-     * consumer.applyQieWhenQueryMatches(0.3, "www.example.com");
+     * consumer.applyQieWhenUrlMatches(0.3, "www.example.com");
      * }</pre>
      *
      * The consumer may be called multiple times to configure multiple QIE weights to be
      * set by various URLs. For example:
      *
      * <pre>{@code
-     * consumer.applyQieWhenQueryMatches(0.3, "www.example.com");
-     * consumer.applyQieWhenQueryMatches(0.6, "www.example1.com");
-     * consumer.applyQieWhenQueryMatches(0.1, "www.example2.com");
+     * consumer.applyQieWhenUrlMatches(0.3, "www.example.com");
+     * consumer.applyQieWhenUrlMatches(0.6, "www.example1.com");
+     * consumer.applyQieWhenUrlMatches(0.1, "www.example2.com");
      * }</pre>
      *
-     * @param consumer Accepts only the first QIE weight that will be set when multiple QIe weights were set to the same URL.
+     * The QIE value is limited within the [0, 1] range. Any floating point value beyond this range will throw an `IllegalArgumentException`. For example, for the QIE value set to 1.3, the exception message will be:
+     *
+     * "Invalid QIE value: 1.3. Its value shall be  0.0 - 1.0."
+     *
+     * @param consumer Accepts only the first QIE weight that will be set when multiple QIE weights were set to the same URL.
      */
     public default void supplyQieByURL(IndexConfigProviderContext context, QieByUrlConsumer consumer) {
 
@@ -226,8 +229,8 @@ public interface IndexingConfigProvider {
     /**
      * Supply QIE weight that must be set on a document when the URL matches a query.
      *
-     * For example, to set the QIE weight 0.3 for all documents mapping:
-     * 'example':
+     * For example, to set the QIE weight 0.3 for all documents mapping matching query
+     * 'example' call:
      *
      * <pre>{@code
      * consumer.applyQieWhenQueryMatches(0.3, "example");
@@ -241,6 +244,10 @@ public interface IndexingConfigProvider {
      * consumer.applyQieWhenQueryMatches(0.6, "kitty");
      * consumer.applyQieWhenQueryMatches(0.1, "dog");
      * }</pre>
+     *
+     * The QIE value is limited within the [0, 1] range. Any floating point value beyond this range will throw an `IllegalArgumentException`. For example, for the QIE value set to 1.3, the exception message will be:
+     *
+     * "Invalid QIE value: 1.3. Its value shall be  0.0 - 1.0."
      *
      * @param consumer Accepts only the first QIE weight that will be set when the URL matches the query.
      */
