@@ -1,9 +1,16 @@
 package com.funnelback.plugin.test;
 
 import com.funnelback.plugin.PluginUtilsBase;
+import com.funnelback.plugin.details.model.PluginConfigKey;
+import com.funnelback.plugin.details.model.PluginConfigKeyAllowedValue;
+import com.funnelback.plugin.details.model.PluginConfigKeyType;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class AbstractPluginUtilsTest {
 
@@ -51,5 +58,30 @@ public abstract class AbstractPluginUtilsTest {
     @Test
     public void testConfigKeys(){
         Assert.assertTrue("At least one config key should be defined", getPluginUtils().getConfigKeys().size() > 0);
+    }
+
+    @Test
+    public void testPluginKeyCanHaveRegex(){
+        List<PluginConfigKeyType.Format> typesNotAllowedWithRegex = Stream.of(
+                        PluginConfigKeyType.Format.ARRAY,
+                        PluginConfigKeyType.Format.BOOLEAN,
+                        PluginConfigKeyType.Format.METADATA)
+                .collect(Collectors.toList());
+
+        getPluginUtils().getConfigKeys().forEach(cfgKey -> {
+            if (cfgKey instanceof PluginConfigKey) {
+                PluginConfigKey pCfgKey = (PluginConfigKey) cfgKey;
+                PluginConfigKeyType.Format keyType = pCfgKey.getType().getType();
+
+                if (typesNotAllowedWithRegex.contains(keyType)) {
+                    PluginConfigKeyAllowedValue av = pCfgKey.getAllowedValue();
+
+                    if (av != null) {
+                        Assert.assertThrows("Property allowedValue as regex pattern not allowed for: Array, Boolean and Metadata types.",
+                                NullPointerException.class, () -> av.getRegex()); // expecting nullPointer -> regex not defined
+                    }
+                }
+            }
+        });
     }
 }
