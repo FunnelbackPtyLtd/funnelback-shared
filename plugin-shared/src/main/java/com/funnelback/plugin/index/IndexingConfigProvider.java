@@ -254,6 +254,33 @@ public interface IndexingConfigProvider {
     public default void supplyQieByQuery(IndexConfigProviderContext context, QieByQueryConsumer consumer) {
 
     }
+
+    /**
+     * Supply queries to return a list of URLs to kill
+     *
+     * For example, to kill all documents matching query
+     * 'example' call:
+     *
+     * <pre>{@code
+     * consumer.killByQueryMatch("example");
+     * }</pre>
+     *
+     * Multiple queries can be supplied and query language may be used. For example,
+     *
+     * kill documents containing the term 'enterprise' or 'organisation',
+     * kill documents containing both 'public' and 'internet'.
+     *
+     * <pre>{@code
+     * consumer.killByQueryMatch("[enterprise organisation]");
+     * // Use mandatory inclusion operator to ensure both terms are present.
+     * consumer.killByQueryMatch("|public |internet");
+     * }</pre>
+     *
+     * @param consumer Accept the query with a given consumer.
+     */
+    default void killByQueryMatch(IndexConfigProviderContext context,KillByQueryMatchConsumer consumer) {
+
+    }
     
     /**
      * Supply gscopes that must be set on a document when a query matches the document.

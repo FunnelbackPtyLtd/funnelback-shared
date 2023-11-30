@@ -9,6 +9,7 @@ import com.funnelback.plugin.index.consumers.mock.MockGscopeByQueryConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockGscopeByRegexConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockKillByExactMatchConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockKillByPartialMatchConsumer;
+import com.funnelback.plugin.index.consumers.mock.MockKillByQueryMatchConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockMetadataMappingConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockQieByUrlConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockQieByQueryConsumer;
@@ -116,5 +117,17 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         underTest.supplyQieByQuery(mockContext, mockConsumer);
 
         Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+    }
+
+    @Test
+    public void killByQueryMatchTest() {
+        MockIndexConfigProviderContext mockContext = new MockIndexConfigProviderContext();
+        MockKillByQueryMatchConsumer mockConsumer = new MockKillByQueryMatchConsumer();
+        _ClassNamePrefix_IndexingConfigProvider underTest = new _ClassNamePrefix_IndexingConfigProvider();
+
+        underTest.killByQueryMatch(mockContext,mockConsumer);
+
+        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+
     }
 }
