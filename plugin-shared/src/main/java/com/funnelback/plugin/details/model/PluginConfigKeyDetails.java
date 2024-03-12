@@ -10,11 +10,11 @@ public interface PluginConfigKeyDetails<T> extends PluginDetailsBase {
         return null;
     }
 
-    default PluginConfigKeyAllowedValue getAllowedValue() {
+    default PluginConfigKeyAllowedValue<?> getAllowedValue() {
         return null;
     }
 
-    default PluginConfigKeyConditional getShowIfKeyHasValue() {
+    default PluginConfigKeyConditional<?> getShowIfKeyHasValue() {
         return null;
     }
 }

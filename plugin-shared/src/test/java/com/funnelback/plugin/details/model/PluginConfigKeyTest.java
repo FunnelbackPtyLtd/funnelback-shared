@@ -20,6 +20,11 @@ public class PluginConfigKeyTest {
         Assert.assertEquals("plugin.pluginId.config.foo.baz", underTest.getKey("baz"));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testKeyWithInvalidWildcard() {
+        getConfigKey("foo.*.*");
+    }
+
     @Test
     public void testKeyWithLongDesc() {
         var underTest = getConfigKeyWithLongDesc("foo");
