@@ -58,4 +58,16 @@ public class SharedConfigKeyUtils {
 
         return result.toString();
     }
+
+    public static void validateKey(String pattern) throws IllegalArgumentException {
+        if (pattern.startsWith(".")) {
+            throw new IllegalArgumentException("Plugin key pattern '" + pattern + "' cannot start with '.'");
+        }
+        if (pattern.endsWith(".")) {
+            throw new IllegalArgumentException("Plugin key pattern '" + pattern + "' cannot end with '.'");
+        }
+        if (pattern.contains("*.*")) {
+            throw new IllegalArgumentException("Plugin key pattern '" + pattern + "' may not contain consecutive wildcards");
+        }
+    }
 }
