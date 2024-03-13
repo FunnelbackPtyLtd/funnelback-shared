@@ -2,10 +2,9 @@ package com.funnelback.publicui.search.model.transaction;
 
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class SearchTransactionTest {
 
@@ -20,10 +19,10 @@ public class SearchTransactionTest {
         SearchTransaction facet = stOfType(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH);
         facet.setExtraSearchNameAndParentTransaction(Optional.of("facet"), Optional.of(parent));
         
-        Assert.assertEquals(Optional.empty(), parent.getEffectiveExtraSearchName());
-        Assert.assertEquals(Optional.empty(), facet.getEffectiveExtraSearchName());
-        Assert.assertEquals(Optional.of("alldoc"), extra.getEffectiveExtraSearchName());
-        Assert.assertEquals(Optional.of("alldoc"), extraFacet.getEffectiveExtraSearchName());
+        Assertions.assertEquals(Optional.empty(), parent.getEffectiveExtraSearchName());
+        Assertions.assertEquals(Optional.empty(), facet.getEffectiveExtraSearchName());
+        Assertions.assertEquals(Optional.of("alldoc"), extra.getEffectiveExtraSearchName());
+        Assertions.assertEquals(Optional.of("alldoc"), extraFacet.getEffectiveExtraSearchName());
         
     }
     

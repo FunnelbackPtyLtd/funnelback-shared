@@ -4,8 +4,8 @@ import com.funnelback.plugin.index.IndexConfigProviderContext;
 import com.funnelback.plugin.index.IndexingConfigProvider;
 import com.funnelback.plugin.index.consumers.KillByQueryMatchConsumer;
 import com.funnelback.plugin.index.mock.MockIndexConfigProviderContext;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class MockKillByQueryMatchConsumerTest {
 
@@ -19,8 +19,8 @@ public class MockKillByQueryMatchConsumerTest {
 
         underTest.killByQueryMatch(mockContext, mockConsumer);
 
-        Assert.assertEquals(1, mockConsumer.getInvocations().size());
-        Assert.assertEquals(new MockKillByQueryMatchConsumer.MockKillByQueryMatchInvocation(
+        Assertions.assertEquals(1, mockConsumer.getInvocations().size());
+        Assertions.assertEquals(new MockKillByQueryMatchConsumer.MockKillByQueryMatchInvocation(
              testQuery
         ), mockConsumer.getInvocations().get(0));
     }

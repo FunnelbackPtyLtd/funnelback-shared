@@ -43,10 +43,6 @@ public class SearchQuestionTestHelper {
     
     /**
      * Sets a profile config setting on the search question.
-     *  
-     * @param question
-     * @param key
-     * @param value
      */
     public static void setProfileConfigSetting(SearchQuestion question, String key, String value) {
         if(question.getCurrentProfileConfig() == null) {

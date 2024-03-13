@@ -6,116 +6,94 @@ import com.funnelback.plugin.docs.model.Audience;
 import com.funnelback.plugin.docs.model.MarketplaceSubtype;
 import com.funnelback.plugin.docs.model.ProductSubtopic;
 import com.funnelback.plugin.docs.model.ProductTopic;
-import lombok.RequiredArgsConstructor;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-@RunWith(Parameterized.class)
-@RequiredArgsConstructor
 public class AsciiDocGeneratorTest {
+    @TempDir private File tmpFolder;
 
-    @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
-
-    private final PluginUtilsBase pluginUtils;
-    private final String expectedFile;
-
-    private final String desc;
-
-    @Parameterized.Parameters(name = "{index}: {2}")
-    public static List<Object> data() {
-        return Arrays.asList(new Object[][]{{
-                PluginUtilsStub.builder()
-                        .pluginId("test-id")
-                        .pluginName("test")
-                        .pluginDescription("test desc")
-                        .pluginTarget(List.of(PluginTarget.DATA_SOURCE, PluginTarget.RESULTS_PAGE))
-                        .filterClass("test-plugin-filter1:filter2")
-                        .audience(List.of(Audience.SITE_BUILDER, Audience.ADMINISTRATOR, Audience.CONTENT_EDITOR))
-                        .marketplaceSubtype(List.of(MarketplaceSubtype.GATHERER, MarketplaceSubtype.SEARCH_LIFECYCLE))
-                        .productTopic(List.of(ProductTopic.ANALYTICS_REPORTING))
-                        .productSubtopic(List.of(ProductSubtopic.IntegrationDevelopment.PERFORMANCE, ProductSubtopic.DataSources.CUSTOM, ProductSubtopic.Indexing.INDEX_MANIPULATION))
-                        .jsoupFilterClass("test-plugin-jsoup-filter1")
-                        .configFiles(List.of(PluginConfigFile.builder()
-                                .name("config-rules.cfg")
-                                .format("json")
-                                .label("Config file")
-                                .description("List of rules to gather data")
-                                .build(),
-                                PluginConfigFile.builder()
-                                        .name("test.cfg")
-                                        .format("json")
-                                        .label("test file")
-                                        .description("test")
-                                        .build()))
-                        .configKeys(List.of(
-                                PluginConfigKey.<Integer>builder()
-                                        .pluginId("test")
-                                        .id("int.*")
-                                        .type(PluginConfigKeyType.builder().type(PluginConfigKeyType.Format.INTEGER).build())
-                                        .defaultValue(2)
-                                        .allowedValue(new PluginConfigKeyAllowedValue<>(List.of(1, 2, 3)))
-                                        .label("key1")
-                                        .required(true)
-                                        .description("desc1")
-                                        .longDescription("== H2 title\n" +
-                                                "\n" +
-                                                "This is a *long description* which includes _asciidoc formatting_.\n" +
-                                                "\n" +
-                                                "[source,json]\n" +
-                                                "----\n" +
-                                                "plugin.example=blah\n" +
-                                                "----\n" +
-                                                "\n" +
-                                                "NOTE: This is only an example!").build(),
-                                PluginConfigKey.<Integer>builder()
-                                        .pluginId("test")
-                                        .id("int.*")
-                                        .type(PluginConfigKeyType.builder().type(PluginConfigKeyType.Format.STRING).build())
-                                        .defaultValue(2)
-                                        .allowedValue(new PluginConfigKeyAllowedValue<>(Pattern.compile("^[a-zA-Z0-9]+|NULL$")))
-                                        .label("key2")
-                                        .required(false)
-                                        .description("desc2").build(),
-                                PluginConfigKeyEncrypted.builder()
-                                        .pluginId("test")
-                                        .id("pass")
-                                        .label("key3")
-                                        .description("desc3")
-                                        .longDescription("This password must be 15 characters long with _special_ characters.")
-                                        .required(true).build(),
-                                PluginConfigKey.<List<String>>builder()
-                                        .pluginId("test")
-                                        .id("list")
-                                        .type(PluginConfigKeyType.builder().type(PluginConfigKeyType.Format.ARRAY).subtype(PluginConfigKeyType.Format.STRING).build())
-                                        .defaultValue(List.of())
-                                        .label("List key")
-                                        .description("Define a list of strings")
-                                        .build())).build(),
-                "{\"configFiles\":null,\"pluginName\":\"test\",\"pluginId\":\"test-id\",\"pluginDescription\":\"test desc\",\"configKeys\":[],\"metadataTags\":null,\"pluginTarget\":null,\"filterClass\":null,\"jsoupFilterClass\":null}",
-                "Basic"
-            }
-        });
-    }
+    private final PluginUtilsBase pluginUtils = PluginUtilsStub.builder()
+        .pluginId("test-id")
+        .pluginName("test")
+        .pluginDescription("test desc")
+        .pluginTarget(List.of(PluginTarget.DATA_SOURCE, PluginTarget.RESULTS_PAGE))
+        .filterClass("test-plugin-filter1:filter2")
+        .audience(List.of(Audience.SITE_BUILDER, Audience.ADMINISTRATOR, Audience.CONTENT_EDITOR))
+        .marketplaceSubtype(List.of(MarketplaceSubtype.GATHERER, MarketplaceSubtype.SEARCH_LIFECYCLE))
+        .productTopic(List.of(ProductTopic.ANALYTICS_REPORTING))
+        .productSubtopic(List.of(ProductSubtopic.IntegrationDevelopment.PERFORMANCE, ProductSubtopic.DataSources.CUSTOM, ProductSubtopic.Indexing.INDEX_MANIPULATION))
+        .jsoupFilterClass("test-plugin-jsoup-filter1")
+        .configFiles(List.of(PluginConfigFile.builder()
+                .name("config-rules.cfg")
+                .format("json")
+                .label("Config file")
+                .description("List of rules to gather data")
+                .build(),
+            PluginConfigFile.builder()
+                .name("test.cfg")
+                .format("json")
+                .label("test file")
+                .description("test")
+                .build()))
+        .configKeys(List.of(
+            PluginConfigKey.<Integer>builder()
+                .pluginId("test")
+                .id("int.*")
+                .type(PluginConfigKeyType.builder().type(PluginConfigKeyType.Format.INTEGER).build())
+                .defaultValue(2)
+                .allowedValue(new PluginConfigKeyAllowedValue<>(List.of(1, 2, 3)))
+                .label("key1")
+                .required(true)
+                .description("desc1")
+                .longDescription("== H2 title\n" +
+                    "\n" +
+                    "This is a *long description* which includes _asciidoc formatting_.\n" +
+                    "\n" +
+                    "[source,json]\n" +
+                    "----\n" +
+                    "plugin.example=blah\n" +
+                    "----\n" +
+                    "\n" +
+                    "NOTE: This is only an example!").build(),
+            PluginConfigKey.<Integer>builder()
+                .pluginId("test")
+                .id("int.*")
+                .type(PluginConfigKeyType.builder().type(PluginConfigKeyType.Format.STRING).build())
+                .defaultValue(2)
+                .allowedValue(new PluginConfigKeyAllowedValue<>(Pattern.compile("^[a-zA-Z0-9]+|NULL$")))
+                .label("key2")
+                .required(false)
+                .description("desc2").build(),
+            PluginConfigKeyEncrypted.builder()
+                .pluginId("test")
+                .id("pass")
+                .label("key3")
+                .description("desc3")
+                .longDescription("This password must be 15 characters long with _special_ characters.")
+                .required(true).build(),
+            PluginConfigKey.<List<String>>builder()
+                .pluginId("test")
+                .id("list")
+                .type(PluginConfigKeyType.builder().type(PluginConfigKeyType.Format.ARRAY).subtype(PluginConfigKeyType.Format.STRING).build())
+                .defaultValue(List.of())
+                .label("List key")
+                .description("Define a list of strings")
+                .build())).build();
 
     @Test
     public void test() throws IOException {
-        File resourcesFolder = tmpFolder.newFolder();
         File projectResourcesFolder = new File("src/test/resources");
-        new AsciiDocGenerator(pluginUtils, resourcesFolder.getCanonicalPath(),"example", "1.0.0", projectResourcesFolder.getCanonicalPath()).generateASCIIDocument();
-        String actual = Files.readString(new File(resourcesFolder, AsciiDocGenerator.FILE_NAME).toPath());
-        Assert.assertEquals(getExpectedFile(), actual);
+        new AsciiDocGenerator(pluginUtils, tmpFolder.getCanonicalPath(),"example", "1.0.0", projectResourcesFolder.getCanonicalPath()).generateASCIIDocument();
+        String actual = Files.readString(new File(tmpFolder, AsciiDocGenerator.FILE_NAME).toPath());
+        Assertions.assertEquals(getExpectedFile(), actual);
     }
 
     private String getExpectedFile(){

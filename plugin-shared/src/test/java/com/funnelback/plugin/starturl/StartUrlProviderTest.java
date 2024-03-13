@@ -1,8 +1,8 @@
 package com.funnelback.plugin.starturl;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +14,7 @@ public class StartUrlProviderTest {
 
     private StartUrlProviderContext context;
 
-    @Before
+    @BeforeEach
     public void setup() {
         context = Mockito.mock(StartUrlProviderContext.class);
     }
@@ -23,15 +23,12 @@ public class StartUrlProviderTest {
     public void testSuccessful() throws Exception {
         StartUrlProvider provider = getStartURLProvider(MyStartUrls.class);
         List<URL> result = provider.extraStartUrls(context);
-        Assert.assertEquals(2, result.size());
+        Assertions.assertEquals(2, result.size());
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testBubbleUpException() throws Exception {
-        StartUrlProvider provider = getStartURLProvider(MyBrokenStartUrls.class);
-        // No result object required as exception expected
-        provider.extraStartUrls(context);
-
+    @Test
+    public void testBubbleUpException() {
+        Assertions.assertThrows(RuntimeException.class, () -> getStartURLProvider(MyBrokenStartUrls.class).extraStartUrls(context));
     }
 
     private <S> StartUrlProvider getStartURLProvider (Class<S> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
@@ -48,7 +45,7 @@ public class StartUrlProviderTest {
         throw new InstantiationException("Class is not of type 'StartUrlProvider'");
     }
 
-    public static class MyStartUrls implements StartUrlProvider {
+    private static class MyStartUrls implements StartUrlProvider {
         @Override
         public List<URL> extraStartUrls(StartUrlProviderContext context) throws MalformedURLException {
             URL url1 = new URL("https", "squiz.net", 443, "url1");
@@ -57,7 +54,7 @@ public class StartUrlProviderTest {
         }
     }
 
-    public static class MyBrokenStartUrls implements StartUrlProvider {
+    private static class MyBrokenStartUrls implements StartUrlProvider {
         @Override
         public List<URL> extraStartUrls(StartUrlProviderContext context) throws RuntimeException {
             throw new RuntimeException("Plugin is throwing error");

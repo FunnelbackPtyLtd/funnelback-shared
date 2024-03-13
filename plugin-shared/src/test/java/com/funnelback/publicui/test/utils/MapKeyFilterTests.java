@@ -2,12 +2,11 @@ package com.funnelback.publicui.test.utils;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.funnelback.publicui.utils.MapKeyFilter;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class MapKeyFilterTests {
 
@@ -23,16 +22,16 @@ public class MapKeyFilterTests {
         MapKeyFilter f = new MapKeyFilter(params);
         
         String[] actual = f.filter("^(p|m).*");
-        Assert.assertEquals(4, actual.length);
-        Assert.assertTrue(Arrays.asList(actual).contains("param1"));
-        Assert.assertTrue(Arrays.asList(actual).contains("param2"));
-        Assert.assertTrue(Arrays.asList(actual).contains("meta_X"));
-        Assert.assertTrue(Arrays.asList(actual).contains("meta_X_or"));
+        Assertions.assertEquals(4, actual.length);
+        Assertions.assertTrue(Arrays.asList(actual).contains("param1"));
+        Assertions.assertTrue(Arrays.asList(actual).contains("param2"));
+        Assertions.assertTrue(Arrays.asList(actual).contains("meta_X"));
+        Assertions.assertTrue(Arrays.asList(actual).contains("meta_X_or"));
         
-        Assert.assertEquals(1, f.filter(".*X$").length);
-        Assert.assertEquals("meta_X", f.filter(".*X$")[0]);
+        Assertions.assertEquals(1, f.filter(".*X$").length);
+        Assertions.assertEquals("meta_X", f.filter(".*X$")[0]);
         
-        Assert.assertEquals(0, f.filter("test").length);
+        Assertions.assertEquals(0, f.filter("test").length);
     }
     
 }

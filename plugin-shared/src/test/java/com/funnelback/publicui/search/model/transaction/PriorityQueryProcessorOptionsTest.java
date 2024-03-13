@@ -1,7 +1,7 @@
 package com.funnelback.publicui.search.model.transaction;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class PriorityQueryProcessorOptionsTest {
 
@@ -10,6 +10,6 @@ public class PriorityQueryProcessorOptionsTest {
         PriorityQueryProcessorOptions priorityQPOs = new PriorityQueryProcessorOptions();
         priorityQPOs.addOption("key", "first");
         priorityQPOs.addOption("key", "second");
-        Assert.assertEquals("first", priorityQPOs.getOptions().get("key"));
+        Assertions.assertEquals("first", priorityQPOs.getOptions().get("key"));
     }
 }

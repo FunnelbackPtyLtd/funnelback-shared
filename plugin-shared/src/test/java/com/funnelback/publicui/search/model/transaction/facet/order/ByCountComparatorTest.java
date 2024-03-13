@@ -9,11 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ByCountComparatorTest {
 
@@ -21,8 +19,7 @@ public class ByCountComparatorTest {
     public void testWithNullValues() {
         CategoryValue catV = mock(CategoryValue.class);
         when(catV.getCount()).thenReturn(null);
-        Assert.assertEquals(0, 
-            BY_COUNT_ASCENDING.compare(catV, catV));
+        Assertions.assertEquals(0, BY_COUNT_ASCENDING.compare(catV, catV));
     }
     
     
@@ -39,11 +36,10 @@ public class ByCountComparatorTest {
         catValues.add(catCountSet);
         catValues.add(catVNull);
         
+        catValues.sort(BY_COUNT_DESCENDING);
         
-        Collections.sort(catValues, BY_COUNT_DESCENDING);
-        
-        Assert.assertEquals(catCountSet, catValues.get(0));
-        Assert.assertEquals(catVNull, catValues.get(1));
+        Assertions.assertEquals(catCountSet, catValues.get(0));
+        Assertions.assertEquals(catVNull, catValues.get(1));
     }
     
     @Test
@@ -57,12 +53,10 @@ public class ByCountComparatorTest {
         List<CategoryValue> catValues = new ArrayList<>();
         catValues.add(catVNull);
         catValues.add(catCountSet);
+
+        catValues.sort(BY_COUNT_DESCENDING);
         
-        
-        
-        Collections.sort(catValues, BY_COUNT_DESCENDING);
-        
-        Assert.assertEquals(catCountSet, catValues.get(0));
-        Assert.assertEquals(catVNull, catValues.get(1));
+        Assertions.assertEquals(catCountSet, catValues.get(0));
+        Assertions.assertEquals(catVNull, catValues.get(1));
     }
 }

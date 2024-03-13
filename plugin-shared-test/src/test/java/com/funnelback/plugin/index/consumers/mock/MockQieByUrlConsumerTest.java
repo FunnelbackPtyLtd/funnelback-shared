@@ -5,10 +5,10 @@ import com.funnelback.plugin.index.IndexingConfigProvider;
 import com.funnelback.plugin.index.consumers.QieByUrlConsumer;
 import com.funnelback.plugin.index.mock.MockIndexConfigProviderContext;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 
 public class MockQieByUrlConsumerTest {
 
@@ -24,7 +24,7 @@ public class MockQieByUrlConsumerTest {
 
     private MockQieByUrlConsumer mockConsumer;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockContext = new MockIndexConfigProviderContext();
         mockConsumer = new MockQieByUrlConsumer();
@@ -37,8 +37,8 @@ public class MockQieByUrlConsumerTest {
 
         underTest.supplyQieByURL(mockContext, mockConsumer);
 
-        Assert.assertEquals(1, mockConsumer.getInvocations().size());
-        Assert.assertEquals(new MockQieByUrlConsumer.MockQieByQueryInvocation(
+        Assertions.assertEquals(1, mockConsumer.getInvocations().size());
+        Assertions.assertEquals(new MockQieByUrlConsumer.MockQieByQueryInvocation(
                 valid_qieWeight, testURL
         ), mockConsumer.getInvocations().get(0));
     }
@@ -49,7 +49,7 @@ public class MockQieByUrlConsumerTest {
         MockQieByUrlConsumerTest.QIEGreaterThanOneConfigProvider underTest = new MockQieByUrlConsumerTest.QIEGreaterThanOneConfigProvider();
 
         IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> underTest.supplyQieByURL(mockContext, mockConsumer));
-        Assert.assertEquals("Invalid QIE value: " + Invalid_qieWeight_greater_than_one + ". Its value shall be  0.0 - 1.0.", exception.getMessage());
+        Assertions.assertEquals("Invalid QIE value: " + Invalid_qieWeight_greater_than_one + ". Its value shall be  0.0 - 1.0.", exception.getMessage());
 
 
     }
@@ -60,7 +60,7 @@ public class MockQieByUrlConsumerTest {
         MockQieByUrlConsumerTest.QIESmallerThanZeroConfigProvider underTest = new MockQieByUrlConsumerTest.QIESmallerThanZeroConfigProvider();
 
         IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> underTest.supplyQieByURL(mockContext, mockConsumer));
-        Assert.assertEquals("Invalid QIE value: " + Invalid_qieWeight_smaller_than_zero + ". Its value shall be  0.0 - 1.0.", exception.getMessage());
+        Assertions.assertEquals("Invalid QIE value: " + Invalid_qieWeight_smaller_than_zero + ". Its value shall be  0.0 - 1.0.", exception.getMessage());
 
     }
 
@@ -84,7 +84,5 @@ public class MockQieByUrlConsumerTest {
         public void supplyQieByURL(IndexConfigProviderContext context, QieByUrlConsumer consumer) {
             consumer.applyQieWhenUrlMatches(Invalid_qieWeight_smaller_than_zero,testURL);
         }
-
     }
-
 }

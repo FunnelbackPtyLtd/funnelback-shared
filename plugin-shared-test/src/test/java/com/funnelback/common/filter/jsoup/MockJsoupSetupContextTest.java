@@ -4,21 +4,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class MockJsoupSetupContextTest {
 
     @Test
     public void testByDefaultConfigSettingsAreEmpty() {
-        Assert.assertEquals(0, new MockJsoupSetupContext().getConfigKeysWithPrefix("").size());
+        Assertions.assertEquals(0, new MockJsoupSetupContext().getConfigKeysWithPrefix("").size());
     }
     
     @Test
     public void testConfigOptionsCanBeSetAndRead() {
         MockJsoupSetupContext setupContext = new MockJsoupSetupContext();
         setupContext.setConfigSetting("a", "b");
-        Assert.assertEquals("b", setupContext.getConfigSetting("a"));
+        Assertions.assertEquals("b", setupContext.getConfigSetting("a"));
     }
     
     @Test
@@ -30,7 +30,7 @@ public class MockJsoupSetupContextTest {
         setupContext.setConfigSetting("ro", "n");
         Set<String> keysWithPrefix = setupContext.getConfigKeysWithPrefix("aa");
         
-        Assert.assertEquals(Set.of("aa", "aar"),  keysWithPrefix);
+        Assertions.assertEquals(Set.of("aa", "aar"), keysWithPrefix);
     }
     
     /**
@@ -45,12 +45,12 @@ public class MockJsoupSetupContextTest {
         
         Map<String, List<String>> matchingPattern = setupContext.getConfigKeysMatchingPattern("a.*.c");
         
-        Assert.assertTrue(matchingPattern.containsKey("a.b.c"));
-        Assert.assertFalse(matchingPattern.containsKey("a.c.d"));
-        Assert.assertTrue(matchingPattern.containsKey("a.d.c"));
+        Assertions.assertTrue(matchingPattern.containsKey("a.b.c"));
+        Assertions.assertFalse(matchingPattern.containsKey("a.c.d"));
+        Assertions.assertTrue(matchingPattern.containsKey("a.d.c"));
         
-        Assert.assertEquals(List.of("b"), matchingPattern.get("a.b.c"));
-        Assert.assertEquals(List.of("d"), matchingPattern.get("a.d.c"));
+        Assertions.assertEquals(List.of("b"), matchingPattern.get("a.b.c"));
+        Assertions.assertEquals(List.of("d"), matchingPattern.get("a.d.c"));
     }
     
     @Test
@@ -58,7 +58,7 @@ public class MockJsoupSetupContextTest {
         MockJsoupSetupContext ctx = new MockJsoupSetupContext();
         ctx.setPlugingConfigurationFileContent("foo.cfg", "hello");
         
-        Assert.assertEquals("hello", ctx.pluginConfigurationFile("foo.cfg").get());
+        Assertions.assertEquals("hello", ctx.pluginConfigurationFile("foo.cfg").orElseThrow());
     }
     
     @Test
@@ -66,14 +66,14 @@ public class MockJsoupSetupContextTest {
         MockJsoupSetupContext ctx = new MockJsoupSetupContext();
         ctx.setPlugingConfigurationFileContentAsBytes("foo.cfg", "hello".getBytes());
         
-        Assert.assertEquals("hello", new String(ctx.pluginConfigurationFileAsBytes("foo.cfg").get()));
-        Assert.assertEquals("hello", ctx.pluginConfigurationFile("foo.cfg").get());
+        Assertions.assertEquals("hello", new String(ctx.pluginConfigurationFileAsBytes("foo.cfg").orElseThrow()));
+        Assertions.assertEquals("hello", ctx.pluginConfigurationFile("foo.cfg").orElseThrow());
     }
     
     @Test
     public void readMissingPluginConfigurationFile() {
         MockJsoupSetupContext ctx = new MockJsoupSetupContext();
-        Assert.assertFalse(ctx.pluginConfigurationFile("foo.cfg").isPresent());
-        Assert.assertFalse(ctx.pluginConfigurationFileAsBytes("foo.cfg").isPresent());
+        Assertions.assertFalse(ctx.pluginConfigurationFile("foo.cfg").isPresent());
+        Assertions.assertFalse(ctx.pluginConfigurationFileAsBytes("foo.cfg").isPresent());
     }
 }

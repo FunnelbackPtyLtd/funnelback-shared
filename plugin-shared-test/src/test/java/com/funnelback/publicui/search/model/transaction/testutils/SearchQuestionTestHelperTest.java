@@ -3,8 +3,8 @@ package com.funnelback.publicui.search.model.transaction.testutils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -19,8 +19,8 @@ public class SearchQuestionTestHelperTest {
         profileConfig.put("foo", "bar");
         profileConfig.put("a", "b");
 
-        Assert.assertEquals("bar", transaction.getQuestion().getCurrentProfileConfig().get("foo"));
-        Assert.assertTrue(transaction.getQuestion().getCurrentProfileConfig().getRawKeys().contains("foo"));
-        Assert.assertTrue(transaction.getQuestion().getCurrentProfileConfig().getRawKeys().contains("a"));
+        Assertions.assertEquals("bar", transaction.getQuestion().getCurrentProfileConfig().get("foo"));
+        Assertions.assertTrue(transaction.getQuestion().getCurrentProfileConfig().getRawKeys().contains("foo"));
+        Assertions.assertTrue(transaction.getQuestion().getCurrentProfileConfig().getRawKeys().contains("a"));
     }
 }

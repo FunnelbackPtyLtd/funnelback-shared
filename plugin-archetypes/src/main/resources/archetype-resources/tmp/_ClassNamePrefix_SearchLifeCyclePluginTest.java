@@ -1,7 +1,7 @@
 package ${package};
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.testutils.TestableSearchTransaction;
@@ -17,8 +17,7 @@ public class _ClassNamePrefix_SearchLifeCyclePluginTest {
         // Update this to call the method(s) that should be tested. 
         new _ClassNamePrefix_SearchLifeCyclePlugin().postDatafetch(mockSearchLifeCycleContext, searchTransaction);
         
-        Assert.assertEquals("Change this assert statement to check something useful",
-            "hello", searchTransaction.getResponse().getResultPacket().getResults().get(0).getTitle());
+        Assertions.assertEquals("hello", searchTransaction.getResponse().getResultPacket().getResults().get(0).getTitle(),
+            "Change this assert statement to check something useful");
     }
-    
 }

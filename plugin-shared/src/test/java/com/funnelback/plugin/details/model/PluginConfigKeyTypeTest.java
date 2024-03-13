@@ -1,31 +1,27 @@
 package com.funnelback.plugin.details.model;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class PluginConfigKeyTypeTest {
-    @Rule public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void testType() {
         var underTest = new PluginConfigKeyType(PluginConfigKeyType.Format.INTEGER);
-        Assert.assertEquals(PluginConfigKeyType.Format.INTEGER, underTest.getType());
-        Assert.assertNull(underTest.getSubtype());
+        Assertions.assertEquals(PluginConfigKeyType.Format.INTEGER, underTest.getType());
+        Assertions.assertNull(underTest.getSubtype());
     }
 
     @Test
     public void testSubtype() {
         var underTest = new PluginConfigKeyType(PluginConfigKeyType.Format.ARRAY, PluginConfigKeyType.Format.STRING);
-        Assert.assertEquals(PluginConfigKeyType.Format.ARRAY, underTest.getType());
-        Assert.assertEquals(PluginConfigKeyType.Format.STRING, underTest.getSubtype());
+        Assertions.assertEquals(PluginConfigKeyType.Format.ARRAY, underTest.getType());
+        Assertions.assertEquals(PluginConfigKeyType.Format.STRING, underTest.getSubtype());
     }
 
     @Test
     public void  testMissingSubtype() {
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Type 'ARRAY' requires to provide subtype but found null");
-        new PluginConfigKeyType(PluginConfigKeyType.Format.ARRAY);
+        var exception = Assertions.assertThrows(IllegalArgumentException.class, () -> new PluginConfigKeyType(PluginConfigKeyType.Format.ARRAY));
+        Assertions.assertEquals("Type 'ARRAY' requires to provide subtype but found null", exception.getMessage());
     }
 }

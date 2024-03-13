@@ -4,8 +4,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.filter.api.DocumentType;
 import com.funnelback.filter.api.documents.BytesDocument;
@@ -20,8 +20,7 @@ public class MockFilterDocumentFactoryTest {
     public void testToBytesDocument() {
         FilterableDocument inDoc = MockDocuments.mockEmptyStringDoc().cloneWithStringContent(DocumentType.MIME_TEXT_PLAIN, "hello");
         FilterableDocument outDoc = underTest.toBytesDocument(inDoc);
-        Assert.assertEquals("Check the bytes turn back into the original string",
-            "hello", new String(outDoc.getCopyOfContents(), UTF_8));
+        Assertions.assertEquals("hello", new String(outDoc.getCopyOfContents(), UTF_8), "Check the bytes turn back into the original string");
     }
     
     @Test
@@ -29,8 +28,7 @@ public class MockFilterDocumentFactoryTest {
         BytesDocument inDoc = MockDocuments.mockEmptyByteDoc()
                 .cloneWithContent(DocumentType.MIME_HTML_TEXT, Optional.of(UTF_8), "hello".getBytes());
         
-        Assert.assertTrue("In the case that the charset is known we should get back a document",
-            underTest.toStringDocument(inDoc).isPresent());
+        Assertions.assertTrue(underTest.toStringDocument(inDoc).isPresent(), "In the case that the charset is known we should get back a document");
     }
     
     @Test
@@ -38,19 +36,18 @@ public class MockFilterDocumentFactoryTest {
         BytesDocument inDoc = MockDocuments.mockEmptyByteDoc()
                 .cloneWithContent(DocumentType.MIME_HTML_TEXT, Optional.empty(), "hello".getBytes());
         
-        Assert.assertTrue("When the charset is unknown the mock wont guess the charset and will return optionl empty.",
-            underTest.toStringDocument(inDoc).isEmpty());
+        Assertions.assertTrue(underTest.toStringDocument(inDoc).isEmpty(), "When the charset is unknown the mock wont guess the charset and will return optional empty.");
     }
     
     @Test
-    public void toStringocument_settingContent() {
+    public void toStringDocument_settingContent() {
         BytesDocument inDoc = MockDocuments.mockEmptyByteDoc()
                 .cloneWithContent(DocumentType.MIME_UNKNOWN, Optional.empty(), "old".getBytes());
         
         StringDocument outDoc = underTest.toStringDocument(inDoc, DocumentType.MIME_HTML_TEXT, "new");
         
-        Assert.assertEquals("Check the content was replaced.", "new", outDoc.getContentAsString());
-        Assert.assertEquals("Check the document type was updated.", DocumentType.MIME_HTML_TEXT, outDoc.getDocumentType());
-        Assert.assertTrue("All string documents have a charset.", outDoc.getCharset().isPresent());
+        Assertions.assertEquals("new", outDoc.getContentAsString(), "Check the content was replaced.");
+        Assertions.assertEquals(DocumentType.MIME_HTML_TEXT, outDoc.getDocumentType(), "Check the document type was updated.");
+        Assertions.assertTrue(outDoc.getCharset().isPresent(), "All string documents have a charset.");
     }
 }

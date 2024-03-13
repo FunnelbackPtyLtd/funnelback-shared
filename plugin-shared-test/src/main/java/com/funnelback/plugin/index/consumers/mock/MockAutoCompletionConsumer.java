@@ -1,26 +1,21 @@
 package com.funnelback.plugin.index.consumers.mock;
 
-import com.funnelback.plugin.index.IndexConfigProviderContext;
 import com.funnelback.plugin.index.IndexingConfigProvider;
 import com.funnelback.plugin.index.consumers.AutoCompletionConsumer;
-import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
 import com.funnelback.plugin.index.model.querycompletion.AutoCompletionEntry;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ListMultimap;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 /**
  * A mock {@link com.funnelback.plugin.index.consumers.AutoCompletionConsumer} that may be used when testing
  * {@link IndexingConfigProvider#supplyAutoCompletionEntriesForProfiles(List, AutoCompletionConsumer)}.
- * 
+
  * Example:
  * <pre>{@code 
  * MockIndexConfigProviderContext mockContext = new MockIndexConfigProviderContext();
@@ -35,11 +30,10 @@ import java.util.Set;
 public class MockAutoCompletionConsumer implements AutoCompletionConsumer {
 
     /**
-     * Holds the values that {@link MockAutoCompletionConsumer#applyAutoCompletionEntryToProfiles(AutoCompletionEntry, Set<String>)}
+     * Holds the values that {@link MockAutoCompletionConsumer#applyAutoCompletionEntryToProfiles(AutoCompletionEntry, Set)}
      * was called with.
-     * 
+
      * Although this class is immutable, the fields are not.
-     *
      */
     @EqualsAndHashCode
     @ToString

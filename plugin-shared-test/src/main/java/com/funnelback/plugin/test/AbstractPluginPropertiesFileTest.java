@@ -1,10 +1,10 @@
 package com.funnelback.plugin.test;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static com.funnelback.plugin.PluginUtil.getCurrentProjectVersion;
 import static com.funnelback.plugin.PluginUtil.matchesSemver;
-import static org.junit.Assert.assertTrue;
 
 /**
  * An abstract test which most plugins should have.
@@ -36,9 +36,7 @@ public abstract class AbstractPluginPropertiesFileTest {
         String pluginVersion = getCurrentProjectVersion().orElseThrow(
                 () -> new AssertionError(
                         "unable find a version from the plugin pom.xml file. " + checkVersionHelp));
-        assertTrue(
-                "Plugin version '" + pluginVersion + "' is not a valid semver version; " + checkVersionHelp,
-                matchesSemver(pluginVersion));
+        Assertions.assertTrue(matchesSemver(pluginVersion), "Plugin version '" + pluginVersion + "' is not a valid semver version; " + checkVersionHelp);
     }
 
 }

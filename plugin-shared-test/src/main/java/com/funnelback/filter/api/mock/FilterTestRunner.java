@@ -8,9 +8,6 @@ public class FilterTestRunner {
 
     /**
      * Runs junit tests that are found on the given class
-     * 
-     * @param classWithJunitTests
-     * @return
      */
     public static Result runTests(Class<?> classWithJunitTests) {
         JUnitCore junit = new JUnitCore();
@@ -27,6 +24,5 @@ public class FilterTestRunner {
             }
         }); 
         return junit.run(classWithJunitTests);
-       
     }
 }

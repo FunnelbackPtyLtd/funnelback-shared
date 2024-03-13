@@ -5,8 +5,8 @@ import com.funnelback.plugin.index.IndexingConfigProvider;
 import com.funnelback.plugin.index.consumers.AutoCompletionConsumer;
 import com.funnelback.plugin.index.mock.MockIndexConfigProviderContext;
 import com.funnelback.plugin.index.model.querycompletion.AutoCompletionEntry;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Set;
@@ -21,13 +21,13 @@ public class MockAutoCompletionConsumerTest {
 
         underTest.supplyAutoCompletionEntriesForProfiles(List.of(mockContext), mockConsumer);
 
-        Assert.assertEquals(1, mockConsumer.getInvocations().size());
-        Assert.assertEquals(new MockAutoCompletionConsumer.MockAutoCompletionInvocation(
+        Assertions.assertEquals(1, mockConsumer.getInvocations().size());
+        Assertions.assertEquals(new MockAutoCompletionConsumer.MockAutoCompletionInvocation(
             AutoCompletionEntry.builder().trigger("test").build(), Set.of("profile")
         ), mockConsumer.getInvocations().get(0));
     }
 
-    private class ExamplePluginIndexingConfigProvider implements IndexingConfigProvider {
+    private static class ExamplePluginIndexingConfigProvider implements IndexingConfigProvider {
         @Override
         public void supplyAutoCompletionEntriesForProfiles(
             List<IndexConfigProviderContext> contextForProfilesThatRunThisPlugin,

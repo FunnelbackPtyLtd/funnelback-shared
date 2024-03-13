@@ -1,63 +1,61 @@
 package com.funnelback.publicui.test.search.model.anchors;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
-
 
 public class AnchorDescriptionTest {
 
     @Test
     public void testEmpty() {
         AnchorDescription a = new AnchorDescription("blank anchortext");
-        Assert.assertEquals(0,a.getLinksTo().size());
-        Assert.assertEquals(0,a.getExternalLinkCount());
-        Assert.assertEquals(0,a.getInternalLinkCount());
-        Assert.assertEquals("blank anchortext",a.getAnchorText());
+        Assertions.assertEquals(0, a.getLinksTo().size());
+        Assertions.assertEquals(0, a.getExternalLinkCount());
+        Assertions.assertEquals(0, a.getInternalLinkCount());
+        Assertions.assertEquals("blank anchortext", a.getAnchorText());
     }
     
     @Test
     public void testSpaceFolding() {
         AnchorDescription a = new AnchorDescription("blank anchortext");
         AnchorDescription b = new AnchorDescription("blank  anchortext ");
-        Assert.assertEquals(a.getAnchorText(), b.getAnchorText());
+        Assertions.assertEquals(a.getAnchorText(), b.getAnchorText());
     }
     
     @Test
     public void testLinkType() {
         AnchorDescription a = new AnchorDescription("[k1]blank anchortext");
-        Assert.assertEquals("1",a.getLinkType());
-        Assert.assertEquals("blank anchortext",a.getAnchorText());
+        Assertions.assertEquals("1", a.getLinkType());
+        Assertions.assertEquals("blank anchortext", a.getAnchorText());
     }
     
     @Test
     public void testClickDataLinkType() {
         AnchorDescription a = new AnchorDescription("[K]blank anchortext");
-        Assert.assertEquals("K",a.getLinkType());
-        Assert.assertEquals("blank anchortext",a.getAnchorText());
+        Assertions.assertEquals("K", a.getLinkType());
+        Assertions.assertEquals("blank anchortext", a.getAnchorText());
     }
     
     @Test
     public void testExternal() {
         AnchorDescription a = new AnchorDescription("blank anchortext");
-        Assert.assertEquals(0,a.getLinksTo().size());
+        Assertions.assertEquals(0, a.getLinksTo().size());
         a.linkTo("-00000001");
-        Assert.assertEquals(0,a.getLinksTo().size());
-        Assert.assertEquals(1,a.getExternalLinkCount());
-        Assert.assertEquals(0,a.getInternalLinkCount());
+        Assertions.assertEquals(0, a.getLinksTo().size());
+        Assertions.assertEquals(1, a.getExternalLinkCount());
+        Assertions.assertEquals(0, a.getInternalLinkCount());
     }
     
     @Test
     public void testInternal() {
         AnchorDescription a = new AnchorDescription("blank anchortext");
-        Assert.assertEquals(0,a.getLinksTo().size());
-        Assert.assertFalse(a.getLinksTo().contains("00000101"));
+        Assertions.assertEquals(0, a.getLinksTo().size());
+        Assertions.assertFalse(a.getLinksTo().contains("00000101"));
         a.linkTo("00000101");
-        Assert.assertEquals(1,a.getLinksTo().size());
-        Assert.assertTrue(a.getLinksTo().contains("00000101"));
-        Assert.assertEquals(0,a.getExternalLinkCount());
-        Assert.assertEquals(1,a.getInternalLinkCount());
+        Assertions.assertEquals(1, a.getLinksTo().size());
+        Assertions.assertTrue(a.getLinksTo().contains("00000101"));
+        Assertions.assertEquals(0, a.getExternalLinkCount());
+        Assertions.assertEquals(1, a.getInternalLinkCount());
     }
-
 }

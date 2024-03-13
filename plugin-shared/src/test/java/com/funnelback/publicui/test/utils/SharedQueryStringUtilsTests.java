@@ -1,9 +1,10 @@
 package com.funnelback.publicui.test.utils;
 
 import java.util.Arrays;
+import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.publicui.utils.SharedQueryStringUtils;
 import com.google.common.collect.ListMultimap;
@@ -24,28 +25,28 @@ public class SharedQueryStringUtilsTests {
         
         ListMultimap<String, String> map = SharedQueryStringUtils.toMap("?" + input);
         
-        Assert.assertEquals(Arrays.asList("value1"), map.get("param1"));
-        Assert.assertEquals(Arrays.asList("first value", "second value"), map.get("param2"));
-        Assert.assertEquals(Arrays.asList("\n\t"), map.get("param3"));
-        Assert.assertEquals(Arrays.asList(""), map.get("param4"));
-        Assert.assertEquals(Arrays.asList("null"), map.get("param5"));
-        Assert.assertEquals(Arrays.asList("something=with=equals"), map.get("param6"));
-        Assert.assertEquals(Arrays.asList("something&with&ampersands"), map.get("param7"));
+        Assertions.assertEquals(List.of("value1"), map.get("param1"));
+        Assertions.assertEquals(Arrays.asList("first value", "second value"), map.get("param2"));
+        Assertions.assertEquals(List.of("\n\t"), map.get("param3"));
+        Assertions.assertEquals(List.of(""), map.get("param4"));
+        Assertions.assertEquals(List.of("null"), map.get("param5"));
+        Assertions.assertEquals(List.of("something=with=equals"), map.get("param6"));
+        Assertions.assertEquals(List.of("something&with&ampersands"), map.get("param7"));
         
         map = SharedQueryStringUtils.toMap(input);
 
-        Assert.assertEquals(Arrays.asList("value1"), map.get("param1"));
-        Assert.assertEquals(Arrays.asList("first value", "second value"), map.get("param2"));
-        Assert.assertEquals(Arrays.asList("\n\t"), map.get("param3"));
-        Assert.assertEquals(Arrays.asList(""), map.get("param4"));
-        Assert.assertEquals(Arrays.asList("null"), map.get("param5"));
-        Assert.assertEquals(Arrays.asList("something=with=equals"), map.get("param6"));
-        Assert.assertEquals(Arrays.asList("something&with&ampersands"), map.get("param7"));
+        Assertions.assertEquals(List.of("value1"), map.get("param1"));
+        Assertions.assertEquals(Arrays.asList("first value", "second value"), map.get("param2"));
+        Assertions.assertEquals(List.of("\n\t"), map.get("param3"));
+        Assertions.assertEquals(List.of(""), map.get("param4"));
+        Assertions.assertEquals(List.of("null"), map.get("param5"));
+        Assertions.assertEquals(List.of("something=with=equals"), map.get("param6"));
+        Assertions.assertEquals(List.of("something&with&ampersands"), map.get("param7"));
     }
     
     @Test
     public void testToMapEmptyString() {
-        Assert.assertTrue(SharedQueryStringUtils.toMap("").isEmpty());
+        Assertions.assertTrue(SharedQueryStringUtils.toMap("").isEmpty());
     }
     
 }

@@ -3,7 +3,6 @@ package com.funnelback.plugin.index.mock;
 import java.util.Optional;
 
 import java.io.File;
-import java.io.IOException;
 
 import com.funnelback.mock.helpers.MapBackedConfig;
 import com.funnelback.mock.helpers.MapBackedPluginConfigurationFiles;
@@ -48,7 +47,7 @@ public class MockIndexConfigProviderContext implements IndexConfigProviderContex
     @Delegate private final MapBackedPluginConfigurationFiles mapBackedPluginConfigurationFiles = new MapBackedPluginConfigurationFiles();
 
     @Override
-    public Optional<byte[]> readCollectionConfigFile(String... pathsBelowConf) throws IOException {
+    public Optional<byte[]> readCollectionConfigFile(String... pathsBelowConf) {
         this.setProfile(Optional.of("dummy-profile"));
         throw new RuntimeException("Not mocked.");
     }

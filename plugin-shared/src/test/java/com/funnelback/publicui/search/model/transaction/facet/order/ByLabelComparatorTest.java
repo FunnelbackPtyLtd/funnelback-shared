@@ -4,27 +4,22 @@ import static com.funnelback.publicui.search.model.transaction.facet.order.Facet
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ByLabelComparatorTest {
 
     @Test
     public void testSameLabels() {
-        Assert.assertEquals(0, 
-            BY_LABEL_ASCENDING.compare(categoryWithLabel("w"), categoryWithLabel("W")));
+        Assertions.assertEquals(0, BY_LABEL_ASCENDING.compare(categoryWithLabel("w"), categoryWithLabel("W")));
     }
     
     @Test
-    public void testLabelsDiffernt() {
-        Assert.assertEquals(-1, 
-            BY_LABEL_ASCENDING.compare(categoryWithLabel("a"), categoryWithLabel("b")));
+    public void testLabelsDiffer() {
+        Assertions.assertEquals(-1, BY_LABEL_ASCENDING.compare(categoryWithLabel("a"), categoryWithLabel("b")));
         
-        Assert.assertEquals(1, 
-            BY_LABEL_ASCENDING.compare(categoryWithLabel("c"), categoryWithLabel("b")));
+        Assertions.assertEquals(1, BY_LABEL_ASCENDING.compare(categoryWithLabel("c"), categoryWithLabel("b")));
     }
     
     private CategoryValue categoryWithLabel(String label) {
