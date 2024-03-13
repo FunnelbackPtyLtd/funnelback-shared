@@ -5,13 +5,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
@@ -29,15 +28,14 @@ public class FacetTest {
                     FacetConstraintJoin.AND,
                     FacetValues.FROM_SCOPED_QUERY,
                     new ArrayList<>(Arrays.asList(FacetValuesOrder.LABEL_ASCENDING, FacetValuesOrder.COUNT_DESCENDING)));
-        
-        
+
         facet.getAllValues().addAll(Arrays.asList(
             categoryWithLabel("b", "b", 10),
             categoryWithLabel("a", "a2", 2 ),
             categoryWithLabel("a", "a1", 1 ),
             categoryWithLabel("a", "a3", 3 ),
             categoryWithLabel("c", "c", 4)
-            ));
+        ));
         
         expectOrderOfValues("Should follow label order", facet, "a3", "a2", "a1", "b", "c");
         
@@ -62,8 +60,7 @@ public class FacetTest {
     }
     
     public void expectOrderOfValues(String msg, Facet facet, String ... values) {
-        Collections.sort(facet.getAllValues(), 
-            new FacetComparatorProvider().getComparatorWhenSortingAllValues(facet.getOrder(), Optional.ofNullable(facet.getCustomComparator())));
+        facet.getAllValues().sort(new FacetComparatorProvider().getComparatorWhenSortingAllValues(facet.getOrder(), Optional.ofNullable(facet.getCustomComparator())));
         
         List<String> actualValues = facet.getAllValues()
             .stream()
@@ -72,10 +69,9 @@ public class FacetTest {
         for(int i = 0; i < values.length; i++) {
             String expected = values[i];
             String actualValue = actualValues.get(i);
-            Assert.assertEquals(msg + " @ " + i, expected, actualValue);
+            Assertions.assertEquals(expected, actualValue, msg + " @ " + i);
         }
     }
-    
     
     private CategoryValue categoryWithLabel(String label, String data, int count) {
         CategoryValue catVal = mock(CategoryValue.class);

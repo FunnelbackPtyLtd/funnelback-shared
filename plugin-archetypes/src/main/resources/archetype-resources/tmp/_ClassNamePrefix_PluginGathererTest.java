@@ -1,7 +1,7 @@
 package ${package};
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.plugin.gatherer.mock.MockPluginGatherContext;
 import com.funnelback.plugin.gatherer.mock.MockPluginStore;
@@ -21,7 +21,7 @@ public class _ClassNamePrefix_PluginGathererTest {
         // try out your gatherer locally.
         underTest.gather(mockContext, mockStore, mockFileScanner);
         
-        Assert.assertTrue("Check how many documents were stored.", mockStore.getStored().size() >= 0);
+        Assertions.assertTrue(mockStore.getStored().size() >= 0, "Check how many documents were stored");
     }
     
 }

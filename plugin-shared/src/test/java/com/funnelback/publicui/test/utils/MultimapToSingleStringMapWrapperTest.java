@@ -1,15 +1,11 @@
 package com.funnelback.publicui.test.utils;
 
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.publicui.utils.MultimapToSingleStringMapWrapper;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 
 public class MultimapToSingleStringMapWrapperTest {
@@ -17,14 +13,12 @@ public class MultimapToSingleStringMapWrapperTest {
     @Test
     public void testEmpty() {
         ListMultimap<String, String> underlyingMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
-
         ListMultimap<String, String> underlyingMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
-
         ListMultimap<String, String> definedMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
         MultimapToSingleStringMapWrapper map = new MultimapToSingleStringMapWrapper(underlyingMetadata, underlyingMetadataSeparators, definedMetadataSeparators);
         
-        Assert.assertNull(map.get("foo"));
+        Assertions.assertNull(map.get("foo"));
     }
 
     @Test
@@ -40,27 +34,24 @@ public class MultimapToSingleStringMapWrapperTest {
 
         MultimapToSingleStringMapWrapper map = new MultimapToSingleStringMapWrapper(underlyingMetadata, underlyingMetadataSeparators, definedMetadataSeparators);
         
-        Assert.assertEquals("a|b;c:d", map.get("foo"));
+        Assertions.assertEquals("a|b;c:d", map.get("foo"));
     }
 
     @Test
     public void testPut() {
         ListMultimap<String, String> underlyingMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
-
         ListMultimap<String, String> underlyingMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
-
         ListMultimap<String, String> definedMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
         definedMetadataSeparators.putAll("foo", Lists.newArrayList("|","+"));
 
         MultimapToSingleStringMapWrapper map = new MultimapToSingleStringMapWrapper(underlyingMetadata, underlyingMetadataSeparators, definedMetadataSeparators);
 
-        Assert.assertEquals(null, map.get("foo"));
+        Assertions.assertNull(map.get("foo"));
 
         map.put("foo", "bar+goo|gar");
         
-        Assert.assertEquals("bar+goo|gar", map.get("foo"));
-        Assert.assertEquals(Lists.newArrayList("bar","goo","gar"), underlyingMetadata.get("foo"));
-        Assert.assertEquals(Lists.newArrayList("+","|"), underlyingMetadataSeparators.get("foo"));
+        Assertions.assertEquals("bar+goo|gar", map.get("foo"));
+        Assertions.assertEquals(Lists.newArrayList("bar","goo","gar"), underlyingMetadata.get("foo"));
+        Assertions.assertEquals(Lists.newArrayList("+","|"), underlyingMetadataSeparators.get("foo"));
     }
-
 }

@@ -4,48 +4,46 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.provider.Arguments;
 
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 
 public class ByLabelDescendingTest extends FacetComparatorBaseTest {
     
     @Override
-    public Comparator<CategoryValue> getComparator() {
+    protected Comparator<CategoryValue> getComparator() {
         return FacetComparators.BY_LABEL_DESCENDING;
     }
     
     @Override
-    public CategoryValue getNonNullValue() {
+    protected CategoryValue getNonNullValue() {
         return forLabel("a");
     }
     
     @Override
-    public Optional<CategoryValue> getNullValue() {
+    protected Optional<CategoryValue> getNullValue() {
         return Optional.of(forLabel(null));
     }
     
     @Override
-    public boolean getNullsLast() {
+    protected boolean getNullsLast() {
         return true;
     }
-    
-    @Parameters
-    public static Collection<Object[]> data() {
+
+    protected static Stream<Arguments> data() {
         CategoryValue cv_a = forLabel("a");
         CategoryValue cv_A = forLabel("A");
         CategoryValue cv_b = forLabel("b");
         CategoryValue cv_c = forLabel("c");
         CategoryValue cv_d = forLabel("d");
-        
-        return Arrays.asList(new Object[][] {     
-             { Arrays.asList(cv_b, cv_c, cv_a, cv_A, cv_d), 
-                 Arrays.asList(cv_d, cv_c, cv_b, cv_a, cv_A)},
-           });
+
+        return Stream.of(
+            Arguments.of(Arrays.asList(cv_b, cv_c, cv_a, cv_A, cv_d), Arrays.asList(cv_d, cv_c, cv_b, cv_a, cv_A))
+        );
     }
     
     private static CategoryValue forLabel(String label) {

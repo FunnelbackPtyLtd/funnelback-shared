@@ -1,7 +1,7 @@
 package ${package};
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.plugin.index.consumers.mock.MockAutoCompletionConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockExternalMetadataConsumer;
@@ -15,7 +15,6 @@ import com.funnelback.plugin.index.consumers.mock.MockQieByUrlConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockQieByQueryConsumer;
 import com.funnelback.plugin.index.mock.MockIndexConfigProviderContext;
 
-
 import java.util.List;
 
 public class _ClassNamePrefix_IndexingConfigProviderTest {
@@ -28,7 +27,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.externalMetadata(mockContext, mockConsumer);
         
-        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+        Assertions.assertTrue(mockConsumer.getInvocations().size() >= 0, "Check how many times the consumer was called");
     }
     
     @Test
@@ -39,7 +38,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.metadataMappings(mockContext, mockConsumer);
         
-        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+        Assertions.assertTrue(mockConsumer.getInvocations().size() >= 0, "Check how many times the consumer was called");
     }
     
     @Test
@@ -50,7 +49,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.killByExactMatch(mockContext, mockConsumer);
         
-        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+        Assertions.assertTrue(mockConsumer.getInvocations().size() >= 0, "Check how many times the consumer was called");
     }
     
     @Test
@@ -61,7 +60,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.killByPartialMatch(mockContext, mockConsumer);
         
-        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+        Assertions.assertTrue(mockConsumer.getInvocations().size() >= 0, "Check how many times the consumer was called");
     }
     
     @Test
@@ -72,7 +71,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.supplyGscopesByRegex(mockContext, mockConsumer);
         
-        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+        Assertions.assertTrue(mockConsumer.getInvocations().size() >= 0, "Check how many times the consumer was called");
     }
     
     @Test
@@ -83,7 +82,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
         
         underTest.supplyGscopesByQuery(mockContext, mockConsumer);
         
-        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+        Assertions.assertTrue(mockConsumer.getInvocations().size() >= 0, "Check how many times the consumer was called");
     }
 
     @Test
@@ -94,7 +93,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
 
         underTest.supplyAutoCompletionEntriesForProfiles(List.of(mockContext), mockConsumer);
 
-        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+        Assertions.assertTrue(mockConsumer.getInvocations().size() >= 0, "Check how many times the consumer was called");
     }
 
     @Test
@@ -105,7 +104,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
 
         underTest.supplyQieByURL(mockContext, mockConsumer);
 
-        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+        Assertions.assertTrue(mockConsumer.getInvocations().size() >= 0, "Check how many times the consumer was called");
     }
 
     @Test
@@ -116,7 +115,7 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
 
         underTest.supplyQieByQuery(mockContext, mockConsumer);
 
-        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
+        Assertions.assertTrue(mockConsumer.getInvocations().size() >= 0, "Check how many times the consumer was called");
     }
 
     @Test
@@ -127,7 +126,6 @@ public class _ClassNamePrefix_IndexingConfigProviderTest {
 
         underTest.killByQueryMatch(mockContext,mockConsumer);
 
-        Assert.assertTrue("Check how many times the consumer was called.", mockConsumer.getInvocations().size() >= 0);
-
+        Assertions.assertTrue(mockConsumer.getInvocations().size() >= 0, "Check how many times the consumer was called");
     }
 }

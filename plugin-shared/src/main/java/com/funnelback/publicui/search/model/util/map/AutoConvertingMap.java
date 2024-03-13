@@ -11,7 +11,7 @@ import lombok.extern.log4j.Log4j2;
 /**
  * A map that can auto convert the key from one type to the expected type.
  * 
- * For example if you have a map that is Map<String, String> but people are using Integer
+ * For example, if you have a map that is Map<String, String> but people are using Integer
  * keys you can use this to convert the Integer key to a String key.
  *
  * @param <K>

@@ -5,16 +5,16 @@ public interface PluginConfigurationFileSettingMock {
     /**
      * Sets the content of a plugin configuration file on the mock.
      * 
-     * @param filename the name of the plugins configuration file e.g. maps.cfg
-     * @param content
+     * @param filename the name of the plugin configuration file e.g. `maps.cfg`
+     * @param content plugin configuration data
      */
-    public void setPlugingConfigurationFileContent(String filename, String content);
+    void setPlugingConfigurationFileContent(String filename, String content);
     
     /**
      * Sets the content of a plugin configuration file on the mock.
      * 
-     * @param filename the name of the plugins configuration file e.g. maps.cfg
-     * @param content
+     * @param filename the name of the plugins configuration file e.g. `maps.cfg`
+     * @param content plugin configuration data
      */
-    public void setPlugingConfigurationFileContentAsBytes(String filename, byte[] content);
+    void setPlugingConfigurationFileContentAsBytes(String filename, byte[] content);
 }

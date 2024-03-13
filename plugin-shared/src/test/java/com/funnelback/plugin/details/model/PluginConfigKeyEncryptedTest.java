@@ -1,34 +1,34 @@
 package com.funnelback.plugin.details.model;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class PluginConfigKeyEncryptedTest {
     @Test
     public void testKey() {
         var underTest = getConfigKey("test");
-        Assert.assertEquals("plugin.pluginId.encrypted.", underTest.getKeyPrefix());
-        Assert.assertEquals("plugin.pluginId.encrypted.test", underTest.getKey());
-        Assert.assertNull(underTest.getLongDescription());
+        Assertions.assertEquals("plugin.pluginId.encrypted.", underTest.getKeyPrefix());
+        Assertions.assertEquals("plugin.pluginId.encrypted.test", underTest.getKey());
+        Assertions.assertNull(underTest.getLongDescription());
     }
 
     @Test
     public void testKeyWithWildcard() {
         var underTest = getConfigKey("foo.*");
-        Assert.assertEquals("plugin.pluginId.encrypted.foo.*", underTest.getKey());
-        Assert.assertEquals("plugin.pluginId.encrypted.foo.baz", underTest.getKey("baz"));
+        Assertions.assertEquals("plugin.pluginId.encrypted.foo.*", underTest.getKey());
+        Assertions.assertEquals("plugin.pluginId.encrypted.foo.baz", underTest.getKey("baz"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testKeyWithInvalidWildcard() {
-        getConfigKey("foo.*.*");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> getConfigKey("foo.*.*"));
     }
 
     @Test
     public void testKeyWithLongDesc() {
         var underTest = getConfigKeyWithLongDesc("foo");
-        Assert.assertEquals("plugin.pluginId.encrypted.foo", underTest.getKey());
-        Assert.assertEquals("longDesc", underTest.getLongDescription());
+        Assertions.assertEquals("plugin.pluginId.encrypted.foo", underTest.getKey());
+        Assertions.assertEquals("longDesc", underTest.getLongDescription());
     }
 
     private PluginConfigKeyEncrypted getConfigKey(String id) {

@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
 
@@ -15,9 +15,9 @@ public class SingleValueMapWrapperTests {
     private HashMap<String, String[]> map;
     private SingleValueMapWrapper wrapper;
     
-    @Before
+    @BeforeEach
     public void before() {
-        map = new HashMap<String, String[]>();
+        map = new HashMap<>();
         wrapper = new SingleValueMapWrapper(map);
         
         map.put("null", null);
@@ -29,33 +29,33 @@ public class SingleValueMapWrapperTests {
     @Test
     public void testClear() {
         wrapper.clear();
-        Assert.assertTrue(map.isEmpty());
+        Assertions.assertTrue(map.isEmpty());
     }
     
     @Test
     public void testContainsKey() {
-        Assert.assertTrue(wrapper.containsKey("null"));
-        Assert.assertTrue(wrapper.containsKey("0-sized-array"));
-        Assert.assertTrue(wrapper.containsKey("1-slot"));
-        Assert.assertTrue(wrapper.containsKey("3-slots"));
-        Assert.assertFalse(wrapper.containsKey("dummy"));
-        Assert.assertFalse(wrapper.containsKey(null));
+        Assertions.assertTrue(wrapper.containsKey("null"));
+        Assertions.assertTrue(wrapper.containsKey("0-sized-array"));
+        Assertions.assertTrue(wrapper.containsKey("1-slot"));
+        Assertions.assertTrue(wrapper.containsKey("3-slots"));
+        Assertions.assertFalse(wrapper.containsKey("dummy"));
+        Assertions.assertFalse(wrapper.containsKey(null));
     }
     
     @Test
     public void testContainsValue() {
-        Assert.assertTrue(wrapper.containsValue(null));
-        Assert.assertTrue(wrapper.containsValue("1"));
-        Assert.assertTrue(wrapper.containsValue("a"));
-        Assert.assertFalse(wrapper.containsValue("b"));
-        Assert.assertFalse(wrapper.containsValue("c"));
-        Assert.assertFalse(wrapper.containsValue("dummy"));
+        Assertions.assertTrue(wrapper.containsValue(null));
+        Assertions.assertTrue(wrapper.containsValue("1"));
+        Assertions.assertTrue(wrapper.containsValue("a"));
+        Assertions.assertFalse(wrapper.containsValue("b"));
+        Assertions.assertFalse(wrapper.containsValue("c"));
+        Assertions.assertFalse(wrapper.containsValue("dummy"));
     }
     
     @Test
     public void testEntrySet() {
         Set<Map.Entry<String, String>> entries = wrapper.entrySet();
-        Assert.assertEquals(entries.size(), map.entrySet().size());
+        Assertions.assertEquals(entries.size(), map.entrySet().size());
         
         for (Map.Entry<String, String[]> mapEntry: map.entrySet()) {
             String key = mapEntry.getKey();
@@ -69,59 +69,59 @@ public class SingleValueMapWrapperTests {
                     break;
                 }
             }
-            Assert.assertNotNull(entryFound);
+            Assertions.assertNotNull(entryFound);
             
             // Compare values
             if (value == null || value.length == 0) {
-                Assert.assertNull(entryFound.getValue());
+                Assertions.assertNull(entryFound.getValue());
             } else {
-                Assert.assertEquals(entryFound.getValue(), value[0]);
+                Assertions.assertEquals(entryFound.getValue(), value[0]);
             }
         }        
     }
     
     @Test
     public void testGet() {
-        Assert.assertEquals(null, wrapper.get("null"));
-        Assert.assertEquals(null, wrapper.get("0-sized-array"));
-        Assert.assertEquals("1", wrapper.get("1-slot"));
-        Assert.assertEquals("a", wrapper.get("3-slots"));
-        Assert.assertNull(wrapper.get("dummy"));
+        Assertions.assertNull(wrapper.get("null"));
+        Assertions.assertNull(wrapper.get("0-sized-array"));
+        Assertions.assertEquals("1", wrapper.get("1-slot"));
+        Assertions.assertEquals("a", wrapper.get("3-slots"));
+        Assertions.assertNull(wrapper.get("dummy"));
     }
     
     @Test
     public void testIsEmpty() {
-        Assert.assertFalse(wrapper.isEmpty());
+        Assertions.assertFalse(wrapper.isEmpty());
         wrapper.clear();
-        Assert.assertTrue(wrapper.isEmpty());
+        Assertions.assertTrue(wrapper.isEmpty());
         wrapper.put("ab", "cd");
-        Assert.assertFalse(wrapper.isEmpty());
-        Assert.assertTrue(new SingleValueMapWrapper(new HashMap<String, String[]>()).isEmpty());
+        Assertions.assertFalse(wrapper.isEmpty());
+        Assertions.assertTrue(new SingleValueMapWrapper(new HashMap<>()).isEmpty());
     }
     
     @Test
     public void testKeySet() {
-        Assert.assertEquals(map.keySet().size(), wrapper.keySet().size());
+        Assertions.assertEquals(map.keySet().size(), wrapper.keySet().size());
         
         Set<String> mapKeySet = map.keySet();
         for (String key: wrapper.keySet()) {
-            Assert.assertTrue(mapKeySet.contains(key));
+            Assertions.assertTrue(mapKeySet.contains(key));
         }
     }
     
     @Test
     public void testPut() {
         wrapper.put("newentry", "newvalue");
-        Assert.assertTrue(wrapper.containsKey("newentry"));
-        Assert.assertTrue(wrapper.containsValue("newvalue"));
-        Assert.assertEquals("newvalue", wrapper.get("newentry"));
-        Assert.assertTrue(map.containsKey("newentry"));
-        Assert.assertArrayEquals(new String[] {"newvalue"}, map.get("newentry"));
+        Assertions.assertTrue(wrapper.containsKey("newentry"));
+        Assertions.assertTrue(wrapper.containsValue("newvalue"));
+        Assertions.assertEquals("newvalue", wrapper.get("newentry"));
+        Assertions.assertTrue(map.containsKey("newentry"));
+        Assertions.assertArrayEquals(new String[] {"newvalue"}, map.get("newentry"));
     }
     
     @Test
     public void testPutAll() {
-        HashMap<String, String> newEntries = new HashMap<String, String>();
+        HashMap<String, String> newEntries = new HashMap<>();
         newEntries.put("new1", "value1");
         newEntries.put("new2", null);
         newEntries.put("1-slot", "9");
@@ -130,29 +130,27 @@ public class SingleValueMapWrapperTests {
         
         wrapper.putAll(newEntries);
         
-        Assert.assertEquals(sizeBefore + 2, wrapper.size());
+        Assertions.assertEquals(sizeBefore + 2, wrapper.size());
         testContainsKey();
         
-        Assert.assertTrue(newEntries.containsKey("new1"));
-        Assert.assertTrue(newEntries.containsKey("new2"));
-        Assert.assertTrue(newEntries.containsValue("value1"));
-        Assert.assertEquals("value1", wrapper.get("new1"));
-        Assert.assertEquals(null, wrapper.get("new2"));
-        Assert.assertEquals("9", wrapper.get("1-slot"));
-        Assert.assertArrayEquals(new String[] {"value1"}, map.get("new1"));
-        Assert.assertNull(map.get("new2"));
-        Assert.assertArrayEquals(new String[] {"9"}, map.get("1-slot"));
+        Assertions.assertTrue(newEntries.containsKey("new1"));
+        Assertions.assertTrue(newEntries.containsKey("new2"));
+        Assertions.assertTrue(newEntries.containsValue("value1"));
+        Assertions.assertEquals("value1", wrapper.get("new1"));
+        Assertions.assertNull(wrapper.get("new2"));
+        Assertions.assertEquals("9", wrapper.get("1-slot"));
+        Assertions.assertArrayEquals(new String[] {"value1"}, map.get("new1"));
+        Assertions.assertNull(map.get("new2"));
+        Assertions.assertArrayEquals(new String[] {"9"}, map.get("1-slot"));
     }
     
     @Test
     public void testCopy() {
-        Map<String, String> copy = new HashMap<String, String>(wrapper);
-        Assert.assertEquals(copy.size(), wrapper.size());
+        Map<String, String> copy = new HashMap<>(wrapper);
+        Assertions.assertEquals(copy.size(), wrapper.size());
         
         for (String key: copy.keySet()) {
-            Assert.assertEquals(copy.get(key), wrapper.get(key));
+            Assertions.assertEquals(copy.get(key), wrapper.get(key));
         }
     }
-    
 }
-

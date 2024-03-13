@@ -8,10 +8,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ByDateComparatorTest {
 
@@ -20,15 +19,10 @@ public class ByDateComparatorTest {
         List<CategoryValue> cats = getCats("Past week", "Today", "Yesterday", "2000", "1996", "lol what?");
         
         cats.sort(new ByDateComparator(false));
-        
-        Assert.assertEquals(Arrays.asList("Today","Yesterday","Past week","2000","1996","lol what?"), 
-            cats.stream().map(CategoryValue::getLabel).collect(Collectors.toList()));
-        
-        
+        Assertions.assertEquals(Arrays.asList("Today","Yesterday","Past week","2000","1996","lol what?"), cats.stream().map(CategoryValue::getLabel).collect(Collectors.toList()));
+
         cats.sort(new ByDateComparator(true));
-        
-        Assert.assertEquals(Arrays.asList("1996","2000","Past week","Yesterday","Today","lol what?"), 
-            cats.stream().map(CategoryValue::getLabel).collect(Collectors.toList()));
+        Assertions.assertEquals(Arrays.asList("1996","2000","Past week","Yesterday","Today","lol what?"), cats.stream().map(CategoryValue::getLabel).collect(Collectors.toList()));
     }
     
     @Test

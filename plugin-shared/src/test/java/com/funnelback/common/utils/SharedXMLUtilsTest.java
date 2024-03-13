@@ -1,11 +1,7 @@
 package com.funnelback.common.utils;
 
-import org.hamcrest.core.IsNot;
-import org.hamcrest.core.StringContains;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
 import java.io.File;
@@ -14,9 +10,6 @@ import java.nio.file.Files;
 public class SharedXMLUtilsTest {
 
     private static final String UNICODE_CHARS = "é à ê ö";
-
-    @Rule
-    public TestName testName = new TestName();
 
     @Test
     public void testWindows1252() throws Exception {
@@ -29,16 +22,16 @@ public class SharedXMLUtilsTest {
                 "    <calories>650</calories>\n" +
                 "  </FOOD>\n" +
                 "</breakfast_menu>\n").getBytes("windows-1252");
-        Assert.assertFalse("test setup failure", new String(xml,"utf-8").contains(UNICODE_CHARS));
+        Assertions.assertFalse(new String(xml,"utf-8").contains(UNICODE_CHARS), "test setup failure");
         Document doc = SharedXMLUtils.fromBytes(xml);
         String res = SharedXMLUtils.toString(doc);
-        Assert.assertTrue(res.contains(UNICODE_CHARS));
-        Assert.assertTrue(res.contains("encoding=\"UTF-8\""));
+        Assertions.assertTrue(res.contains(UNICODE_CHARS));
+        Assertions.assertTrue(res.contains("encoding=\"UTF-8\""));
     }
 
     @Test
     public void testXXEVulnerability() throws Exception {
-        File password = File.createTempFile(testName.getMethodName(),".pass").getAbsoluteFile();
+        File password = File.createTempFile("testXXEVulnerability",".pass").getAbsoluteFile();
         Files.writeString(password.toPath(), "los secretos en sus ojos");
 
         String doc=
@@ -47,9 +40,6 @@ public class SharedXMLUtilsTest {
                         + "<xml><entry>First&xxe;</entry></xml>";
 
         String res = SharedXMLUtils.toString(SharedXMLUtils.fromString(doc));
-        System.out.println(res);
-
-        Assert.assertThat("", res, IsNot.not(StringContains.containsString("los secretos en sus ojos")));
+        Assertions.assertFalse(res.contains("los secretos en sus ojos"));
     }
-
 }

@@ -1,21 +1,21 @@
 package com.funnelback.publicui.search.model.transaction;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class SearchResponseTest {
 
     @Test
     public void getFacetByNameTestNoFacets() {
         SearchResponse sr = new SearchResponse();
-        Assert.assertNull(sr.getFacetByName("a"));
+        Assertions.assertNull(sr.getFacetByName("a"));
     }
     
     @Test
     public void getFacetByNameTestNoFacetWithGivenName() {
         SearchResponse sr = new SearchResponse();
         sr.getFacets().add(new Facet("foo"));
-        Assert.assertNull(sr.getFacetByName("bar"));
+        Assertions.assertNull(sr.getFacetByName("bar"));
     }
     
     @Test
@@ -24,6 +24,6 @@ public class SearchResponseTest {
         sr.getFacets().add(new Facet("bar"));
         Facet fooFacet = new Facet("foo");
         sr.getFacets().add(fooFacet);
-        Assert.assertEquals(fooFacet, sr.getFacetByName("foo"));
+        Assertions.assertEquals(fooFacet, sr.getFacetByName("foo"));
     }
 }

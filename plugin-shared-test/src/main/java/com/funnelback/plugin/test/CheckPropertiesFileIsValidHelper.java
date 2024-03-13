@@ -9,7 +9,7 @@ import java.util.Properties;
 
 import com.funnelback.plugin.SearchLifeCyclePlugin;
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHook;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,9 +33,8 @@ public class CheckPropertiesFileIsValidHelper {
     
     public void checkPropertiesFileExists(String pluginName, Class<?> testClass) {
         String propsFileName = propsFileName(pluginName);
-        Assert.assertTrue("Plugin properties file was not found, does: 'src/main/resources/" + propsFileName + "' exist?\n"
-            + "Is the plugin's name: '" + pluginName + "' if not '" + testClass.getName() + "#getPluginName()' may need to be updated.", 
-            loadPluginProps(propsFileName).isPresent());
+        Assertions.assertTrue(loadPluginProps(propsFileName).isPresent(), "Plugin properties file was not found, does: 'src/main/resources/" + propsFileName + "' exist?\n"
+            + "Is the plugin's name: '" + pluginName + "' if not '" + testClass.getName() + "#getPluginName()' may need to be updated.");
     }
     
     public void checkClassesDefinedInProps(String pluginName) {
@@ -48,7 +47,7 @@ public class CheckPropertiesFileIsValidHelper {
             try {
                 pluginClass = this.getClass().getClassLoader().loadClass(realClass);
             } catch (ClassNotFoundException e) {
-                Assert.fail("The props file claimed that: '" + clazz.getName() + "' was implemented by '"
+                Assertions.fail("The props file claimed that: '" + clazz.getName() + "' was implemented by '"
                     + realClass + "' however it does not exist.\n"
                         + "Is '" + realClass + "' the correct name?\n"
                         + "Does that class exist?");
@@ -59,7 +58,7 @@ public class CheckPropertiesFileIsValidHelper {
             try {
                  constructor = pluginClass.getDeclaredConstructor();
             } catch (NoSuchMethodException e) {
-                Assert.fail("Could not find a no arg construcor on: '" + realClass + "'.");
+                Assertions.fail("Could not find a no arg construcor on: '" + realClass + "'.");
                 return;
             }
             
@@ -67,7 +66,7 @@ public class CheckPropertiesFileIsValidHelper {
                 constructor.newInstance();
             } catch (Exception e) {
                 e.printStackTrace();
-                Assert.fail("Could not create an instance of the plugin class: '" + realClass + "'.\n"
+                Assertions.fail("Could not create an instance of the plugin class: '" + realClass + "'.\n"
                     + "Does it have a public no args constructor? e.g.: \n"
                     + "    public " + pluginClass.getSimpleName() + "() {\n" 
                     + "        ...\n" 

@@ -1,7 +1,7 @@
 package ${package};
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.plugin.starturls.mock.MockStartUrlProviderContext;
 
@@ -23,7 +23,6 @@ public class _ClassNamePrefix_StartUrlProviderPluginTest {
         // Call the class.
         List<URL> urlList = underTest.extraStartUrls(mockContext);
         // Assertions
-        Assert.assertTrue(urlList.isEmpty());
+        Assertions.assertTrue(urlList.isEmpty());
     }
-    
 }

@@ -76,7 +76,6 @@ public class TestableSearchTransaction extends SearchTransaction {
      * 
      * @param key The profile setting key.
      * @param value The value to set the key to, when null the setting will be removed.
-     * @return this;
      */
     public TestableSearchTransaction withProfileSetting(String key, String value) {
         SearchQuestionTestHelper.setProfileConfigSetting(getQuestion(), key, value);
@@ -85,12 +84,11 @@ public class TestableSearchTransaction extends SearchTransaction {
     
     /**
      * Ensures the SearchTransaction has a result packet, if none is set it will set one.
-     * 
-     * @return this
      */
     public TestableSearchTransaction withResultPacketIfNotSet() {
-        if(this.getResponse().getResultPacket() == null)
+        if (this.getResponse().getResultPacket() == null) {
             return this.withResultPacket(new ResultPacket());
+        }
         return this;
     }
     
@@ -160,9 +158,6 @@ public class TestableSearchTransaction extends SearchTransaction {
      *     });
      * .with...() // chain more here
      * }</pre>
-     * 
-     * @param modify
-     * @return
      */
     public TestableSearchTransaction withModification(Consumer<TestableSearchTransaction> modify) {
         modify.accept(this);

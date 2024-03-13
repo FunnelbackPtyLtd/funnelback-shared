@@ -5,8 +5,8 @@ import com.funnelback.plugin.details.model.PluginConfigKey;
 import com.funnelback.plugin.details.model.PluginConfigKeyAllowedValue;
 import com.funnelback.plugin.details.model.PluginConfigKeyType;
 import org.apache.commons.lang.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,46 +18,46 @@ public abstract class AbstractPluginUtilsTest {
 
     @Test
     public void testPluginId(){
-        Assert.assertTrue(StringUtils.isNotBlank(getPluginUtils().getPluginId()));
+        Assertions.assertTrue(StringUtils.isNotBlank(getPluginUtils().getPluginId()));
     }
 
     @Test
     public void testPluginName(){
-        Assert.assertTrue(StringUtils.isNotBlank(getPluginUtils().getPluginName()));
+        Assertions.assertTrue(StringUtils.isNotBlank(getPluginUtils().getPluginName()));
     }
 
     @Test
     public void testPluginDescription(){
-        Assert.assertTrue(StringUtils.isNotBlank(getPluginUtils().getPluginDescription()));
+        Assertions.assertTrue(StringUtils.isNotBlank(getPluginUtils().getPluginDescription()));
     }
     @Test
     public void testPluginTarget(){
-        Assert.assertTrue("At least one plugin target should be defined",getPluginUtils().getPluginTarget().size() > 0);
+        Assertions.assertFalse(getPluginUtils().getPluginTarget().isEmpty(), "At least one plugin target should be defined");
     }
 
     @Test
     public void testProductSubtopic(){
-        Assert.assertTrue("At least one product subtopic should be selected", getPluginUtils().getProductSubtopic().size() > 0);
+        Assertions.assertFalse(getPluginUtils().getProductSubtopic().isEmpty(), "At least one product subtopic should be selected");
     }
 
     @Test
     public void testProductTopic(){
-        Assert.assertTrue("At least one product topic should be selected", getPluginUtils().getProductTopic().size() > 0);
+        Assertions.assertFalse(getPluginUtils().getProductTopic().isEmpty(), "At least one product topic should be selected");
     }
 
     @Test
     public void testAudience(){
-        Assert.assertTrue("At least one audience should be selected", getPluginUtils().getAudience().size() > 0);
+        Assertions.assertFalse(getPluginUtils().getAudience().isEmpty(), "At least one audience should be selected");
     }
 
     @Test
     public void testMarketplaceSubtype(){
-        Assert.assertTrue("At least one marketplace subtype should be selected", getPluginUtils().getMarketplaceSubtype().size() > 0);
+        Assertions.assertFalse(getPluginUtils().getMarketplaceSubtype().isEmpty(), "At least one marketplace subtype should be selected");
     }
 
     @Test
     public void testConfigKeys(){
-        Assert.assertTrue("At least one config key should be defined", getPluginUtils().getConfigKeys().size() > 0);
+        Assertions.assertFalse(getPluginUtils().getConfigKeys().isEmpty(), "At least one config key should be defined");
     }
 
     @Test
@@ -70,15 +70,15 @@ public abstract class AbstractPluginUtilsTest {
 
         getPluginUtils().getConfigKeys().forEach(cfgKey -> {
             if (cfgKey instanceof PluginConfigKey) {
-                PluginConfigKey pCfgKey = (PluginConfigKey) cfgKey;
+                PluginConfigKey<?> pCfgKey = (PluginConfigKey<?>) cfgKey;
                 PluginConfigKeyType.Format keyType = pCfgKey.getType().getType();
 
                 if (typesNotAllowedWithRegex.contains(keyType)) {
-                    PluginConfigKeyAllowedValue av = pCfgKey.getAllowedValue();
+                    PluginConfigKeyAllowedValue<?> av = pCfgKey.getAllowedValue();
 
                     if (av != null) {
-                        Assert.assertThrows("Property allowedValue as regex pattern not allowed for: Array, Boolean and Metadata types.",
-                                NullPointerException.class, () -> av.getRegex()); // expecting nullPointer -> regex not defined
+                        Assertions.assertThrows(NullPointerException.class, av::getRegex,
+                            "Property allowedValue as regex pattern not allowed for: Array, Boolean and Metadata types."); // expecting nullPointer -> regex not defined
                     }
                 }
             }

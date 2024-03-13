@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,16 +32,14 @@ public class MockDocumentsTest {
     
     @Test
     public void checkEmptyDocumentsAreEqual() {
-        Assert.assertEquals(MockDocuments.mockEmptyByteDoc(), MockDocuments.mockEmptyByteDoc());
-        Assert.assertEquals(MockDocuments.mockEmptyStringDoc(), MockDocuments.mockEmptyStringDoc());
+        Assertions.assertEquals(MockDocuments.mockEmptyByteDoc(), MockDocuments.mockEmptyByteDoc());
+        Assertions.assertEquals(MockDocuments.mockEmptyStringDoc(), MockDocuments.mockEmptyStringDoc());
     }
    
     /*
-     * Below are silly filters with an example of how they might be tested. 
-     *
+     * Below are silly filters with an example of how they might be tested.
      */
-    
-    public class UTF8BytesToStringFilter implements BytesDocumentFilter {
+    public static class UTF8BytesToStringFilter implements BytesDocumentFilter {
 
         @Override
         public PreFilterCheck canFilter(NoContentDocument document, FilterContext context) {
@@ -61,7 +59,7 @@ public class MockDocumentsTest {
     }
     
     @Test
-    public void UTF8BytesToStringFilterTest() throws Exception {
+    public void UTF8BytesToStringFilterTest() {
         String s = "Can you deal with the real stuff: 日本 Throwing some French accents in the mix: é à ê ö";
         
         //Create the dummy input document.
@@ -69,21 +67,21 @@ public class MockDocumentsTest {
         BytesDocument inputDoc = MockDocuments.mockByteDoc("http://foo.com/", 
                                                                 new MockDocumentType().withContentType("text/crazyutf8"), 
                                                                 Optional.empty(), 
-                                                                s.getBytes("UTF-8"));
+                                                                s.getBytes(StandardCharsets.UTF_8));
         
         MockFilterContext context = MockFilterContext.getEmptyContext();
         
-        Assert.assertEquals(PreFilterCheck.ATTEMPT_FILTER, new UTF8BytesToStringFilter().canFilter(inputDoc, context));
+        Assertions.assertEquals(PreFilterCheck.ATTEMPT_FILTER, new UTF8BytesToStringFilter().canFilter(inputDoc, context));
         
         StringDocument result = (StringDocument) new UTF8BytesToStringFilter()
                                                     .filterAsBytesDocument(inputDoc, context)
                                                     .getFilteredDocuments()
                                                     .get(0);
-        
-        Assert.assertTrue(s.equals(result.getContentAsString()));
+
+        Assertions.assertEquals(s, result.getContentAsString());
     }
     
-    public class ConfigReadingHeaderSettingFilter implements StringDocumentFilter {
+    public static class ConfigReadingHeaderSettingFilter implements StringDocumentFilter {
 
         @Override
         public PreFilterCheck canFilter(NoContentDocument document, FilterContext context) {
@@ -105,12 +103,9 @@ public class MockDocumentsTest {
             return FilterResult.of(newDoc);
         }
     }
-    
-    
+
     @Test
-    public void ConfigReadingHeaderSettingFilterTest() throws Exception {
-        
-        
+    public void ConfigReadingHeaderSettingFilterTest() {
         StringDocument inputDoc = MockDocuments.mockStringDoc("http://foo.com/", DocumentType.MIME_UNKNOWN, "content");
         
         ListMultimap<String, String> map = inputDoc.getCopyOfMetadata();
@@ -121,7 +116,7 @@ public class MockDocumentsTest {
         context.setCollectionName("coll1");
         context.setConfigValue("key", "my value");
         
-        Assert.assertEquals(PreFilterCheck.ATTEMPT_FILTER, new ConfigReadingHeaderSettingFilter().canFilter(inputDoc, context));
+        Assertions.assertEquals(PreFilterCheck.ATTEMPT_FILTER, new ConfigReadingHeaderSettingFilter().canFilter(inputDoc, context));
         
         StringDocument result = (StringDocument) new ConfigReadingHeaderSettingFilter()
                                                     .filterAsStringDocument(inputDoc, context)
@@ -131,12 +126,10 @@ public class MockDocumentsTest {
         StringDocument expected = MockDocuments.mockStringDoc("http://foo.com/", DocumentType.MIME_UNKNOWN, "content")
             .cloneWithMetadata(ImmutableListMultimap.of("existing", "value", "confvalue", "my value", "collname", "coll1"));
         
-        Assert.assertEquals("We expected: \n" + expected.toString() +"\n but got: \n" + result,
-            expected, result);
+        Assertions.assertEquals(expected, result, "We expected: \n" + expected.toString() +"\n but got: \n" + result);
     }
-    
-    
-    public class DeleteNonHTML implements StringDocumentFilter {
+
+    public static class DeleteNonHTML implements StringDocumentFilter {
 
         @Override
         public PreFilterCheck canFilter(NoContentDocument document, FilterContext context) {
@@ -161,18 +154,18 @@ public class MockDocumentsTest {
                                                                     "<html><body><p>hi</p></body></html>");
         
         MockFilterContext context = MockFilterContext.getEmptyContext();
-        Assert.assertEquals(PreFilterCheck.SKIP_FILTER, new DeleteNonHTML().canFilter(htmlDoc, context));
+        Assertions.assertEquals(PreFilterCheck.SKIP_FILTER, new DeleteNonHTML().canFilter(htmlDoc, context));
         
         StringDocument xmlDoc = MockDocuments.mockStringDoc("http://foo.com/", 
                                                                     DocumentType.MIME_XML_TEXT, 
                                                                     "<html><body><p>hi</p></body></html>");
         
-        Assert.assertEquals(PreFilterCheck.ATTEMPT_FILTER, new DeleteNonHTML().canFilter(xmlDoc, context));
+        Assertions.assertEquals(PreFilterCheck.ATTEMPT_FILTER, new DeleteNonHTML().canFilter(xmlDoc, context));
         
-        Assert.assertTrue(new DeleteNonHTML().filterAsStringDocument(xmlDoc, context).getFilteredDocuments().isEmpty());
+        Assertions.assertTrue(new DeleteNonHTML().filterAsStringDocument(xmlDoc, context).getFilteredDocuments().isEmpty());
     }
     
-    public class FixURLFilter implements StringDocumentFilter {
+    public static class FixURLFilter implements StringDocumentFilter {
 
         @Override
         public PreFilterCheck canFilter(NoContentDocument document, FilterContext context) {
@@ -184,7 +177,6 @@ public class MockDocumentsTest {
 
         @Override
         public FilterResult filterAsStringDocument(StringDocument document, FilterContext context) {
-            URI originalURI = document.getURI();
             try {
                 String fragmentInQuery = "funfrag="+document.getURI().getFragment();
                 //Construct a new URI, based of the old one placing the fragment into the query
@@ -204,20 +196,20 @@ public class MockDocumentsTest {
     }
     
     @Test
-    public void FixURLFilterTest() throws Exception {
+    public void FixURLFilterTest() {
         StringDocument inputDoc = MockDocuments.mockStringDoc("http://www.example.org/foo.html#bar", DocumentType.MIME_TEXT_PLAIN, "content");
         MockFilterContext context = MockFilterContext.getEmptyContext();
         
-        Assert.assertEquals(PreFilterCheck.ATTEMPT_FILTER, new FixURLFilter().canFilter(inputDoc, context));
+        Assertions.assertEquals(PreFilterCheck.ATTEMPT_FILTER, new FixURLFilter().canFilter(inputDoc, context));
         
         StringDocument result = (StringDocument) new FixURLFilter().filterAsStringDocument(inputDoc, context).getFilteredDocuments().get(0);
         
         String resultURL = result.getURI().toASCIIString();
         
-        Assert.assertEquals("http://www.example.org/foo.html?funfrag=bar", resultURL);
+        Assertions.assertEquals("http://www.example.org/foo.html?funfrag=bar", resultURL);
     }
     
-    public class SplitDocumentFilter implements StringDocumentFilter {
+    public static class SplitDocumentFilter implements StringDocumentFilter {
 
         @Override
         public PreFilterCheck canFilter(NoContentDocument document, FilterContext context) {
@@ -241,7 +233,7 @@ public class MockDocumentsTest {
                 String delimiter = delim.get();
                 String docContent = document.getContentAsString();
                 if(!docContent.contains(delimiter)) {
-                    //Document can not be split return it as is.
+                    // The Document cannot be split return it as is.
                     return FilterResult.of(document);
                 }
                 
@@ -249,12 +241,12 @@ public class MockDocumentsTest {
                 for(String part : docContent.split(Matcher.quoteReplacement(delimiter))) {
                     
                     try {
-                        //A new URI, use UUID to ensure the id is unique
-                        //We should see if the document can tell us the name of the sub documents.
+                        // A new URI, use UUID to ensure the id is unique
+                        // We should see if the document can tell us the name of the sub documents.
                         URI newURI = new URI("http://" + document.getURI().getHost() + "/books/" + UUID.randomUUID());
                         newDocs.add(document.cloneWithURI(newURI).cloneWithStringContent(document.getDocumentType(), part));
                     } catch (URISyntaxException e) {
-                        //Pretty sure this wont happen
+                        // Pretty sure this won't happen
                         e.printStackTrace();
                     }
                 }
@@ -277,17 +269,17 @@ public class MockDocumentsTest {
         MockFilterContext context = MockFilterContext.getEmptyContext();
         context.setConfigValue("X-SplitDocumentFilter.delim", "SEP");
         
-        Assert.assertEquals(PreFilterCheck.ATTEMPT_FILTER, new SplitDocumentFilter().canFilter(inputDoc, context));
+        Assertions.assertEquals(PreFilterCheck.ATTEMPT_FILTER, new SplitDocumentFilter().canFilter(inputDoc, context));
         
         List<FilterableDocument> results = new SplitDocumentFilter().filterAsStringDocument(inputDoc, context).getFilteredDocuments();
         
         //We should have three documents.
-        Assert.assertTrue(3 == results.size());
+        Assertions.assertEquals(3, results.size());
         
         //Check the doc content
-        Assert.assertTrue("doc1".equals(((StringDocument) results.get(0)).getContentAsString()));
-        Assert.assertTrue("doc2".equals(((StringDocument) results.get(1)).getContentAsString()));
-        Assert.assertTrue("doc3".equals(((StringDocument) results.get(2)).getContentAsString()));
+        Assertions.assertEquals("doc1", ((StringDocument) results.get(0)).getContentAsString());
+        Assertions.assertEquals("doc2", ((StringDocument) results.get(1)).getContentAsString());
+        Assertions.assertEquals("doc3", ((StringDocument) results.get(2)).getContentAsString());
         
         //Now check the URLs are unique
         Set<String> urls = new HashSet<>();
@@ -296,8 +288,7 @@ public class MockDocumentsTest {
         urls.add(results.get(2).getURI().toASCIIString());
         
         //Should have 3 URLs in our set.
-        Assert.assertTrue(3 == urls.size());
-        
+        Assertions.assertEquals(3, urls.size());
     }
     
 }

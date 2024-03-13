@@ -1,8 +1,7 @@
 package com.funnelback.plugin.gatherer.mock;
 
-import com.funnelback.plugin.details.model.PluginConfigKey;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class MockPluginGatherContextTest {
 
@@ -11,7 +10,7 @@ public class MockPluginGatherContextTest {
         MockPluginGatherContext ctx = new MockPluginGatherContext();
         ctx.setPlugingConfigurationFileContent("foo.cfg", "hello");
         
-        Assert.assertEquals("hello", ctx.pluginConfigurationFile("foo.cfg").get());
+        Assertions.assertEquals("hello", ctx.pluginConfigurationFile("foo.cfg").get());
     }
     
     @Test
@@ -19,14 +18,14 @@ public class MockPluginGatherContextTest {
         MockPluginGatherContext ctx = new MockPluginGatherContext();
         ctx.setPlugingConfigurationFileContentAsBytes("foo.cfg", "hello".getBytes());
         
-        Assert.assertEquals("hello", new String(ctx.pluginConfigurationFileAsBytes("foo.cfg").get()));
-        Assert.assertEquals("hello", ctx.pluginConfigurationFile("foo.cfg").get());
+        Assertions.assertEquals("hello", new String(ctx.pluginConfigurationFileAsBytes("foo.cfg").get()));
+        Assertions.assertEquals("hello", ctx.pluginConfigurationFile("foo.cfg").get());
     }
     
     @Test
     public void readMissingPluginConfigurationFile() {
         MockPluginGatherContext ctx = new MockPluginGatherContext();
-        Assert.assertFalse(ctx.pluginConfigurationFile("foo.cfg").isPresent());
-        Assert.assertFalse(ctx.pluginConfigurationFileAsBytes("foo.cfg").isPresent());
+        Assertions.assertFalse(ctx.pluginConfigurationFile("foo.cfg").isPresent());
+        Assertions.assertFalse(ctx.pluginConfigurationFileAsBytes("foo.cfg").isPresent());
     }
 }

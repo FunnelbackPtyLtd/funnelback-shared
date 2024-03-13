@@ -1,9 +1,7 @@
 package ${package};
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import org.hamcrest.core.StringContains;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.funnelback.common.filter.jsoup.MockJsoupFilterContext;
 
@@ -17,8 +15,7 @@ public class _ClassNamePrefix_JsoupFilterTest {
             + "</html>");
         
         new _ClassNamePrefix_JsoupFilter().processDocument(mockContext);
-        
-        Assert.assertThat(mockContext.getDocument().html(), StringContains.containsString("</html>"));
+
+        Assertions.assertTrue(mockContext.getDocument().html().contains("</html>"));
     }
-    
 }

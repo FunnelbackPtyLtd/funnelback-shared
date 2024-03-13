@@ -8,7 +8,7 @@
     <name>Funnelback plugin</name>
     <properties>
         <version.log4j2>2.17.1</version.log4j2>
-        <version.junit>4.13.2</version.junit>
+        <version.junit>5.10.2</version.junit>
         <version.mockito>2.21.0</version.mockito>
         <version.funnelback-shared>${archetypeVersion}</version.funnelback-shared>
     </properties>
@@ -33,8 +33,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>

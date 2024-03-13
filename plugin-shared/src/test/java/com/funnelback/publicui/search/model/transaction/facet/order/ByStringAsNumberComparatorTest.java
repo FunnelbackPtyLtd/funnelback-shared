@@ -1,16 +1,14 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ByStringAsNumberComparatorTest {
 
-    private ByStringAsNumberComparator comparator = new ByStringAsNumberComparator();
+    private final ByStringAsNumberComparator comparator = new ByStringAsNumberComparator();
     
     @Test
     public void testNumberExtraction() {
@@ -25,7 +23,6 @@ public class ByStringAsNumberComparatorTest {
         testInt(-1, "asas-1-123");
         testInt(0, "0 ");
         testInt(111, "111");
-        
     }
     
     @Test
@@ -42,10 +39,10 @@ public class ByStringAsNumberComparatorTest {
     
     @Test
     public void testNoNumber() {
-        Assert.assertNull(comparator.extractFirstNumber(""));
-        Assert.assertNull(comparator.extractFirstNumber("-"));
-        Assert.assertNull(comparator.extractFirstNumber("."));
-        Assert.assertNull(comparator.extractFirstNumber("sd.sd"));
+        Assertions.assertNull(comparator.extractFirstNumber(""));
+        Assertions.assertNull(comparator.extractFirstNumber("-"));
+        Assertions.assertNull(comparator.extractFirstNumber("."));
+        Assertions.assertNull(comparator.extractFirstNumber("sd.sd"));
     }
     
     @Test
@@ -58,16 +55,14 @@ public class ByStringAsNumberComparatorTest {
         list.add(("-1.1"));
         list.add(("-1"));
         
-        Collections.sort(list, comparator);
-        
-        List<String> result = list;
-        
-        Assert.assertEquals("-1.1", result.get(0));
-        Assert.assertEquals("-1", result.get(1));
-        Assert.assertEquals("0", result.get(2));
-        Assert.assertEquals("1", result.get(3));
-        Assert.assertEquals("1.4", result.get(4));
-        Assert.assertEquals("4", result.get(5));
+        list.sort(comparator);
+
+        Assertions.assertEquals("-1.1", list.get(0));
+        Assertions.assertEquals("-1", list.get(1));
+        Assertions.assertEquals("0", list.get(2));
+        Assertions.assertEquals("1", list.get(3));
+        Assertions.assertEquals("1.4", list.get(4));
+        Assertions.assertEquals("4", list.get(5));
     }
     
     @Test
@@ -81,27 +76,22 @@ public class ByStringAsNumberComparatorTest {
         list.add(("$-1.1--1"));
         list.add(("$-1-0"));
         
-        Collections.sort(list, comparator);
-        
-        List<String> result = list;
-        
-        Assert.assertEquals("$-1.1--1", result.get(0));
-        Assert.assertEquals("$-1-0", result.get(1));
-        Assert.assertEquals("$0-1", result.get(2));
-        Assert.assertEquals("$1-4", result.get(3));
-        Assert.assertEquals("$1.4-4", result.get(4));
-        Assert.assertEquals("$4-100", result.get(5));
-        Assert.assertEquals("ALL", result.get(6));
+        list.sort(comparator);
+
+        Assertions.assertEquals("$-1.1--1", list.get(0));
+        Assertions.assertEquals("$-1-0", list.get(1));
+        Assertions.assertEquals("$0-1", list.get(2));
+        Assertions.assertEquals("$1-4", list.get(3));
+        Assertions.assertEquals("$1.4-4", list.get(4));
+        Assertions.assertEquals("$4-100", list.get(5));
+        Assertions.assertEquals("ALL", list.get(6));
     }
     
-    
     private void testInt(int expected, String str) {
-        Assert.assertEquals("Expected: " + expected + "for '" + str + "'",
-            expected, comparator.extractFirstNumber(str).intValue());
+        Assertions.assertEquals(expected, comparator.extractFirstNumber(str).intValue(), "Expected: " + expected + "for '" + str + "'");
     }
     
     private void testExtract(String expected, String str) {
-        Assert.assertEquals("Expected: " + expected + " for '" + str + "'",
-            expected, comparator.extractFirstNumber(str).toString());
+        Assertions.assertEquals(expected, comparator.extractFirstNumber(str).toString(), "Expected: " + expected + " for '" + str + "'");
     }
 }
