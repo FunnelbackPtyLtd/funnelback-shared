@@ -32,7 +32,8 @@ public class AsciiDocGenerator {
     private final String projectVersion;
     private String pluginTargets;
     private String pluginTargetsMetadata;
-    private StringBuilder content = new StringBuilder();
+    private final StringBuilder content = new StringBuilder();
+
     AsciiDocGenerator(PluginUtilsBase pluginUtils, String resourcesPath, String packageName, String projectVersion, String projectResourcePath) {
         this.pluginUtils = pluginUtils;
         this.resourcesPath = resourcesPath;
@@ -41,7 +42,7 @@ public class AsciiDocGenerator {
         this.projectResourcePath = projectResourcePath + "/ascii/sections/";
     }
 
-    public String generateASCIIDocument()  {
+    public void generateASCIIDocument() {
         try {
             getPluginTargets();
             // This section appends all metadata tags for the plugin
@@ -79,10 +80,10 @@ public class AsciiDocGenerator {
             if ((pluginUtils.getPluginTarget().contains(PluginTarget.DATA_SOURCE)) && (pluginUtils.getPluginTarget().contains(PluginTarget.RESULTS_PAGE))){
                 addDataSourceResultsPageConfigurations();
             }
-            else if (pluginUtils.getPluginTarget().contains(PluginTarget.DATA_SOURCE)){
+            else if (pluginUtils.getPluginTarget().contains(PluginTarget.DATA_SOURCE)) {
                 addDataSourceConfigurations();
             }
-            else if(pluginUtils.getPluginTarget().contains(PluginTarget.RESULTS_PAGE)){
+            else if(pluginUtils.getPluginTarget().contains(PluginTarget.RESULTS_PAGE)) {
                 addResultsPageConfigurations();
             }
 
@@ -110,7 +111,6 @@ public class AsciiDocGenerator {
                         addJsoupFilter();
                     }
                 }
-
             }
             addConfigFileDetails();
             appendExampleFileContents();
@@ -121,13 +121,12 @@ public class AsciiDocGenerator {
                 content.append("\n\n").append("== Change log\n").append(changeLog);
             }
             writeToFile(appendSeeAlso(content), resourcesPath);
-            return content.toString();
-        }catch (Exception e){
+        } catch (Exception e) {
                 throw new RuntimeException(e);
         }
     }
 
-    private void getPluginTargets(){
+    private void getPluginTargets() {
         if (pluginUtils.getPluginTarget().contains(PluginTarget.DATA_SOURCE) && pluginUtils.getPluginTarget().contains(PluginTarget.RESULTS_PAGE)){
             this.pluginTargets = StringUtils.join(PluginTarget.DATA_SOURCE.getTarget().toLowerCase()," or ", PluginTarget.RESULTS_PAGE.getTarget().toLowerCase());
             this.pluginTargetsMetadata = StringUtils.join(PluginTarget.DATA_SOURCE.getTarget(),"|", PluginTarget.RESULTS_PAGE.getTarget());
@@ -140,11 +139,11 @@ public class AsciiDocGenerator {
         }
     }
 
-    private void addPluginDescription(){
+    private void addPluginDescription() {
         content.append("\n\n").append("== Purpose ").append("\n\n");
         content.append(pluginUtils.getPluginDescription()).append("\n\n");
         String description = readAsciiFile(projectResourcePath + DETAILEDDESCRIPTION);
-        if (!description.isEmpty()){
+        if (!description.isEmpty()) {
             content.append(description).append("\n");
         }
     }
@@ -157,8 +156,8 @@ public class AsciiDocGenerator {
                        "\n" +
                        "NOTE: If enabled on a data source, the plugin will take effect as soon as the setup steps are completed, and an advanced > full update of the data source has completed. If enabled on a results page the plugin will take effect as soon as the setup steps are completed.\n" +
                        "\n");
-
     }
+
     private void addDataSourceConfigurations() {
 
         content.append(". Select menu:Plugins[] from the side navigation pane and click on the *" + pluginUtils.getPluginName() + "* tile.\n" +
@@ -168,7 +167,8 @@ public class AsciiDocGenerator {
         content.append("NOTE: The plugin will take effect after setup steps and an advanced > full update of the data source has completed.\n" +
                        "\n");
     }
-    private void addResultsPageConfigurations(){
+
+    private void addResultsPageConfigurations() {
         content.append(". Select menu:Plugins[] from the side navigation pane and click on the *" + pluginUtils.getPluginName() + "* tile.\n" +
                 ". From the *Location* section, select the results page to which you would like to enable this plugin from the _Select a results page_ select list.\n" +
                 "\n" +
@@ -187,8 +187,9 @@ public class AsciiDocGenerator {
                             "\n");
         }
     }
-    private void addJsoupFilter(){
-        if (StringUtils.isNotEmpty(pluginUtils.getJsoupFilterClass())){
+
+    private void addJsoupFilter() {
+        if (StringUtils.isNotEmpty(pluginUtils.getJsoupFilterClass())) {
             content.append("==== Jsoup filter classes\n" +
                            "\n" +
                            "This plugin supplies a filter that needs to run in the HTML document (Jsoup) filter chain:`+" + pluginUtils.getJsoupFilterClass() + "+`\n" +
@@ -197,7 +198,6 @@ public class AsciiDocGenerator {
                            "\n");
         }
     }
-
 
     private void writePluginConfigKeysToResourceAdoc() {
         List<PluginConfigKeyDetails> configKeys = pluginUtils.getConfigKeys();
@@ -209,7 +209,7 @@ public class AsciiDocGenerator {
                            "NOTE: The configuration key names below are only used if you are configuring this plugin manually. The configuration keys are set in the " + pluginTargets + " configuration to configure the plugin. When setting the keys manually you need to type in (or copy and paste) the key name and value.\n" +
                            "\n");
 
-            for (PluginConfigKeyDetails configKey : configKeys) {
+            for (PluginConfigKeyDetails<?> configKey : configKeys) {
                 if (configKey instanceof PluginConfigKey) {
                     PluginConfigKey<?> key = (PluginConfigKey<?>) configKey;
                     PluginConfigKeyType keyType = key.getType();
@@ -219,25 +219,25 @@ public class AsciiDocGenerator {
 
                     Object defaultValue = configKey.getDefaultValue();
                     if (defaultValue instanceof List){
-                        if (((List<?>) defaultValue).size() == 0){
+                        if (((List<?>) defaultValue).isEmpty()){
                             defaultValue = "an empty list";
                         }
                     }
 
-                    PluginConfigKeyAllowedValue allowedValue = configKey.getAllowedValue();
+                    PluginConfigKeyAllowedValue<?> allowedValue = configKey.getAllowedValue();
 
                     // vertical bar replacements are to ensure the Asciidoc table formatting is not broken.
                     content.append("==== " + key.getLabel() + "\n" +
                                   "\n" +
                                   "[%autowidth.spread]\n" +
                                   "|===\n" +
-                                  "|Configuration key| `" + key.getKey().replace("|","\\|") +"`\n" +
+                                  "|Configuration key| `+" + key.getKey().replace("|","\\|") +"+`\n" +
                                   "|Data type|" + keyTypeText +"\n");
                     if (defaultValue != null) {
                         content.append("|Default value|`+" + defaultValue.toString().replace("|","\\|") + "+`\n");
                     }
-                    if (allowedValue != null){
-                        if (allowedValue.getValues() != null && allowedValue.getValues().size() > 0) {
+                    if (allowedValue != null) {
+                        if (allowedValue.getValues() != null && !allowedValue.getValues().isEmpty()) {
                             content.append("|Allowed values|" + allowedValue.getValues().stream().map(Object::toString).collect(Collectors.joining(",")) + "\n");
                         }
                         if (allowedValue.getRegex() != null) {
@@ -252,11 +252,10 @@ public class AsciiDocGenerator {
                     } else {
                         content.append("|Required|This setting is optional\n");
                     }
-                    content.append("|===\n" +
-                            "\n");
+                    content.append("|===\n\n");
                     content.append(key.getDescription()).append("\n\n");
                     if (key.getLongDescription() != null) {
-                        content.append(key.getLongDescription()).append("\n\n");;;
+                        content.append(key.getLongDescription()).append("\n\n");
                     }
                 } else if (configKey instanceof PluginConfigKeyEncrypted) {
                     PluginConfigKeyEncrypted encryptedKey = (PluginConfigKeyEncrypted) configKey;
@@ -264,26 +263,25 @@ public class AsciiDocGenerator {
                                    "\n" +
                                    "[%autowidth.spread]\n" +
                                    "|===\n" +
-                                   "|Configuration key| `" + encryptedKey.getKey().replace("|","\\|") +"`\n" +
+                                   "|Configuration key| `+" + encryptedKey.getKey().replace("|","\\|") + "+`\n" +
                                    "|Data type|Encrypted string\n");
                     if (encryptedKey.isRequired()) {
                         content.append("|Required|This setting is required\n");
                     } else {
                     content.append("|Required|This setting is optional\n");
                     }
-                    content.append("|===\n" +
-                                   "\n");
+                    content.append("|===\n\n");
                     content.append(encryptedKey.getDescription()).append("\n\n");
                     if (encryptedKey.getLongDescription() != null) {
-                        content.append(encryptedKey.getLongDescription()).append("\n\n");;
+                        content.append(encryptedKey.getLongDescription()).append("\n\n");
                     }
                 }
             }
         }
     }
 
-    private void addConfigFileDetails(){
-        if (pluginUtils.getConfigFiles() != null && pluginUtils.getConfigFiles().size() > 0){
+    private void addConfigFileDetails() {
+        if (pluginUtils.getConfigFiles() != null && !pluginUtils.getConfigFiles().isEmpty()) {
             content.append("=== Configuration files\n" +
                     "\n" +
                     "This plugin also uses the following configuration files to provide additional configuration.\n" +
@@ -307,14 +305,14 @@ public class AsciiDocGenerator {
         }
     }
 
-    private String appendSeeAlso(StringBuilder content){
+    private String appendSeeAlso(StringBuilder content) {
         content.append("\n== See also\n\n");
         content.append("* xref:build/plugins/index.adoc[Plugins]");
         content.append("\n").append(readAsciiFile(projectResourcePath + SEEALSOLINKS));
         return content.toString();
     }
 
-    // Readme file will talk about how to use pluginutils and how to  use ascii doc
+    // Readme file will talk about how to use PluginUtils and how to  use ascii doc
     private void writeToFile( String content, String resourcesPath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(resourcesPath + "/" + FILE_NAME))) {
             writer.write(content);
@@ -325,7 +323,7 @@ public class AsciiDocGenerator {
     }
 
     private void appendExampleFileContents(){
-        if (!new File(projectResourcePath + EXAMPLE).exists()){
+        if (!new File(projectResourcePath + EXAMPLE).exists()) {
             throw new RuntimeException("File '/src/main/resources/ascii/sections/" + EXAMPLE + "' with plugin examples needs to exist for successful compilation of plugin.");
         }
         String blankExample = "// ==========\n" +
@@ -337,16 +335,15 @@ public class AsciiDocGenerator {
 
         String examples = readAsciiFile(projectResourcePath + EXAMPLE);
         content.append("\n").append("== Examples\n\n");
-        if (examples.equals(blankExample) || examples.isEmpty()){
+        if (examples.equals(blankExample) || examples.isEmpty()) {
             content.append("WARNING: It is recommended to include at least one example about usage of the plugin.");
-        }else {
+        } else {
             content.append(examples);
         }
     }
 
     private String getPluginInterfaces() {
         List<String> interfacesList = new ArrayList<>();
-
         List<MarketplaceSubtype> marketplaceSubtypes = pluginUtils.getMarketplaceSubtype();
 
         for (MarketplaceSubtype subtype : marketplaceSubtypes) {
@@ -374,14 +371,15 @@ public class AsciiDocGenerator {
         }
         return String.join("|", interfacesList);
     }
-    private String readAsciiFile(String filePath){
+
+    private String readAsciiFile(String filePath) {
         StringBuilder result = new StringBuilder();
         try {
             File file = new File(filePath);
-            if (file.exists()){
+            if (file.exists()) {
                 result.append(Files.readString(file.toPath())).append("\n");
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             System.err.println("Cannot read ascii file" + filePath + e.getMessage());
         }
         return result.toString();
