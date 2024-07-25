@@ -149,7 +149,7 @@ public class AsciiDocGeneratorTest {
                 "\n" +
                 "[%autowidth.spread]\n" +
                 "|===\n" +
-                "|Configuration key| `plugin.test.config.int.*`\n" +
+                "|Configuration key| `+plugin.test.config.int.*+`\n" +
                 "|Data type|integer\n" +
                 "|Default value|`+2+`\n" +
                 "|Allowed values|1,2,3\n" +
@@ -173,7 +173,7 @@ public class AsciiDocGeneratorTest {
                 "\n" +
                 "[%autowidth.spread]\n" +
                 "|===\n" +
-                "|Configuration key| `plugin.test.config.int.*`\n" +
+                "|Configuration key| `+plugin.test.config.int.*+`\n" +
                 "|Data type|string\n" +
                 "|Default value|`+2+`\n" +
                 "|Value format|Allowed values must match the regular expression:\n" +
@@ -188,7 +188,7 @@ public class AsciiDocGeneratorTest {
                 "\n" +
                 "[%autowidth.spread]\n" +
                 "|===\n" +
-                "|Configuration key| `plugin.test.encrypted.pass`\n" +
+                "|Configuration key| `+plugin.test.encrypted.pass+`\n" +
                 "|Data type|Encrypted string\n" +
                 "|Required|This setting is required\n" +
                 "|===\n" +
@@ -201,7 +201,7 @@ public class AsciiDocGeneratorTest {
                 "\n" +
                 "[%autowidth.spread]\n" +
                 "|===\n" +
-                "|Configuration key| `plugin.test.config.list`\n" +
+                "|Configuration key| `+plugin.test.config.list+`\n" +
                 "|Data type|array\n" +
                 "|Default value|`+an empty list+`\n" +
                 "|Required|This setting is optional\n" +
