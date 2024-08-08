@@ -6,7 +6,7 @@
     <parent>
         <artifactId>funnelback-shared-parent</artifactId>
         <groupId>com.funnelback</groupId>
-        <version>16.27.2431-SNAPSHOT</version>
+        <version>16.28.0-SNAPSHOT</version>
     </parent>
 
     <description>Archetype for a plugin for the Funnelback Enterprise Search Engine</description>
