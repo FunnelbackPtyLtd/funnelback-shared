@@ -591,6 +591,14 @@ public class SearchQuestion {
          * @since 11.1
          */
         public static class Header {
+
+            /**
+             * Header used to provide the cloudflare IP address , which may differ from
+             * the normal remote address if the request is forwarded by a proxy or wrapped by
+             * a CMS.
+             */
+            public static final String CF_CONNECTING_IP = "CF-Connecting-IP";
+
             /**
              * Header used to provide the originating user's IP address, which may differ from
              * the normal remote address if the request is forwarded by a proxy or wrapped by
