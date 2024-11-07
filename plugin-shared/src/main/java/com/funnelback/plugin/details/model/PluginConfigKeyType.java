@@ -45,6 +45,7 @@ public class PluginConfigKeyType {
         ARRAY("array"),
         BOOLEAN("boolean"),
         DATE("date"),
+        DOUBLE("double"),
         INTEGER("integer"),
         LONG("long"),
         METADATA("metadata"),
