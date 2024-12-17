@@ -85,5 +85,4 @@ release:
                 - "*/target/failsafe-reports/TEST-*.xml"
 
     tags:
-        - purpose/general
-        - access/squiz-network
+        - ec2glr/aws-search-np
