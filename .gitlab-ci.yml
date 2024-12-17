@@ -47,10 +47,10 @@ build:
     tags:
         - ec2glr/aws-search-np
 
-# Release a version of funnelback-shared to the gitlab package registry
-publish_to_gitlab:
- extends:
-    - .template:funnelback:mvn-publish:push
+# # Release a version of funnelback-shared to the gitlab package registry
+# publish_to_gitlab:
+#  extends:
+#     - .template:funnelback:mvn-publish:push
 
 
 Trigger plugins mono repo:
