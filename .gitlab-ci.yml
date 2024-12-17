@@ -71,6 +71,7 @@ release:
     before_script:
         - ./pre-release.sh
     script:
+        - gpg --list-keys
         - mvn -B -U -P central-release clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
         - rm -rf .m2/repository/com/funnelback/
 
