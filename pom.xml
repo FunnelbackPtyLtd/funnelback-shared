@@ -59,7 +59,7 @@
     <!-- About to change the versions below? You need to sync your change -->
     <!-- with the top-level pom.xml in java-parent!-->
     <version.commons.lang>2.4</version.commons.lang>
-    <version.guava>21.0</version.guava>
+    <version.guava>33.4.0-jre</version.guava>
     <version.hibernate-jpa-2.1>1.0.0.Final</version.hibernate-jpa-2.1>
     <version.jackson2>2.13.4.2</version.jackson2>
     <version.javax.validation>2.0.1.Final</version.javax.validation>
