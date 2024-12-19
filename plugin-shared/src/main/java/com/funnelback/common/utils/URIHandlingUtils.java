@@ -1,10 +1,13 @@
 package com.funnelback.common.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.jsoup.internal.StringUtil;
 
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class URIHandlingUtils {
 
     /**
@@ -34,7 +37,8 @@ public class URIHandlingUtils {
 
         try {
             URL newURL = new URL(URLString);
-            return new URI(newURL.getProtocol(), newURL.getHost(), newURL.getPath(), newURL.getQuery(), newURL.getRef());
+            return new URI(newURL.getProtocol(), newURL.getUserInfo(), newURL.getHost(), newURL.getPort(), newURL.getPath(), newURL.getQuery(), newURL.getRef());
+
         } catch (MalformedURLException | URISyntaxException e) {
             // it is not an absolute URL string, so create a new URI based on the raw string with all special characters encoded
             return URI.create(URLEncoder.encode(URLString, StandardCharsets.UTF_8));
