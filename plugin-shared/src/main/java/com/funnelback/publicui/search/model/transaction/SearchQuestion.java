@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.collection.SearchPackageConfig;
 import com.funnelback.publicui.search.model.collection.ServiceConfig;
 import com.funnelback.publicui.search.model.geolocation.Location;
+import com.funnelback.publicui.utils.SharedQueryStringUtils;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
@@ -48,8 +49,7 @@ public class SearchQuestion {
 
     /**
      * Execution context of the Search UI. Can be "admin"
-     * or "public", depending if the search is ran on the admin
-     * port or public port.
+     * or "public", depending if the search is running on the admin port or public port.
      * 
      * @since 15.12
      */
@@ -131,10 +131,10 @@ public class SearchQuestion {
     /**
      * Contextual Navigation: Previous clicked clusters
      */
-    @Getter private final List<String> cnPreviousClusters = new ArrayList<String>();
+    @Getter private final List<String> cnPreviousClusters = new ArrayList<>();
 
     /**
-     * <p><tt>meta_*</tt> / <tt>query_*</tt> input parameters, transformed in query expressions.</p>
+     * <p><code>meta_*</code> / <code>query_*</code> input parameters, transformed in query expressions.</p>
      * 
      * <p>Those parameters are supposed to be specified by the user, usually
      * in an advanced search form. If you need to inject parameters for technical / behind-the-scene
@@ -142,10 +142,10 @@ public class SearchQuestion {
      * 
      * @see #systemMetaParameters
      */
-    @Getter final private List<String> metaParameters = new ArrayList<String>();
+    @Getter final private List<String> metaParameters = new ArrayList<>();
     
     /**
-     * <p><tt>smeta_*</tt> / <tt>squery_*</tt> input parameters, transformed in query expressions.</p>
+     * <p><code>smeta_*</code> / <code>squery_*</code> input parameters, transformed in query expressions.</p>
      * 
      * <p>Those parameters are supposed to be &quot;technical&quot; parameters,
      * usually injected through a hook script. If you want the user to specify parameters,
@@ -154,7 +154,7 @@ public class SearchQuestion {
      * @see #metaParameters
      * @since 12.2
      */
-    @Getter final private List<String> systemMetaParameters = new ArrayList<String>();
+    @Getter final private List<String> systemMetaParameters = new ArrayList<>();
     
     /**
      * <p>Additional parameters to pass as-is to PADRE.</p>
@@ -170,20 +170,20 @@ public class SearchQuestion {
      * additional parameter injected in {@link #inputParameters}
      * in a hook script won't be copied to this map.</p> 
      */
-    @Getter final private Map<String, String[]> additionalParameters = new HashMap<String, String[]>();
+    @Getter final private Map<String, String[]> additionalParameters = new HashMap<>();
     
     /**
      * List of environment variables to pass to PADRE.
      */
-    @Getter final private Map<String, String> environmentVariables = new HashMap<String, String>();
+    @Getter final private Map<String, String> environmentVariables = new HashMap<>();
 
     /**
      * <p>Dynamic query processor options for PADRE, in addition to the one set in
-     * <tt>collection.cfg</tt>.</p>
+     * <code>collection.cfg</code>.</p>
      * 
      * <p>Will be updated by the input processing.</p>
      */
-    @Getter final private List<String> dynamicQueryProcessorOptions = new ArrayList<String>();
+    @Getter final private List<String> dynamicQueryProcessorOptions = new ArrayList<>();
     
     /**
      * Query processor options that are guaranteed to apply.
@@ -197,7 +197,7 @@ public class SearchQuestion {
     /**
      * <p>User keys for early binding Document Level Security.</p>
      */
-    @Getter final private List<String> userKeys = new ArrayList<String>();
+    @Getter final private List<String> userKeys = new ArrayList<>();
     
     /**
      * <p>List of selected facets.</p>
@@ -205,7 +205,7 @@ public class SearchQuestion {
      * <p>Contains the name of the facets that were selected, such as
      * "Location" or "Brand", but not the actual value.</p>
      */
-    @Getter final private Set<String> selectedFacets = new HashSet<String>();
+    @Getter final private Set<String> selectedFacets = new HashSet<>();
     
     /**
      * <p>List of selected facets categories.</p>
@@ -213,13 +213,13 @@ public class SearchQuestion {
      * <p>Contains the actual values that were selected, indexed by facet.
      * For example: "Location" =&gt; ("Sydney", "Melbourne").</p>
      */
-    @Getter final private Map<String, List<String>> selectedCategoryValues = new HashMap<String, List<String>>();
+    @Getter final private Map<String, List<String>> selectedCategoryValues = new HashMap<>();
     
     /**
      * Query constraints to apply for faceted navigation
      * (In addition to other query expressions).
      */
-    @Getter @Setter private List<String> facetsQueryConstraints = new ArrayList<String>();
+    @Getter @Setter private List<String> facetsQueryConstraints = new ArrayList<>();
     
     /**
      * The collections to restrict search to for faceted navigation.
@@ -241,7 +241,7 @@ public class SearchQuestion {
     
     /**
      * Request identifier to log for this transaction. Depending on the collection configuration
-     * it can be an IP address, an md5 hash of the address, nothing ("-") or null.
+     * it can be an IP address, a md5 hash of the address, nothing ("-") or null.
      * 
      *  @since 12.4 - Renamed from <code>userId</code>
      *  @since 12.5 - Renamed from <code>userIdToLog</code>
@@ -293,13 +293,12 @@ public class SearchQuestion {
      * <p> In Java to replace all values for a key:
      * <pre>{@code 
      * inputParameters.replaceValues("query", List.of("my new query"))
-     * }</pre>
-     * 
-     * </p>
+     * }</pre></p>
+     *
      * A clone of this map can be made with {@link #getInputParametersCopy()}.
      * 
      * <p>To convert such a map into a query string suitable for URLs,
-     * see {@link QueryStringUtils#toString(ListMultimap, boolean)}</p>
+     * see {@link  SharedQueryStringUtils#toString()}</p>
      * 
      * @since 16.0
      */
@@ -312,8 +311,6 @@ public class SearchQuestion {
      * <p>Be aware that the value type is <code>ListMultimap</code>, thus a single 
      * key can have multiple values also {@link ListMultimap#get(Object)} will never 
      * return null.</p>
-     * 
-     * @return 
      */
     @JsonIgnore
     public ListMultimap<String, String> getInputParametersCopy() {
@@ -323,7 +320,7 @@ public class SearchQuestion {
     /**
      * <p>Sets the query string parameter map.</p>
      * 
-     * <p>This is for internal use only and shouldn't be called outside of
+     * <p>This is for internal use only and shouldn't be called outside
      * initializing the search question. Changing the query string map will
      * affect all the URLs that are constructed in the data model</p>
      * 
@@ -342,7 +339,7 @@ public class SearchQuestion {
      * query string parameters.</p>
      * 
      * <p>To convert such a map into a query string suitable for URLs,
-     * see {@link QueryStringUtils#toString(MultiMap, boolean)}</p>
+     * see {@link SharedQueryStringUtils#toString()}</p>
      * 
      * @return Query string parameters
      * 
@@ -352,7 +349,6 @@ public class SearchQuestion {
     public ListMultimap<String, String> getQueryStringMapCopy() {
         return MultimapBuilder.hashKeys().arrayListValues().build(queryStringMap);
     }
-
 
     /**
      * <p>Indicates the 'type' of question, which may trigger special processing in the search lifecycle.</p>
@@ -391,7 +387,7 @@ public class SearchQuestion {
      * 
      * <p>This will affect the UI only, to configure the locale
      * for the query processor please refer to the corresponding option
-     * <tt>-lang</tt>.</p>
+     * <code>-lang</code>.</p>
      * 
      * @since 12.0
      */
@@ -435,7 +431,7 @@ public class SearchQuestion {
     
     
     /**
-     * <p>A optional maxPadrePacketSize which may be overridden to set the max 
+     * <p>An optional maxPadrePacketSize which may be overridden to set the max
      * Padre packet size that will be permitted. Generally the Config option
      * ui.modern.padre_response_size_limit_bytes should be set in preference to
      * setting this.</p>
@@ -445,7 +441,7 @@ public class SearchQuestion {
     @Getter @Setter private Optional<Integer> maxPadrePacketSize = Optional.empty();
     
     /**
-     * <p>A optional timeout which when set overrides the value of collection.cfg option
+     * <p>An optional timeout which when set overrides the value of collection.cfg option
      * ui.modern.padre_fork_timeout_ms, which controls how long the main
      * padre forking may take.</p>
      * 
@@ -579,7 +575,7 @@ public class SearchQuestion {
         /** Controls the type/level of stemming which should be used */
         public static String STEM = "stem";
 
-        /** Controls whether or not result collapsing is performed */
+        /** Controls whether result collapsing is performed */
         public static String COLLAPSING = "collapsing";
 
         /** Controls the field used for collapsing */
@@ -654,7 +650,7 @@ public class SearchQuestion {
             public static final String URL = Cache.URL;
             
             
-            /** URL of the target in the index (may be different to the redirect URL).
+            /** URL of the target in the index (maybe different to the redirect URL).
              * This is the URL that will be logged in clicks.log */
             public static final String INDEX_URL = "index_url";
             
@@ -707,7 +703,7 @@ public class SearchQuestion {
         }
 
         /**
-         * Common request parameter names used in the <tt>serve-*</tt>
+         * Common request parameter names used in the <code>serve-*</code>
          * controllers
          * 
          * @since 11.0
@@ -736,7 +732,7 @@ public class SearchQuestion {
             
             /**
              * Prefix for the previously clicked
-             * suggestions (cluster0, cluster1, etc).
+             * suggestions (cluster0, cluster1, etc.).
              */
             public static final String CN_PREV_PREFIX = "cluster";
             

@@ -33,7 +33,7 @@ public class ResultsSummary {
     @Getter @Setter private Integer totalMatching;
 
     /**
-     * <p>Whether or not the counts within this summary have been estimated.</p>
+     * <p>Whether the counts within this summary have been estimated.</p>
      *  
      * <p>Estimation occurs when the result set is only partially scanned (e.g.
      *  more results are found than the daat value).</p>
@@ -43,14 +43,14 @@ public class ResultsSummary {
     /**
      * <p>Number of events continued from the day when using event search.</p>
      * 
-     * <p>See the <tt>-events</tt> query processor options.</p>
+     * <p>See the <code>-events</code> query processor options.</p>
      */
     @Getter @Setter private Integer carriedOverFtd;
     
     /**
      * <p>Number of distinct URLs when using event search.</p>
      * 
-     * <p>See the <tt>-events</tt> query processor options.</p>
+     * <p>See the <code>-events</code> query processor options.</p>
      */
     @Getter @Setter private Integer totalDistinctMatchingUrls;
     
@@ -60,7 +60,7 @@ public class ResultsSummary {
     /**
      * <p>Current offset of the first result returned.</p>
      * 
-     * <p>For example if the second page of results were returned
+     * <p>For example if the second page of results was returned
      * and 10 results were requested, this will be set to 11.</p>
      * 
      * <p>See: <code>start_rank</code> parameter, <code>num_ranks</code> parameter.</p>
@@ -70,7 +70,7 @@ public class ResultsSummary {
     /**
      * <p>Current offset of the last result returned.</p>
      * 
-     * <p>For example if the second page of results were returned
+     * <p>For example if the second page of results was returned
      * and 10 results were requested, this will be set to 20.</p>
      * 
      * <p>See: <code>start_rank</code> parameter, <code>num_ranks</code> parameter.</p>
@@ -81,7 +81,7 @@ public class ResultsSummary {
      * <p>Offset of the first result of the previous page of
      * results.</p>
      * 
-     * <p>For example if the second page of results were returned
+     * <p>For example if the second page of results was returned
      * and 10 results were requested, this will be set to 1.</p>
      * 
       * <p>See: <code>start_rank</code> parameter, <code>num_ranks</code> parameter.</p>
@@ -92,7 +92,7 @@ public class ResultsSummary {
      * <p>Offset of the first result of the next page of
      * results.</p>
      * 
-     * <p>For example if the second page of results were returned
+     * <p>For example if the second page of results was returned
      * and 10 results were requested, this will be set to 21.</p>
      * 
       * <p>See: <code>start_rank</code> parameter, <code>num_ranks</code> parameter.</p>
@@ -113,7 +113,7 @@ public class ResultsSummary {
     @Getter @Setter private boolean anyUrlsPromoted;
     
     /**
-     * Was any result afected by result diversification.
+     * Was any result affected by result diversification.
      * @since 15.12
      */
     @Getter @Setter private boolean resultDiversificationApplied;

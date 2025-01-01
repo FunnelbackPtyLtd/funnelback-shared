@@ -10,9 +10,9 @@ import lombok.Setter;
 /**
  * <p>A tier bar</p>
  * 
- * <p>Results are grouped by tier bars depending of how
+ * <p>Results are grouped by tier bars depending on how
  * they match the query terms. There is usually one
- * tier bar for the fully matching results and anoter one
+ * tier bar for the fully matching results and another one
  * for the partially matching results.<p>
  * 
  * @since 11.0
@@ -43,7 +43,7 @@ public class TierBar implements ResultType {
     @Getter @Setter private int lastRank;
     
     /**
-     * <p>Date of the events for this tier bar when the <tt>-events</tt>
+     * <p>Date of the events for this tier bar when the <code>-events</code>
      * query processor option is set.</p>
      */
     @Getter @Setter private Date eventDate;

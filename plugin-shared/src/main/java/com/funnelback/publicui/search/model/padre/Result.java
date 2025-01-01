@@ -141,7 +141,7 @@ public class Result implements ResultType {
      * <p>Please note that currently separators are defined globally, however this data-model
      *    aims to support the possibility of per-class separators in the future.</p>
      * 
-     * @see <code>Metadata classes</code>
+     * @see "Metadata classes"
      * @since 15.16
      */
     @JsonIgnore
@@ -155,7 +155,7 @@ public class Result implements ResultType {
      *
      * <p>The values are each mapped metadata value, split based on any defined separators.</p>
      * 
-     * @see <code>Metadata classes</code>
+     * @see "Metadata classes"
      * @since 15.16
      */
     @Getter private final ListMultimap<String, String> listMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
@@ -171,7 +171,7 @@ public class Result implements ResultType {
      *    for any added metadata if this map lacks sufficient values.</p>
      * 
      *
-     * @see <code>Metadata classes</code>
+     * @see "Metadata classes"
      * @since 15.16
      */
     @JsonIgnore
@@ -181,7 +181,7 @@ public class Result implements ResultType {
     /**
      * <p>Tags associated with a result.</p>
      * 
-     * <p>See the <tt>url_tagger</tt> program.</p>
+     * <p>See the <code>url_tagger</code> program.</p>
      */
     @Getter private final List<String> tags = new ArrayList<>();
     
@@ -226,11 +226,11 @@ public class Result implements ResultType {
     @Getter private final Map<String, Object> customData = new HashMap<>();
 
     /**
-     * Documents related to this result which have been fetched by RelatedDocumentFetcher.
+     * <p>Documents related to this result which have been fetched by RelatedDocumentFetcher.</p>
      * 
-     * The map key is chosen by the related document fetching configuration and the
+     * <p>The map key is chosen by the related document fetching configuration and the
      * set of related documents are those that were fetched based on the metadata
-     * relationships traversed by the configuration.
+     * relationships traversed by the configuration.</p>
      *
      * @since 15.16
      */
@@ -246,9 +246,9 @@ public class Result implements ResultType {
     @Builder.Default @Getter @Setter private boolean promoted = false;
     
     /**
-     * Set true if the URL was down weighted by result diversification.
+     * <p>Set true if the URL was down weighted by result diversification.</p>
      * 
-     * This might happen from same site suppression (SSS).
+     * <p>This might happen from same site suppression (SSS).</p>
      * 
      * @since 15.12
      */

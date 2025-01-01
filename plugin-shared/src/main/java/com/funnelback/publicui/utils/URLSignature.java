@@ -13,12 +13,11 @@ import com.google.common.collect.ListMultimap;
 
 /**
  * Utilities to compute a signature for a given URL
- *
  */
 public class URLSignature {
 
     /**
-     * <p>Computes a signature for a query string which is independent from the
+     * <p>Computes a signature for a query string which is independent of the
      * way parameters are encoded, or from their order.</p>
      * 
      * <p>For example the signature for the two following query string will
@@ -42,22 +41,19 @@ public class URLSignature {
      * <p>Converts a query string into a canonical form that can be used for hashing.</p>
      * 
      * <p>Known bug: this does suffer some issues like p=2&v=22 would be considered the
-     * same as p=22&v=2.<p> 
-     * @param queryString
-     * @return
+     * same as p=22&v=2.</p>
+     * @param queryString query parameters
      */
     public static String canonicaliseQueryStringToBeHashed(String queryString) {
-        List<String> keyList = new ArrayList<String>();
-        List<String> valueList = new ArrayList<String>();
+        List<String> keyList = new ArrayList<>();
+        List<String> valueList = new ArrayList<>();
         
         ListMultimap<String, String> params = SharedQueryStringUtils.toMap(queryString);
-        SortedSet<String> sortedKeys = new TreeSet<String>(params.keySet());
+        SortedSet<String> sortedKeys = new TreeSet<>(params.keySet());
         for (String key: sortedKeys) {
             keyList.add(URLDecoder.decode(key, UTF_8));
             if (params.containsKey(key)) {
-                for (String value: params.get(key)) {
-                    valueList.add(value);
-                }
+                valueList.addAll(params.get(key));
             }
         }
         

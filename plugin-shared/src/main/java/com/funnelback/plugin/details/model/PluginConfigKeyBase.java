@@ -3,10 +3,8 @@ package com.funnelback.plugin.details.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.funnelback.common.utils.SharedConfigKeyUtils;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 
@@ -78,9 +76,9 @@ public abstract class PluginConfigKeyBase implements PluginConfigKeyDetails {
      * To resolve wildcard to particular value see {@link #getKey(String...)}
      *
      * For example:
-     * - for ID `foo`, `getKey()` -> `plugin.pluginID.config.foo`,
-     * - for ID `foo.bar`, `getKey()` -> `plugin.pluginID.config.foo.bar`
-     * - for ID `foo.*`, `getKey()` -> `plugin.pluginID.config.foo.*`
+     * - for ID `foo`, `getKey()` returns `plugin.pluginID.config.foo`,
+     * - for ID `foo.bar`, `getKey()` returns `plugin.pluginID.config.foo.bar`
+     * - for ID `foo.*`, `getKey()` returns `plugin.pluginID.config.foo.*`
      *
      * @return plugin configuration key
      */
@@ -92,8 +90,8 @@ public abstract class PluginConfigKeyBase implements PluginConfigKeyDetails {
      * Create a plugin key based on provided key ID with resolving wildcards to provided values
      *
      * For example:
-     * - for ID `foo.*`, `getKey("something")` -> `plugin.pluginID.config.foo.something`
-     * - for ID `*.foo.*.bar`, `getKey("something", "more")` -> `plugin.pluginID.config.something.foo.more.bar`
+     * - for ID `foo.*`, `getKey("something")` returns `plugin.pluginID.config.foo.something`
+     * - for ID `*.foo.*.bar`, `getKey("something", "more")` returns `plugin.pluginID.config.something.foo.more.bar`
      *
      * @param wildcard list of wildcard values to replace in key
      * @return plugin configuration key with resolved wildcard value

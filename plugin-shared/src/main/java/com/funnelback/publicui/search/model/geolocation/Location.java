@@ -8,14 +8,10 @@ import lombok.Data;
 import lombok.Getter;
 
 /**
- * <p>
- * This class represents a location along with a range of 'names' which apply to
- * it, such as countries, cities, postalCodes etc.
- * </p>
+ * <p>This class represents a location along with a range of 'names' which apply to
+ * it, such as countries, cities, postalCodes etc.</p>
  * 
- * <p>
- * The available fields are based closely on the MaxMind2 data.
- * </p>
+ * <p>The available fields are based closely on the MaxMind2 data.</p>
  * 
  * @since 13.0
  */
@@ -33,7 +29,7 @@ public class Location {
     private final String city;
 
     /**
-     * The two letter country code (ISO 3166-1 alpha code) of the represented location if it can be
+     * The two-letter country code (ISO 3166-1 alpha code) of the represented location if it can be
      * determined, otherwise null.
      * 
      * @since 13.0
@@ -56,28 +52,18 @@ public class Location {
     private final Integer countryGeoNameId;
 
     /**
-     * <p>
-     * The latitude of the represented location.
-     * </p>
+     * <p>The latitude of the represented location.</p>
      * 
-     * <p>
-     * Defaults to zero if it cannot be determined even though that represents a
-     * legitimate location.
-     * </p>
+     * <p>Defaults to zero if it cannot be determined even though that represents a legitimate location.</p>
      * 
      * @since 13.0
      */
     private final Double latitude;
 
     /**
-     * <p>
-     * The longitude of the represented location.
-     * </p>
+     * <p>The longitude of the represented location.</p>
      * 
-     * <p>
-     * Defaults to zero if it cannot be determined even though that represents a
-     * legitimate location.
-     * </p>
+     * <p>Defaults to zero if it cannot be determined even though that represents a legitimate location.</p>
      * 
      * @since 13.0
      */
@@ -103,7 +89,7 @@ public class Location {
      * The subdivisions of the location.
      *  
      * This will generally hold the sate or province the location is in, however
-     * it depends on on the particular country. Some locations may have multiple
+     * it depends on the particular country. Some locations may have multiple
      * subdivisions. The order is from the least specific to most specific division.
      * 
      * 
@@ -135,7 +121,6 @@ public class Location {
          * @since 15.24
          */
         private String isoCode;
-        
     }
 
 }

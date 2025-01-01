@@ -14,6 +14,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class SharedXMLUtils {
     /** XML file extension */
     public static final String XML = "xml";
 
-    private static TransformerFactory tf = TransformerFactory.newInstance();
+    private static final TransformerFactory tf = TransformerFactory.newInstance();
 
     /**
      * Get a transformer that can be used for transforming a Document back out into an output stream.
@@ -38,7 +39,7 @@ public class SharedXMLUtils {
      * multiple threads. Note: The filter framework is inherintly called by multiple crawler threads, so when using it
      * for a plugin should call this method repeatedly and use a fresh transformer each time rather than
      * getting one in the constructor for re-use.
-     * @param encoding
+     * @param encoding specifies the preferred character encoding e.g. UTF-8
      * @return A new transformer instance.
      */
     public static Transformer getTransformer(String encoding) {
@@ -60,7 +61,7 @@ public class SharedXMLUtils {
      *
      * Internally uses a custom documentBuilder instance with many security settings enabled.
      *
-     * @param inputSource - e.g. new InputSource(bufferedReader)
+     * @param is - e.g. new InputSource(bufferedReader)
      * @return Document - for use with a transformer, or xpath evaluation.
      * @throws IllegalArgumentException when the XML from the input source is bad.
      * @throws RuntimeException when somethnig is wrong with the parser itself.
@@ -88,7 +89,7 @@ public class SharedXMLUtils {
      *   byte[] documentContentsAsBytes = bos.toByteArray();
      * }
      *
-     * @param InputStream - document to read/parse
+     * @param is - document to read/parse
      * @return Document - after parsing.
      * @throws IllegalArgumentException
      * @throws RuntimeException
@@ -111,7 +112,7 @@ public class SharedXMLUtils {
      * @return Document after parsing.
      */
     public static Document fromFile(File file) {
-        Document document = null;
+        Document document;
         BufferedReader br = null;
 
         try {
@@ -137,33 +138,27 @@ public class SharedXMLUtils {
     /**
      * Converts a given Document back out to a String. Useful for testing/debugging.
      *
-     * @param document
-     * @return
+     * @param document the entire HTML or XML document
      */
     public static String toString(Document document) {
-        try {
-            return new String(toBytes(document, "UTF-8"), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return new String(toBytes(document, "UTF-8"), StandardCharsets.UTF_8);
     }
 
     /**
      * Converts a given Document back out to a byte array. Useful for testing/debugging.
-     * @param document
-     * @param charcterEncodingOfBytes - e.g. UTF-8
-     * @return
+     * @param document the entire HTML or XML document
+     * @param characterEncodingOfBytes specifies the preferred character encoding e.g. UTF-8
      */
-    public static byte[] toBytes(Document document, String charcterEncodingOfBytes){
+    public static byte[] toBytes(Document document, String characterEncodingOfBytes){
         try {
             document.setXmlStandalone(true);
             DOMSource source = new DOMSource(document.getDocumentElement());
 
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-            PrintStream outStream = new PrintStream(output, false, charcterEncodingOfBytes);
+            PrintStream outStream = new PrintStream(output, false, characterEncodingOfBytes);
             StreamResult result = new StreamResult(outStream);
 
-            getTransformer(charcterEncodingOfBytes).transform(source, result);
+            getTransformer(characterEncodingOfBytes).transform(source, result);
             return output.toByteArray();
         } catch (TransformerException e) {
             throw new RuntimeException(e);
@@ -175,8 +170,7 @@ public class SharedXMLUtils {
 
     /**
      * Round trip conversion of a given XML string back into XML with the secure transformations applied.
-     * @param xml
-     * @return
+     * @param xml string to verify XML
      */
     public static String toString(String xml) {
         Document document = fromString(xml);
@@ -235,8 +229,8 @@ public class SharedXMLUtils {
             documentBuilderFactory.setXIncludeAware(false);
 
             // If this is set true then documents that turn up with a <!DOCTYPE will be ones that we can not process
-            // I don't think that is acceptable, I think we need to still crawl and serve them but we need to now load outside
-            // documents.
+            // I don't think that is acceptable, I think we need to still crawl and serve them,
+            // but we need to now load outside documents.
             // documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
