@@ -77,9 +77,9 @@ public class ResultPacket {
      * or a hook script you must use the following syntax: <code>QSups</code>,
      * instead of <code>qSups</code> due to the Javabeans naming conventions.</p>
      * 
-     * @see <code>blending.cfg</code>
+     * @see "blending.cfg"
      */
-    @Getter private final List<QSup> qSups = new ArrayList<QSup>();
+    @Getter private final List<QSup> qSups = new ArrayList<>();
     
     /**
      * Summary counts and data about the results (How many documents
@@ -91,10 +91,10 @@ public class ResultPacket {
     @Getter @Setter private Spell spell;
     
     /** List of results. */
-    @Getter final private List<Result> results = new ArrayList<Result>();
+    @Getter final private List<Result> results = new ArrayList<>();
     
     /** List of tier bars */
-    @Getter final private List<TierBar> tierBars = new ArrayList<TierBar>();
+    @Getter final private List<TierBar> tierBars = new ArrayList<>();
     
     /** Error occurred during the search, if any. */
     @Getter @Setter private Error error;
@@ -131,7 +131,7 @@ public class ResultPacket {
      *      <li>-a: =&gt; 10 (i.e. items with no a metadata)</li>
      *  </ul>
      */
-    @Getter private final Map<String, Integer> rmcs = new HashMap<String, Integer>();
+    @Getter private final Map<String, Integer> rmcs = new HashMap<>();
     
     /**
      * <p>Metadata counts (Used in faceted navigation) including top n results
@@ -162,7 +162,7 @@ public class ResultPacket {
      * 
      * @since 11.2
      */
-    @Getter private final Map<String, List<RMCItemResult>> rmcItemResults = new HashMap<String, List<RMCItemResult>>();
+    @Getter private final Map<String, List<RMCItemResult>> rmcItemResults = new HashMap<>();
     
     /**
      * <p>Metadata ranges.</p>
@@ -176,7 +176,7 @@ public class ResultPacket {
      *      <li>P =&gt; Range(100.0, 400.0)</li>
      *  </ul>
      */
-    @Getter private final Map<String, Range> metadataRanges = new HashMap<String, Range>();
+    @Getter private final Map<String, Range> metadataRanges = new HashMap<>();
     
     /**
      * <p>Bounding boxes for Geospatial metadata classes</p>
@@ -195,13 +195,13 @@ public class ResultPacket {
      * If the URL starts with <code>http://</code>, it's omitted.</p>
      * 
      * <p>Examples:</p>
-     *     <ul>
-     *         <li>www.example.com/about =&gt; 12</li>
-     *         <li>www.example.com/contact =&gt; 6 </li>
-     *      <li>https://secure.example.com/login =&gt; 5</li>
-     *  </ul>
+     *      <ul>
+     *          <li>www.example.com/about =&gt; 12</li>
+     *          <li>www.example.com/contact =&gt; 6 </li>
+     *          <li>https://secure.example.com/login =&gt; 5</li>
+     *      </ul>
      */
-    @Getter private final Map<String, Integer> urlCounts = new HashMap<String, Integer>();
+    @Getter private final Map<String, Integer> urlCounts = new HashMap<>();
 
     /**
      * <p>GScope counts (Used in faceted navigation)</p>
@@ -222,7 +222,7 @@ public class ResultPacket {
      * 
      * @since 12.0
      */
-    @Getter private final Map<String, DateCount> dateCounts = new HashMap<String, DateCount>();
+    @Getter private final Map<String, DateCount> dateCounts = new HashMap<>();
     
     /**
      * <p>Regular expression to use to highlight query terms in titles,
@@ -244,27 +244,27 @@ public class ResultPacket {
     /**
      * <p>List of prominent entities.</p>
      * 
-     * <p>See the experimental <tt>-fluent</tt> query processor option.</p>
+     * <p>See the experimental <code>-fluent</code> query processor option.</p>
      */
-    @Getter private final Map<String, Integer> entityList = new HashMap<String, Integer>();
+    @Getter private final Map<String, Integer> entityList = new HashMap<>();
     
     /**
      * Scopes (URL prefixes, not Gscope) included via the <code>scope</code> 
      * query processor option.
      */
-    @Getter private final List<String> includeScopes = new ArrayList<String>();
+    @Getter private final List<String> includeScopes = new ArrayList<>();
     
     /**
      * Scopes (URL prefixes, not Gscopes) excluded via the <code>scope</code>
      * query processor option.
      */
-    @Getter private final List<String> excludeScopes = new ArrayList<String>();
+    @Getter private final List<String> excludeScopes = new ArrayList<>();
     
     /**
      * A {@link Map} of floats that describe the cooler ranking weights. Weights are 
      * identified by the cooler variable short name + id, and the map is only populated when explain mode is on.
      */
-    @Getter private final Map<CoolerWeighting, Float> coolerWeights = new HashMap<CoolerWeighting, Float>();
+    @Getter private final Map<CoolerWeighting, Float> coolerWeights = new HashMap<>();
 
     /**
      * <p>A {@link Map} of Strings that describes how to calculate the potential improvement for ranking 
@@ -273,23 +273,23 @@ public class ResultPacket {
      * <p>Ranking features are identified by the cooler variable short name + id, 
      * and the map is only populated when explain mode is on.</p>
      */
-    @Getter private final Map<CoolerWeighting, String> explainTypes = new HashMap<CoolerWeighting, String>();
+    @Getter private final Map<CoolerWeighting, String> explainTypes = new HashMap<>();
     
     /**
      * A {@link List} of stop words used by the query processor. Only populated when explain mode is on.
      */
-    @Getter private final List<String> stopWords = new ArrayList<String>();
+    @Getter private final List<String> stopWords = new ArrayList<>();
     
     /**
      * A {@link SetMultimap} of Strings that describes the results of stemming on the query. Only populated when explain mode is on.
      * The map keys are content terms, and the value(s) are the query terms that the key matches.   
      */
-    @Getter private SetMultimap<String, String> stemmedEquivs = HashMultimap.create();
+    @Getter private final SetMultimap<String, String> stemmedEquivs = HashMultimap.create();
 
     /**
      * A {@link Map} of long names for cooler ranking variables, keyed by the cooler variable short names + id. Only populated when explain mode is on.    
      */
-    @Getter private Map<CoolerWeighting, String> coolerNames = new HashMap<CoolerWeighting, String>();
+    @Getter private final Map<CoolerWeighting, String> coolerNames = new HashMap<>();
     
     /**
      * <p>Contains SVG data returned by PADRE, for example an SVG representation
@@ -300,7 +300,7 @@ public class ResultPacket {
      * 
      * @since 12.0
      */
-    @Getter private Map<String, String> svgs = new HashMap<String, String>();
+    @Getter private final Map<String, String> svgs = new HashMap<>();
     
     /**
      * <p>A list containing the count of unique values for a metadata class grouped by
@@ -311,7 +311,7 @@ public class ResultPacket {
      * 
      * @since 15.8
      */
-    @Getter private List<UniqueByGroup> uniqueCountsByGroups = new ArrayList<>();
+    @Getter private final List<UniqueByGroup> uniqueCountsByGroups = new ArrayList<>();
     
     /**
      * <p>A list containing the sum of a numeric metadata class grouped by
@@ -321,7 +321,7 @@ public class ResultPacket {
      * grouped by metadata 'Y'</p>
      * 
      */
-    @Getter private List<SumByGroup> sumByGroups = new ArrayList<>();
+    @Getter private final List<SumByGroup> sumByGroups = new ArrayList<>();
     
     /**
      * <p>A list containing the counts of term occurrences in a metadata class.</p>
@@ -329,29 +329,29 @@ public class ResultPacket {
      * 
      * @since 15.10
      */
-    @Getter private List<IndexedTermCounts> indexedTermCounts = new ArrayList<>();
+    @Getter private final List<IndexedTermCounts> indexedTermCounts = new ArrayList<>();
     
     /**
      * <p>A map containing the number of documents each collection contributed to the result set.</p>
      * <p>The key is the collection name and the value is the number of documents that collection
      * contributed</p>
      * 
-     * @Since 15.12
+     * @since 15.12
      */
-    @Getter private Map<String, Long> documentsPerCollection = new HashMap<>();
+    @Getter private final Map<String, Long> documentsPerCollection = new HashMap<>();
     
     /**
      * <p>A map of the numeric metadata to total of that numeric metadata in the result set</p>
      * 
      * <p>The key is the metadata class. The value is the sum.</p>
      */
-    @Getter private Map<String, Double> metadataSums = new HashMap<>();
+    @Getter private final Map<String, Double> metadataSums = new HashMap<>();
     
     /**
      * Test if the packet contains results.
      * @return true if the packet contains at least one {@link Result}.
      */
-    public boolean hasResults() { return results != null && results.size() > 0; }
+    public boolean hasResults() { return results != null && !results.isEmpty(); }
     
     /**
      * <p>Get the results <em>and</em> the tier bars mixed together.</p>
@@ -364,13 +364,11 @@ public class ResultPacket {
      */
     @JsonIgnore
     public List<ResultType> getResultsWithTierBars() {
-        if (tierBars != null && tierBars.size() > 0) {
-            ArrayList<ResultType> out = new ArrayList<ResultType>();
+        if (tierBars != null && !tierBars.isEmpty()) {
+            ArrayList<ResultType> out = new ArrayList<>();
             for (TierBar tb: getTierBars()) {
                 out.add(tb);
-                for (Result r: getResults().subList(tb.getFirstRank(), tb.getLastRank())) {
-                    out.add(r);
-                }
+                out.addAll(getResults().subList(tb.getFirstRank(), tb.getLastRank()));
             }
             return out;            
         } else {

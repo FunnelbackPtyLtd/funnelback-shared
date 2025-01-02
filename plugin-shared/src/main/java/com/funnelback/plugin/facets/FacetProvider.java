@@ -4,26 +4,22 @@ import com.funnelback.plugin.index.IndexConfigProviderContext;
 
 /**
  * Provide extra faceted navigation to use during query processing.
- * 
- *
  */
 public interface FacetProvider {
 
     /**
-     * Supply additional faceted navigation configuration.
+     * <p>Supply additional faceted navigation configuration.</p>
      * 
-     * Additional faceted navigation is supplied as a JSON similar to the API
-     * <code>
-     * GET /faceted-navigation/v2/collections/{collection}/profiles/{profile}/facet/{id}/views/{view}
-     * <code>
+     * <p>Additional faceted navigation is supplied as a JSON similar to the API
+     * <code>GET /faceted-navigation/v2/collections/{collection}/profiles/{profile}/facet/{id}/views/{view}<code></p>
      * 
-     * This expects to return a list <code>[]</code> of Facets. The id,
-     * lastModified and created fields do not need to be set.
+     * <p>This expects to return a list <code>[]</code> of Facets. The id,
+     * lastModified and created fields do not need to be set.</p>
      * 
-     * Since the acceptable combinations of facets is complicated, it may be easier 
+     * <p>Since the acceptable combinations of facets is complicated, it may be easier
      * to design the facets you want using the faceted navigation UI. After configuring 
      * your facet, extract the facet configuration JSON from the preview screen and omit the 
-     * id, lastModified and created fields.
+     * id, lastModified and created fields.</p>
      * 
      * For example:
      * <code>
@@ -37,15 +33,14 @@ public interface FacetProvider {
      * }]
      * </code>
      * 
-     * During query processing each facet must have a unique name. Facets defined on the profile
+     * <p>During query processing each facet must have a unique name. Facets defined on the profile
      * will be used in preference to facets defined from the plugin. After that facets from plugins will
-     * be used so long as the facet, by name, does not already exist.
+     * be used so long as the facet, by name, does not already exist.</p>
      * 
      * @param context Context passed to the plugin when called, will be called with a profile set.
-     * @return JSON as a string which contains a list of facet definitions as returned by the
-     * API. 
+     * @return JSON as a string which contains a list of facet definitions as returned by the API.
      */
-    public default String extraFacetedNavigation(IndexConfigProviderContext context) {
+    default String extraFacetedNavigation(IndexConfigProviderContext context) {
         return null;
     }
     

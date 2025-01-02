@@ -42,8 +42,8 @@ public class Facet {
     /** URL to use to unselect all possible values of this facet, built from the current URL
      * 
      * <p>The URL is one where the facet is not selected, the URL may be used as the base URL
-     * to append to to select values within the facet.</p>
-     *  @Since 15.12
+     * to append to select values within the facet.</p>
+     *  sSince 15.12
      */
     @Getter @Setter private String unselectAllUrl;
     
@@ -51,7 +51,7 @@ public class Facet {
      * Custom data placeholder allowing any arbitrary data to be
      * stored for this facet by hook scripts.
      */
-    @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
+    @Getter private final Map<String, Object> customData = new HashMap<>();
     
     /**
      * @since 15.12
@@ -101,10 +101,10 @@ public class Facet {
     /**
      * If non-null this comparator will be used to sort values returned by the 
      * {@link Facet#getAllValues()}, {@link Facet#getSelectedValues()} and 
-     * {@link Facet#getUnselectedValues()} methods.
+     * {@link Facet#getUnselectAllUrl()} methods.
      * 
      * <p>This currently does not sort the values returned by any other method
-     * such as the values in what is returned by {@link Facet#getCategories()}
+     * such as the values in what is returned by {@link Facet#getAllValues()}
      * although this may change.</p>
      * 
      * @since 15.12
@@ -114,8 +114,8 @@ public class Facet {
     
     /**
      * 
-     * @return List of all facet values both selected and unselected.
-     * @Since 15.12
+     * List of all facet values both selected and unselected.
+     * @since 15.12
      */
     @Getter private final List<Facet.CategoryValue> allValues = new ArrayList<>();
     
@@ -135,7 +135,7 @@ public class Facet {
     /**
      * Backwards compatible constructor so the stencils facet will continue to work.
      * 
-     * @param name
+     * @param name facet name
      */
     @Deprecated
     public Facet(String name) {
@@ -154,7 +154,7 @@ public class Facet {
     /**
      * 
      * @return List of selected values, useful to build breadcrumbs
-     * @Since 15.12
+     * @since 15.12
      */
     public List<CategoryValue> getSelectedValues() {
         return allValues.stream().filter(CategoryValue::isSelected).collect(Collectors.toList());
@@ -170,19 +170,14 @@ public class Facet {
     
     /**
      * Clone from com.funnelback.common.function.StreamUtils.ofNullableSingle(T)
-     * 
-     * @param <T>
-     * @param a
-     * @return
      */
     public static <T> Stream<T> ofNullableSingle(T a) {
-        if(a == null) return Stream.empty();
-        return Stream.of(a);
+        return Stream.ofNullable(a);
     }
 
     /**
      * @return True if any of the values of this facet is selected
-     * @Since 15.12
+     * @since 15.12
      */
     public boolean isSelected() {
         return getAllValues().stream().anyMatch(CategoryValue::isSelected);
@@ -190,7 +185,6 @@ public class Facet {
     
     /**
      * <p>Value of a facet category, such as "Location = Sydney".</p>
-     * 
      */
     @AllArgsConstructor
     @ToString
@@ -232,18 +226,18 @@ public class Facet {
          * 
          * For internal use.
          * 
-         * @Since 15.12 
+         * @since 15.12
          */
         @XStreamOmitField
         @JsonIgnore
         @Getter @Setter private String queryStringParamName;
         
         /** 
-         * Value of the query string parameter for this value (e.g. <code>Syndey</code>)
+         * Value of the query string parameter for this value (e.g. <code>Sydney</code>)
          * 
          * For internal use.
          * 
-         * @Since 15.12 
+         * @since 15.12
          */
         @XStreamOmitField
         @JsonIgnore
@@ -251,7 +245,7 @@ public class Facet {
         
         /** URL to use to toggle the select status of the facet value.
          *  
-         * @Since 15.12 
+         * @since 15.12
          */
         @Getter @Setter private String toggleUrl;
         
