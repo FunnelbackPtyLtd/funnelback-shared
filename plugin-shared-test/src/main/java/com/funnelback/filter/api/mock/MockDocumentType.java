@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.With;
 
-
 /**
  * Use this to create a DocumentType for testing when a preexisting DocumentType on
  * the interface {@link DocumentType} doesn't already exist.
@@ -19,7 +18,6 @@ import lombok.With;
  * <code>
  * new MockDocumentType().withHTML(true).withContentType("something/specific");
  * </code>
- * 
  */
 @Setter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

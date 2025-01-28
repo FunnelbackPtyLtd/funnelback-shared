@@ -1,10 +1,7 @@
 package com.funnelback.common.filter.jsoup;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import org.hamcrest.core.StringContains;
 
 public class MockJsoupFilterContextTest {
 
@@ -15,8 +12,8 @@ public class MockJsoupFilterContextTest {
             "<p>hello</p>\n" + 
             "</body>\n" + 
             "</html>");
-        
-        MatcherAssert.assertThat(filterContext.getDocument().text(), StringContains.containsString("hello"));
+
+        Assertions.assertTrue(filterContext.getDocument().text().contains("hello"));
     }
     
     @Test
