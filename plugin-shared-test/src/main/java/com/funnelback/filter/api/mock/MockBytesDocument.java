@@ -22,24 +22,19 @@ import lombok.ToString;
  * A BytesDocument for testing.
  *
  */
+@Getter
 @EqualsAndHashCode
 @ToString
 public class MockBytesDocument implements BytesDocument {
 
-    @Getter @NonNull private final URI URI;
-    @Getter @NonNull private final ImmutableListMultimap<String, String> metadata;
-    @Getter @NonNull private byte[] content;
-    @Getter @NonNull private final Optional<Charset> charset;
-    @Getter @NonNull private final DocumentType documentType;
+    @NonNull private final URI URI;
+    @NonNull private final ImmutableListMultimap<String, String> metadata;
+    @NonNull private byte[] content;
+    @NonNull private final Optional<Charset> charset;
+    @NonNull private final DocumentType documentType;
     
     /**
      * Use {@link MockDocuments#mockByteDoc} instead.
-     * 
-     * @param URI
-     * @param metadata
-     * @param documentType
-     * @param charset
-     * @param content
      */
     MockBytesDocument(URI URI, 
                             ListMultimap<String, String> metadata,

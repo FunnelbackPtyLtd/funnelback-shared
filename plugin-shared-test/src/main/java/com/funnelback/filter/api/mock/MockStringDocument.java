@@ -22,23 +22,20 @@ import lombok.ToString;
 
 /**
  * A String document for testing.
- *
  */
+@Getter
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
 public class MockStringDocument implements StringDocument {
 
-    @NonNull @Getter private final URI URI;
-    @NonNull @Getter private final ImmutableListMultimap<String, String> metadata;
-    @NonNull @Getter private final String contentAsString;
-    @NonNull @Getter private final DocumentType documentType;
+    @NonNull private final URI URI;
+    @NonNull private final ImmutableListMultimap<String, String> metadata;
+    @NonNull private final String contentAsString;
+    @NonNull private final DocumentType documentType;
     
     /**
-     * Use {@link MockDocuments#mockEmptyStringDoc} instead.
-     * @param URI
-     * @param metadata
-     * @param content
+     * Use {@link MockDocuments#mockEmptyStringDoc} instead
      */
     MockStringDocument(URI URI, 
                                     Multimap<String, String> metadata,

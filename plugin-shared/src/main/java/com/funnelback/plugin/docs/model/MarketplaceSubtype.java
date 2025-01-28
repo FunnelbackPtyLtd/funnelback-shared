@@ -1,6 +1,5 @@
 package com.funnelback.plugin.docs.model;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

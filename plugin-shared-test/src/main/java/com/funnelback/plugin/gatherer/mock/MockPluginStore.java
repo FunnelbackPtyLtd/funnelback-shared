@@ -32,9 +32,6 @@ import lombok.Getter;
  * }</pre> 
  * 
  * Stores records in memory, don't store too many documents into this.
- * 
- * 
- *
  */
 public class MockPluginStore implements PluginStore {
     
