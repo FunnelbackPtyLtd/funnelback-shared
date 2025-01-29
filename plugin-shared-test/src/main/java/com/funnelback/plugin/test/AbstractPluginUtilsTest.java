@@ -4,7 +4,7 @@ import com.funnelback.plugin.PluginUtilsBase;
 import com.funnelback.plugin.details.model.PluginConfigKey;
 import com.funnelback.plugin.details.model.PluginConfigKeyAllowedValue;
 import com.funnelback.plugin.details.model.PluginConfigKeyType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
