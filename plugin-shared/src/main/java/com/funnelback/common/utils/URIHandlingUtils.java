@@ -26,24 +26,22 @@ public class URIHandlingUtils {
      * This issue was identified in ticket https://squizgroup.atlassian.net/browse/DXPSUP-515
      * So a raw string needs to be converted to URL object, then converted to URI to ensure those special characters accepted by URL but not URI  were encoded.
      *</p>
-     * @param URLString The URL string used to create the URI object
+     * @param urlString The URL string used to create the URI object
      * @return The created URI object
      */
-    public static URI create(String URLString)  {
+    public static URI create(String urlString)  {
 
-        if (URLString == null || StringUtil.isBlank(URLString)) {
+        if (urlString == null || StringUtil.isBlank(urlString)) {
             return null;
         }
 
         try {
-            URL newURL = new URL(URLString);
+            URL newURL = new URL(urlString);
             return new URI(newURL.getProtocol(), newURL.getUserInfo(), newURL.getHost(), newURL.getPort(), newURL.getPath(), newURL.getQuery(), newURL.getRef());
 
         } catch (MalformedURLException | URISyntaxException e) {
             // it is not an absolute URL string, so create a new URI based on the raw string with all special characters encoded
-            return URI.create(URLEncoder.encode(URLString, StandardCharsets.UTF_8));
+            return URI.create(URLEncoder.encode(urlString, StandardCharsets.UTF_8));
         }
     }
-
-
 }
