@@ -70,6 +70,8 @@ verify_plugins:
 
 # Release `funnelback-shared` to the GitLab package registry (development version)
 publish_to_gitlab:
+  only:
+    - /^master$/
   extends:
     - .template:funnelback:mvn-publish:push
 
