@@ -91,7 +91,7 @@ public class ResultPacket {
     @Getter @Setter private Spell spell;
     
     /** List of results. */
-    @Getter final private List<Result> results = new ArrayList<>();
+    @Getter @Setter private List<Result> results = new ArrayList<>();
     
     /** List of tier bars */
     @Getter final private List<TierBar> tierBars = new ArrayList<>();
