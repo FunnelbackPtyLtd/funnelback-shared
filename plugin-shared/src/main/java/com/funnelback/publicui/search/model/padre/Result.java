@@ -30,8 +30,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 public class Result implements ResultType {
-    
-    /** Rank of the result (From 1 to n) */
+
+    /**
+     * <p>Rank of the result (From 1 to n)</p>
+     *
+     * <p>Rank of the vector result (From 0 to n)
+     * @since 16.36</p>
+     */
     @Getter @Setter private Integer rank;
     /** Score of the result (From 1000 to 0) */
     @Getter @Setter private Integer score;
@@ -43,16 +48,16 @@ public class Result implements ResultType {
      * 
      * <p>This is usually the same ID as the collection being
      * searched, except for Meta collections where results can
-     * come from different sub-collections.</p>
+     * come from different subcollections.</p>
      */
     @Getter @Setter private String collection;
     
     /**
-     * <p>For meta collections it's the internal component
-     * number of the sub-collection this result is coming
+     * <p>For meta collections, it's the internal component
+     * number of the subcollection this result is coming
      * from.</p>
      * 
-     * <p>For non-meta collections it's always zero.</p>
+     * <p>For non-meta collections, it's always zero.</p>
      * 
      * @see Result#collection
      */
@@ -74,14 +79,19 @@ public class Result implements ResultType {
      * <p>It's identical to the {@link #indexUrl} initially, but might
      * have been transformed by a hook script. The click tracking URL
      * will be built based on this URL, so if you need to modify the URL
-     * that's recorded in the click log, this field should be changed.</p>
+     * that was recorded in the click log, this field should be changed.</p>
      * 
      * <p>In the default form, its only use it to display a proper URL
-     * when the user mouse-over the result title link.</p>
+     * when the user mouseover the result title link.</p>
      **/
     @Getter @Setter private String liveUrl;
-    
-    /** Query-biased summary */
+
+    /**
+     * <p>Query-biased summary</p>
+     *
+     * <p>Vector paragraph content from the document. To see which exactly paragraph it is, {@link Result#paragraph}
+     * @since 16.36</p>
+     */
     @Getter @Setter private String summary;
     
     /**
@@ -138,7 +148,7 @@ public class Result implements ResultType {
      *
      * <p>Intended only for internal use, and not exposed in the XML/JSON data model.</p>
      * 
-     * <p>Please note that currently separators are defined globally, however this data-model
+     * <p>Please note that currently separators are defined globally, however, this data-model
      *    aims to support the possibility of per-class separators in the future.</p>
      * 
      * @see "Metadata classes"
@@ -149,7 +159,7 @@ public class Result implements ResultType {
     @Getter private final ListMultimap<String, String> definedMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
 
     /**
-     * <p>Multi-Map containing the list of metadata values for each metadata fields for each result.</p>
+     * <p>Multi-Map containing the list of metadata values for each metadata field for each result.</p>
      * 
      * <p>The key is the metadata class name as defined in the metadata mappings.</p>
      *
@@ -165,7 +175,7 @@ public class Result implements ResultType {
      *
      * <p>Intended only for internal use, and not exposed in the XML/JSON data model.</p>
      * 
-     * <p>This map is only of interest if the specific separators are meaningful to an implementation
+     * <p>This map is only of interest if the specific separators are meaningful to an implementation,
      *    which is hopefully uncommon. If values are added to the newMetadata map, new separators
      *    may be added here also. Some separator from the definedMetadataSeparators list will be used
      *    for any added metadata if this map lacks sufficient values.</p>
@@ -197,7 +207,7 @@ public class Result implements ResultType {
      * preserving the {@link #liveUrl} for the user to access the result.</p>
      * 
      * <p>In the default form, this URL is displayed in the <code>&lt;cite&gt;</code>
-     * block for the the result</p>
+     * block for the result</p>
      **/
     @Getter @Setter private String displayUrl;
         
@@ -228,7 +238,7 @@ public class Result implements ResultType {
     /**
      * <p>Documents related to this result which have been fetched by RelatedDocumentFetcher.</p>
      * 
-     * <p>The map key is chosen by the related document fetching configuration and the
+     * <p>The map key is chosen by the related document fetching configuration, and the
      * set of related documents are those that were fetched based on the metadata
      * relationships traversed by the configuration.</p>
      *
@@ -246,12 +256,24 @@ public class Result implements ResultType {
     @Builder.Default @Getter @Setter private boolean promoted = false;
     
     /**
-     * <p>Set true if the URL was down weighted by result diversification.</p>
+     * <p>Set true if the URL was downweighted by result diversification.</p>
      * 
-     * <p>This might happen from same site suppression (SSS).</p>
+     * <p>This might happen from the same site suppression (SSS).</p>
      * 
      * @since 15.12
      */
     @Builder.Default @Getter @Setter private boolean diversified = false;
+
+    /**
+     * The vector result distance score; the lower value the better, as it means closer distance, so closer match
+     * @since 16.36
+     */
+    @Getter @Setter private Double vectorScore;
+
+    /**
+     * Number of paragraphs in the document
+     * @since 16.36
+     */
+    @Getter @Setter private Integer paragraph;
 }
 
