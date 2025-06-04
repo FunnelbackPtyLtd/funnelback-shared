@@ -1,9 +1,7 @@
-package com.funnelback.publicui.test.search.model.padre;
+package com.funnelback.publicui.search.model.padre;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 
 public class CoolerWeightingTest {
 

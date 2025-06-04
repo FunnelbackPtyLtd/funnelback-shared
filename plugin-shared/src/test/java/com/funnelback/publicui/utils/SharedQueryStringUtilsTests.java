@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.utils;
+package com.funnelback.publicui.utils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,13 +6,12 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.funnelback.publicui.utils.SharedQueryStringUtils;
 import com.google.common.collect.ListMultimap;
 
-public class SharedQueryStringUtilsTests {
+class SharedQueryStringUtilsTests {
     
     @Test
-    public void testToMap() {
+    void testToMap() {
         String input = "param1=value1"
             + "&param2=first+value"
             + "&param2=second%20value"
@@ -45,8 +44,7 @@ public class SharedQueryStringUtilsTests {
     }
     
     @Test
-    public void testToMapEmptyString() {
+    void testToMapEmptyString() {
         Assertions.assertTrue(SharedQueryStringUtils.toMap("").isEmpty());
     }
-    
 }

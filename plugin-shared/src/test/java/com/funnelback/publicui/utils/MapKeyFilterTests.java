@@ -1,17 +1,16 @@
-package com.funnelback.publicui.test.utils;
+package com.funnelback.publicui.utils;
 
 import java.util.Arrays;
 
-import com.funnelback.publicui.utils.MapKeyFilter;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class MapKeyFilterTests {
+class MapKeyFilterTests {
 
     @Test
-    public void test() {
+    void test() {
         ListMultimap<String, String> params = MultimapBuilder.hashKeys().arrayListValues().build();
         
         params.put("param1", "");
@@ -33,5 +32,4 @@ public class MapKeyFilterTests {
         
         Assertions.assertEquals(0, f.filter("test").length);
     }
-    
 }

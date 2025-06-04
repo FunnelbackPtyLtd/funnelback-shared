@@ -1,17 +1,16 @@
-package com.funnelback.publicui.test.utils;
+package com.funnelback.publicui.utils;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.funnelback.publicui.utils.MultimapToSingleStringMapWrapper;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 
-public class MultimapToSingleStringMapWrapperTest {
+class MultimapToSingleStringMapWrapperTest {
 
     @Test
-    public void testEmpty() {
+    void testEmpty() {
         ListMultimap<String, String> underlyingMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
         ListMultimap<String, String> underlyingMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
         ListMultimap<String, String> definedMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
@@ -22,7 +21,7 @@ public class MultimapToSingleStringMapWrapperTest {
     }
 
     @Test
-    public void testGet() {
+    void testGet() {
         ListMultimap<String, String> underlyingMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
         underlyingMetadata.putAll("foo", Lists.newArrayList("a","b","c","d"));
 
@@ -38,7 +37,7 @@ public class MultimapToSingleStringMapWrapperTest {
     }
 
     @Test
-    public void testPut() {
+    void testPut() {
         ListMultimap<String, String> underlyingMetadata = ListMultimapBuilder.hashKeys().arrayListValues().build();
         ListMultimap<String, String> underlyingMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
         ListMultimap<String, String> definedMetadataSeparators = ListMultimapBuilder.hashKeys().arrayListValues().build();
