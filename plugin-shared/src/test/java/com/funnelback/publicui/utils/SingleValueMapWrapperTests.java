@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.utils;
+package com.funnelback.publicui.utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,15 +8,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.funnelback.publicui.utils.SingleValueMapWrapper;
-
-public class SingleValueMapWrapperTests {
+class SingleValueMapWrapperTests {
 
     private HashMap<String, String[]> map;
     private SingleValueMapWrapper wrapper;
     
     @BeforeEach
-    public void before() {
+    void before() {
         map = new HashMap<>();
         wrapper = new SingleValueMapWrapper(map);
         
@@ -27,13 +25,13 @@ public class SingleValueMapWrapperTests {
     }
     
     @Test
-    public void testClear() {
+    void testClear() {
         wrapper.clear();
         Assertions.assertTrue(map.isEmpty());
     }
     
     @Test
-    public void testContainsKey() {
+    void testContainsKey() {
         Assertions.assertTrue(wrapper.containsKey("null"));
         Assertions.assertTrue(wrapper.containsKey("0-sized-array"));
         Assertions.assertTrue(wrapper.containsKey("1-slot"));
@@ -43,7 +41,7 @@ public class SingleValueMapWrapperTests {
     }
     
     @Test
-    public void testContainsValue() {
+    void testContainsValue() {
         Assertions.assertTrue(wrapper.containsValue(null));
         Assertions.assertTrue(wrapper.containsValue("1"));
         Assertions.assertTrue(wrapper.containsValue("a"));
@@ -53,9 +51,9 @@ public class SingleValueMapWrapperTests {
     }
     
     @Test
-    public void testEntrySet() {
+    void testEntrySet() {
         Set<Map.Entry<String, String>> entries = wrapper.entrySet();
-        Assertions.assertEquals(entries.size(), map.entrySet().size());
+        Assertions.assertEquals(entries.size(), map.size());
         
         for (Map.Entry<String, String[]> mapEntry: map.entrySet()) {
             String key = mapEntry.getKey();
@@ -81,7 +79,7 @@ public class SingleValueMapWrapperTests {
     }
     
     @Test
-    public void testGet() {
+    void testGet() {
         Assertions.assertNull(wrapper.get("null"));
         Assertions.assertNull(wrapper.get("0-sized-array"));
         Assertions.assertEquals("1", wrapper.get("1-slot"));
@@ -90,7 +88,7 @@ public class SingleValueMapWrapperTests {
     }
     
     @Test
-    public void testIsEmpty() {
+    void testIsEmpty() {
         Assertions.assertFalse(wrapper.isEmpty());
         wrapper.clear();
         Assertions.assertTrue(wrapper.isEmpty());
@@ -100,8 +98,8 @@ public class SingleValueMapWrapperTests {
     }
     
     @Test
-    public void testKeySet() {
-        Assertions.assertEquals(map.keySet().size(), wrapper.keySet().size());
+    void testKeySet() {
+        Assertions.assertEquals(map.size(), wrapper.size());
         
         Set<String> mapKeySet = map.keySet();
         for (String key: wrapper.keySet()) {
@@ -110,7 +108,7 @@ public class SingleValueMapWrapperTests {
     }
     
     @Test
-    public void testPut() {
+    void testPut() {
         wrapper.put("newentry", "newvalue");
         Assertions.assertTrue(wrapper.containsKey("newentry"));
         Assertions.assertTrue(wrapper.containsValue("newvalue"));
@@ -120,7 +118,7 @@ public class SingleValueMapWrapperTests {
     }
     
     @Test
-    public void testPutAll() {
+    void testPutAll() {
         HashMap<String, String> newEntries = new HashMap<>();
         newEntries.put("new1", "value1");
         newEntries.put("new2", null);
@@ -145,7 +143,7 @@ public class SingleValueMapWrapperTests {
     }
     
     @Test
-    public void testCopy() {
+    void testCopy() {
         Map<String, String> copy = new HashMap<>(wrapper);
         Assertions.assertEquals(copy.size(), wrapper.size());
         

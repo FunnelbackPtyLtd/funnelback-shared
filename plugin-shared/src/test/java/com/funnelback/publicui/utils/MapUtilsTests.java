@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.utils;
+package com.funnelback.publicui.utils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,15 +8,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.funnelback.publicui.utils.MapUtils;
-
-public class MapUtilsTests {
+class MapUtilsTests {
 
     private Map<String, String> testData;
     private Map<String, String[]> testDataList;
     
     @BeforeEach
-    public void before() {
+    void before() {
         testData = new HashMap<>();
         testData.put("key1", "value1a,value1b");
         testData.put("key2", "value2");
@@ -29,7 +27,7 @@ public class MapUtilsTests {
     }
     
     @Test
-    public void testGetString() {
+    void testGetString() {
         Assertions.assertEquals("default", MapUtils.getString(testData, "inexistent", "default"));
         Assertions.assertEquals("default", MapUtils.getString(testData, "key3", "default"));
         Assertions.assertEquals("value1a,value1b", MapUtils.getString(testData, "key1", "default"));
@@ -37,7 +35,7 @@ public class MapUtilsTests {
     }
     
     @Test
-    public void testPutIfNotNull() {
+    void testPutIfNotNull() {
         MapUtils.putIfNotNull(testData, "null", null);
         Assertions.assertFalse(testData.containsKey("null"));
         Assertions.assertEquals(3, testData.size());
@@ -49,7 +47,7 @@ public class MapUtilsTests {
     }
     
     @Test
-    public void testConvertMapList() {
+    void testConvertMapList() {
         Map<String, List<String>> out = MapUtils.convertMapList(testDataList);
         
         Assertions.assertEquals(3, out.size());

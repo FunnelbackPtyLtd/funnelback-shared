@@ -1,9 +1,7 @@
-package com.funnelback.publicui.test.search.model.anchors;
+package com.funnelback.publicui.search.model.anchors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.funnelback.publicui.search.model.anchors.AnchorDetail;
 
 public class AnchorDetailTest {
 
