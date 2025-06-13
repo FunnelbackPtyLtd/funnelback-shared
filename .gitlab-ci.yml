@@ -76,6 +76,8 @@ publish_to_gitlab:
 # Release `funnelback-shared` to the Maven central registry (production version)
 release:
   stage: release
+  extends:
+    - .template:funnelback:mvn-central-publish:authenticate
   when: manual
   only:
     - /^release-.*$/
