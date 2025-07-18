@@ -57,7 +57,12 @@
                     <release>11</release>
                 </configuration>
             </plugin>
-            <!-- genetate plugin schema in JSON format based on PluginUtils class -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.3</version>
+            </plugin>
+            <!-- generate plugin schema in JSON format based on PluginUtils class -->
             <plugin>
                 <groupId>com.funnelback</groupId>
                 <artifactId>plugin-config-builder-maven-plugin</artifactId>
