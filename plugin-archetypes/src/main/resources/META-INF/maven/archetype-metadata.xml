@@ -51,6 +51,9 @@
         <requiredProperty key="facets">
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
+        <requiredProperty key="updateLifeCycle">
+            <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
+        </requiredProperty>
         <requiredProperty key="indexing">
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>

@@ -11,7 +11,7 @@ import java.util.List;
 public class _ClassNamePrefix_StartUrlProviderPluginTest {
 
     @Test
-    public void testStartUrlProviderPlugin(){
+    public void testStartUrlProviderPlugin() {
         MockStartUrlProviderContext mockContext = new MockStartUrlProviderContext();
         /*
             The code below explains how to access pluginutils via plugin class.

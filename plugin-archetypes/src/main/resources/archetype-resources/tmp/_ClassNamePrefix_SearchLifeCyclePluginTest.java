@@ -10,7 +10,7 @@ import com.funnelback.plugin.search.mock.MockSearchLifeCycleContext;
 public class _ClassNamePrefix_SearchLifeCyclePluginTest {
 
     @Test
-    public void testSearchLifeCyclePlugin(){
+    public void testSearchLifeCyclePlugin() {
         TestableSearchTransaction searchTransaction = new TestableSearchTransaction()
             .withResult(Result.builder().title("hello").liveUrl("http://example.com/").build());
         MockSearchLifeCycleContext mockSearchLifeCycleContext = new MockSearchLifeCycleContext();
