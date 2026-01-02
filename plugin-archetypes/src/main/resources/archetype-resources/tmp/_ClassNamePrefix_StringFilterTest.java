@@ -14,7 +14,7 @@ import com.funnelback.filter.api.mock.MockFilterContext;
 public class _ClassNamePrefix_StringFilterTest {
 
     @Test
-    public void testCanFilter(){
+    public void testCanFilter() {
         MockFilterContext mockContext = MockFilterContext.getEmptyContext();
         StringDocument doc = MockDocuments.mockStringDoc("http://foo.com/", DocumentType.MIME_HTML_TEXT, "hello");
         
@@ -25,7 +25,7 @@ public class _ClassNamePrefix_StringFilterTest {
     }
 
     @Test
-    public void testFilter(){
+    public void testFilter() {
         MockFilterContext mockContext = MockFilterContext.getEmptyContext();
         StringDocument doc = MockDocuments.mockStringDoc("http://foo.com/", DocumentType.MIME_HTML_TEXT, "hello");
         

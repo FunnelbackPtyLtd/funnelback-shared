@@ -25,4 +25,3 @@ public class SuggestionQuery {
     /** Category to scope suggestions */
     @Setter @Getter private String category;
 }
-

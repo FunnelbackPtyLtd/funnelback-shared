@@ -62,6 +62,7 @@
                             <properties>
                                 <property><name>gatherer</name><value>true</value></property>
                                 <property><name>facets</name><value>true</value></property>
+                                <property><name>updateLifeCycle</name><value>true</value></property>
                                 <property><name>indexing</name><value>true</value></property>
                                 <property><name>searchLifeCycle</name><value>true</value></property>
                                 <property><name>filtering</name><value>true</value></property>

@@ -26,6 +26,7 @@ toMainSrcPath(packageName).toFile().mkdirs()
 toTestSrcPath(packageName).toFile().mkdirs()
 
 boolean isGathererEnabled = Boolean.parseBoolean(properties.get("gatherer"))
+boolean isUpdateLifeCycleEnabled = Boolean.parseBoolean(properties.get("updateLifeCycle"))
 boolean isIndexingEnabled = Boolean.parseBoolean(properties.get("indexing"))
 boolean isFacetsEnabled = Boolean.parseBoolean(properties.get("facets"))
 boolean isSearchLifeCycleEnabled = Boolean.parseBoolean(properties.get("searchLifeCycle"))
@@ -49,6 +50,13 @@ pluginUtilsJsoupFilterClass = null
 if (isGathererEnabled) {
     String pluginImplementation = "_ClassNamePrefix_PluginGatherer"
     String pluginInterface = "com.funnelback.plugin.gatherer.PluginGatherer"
+    enableImplementationAndTests(pluginImplementation)
+    writeToPropertiesFile(pluginImplementation, pluginInterface)
+}
+
+if (isUpdateLifeCycleEnabled) {
+    String pluginImplementation = "_ClassNamePrefix_UpdateLifecyclePlugin"
+    String pluginInterface = "com.funnelback.plugin.update.UpdateLifecyclePlugin"
     enableImplementationAndTests(pluginImplementation)
     writeToPropertiesFile(pluginImplementation, pluginInterface)
 }
