@@ -18,27 +18,16 @@ package com.funnelback.plugin.update;
 public interface UpdateLifecyclePlugin {
 
     /**
-     * Invoked before the gathering phase begins.
-     * 
-     * <p>This method executes before any documents are gathered.
-     * 
-     * @param context provides access to collection configuration and plugin configuration files,
-     * @throws Exception if the plugin fails to execute pre-gather logic. Exceptions will
-     *                   typically abort the update process to prevent gathering with invalid state.
-     */
-    default void onPreGather(UpdateLifecycleContext context) throws Exception {}
-
-    /**
-     * Invoked after the gathering phase completes successfully.
-     * 
-     * <p>This method only executes if gathering completes without errors. For handling
+     * Invoked after the swaping views phase completes successfully.
+     *
+     * <p>This method only executes if swaping view completes without errors. For handling
      * failure scenarios, implement {@link #onFail(UpdateLifecycleContext)} instead.
-     * 
+     *
      * @param context provides access to collection configuration and plugin configuration files
-     * @throws Exception if the plugin fails to execute post-gather logic. Exceptions will
+     * @throws Exception if the plugin fails to execute post-swap logic. Exceptions will
      *                   typically cause the update to fail, preventing indexing from proceeding.
      */
-    default void onPostGather(UpdateLifecycleContext context) throws Exception {}
+    default void onPostSwap(UpdateLifecycleContext context) throws Exception {}
 
     /**
      * Invoked when the update process fails at any stage.

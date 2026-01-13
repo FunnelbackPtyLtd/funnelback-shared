@@ -12,7 +12,7 @@ public class _ClassNamePrefix_UpdateLifecyclePlugin implements UpdateLifecyclePl
     private static final Logger log = LogManager.getLogger(_ClassNamePrefix_UpdateLifecyclePlugin.class);
 
     @Override
-    public void onPreGather(UpdateLifecycleContext context) {
+    public void onStop(UpdateLifecycleContext context) {
         log.trace("Modify this or implement other methods to execute them during collection update lifecycle");
     }
 }
