@@ -19,6 +19,6 @@ public class _ClassNamePrefix_UpdateLifecyclePluginTest {
         MockUpdateLifecycleContext mockContext = new MockUpdateLifecycleContext();
 
         // Update this to call the method(s) that should be tested.
-        underTest.onPreGather(mockContext);
+        underTest.onStop(mockContext);
     }
 }
