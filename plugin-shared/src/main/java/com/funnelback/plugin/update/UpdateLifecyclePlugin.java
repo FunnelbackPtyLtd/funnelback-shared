@@ -25,9 +25,18 @@ public interface UpdateLifecyclePlugin {
      *
      * @param context provides access to collection configuration and plugin configuration files
      * @throws Exception if the plugin fails to execute post-swap logic. Exceptions will
-     *                   typically cause the update to fail, preventing indexing from proceeding.
+     *                   typically cause the update to fail, preventing update from proceeding.
      */
     default void onPostSwap(UpdateLifecycleContext context) throws Exception {}
+
+    /**
+     * Invoked after successful push commit.
+     *
+     * @param context provides access to collection configuration and plugin configuration files
+     * @throws Exception if the plugin fails to execute post-commit logic. Exceptions will
+     *      *            typically cause the update to fail.
+     */
+    default void onPostCommit(UpdateLifecycleContext context) throws Exception {}
 
     /**
      * Invoked when the update process fails at any stage.
