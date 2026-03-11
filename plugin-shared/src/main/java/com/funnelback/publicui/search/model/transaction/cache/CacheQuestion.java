@@ -30,7 +30,7 @@ public class CacheQuestion {
      * Profile where to lookup the cached copies template to use 
      */
     @NonNull
-    @javax.validation.constraints.Pattern(regexp="[\\w-_]+")
+    @jakarta.validation.constraints.Pattern(regexp="[\\w-_]+")
     @Getter @Setter private String profile = "_default";
     
     /**
@@ -40,7 +40,7 @@ public class CacheQuestion {
      * and have the extension <code>.ftl</code>
      */
     @NonNull
-    @javax.validation.constraints.Pattern(regexp="[\\w-_]+")        
+    @jakarta.validation.constraints.Pattern(regexp="[\\w-_]+")        
     @Getter @Setter
     private String form = "simple";
     

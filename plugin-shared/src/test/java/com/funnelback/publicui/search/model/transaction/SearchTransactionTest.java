@@ -26,6 +26,39 @@ public class SearchTransactionTest {
         
     }
     
+    @Test
+    public void testEffectiveExtraSearchWithNullParent() {
+        SearchTransaction extra = stOfType(SearchQuestionType.EXTRA_SEARCH);
+        extra.setExtraSearchNameAndParentTransaction(Optional.of("alldoc"), Optional.empty());
+        
+        Assertions.assertEquals(Optional.of("alldoc"), extra.getEffectiveExtraSearchName());
+    }
+    
+    @Test
+    public void testEffectiveExtraSearchWithNullName() {
+        SearchTransaction parent = stOfType(SearchQuestionType.SEARCH);
+        SearchTransaction extra = stOfType(SearchQuestionType.EXTRA_SEARCH);
+        extra.setExtraSearchNameAndParentTransaction(Optional.empty(), Optional.of(parent));
+        
+        Assertions.assertEquals(Optional.empty(), extra.getEffectiveExtraSearchName());
+    }
+    
+    @Test
+    public void testParentTransactionChainIntegrity() {
+        SearchTransaction parent = stOfType(SearchQuestionType.SEARCH);
+        SearchTransaction extra = stOfType(SearchQuestionType.EXTRA_SEARCH);
+        extra.setExtraSearchNameAndParentTransaction(Optional.of("alldoc"), Optional.of(parent));
+        SearchTransaction extraFacet = stOfType(SearchQuestionType.FACETED_NAVIGATION_EXTRA_SEARCH);
+        extraFacet.setExtraSearchNameAndParentTransaction(Optional.of("facet"), Optional.of(extra));
+        
+        Assertions.assertNotNull(parent.getQuestion());
+        Assertions.assertNotNull(parent.getResponse());
+        Assertions.assertNotNull(extra.getQuestion());
+        Assertions.assertNotNull(extra.getResponse());
+        Assertions.assertNotNull(extraFacet.getQuestion());
+        Assertions.assertNotNull(extraFacet.getResponse());
+    }
+    
     private SearchTransaction stOfType(SearchQuestionType type) {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         st.getQuestion().setQuestionType(type);

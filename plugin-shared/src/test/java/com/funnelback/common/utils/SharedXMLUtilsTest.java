@@ -42,4 +42,44 @@ public class SharedXMLUtilsTest {
         String res = SharedXMLUtils.toString(SharedXMLUtils.fromString(doc));
         Assertions.assertFalse(res.contains("los secretos en sus ojos"));
     }
+    
+    @Test
+    public void testMalformedXML() {
+        String malformedXML = "<?xml version=\"1.0\"?><root><unclosed></root>";
+        Assertions.assertThrows(Exception.class, () -> {
+            SharedXMLUtils.fromString(malformedXML);
+        });
+    }
+    
+    @Test
+    public void testEmptyXML() throws Exception {
+        String emptyXML = "<?xml version=\"1.0\"?><root/>";
+        Document doc = SharedXMLUtils.fromString(emptyXML);
+        Assertions.assertNotNull(doc);
+        String res = SharedXMLUtils.toString(doc);
+        Assertions.assertNotNull(res);
+        Assertions.assertTrue(res.contains("<root"));
+    }
+    
+    @Test
+    public void testLargeDocument() throws Exception {
+        StringBuilder largeXML = new StringBuilder("<?xml version=\"1.0\"?><root>");
+        for (int i = 0; i < 10000; i++) {
+            largeXML.append("<item>").append(i).append("</item>");
+        }
+        largeXML.append("</root>");
+        
+        Document doc = SharedXMLUtils.fromString(largeXML.toString());
+        Assertions.assertNotNull(doc);
+        String res = SharedXMLUtils.toString(doc);
+        Assertions.assertNotNull(res);
+        Assertions.assertTrue(res.length() > 10000);
+    }
+    
+    @Test
+    public void testSSRFProtection() throws Exception {
+        String ssrfXML = "<?xml version=\"1.0\"?><!DOCTYPE root [<!ENTITY xxe SYSTEM \"http://169.254.169.254/latest/meta-data/\">]><root>&xxe;</root>";
+        String res = SharedXMLUtils.toString(SharedXMLUtils.fromString(ssrfXML));
+        Assertions.assertFalse(res.contains("169.254.169.254"));
+    }
 }

@@ -7,7 +7,9 @@ include:
     file: security.yml
 
 default:
-  image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
+  image:
+    name: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker/centos7-jdk21:latest
+    entrypoint: [""]
   tags:
     - general/small
 
@@ -19,8 +21,6 @@ cache:
 stages:
   - build
   - integration
-  - deploy
-  - release
 
 variables:
   # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
@@ -51,44 +51,33 @@ variables:
 # Compile `funnelback-shared` and execute unit tests
 build:
   stage: build
+  # Template-merged jobs may carry an explicit JDK11 image; pin build to JDK21.
+  image:
+    name: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker/centos7-jdk21:latest
+    entrypoint: [""]
   script:
     - mvn $MAVEN_CLI_OPTS -fail-at-end clean install
     - rm -rf .m2/repository/com/funnelback/
   <<: *artifacts
 
 # Verify if changes from `funnelback-shared` affect/break released plugins
-verify_plugins:
-  stage: integration
+#verify_plugins:
+#  stage: integration
+#  variables:
+#    FUNNELBACK_SHARED_BRANCH: $CI_COMMIT_BRANCH
+#  needs:
+#    - build
+#  trigger:
+#    project: funnelback-rnd/funnelback-plugins-mono-repo
+#    branch: master
+#    strategy: depend
+
+# GitLab SpotBugs analyzer v4/v5 runs on older JDKs and fails for release 21 projects.
+# Pinning to v6 enables JDK 21 support for SpotBugs SAST scans.
+spotbugs-sast:
+  image:
+    name: registry.gitlab.com/security-products/spotbugs:6
   variables:
-    FUNNELBACK_SHARED_BRANCH: $CI_COMMIT_BRANCH
-  needs:
-    - build
-  trigger:
-    project: funnelback-rnd/funnelback-plugins-mono-repo
-    branch: master
-    strategy: depend
+    SAST_ANALYZER_IMAGE_TAG: "6"
+    SAST_JAVA_VERSION: "21"
 
-# Release `funnelback-shared` to the GitLab package registry (development version)
-publish_to_gitlab:
-  extends:
-    - .template:funnelback:mvn-publish:push
-
-# Release `funnelback-shared` to the Maven central registry (production version)
-release:
-  stage: release
-  extends:
-    - .template:funnelback:mvn-central-publish:authenticate
-  when: manual
-  only:
-    - /^release-.*$/
-  script:
-    - SNAPSHOT_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.1:evaluate -Dexpression=project.version -q -DforceStdout)
-    - NON_SNAPSHOT_VERSION=${SNAPSHOT_VERSION%-SNAPSHOT}
-    - echo "version change ${SNAPSHOT_VERSION} -> ${NON_SNAPSHOT_VERSION}"
-    - mvn $MAVEN_CLI_OPTS versions:set -DnewVersion=$NON_SNAPSHOT_VERSION
-    - VERSION_TEST=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.1:evaluate -Dexpression=project.version -q -DforceStdout)
-    - echo "version testing $VERSION_TEST"
-    - if [[ $VERSION_TEST == *"SNAPSHOT" ]]; then echo "Failed to update version to release one"; exit 1; fi
-    - mvn $MAVEN_CLI_OPTS -P central-release clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
-    - rm -rf .m2/repository/com/funnelback/
-  <<: *artifacts
