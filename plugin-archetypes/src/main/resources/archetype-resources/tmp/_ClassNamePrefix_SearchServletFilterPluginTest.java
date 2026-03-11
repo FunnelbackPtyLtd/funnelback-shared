@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHook;
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHookContext;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;

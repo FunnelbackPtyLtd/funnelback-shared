@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -130,7 +130,7 @@ public class TestableSearchTransaction extends SearchTransaction {
      * @return this
      */
     public TestableSearchTransaction withFacetAndValues(Facet facetToAdd,  List<CategoryValue> values) {
-        Assert.assertNotNull("Facet names must not be null", facetToAdd.getName());
+        Assertions.assertNotNull(facetToAdd.getName(), "Facet names must not be null");
         // Clear out any existing facets with the same name.
         this.getResponse().getFacets().removeIf(f -> facetToAdd.getName().equals(f.getName()));
         

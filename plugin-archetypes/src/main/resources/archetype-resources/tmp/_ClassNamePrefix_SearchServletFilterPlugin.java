@@ -3,8 +3,8 @@ package ${package};
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHook;
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHookContext;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
