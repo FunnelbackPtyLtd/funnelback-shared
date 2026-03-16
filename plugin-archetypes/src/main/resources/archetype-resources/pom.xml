@@ -7,9 +7,9 @@
     <version>${version}</version>
     <name>Funnelback plugin</name>
     <properties>
-        <version.log4j2>2.25.3</version.log4j2>
-        <version.junit>6.0.3</version.junit>
-        <version.mockito>5.21.0</version.mockito>
+        <version.log4j2>2.17.1</version.log4j2>
+        <version.junit>5.11.4</version.junit>
+        <version.mockito>5.19.0</version.mockito>
         <version.funnelback-shared>${archetypeVersion}</version.funnelback-shared>
     </properties>
 
@@ -52,23 +52,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
+                <version>3.13.0</version>
                 <configuration>
-                    <release>21</release>
-                    <source>21</source>
-                    <target>21</target>
-                    <encoding>UTF-8</encoding>
+                    <release>11</release>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.4</version>
-                <configuration>
-                    <useSystemClassLoader>false</useSystemClassLoader>
-                    <forkCount>1</forkCount>
-                    <reuseForks>false</reuseForks>
-                </configuration>
+                <version>3.5.3</version>
             </plugin>
             <!-- generate plugin schema in JSON format based on PluginUtils class -->
             <plugin>
@@ -91,7 +83,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.1.2</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
@@ -110,7 +102,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.2</version>
+                <version>3.2.0</version>
                 <configuration>
                     <outputDirectory>target/${project.version}/libs</outputDirectory>
                 </configuration>
@@ -125,20 +117,16 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <target>
+                            <tasks>
                                 <mkdir dir="target/${project.version}" />
                                 <mkdir dir="target/${project.version}/docs" />
                                 <copy todir="target/${project.version}/docs/" overwrite="true">
-                                    <fileset dir="${project.build.resources[0].directory}">
-                                        <include name="plugin-schema.json" />
-                                    </fileset>
+                                    <fileset dir="${project.build.resources[0].directory}" file="plugin-schema.json" />
                                 </copy>
                                 <copy todir="target/${project.version}/docs/" overwrite="true">
-                                    <fileset dir="${project.build.resources[0].directory}">
-                                        <include name="index.adoc" />
-                                    </fileset>
+                                    <fileset dir="${project.build.resources[0].directory}" file="index.adoc" />
                                 </copy>
-                            </target>
+                            </tasks>
                         </configuration>
                     </execution>
                 </executions>
@@ -162,7 +150,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <tasks>
                                         <fail message="Environment variable SEARCH_HOME must be set." unless="env.SEARCH_HOME"/>
                                         <echo message="Installing plugin into '${env.SEARCH_HOME}'" />
                                         <mkdir dir="${env.SEARCH_HOME}/share/plugins" />
@@ -174,7 +162,7 @@
                                         <copy todir="${env.SEARCH_HOME}/share/plugins/${project.artifactId}/${project.version}" overwrite="true">
                                             <fileset dir="target/${project.version}" />
                                         </copy>
-                                    </target>
+                                    </tasks>
                                 </configuration>
                             </execution>
                         </executions>
@@ -196,7 +184,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <tasks>
                                         <fail message="Environment variable SEARCH_HOME_REMOTE must be set to the full path of SEARCH_HOME on the remote host." unless="env.SEARCH_HOME_REMOTE"/>
                                         <fail message="Environment variable SEARCH_USER_AND_HOST must be set to the user and hostname of the remote host in the form user@host" unless="env.SEARCH_USER_AND_HOST"/>
                                         <exec executable="rsync">
@@ -204,7 +192,7 @@
                                             <arg value="target/${project.version}"/>
                                             <arg value="${env.SEARCH_USER_AND_HOST}:${env.SEARCH_HOME_REMOTE}/share/plugins/${project.artifactId}/"/>
                                         </exec>
-                                    </target>
+                                    </tasks>
                                 </configuration>
                             </execution>
                         </executions>

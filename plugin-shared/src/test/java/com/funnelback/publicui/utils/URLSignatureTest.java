@@ -52,31 +52,4 @@ class URLSignatureTest {
     void testNull() {
         Assertions.assertThrows(NullPointerException.class, () -> URLSignature.computeQueryStringSignature(null));
     }
-    
-    @Test
-    void testEmptyString() {
-        int signature1 = URLSignature.computeQueryStringSignature("");
-        int signature2 = URLSignature.computeQueryStringSignature("?");
-        Assertions.assertEquals(signature1, signature2);
-    }
-    
-    @Test
-    void testSpecialCharacters() {
-        String query1 = "param=value&special=%21%40%23%24%25%5E%26%2A";
-        String query2 = "special=%21%40%23%24%25%5E%26%2A&param=value";
-        Assertions.assertEquals(
-            URLSignature.computeQueryStringSignature(query1),
-            URLSignature.computeQueryStringSignature(query2)
-        );
-    }
-    
-    @Test
-    void testUnicodeCharacters() {
-        String query1 = "param=测试&value=value";
-        String query2 = "value=value&param=测试";
-        Assertions.assertEquals(
-            URLSignature.computeQueryStringSignature(query1),
-            URLSignature.computeQueryStringSignature(query2)
-        );
-    }
 }

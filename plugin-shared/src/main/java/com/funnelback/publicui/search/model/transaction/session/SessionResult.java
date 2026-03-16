@@ -2,11 +2,11 @@ package com.funnelback.publicui.search.model.transaction.session;
 
 import java.net.URI;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Transient;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
