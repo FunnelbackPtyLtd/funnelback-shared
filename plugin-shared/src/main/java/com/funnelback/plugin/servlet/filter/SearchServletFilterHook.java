@@ -1,7 +1,7 @@
 package com.funnelback.plugin.servlet.filter;
 
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 
 /**

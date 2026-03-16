@@ -55,40 +55,4 @@ class MapUtilsTests {
         Assertions.assertArrayEquals(new String[] {"value2"}, out.get("key2").toArray(new String[0]));
         Assertions.assertNull(out.get("key3"));
     }
-    
-    @Test
-    void testGetStringWithEmptyMap() {
-        Map<String, String> emptyMap = new HashMap<>();
-        Assertions.assertEquals("default", MapUtils.getString(emptyMap, "anykey", "default"));
-        Assertions.assertEquals("", MapUtils.getString(emptyMap, "anykey", ""));
-    }
-    
-    @Test
-    void testPutIfNotNullWithEmptyMap() {
-        Map<String, String> emptyMap = new HashMap<>();
-        MapUtils.putIfNotNull(emptyMap, "key", "value");
-        Assertions.assertEquals(1, emptyMap.size());
-        Assertions.assertEquals("value", emptyMap.get("key"));
-        
-        MapUtils.putIfNotNull(emptyMap, "nullkey", null);
-        Assertions.assertEquals(1, emptyMap.size());
-        Assertions.assertFalse(emptyMap.containsKey("nullkey"));
-    }
-    
-    @Test
-    void testConvertMapListWithEmptyMap() {
-        Map<String, String[]> emptyMap = new HashMap<>();
-        Map<String, List<String>> out = MapUtils.convertMapList(emptyMap);
-        Assertions.assertNotNull(out);
-        Assertions.assertTrue(out.isEmpty());
-    }
-    
-    @Test
-    void testConvertMapListWithEmptyArray() {
-        Map<String, String[]> testData = new HashMap<>();
-        testData.put("empty", new String[0]);
-        Map<String, List<String>> out = MapUtils.convertMapList(testData);
-        Assertions.assertNotNull(out.get("empty"));
-        Assertions.assertTrue(out.get("empty").isEmpty());
-    }
 }

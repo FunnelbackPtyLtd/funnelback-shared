@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.model.transaction.session;
 
 import java.io.Serializable;
 
-import jakarta.persistence.Id;
+import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -2,9 +2,9 @@ package com.funnelback.publicui.search.model.transaction.session;
 
 import java.util.Date;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 import lombok.Getter;
 import lombok.Setter;
