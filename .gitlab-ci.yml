@@ -21,6 +21,8 @@ cache:
 stages:
   - build
   - integration
+  - deploy
+  - release
 
 variables:
   # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
@@ -80,4 +82,29 @@ spotbugs-sast:
   variables:
     SAST_ANALYZER_IMAGE_TAG: "6"
     SAST_JAVA_VERSION: "21"
+
+# Release `funnelback-shared` to the GitLab package registry (development version)
+publish_to_gitlab:
+  extends:
+    - .template:funnelback:mvn-publish:push
+
+# Release `funnelback-shared` to the Maven central registry (production version)
+release:
+  stage: release
+  extends:
+    - .template:funnelback:mvn-central-publish:authenticate
+  when: manual
+  only:
+    - /^release-.*$/
+  script:
+    - SNAPSHOT_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.5.1:evaluate -Dexpression=project.version -q -DforceStdout)
+    - NON_SNAPSHOT_VERSION=${SNAPSHOT_VERSION%-SNAPSHOT}
+    - echo "version change ${SNAPSHOT_VERSION} -> ${NON_SNAPSHOT_VERSION}"
+    - mvn $MAVEN_CLI_OPTS versions:set -DnewVersion=$NON_SNAPSHOT_VERSION
+    - VERSION_TEST=$(mvn org.apache.maven.plugins:maven-help-plugin:3.5.1:evaluate -Dexpression=project.version -q -DforceStdout)
+    - echo "version testing $VERSION_TEST"
+    - if [[ $VERSION_TEST == *"SNAPSHOT" ]]; then echo "Failed to update version to release one"; exit 1; fi
+    - mvn $MAVEN_CLI_OPTS -P central-release clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
+    - rm -rf .m2/repository/com/funnelback/
+  <<: *artifacts
 

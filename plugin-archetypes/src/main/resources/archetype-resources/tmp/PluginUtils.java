@@ -1,8 +1,16 @@
 package ${package};
 
-import com.funnelback.plugin.details.model.*;
-import com.funnelback.plugin.docs.model.*;
 import com.funnelback.plugin.PluginUtilsBase;
+import com.funnelback.plugin.details.model.PluginConfigFile;
+import com.funnelback.plugin.details.model.PluginConfigKey;
+import com.funnelback.plugin.details.model.PluginConfigKeyDetails;
+import com.funnelback.plugin.details.model.PluginConfigKeyType;
+import com.funnelback.plugin.details.model.PluginTarget;
+import com.funnelback.plugin.docs.model.Audience;
+import com.funnelback.plugin.docs.model.MarketplaceSubtype;
+import com.funnelback.plugin.docs.model.ProductSubtopic;
+import com.funnelback.plugin.docs.model.ProductSubtopicCategory;
+import com.funnelback.plugin.docs.model.ProductTopic;
 
 import java.util.List;
 

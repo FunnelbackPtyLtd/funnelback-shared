@@ -1,6 +1,10 @@
 package com.funnelback.plugin.details.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Singular;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;

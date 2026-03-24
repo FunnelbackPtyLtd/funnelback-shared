@@ -15,14 +15,14 @@ public class AnchorDescription implements Comparable<AnchorDescription> {
     @Getter private final String anchorText;
     @Getter private final String linkAnchorText;
     
-    private final Set<String> privateLinksTo = new HashSet<String>();
+    private final Set<String> privateLinksTo = new HashSet<>();
     
     @Getter private final Set<String> linksTo = Collections.unmodifiableSet(privateLinksTo);
     @Getter private int internalLinkCount = 0;
     @Getter private int externalLinkCount = 0;
     @Getter private final String linkType;
 
-    private static Pattern linkTypePattern = Pattern.compile("^\\[k(.)\\](.*)");
+    private static final Pattern linkTypePattern = Pattern.compile("^\\[k(.)\\](.*)");
     
     public static String cleanAnchorText(String anchorText) {
         anchorText = anchorText.replaceAll("\\s+$", ""); // remove spaces from the end of the anchortext
@@ -62,7 +62,7 @@ public class AnchorDescription implements Comparable<AnchorDescription> {
 
     @Override
     public int compareTo(AnchorDescription that) {
-        int ret = new Integer(that.getInternalLinkCount() + that.getExternalLinkCount()).compareTo(internalLinkCount + externalLinkCount);
+        int ret = Integer.compare(that.getInternalLinkCount() + that.getExternalLinkCount(), internalLinkCount + externalLinkCount);
         if(ret == 0) {
             ret = this.getAnchorText().compareTo(that.getAnchorText());
         }

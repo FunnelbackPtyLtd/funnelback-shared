@@ -34,8 +34,9 @@ public class Result implements ResultType {
     /**
      * <p>Rank of the result (From 1 to n)</p>
      *
-     * <p>Rank of the vector result (From 0 to n)
-     * @since 16.36</p>
+     * <p>Rank of the vector result (From 0 to n).</p>
+     *
+     * @since 16.36
      */
     @Getter @Setter private Integer rank;
     /** Score of the result (From 1000 to 0) */
@@ -89,8 +90,9 @@ public class Result implements ResultType {
     /**
      * <p>Query-biased summary</p>
      *
-     * <p>Vector paragraph content from the document. To see which exactly paragraph it is, {@link Result#paragraph}
-     * @since 16.36</p>
+     * <p>Vector paragraph content from the document. To see which exactly paragraph it is, {@link Result#paragraph}.</p>
+     *
+     * @since 16.36
      */
     @Getter @Setter private String summary;
     

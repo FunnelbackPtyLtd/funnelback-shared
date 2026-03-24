@@ -1,11 +1,15 @@
 package com.funnelback.common.utils;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jsoup.internal.StringUtil;
-
-import java.net.*;
-import java.nio.charset.StandardCharsets;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class URIHandlingUtils {
@@ -24,7 +28,7 @@ public class URIHandlingUtils {
      * and therefore may not appear in URIs.
      * </p>
      * <p>
-     * This issue was identified in ticket https://squizgroup.atlassian.net/browse/DXPSUP-515
+     * This issue was identified in ticket <a href="https://squizgroup.atlassian.net/browse/DXPSUP-515">...</a>
      * So a raw string needs to be converted to URL object, then converted to URI to ensure those special characters accepted by URL but not URI  were encoded.
      *</p>
      * @param urlString The URL string used to create the URI object
@@ -48,7 +52,7 @@ public class URIHandlingUtils {
 
     /**
      * Ensure cloud provider (i.e. AWS) metadata service endpoint cannot be called
-     * See https://squizgroup.atlassian.net/browse/SEARCH-1204
+     * See <a href="https://squizgroup.atlassian.net/browse/SEARCH-1204">...</a>
      */
     private static void validateUniversalIpAddress(URL url) throws IllegalArgumentException {
         if (url.getHost().startsWith(UNIVERSAL_IP)) {
