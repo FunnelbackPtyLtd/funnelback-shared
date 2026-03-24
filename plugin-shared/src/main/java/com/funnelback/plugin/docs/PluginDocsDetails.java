@@ -1,6 +1,9 @@
 package com.funnelback.plugin.docs;
 
-import com.funnelback.plugin.docs.model.*;
+import com.funnelback.plugin.docs.model.Audience;
+import com.funnelback.plugin.docs.model.MarketplaceSubtype;
+import com.funnelback.plugin.docs.model.ProductSubtopicCategory;
+import com.funnelback.plugin.docs.model.ProductTopic;
 
 import java.util.List;
 

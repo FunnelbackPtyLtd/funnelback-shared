@@ -50,7 +50,6 @@
             <plugin>
                 <groupId>com.internetitem</groupId>
                 <artifactId>write-properties-file-maven-plugin</artifactId>
-                <version>1.0.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -82,6 +81,13 @@
                                 to have the current project version :(
                                  -->
                                 <property><name>archetypeVersion</name><value>${project.version}</value></property>
+                                <property><name>springBootVersion</name><value>${spring-boot.version}</value></property>
+                                <property><name>versionLog4j2</name><value>${version.log4j2}</value></property>
+                                <property><name>pluginVersionCompiler</name><value>${plugin.version.compiler}</value></property>
+                                <property><name>pluginVersionSurefire</name><value>${plugin.version.surefire}</value></property>
+                                <property><name>pluginVersionMavenDependency</name><value>${plugin.version.mavenDependency}</value></property>
+                                <property><name>pluginVersionMavenJar</name><value>${plugin.version.mavenJar}</value></property>
+                                <property><name>pluginVersionMavenAntrun</name><value>${plugin.version.mavenAntrun}</value></property>
                             </properties>
                         </configuration>
                     </execution>
@@ -90,7 +96,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-archetype-plugin</artifactId>
-                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <phase>verify</phase>

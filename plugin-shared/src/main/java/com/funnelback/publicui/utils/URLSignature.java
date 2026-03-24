@@ -19,15 +19,13 @@ public class URLSignature {
     /**
      * <p>Computes a signature for a query string which is independent of the
      * way parameters are encoded, or from their order.</p>
-     * 
-     * <p>For example the signature for the two following query string will
-     * be identical:
+     *
+     * <p>For example the signature for the two following query strings will be identical:</p>
      * <ul>
-     *  <li><code>param+1=value%201&param%202=value+2</code></li>
-     *  <li><code>param+2=value%202&param%201=value+1</code></li>
+     *  <li><code>param+1=value%201&amp;param%202=value+2</code></li>
+     *  <li><code>param+2=value%202&amp;param%201=value+1</code></li>
      * </ul>
-     * </p>
-     * 
+     *
      * <p>Leading question mark on the query string will be ignored.</p>
      * @param queryString Query string to compute parameters for
      * @return The signature for the query string
@@ -40,8 +38,8 @@ public class URLSignature {
     /**
      * <p>Converts a query string into a canonical form that can be used for hashing.</p>
      * 
-     * <p>Known bug: this does suffer some issues like p=2&v=22 would be considered the
-     * same as p=22&v=2.</p>
+     * <p>Known bug: this does suffer some issues like p=2&amp;v=22 would be considered the
+     * same as p=22&amp;v=2.</p>
      * @param queryString query parameters
      */
     public static String canonicaliseQueryStringToBeHashed(String queryString) {

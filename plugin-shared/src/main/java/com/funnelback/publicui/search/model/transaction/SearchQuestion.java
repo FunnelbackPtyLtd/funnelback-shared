@@ -262,7 +262,7 @@ public class SearchQuestion {
      * for extra searches. This may be set from groovy scripts.
      * 
      * This can be set to false with cgi parameters on the admin side
-     * if the request is authenticated. To do this set &log=false in
+     * if the request is authenticated. To do this set &amp;log=false in
      * the URL.
      * 
      * @since 15.14
@@ -278,22 +278,20 @@ public class SearchQuestion {
      * key can have multiple values also {@link ListMultimap#get(Object)} will never 
      * return null.</p>
      * 
-     * <p> In freemarker to get the first value for a key or empty:
-     * <pre>{@code 
+     * <p>In freemarker to get the first value for a key or empty:</p>
+     * <pre>{@code
      * question.inputParameters["query"]?first!
      * }</pre>
-     * </p>
-     * 
-     * <p> In freemarker to test if the key exists and therefore has values:
-     * <pre>{@code 
+     *
+     * <p>In freemarker to test if the key exists and therefore has values:</p>
+     * <pre>{@code
      * question.inputParameters?keys?seq_contains("query")
      * }</pre>
-     * </p>
-     * 
-     * <p> In Java to replace all values for a key:
-     * <pre>{@code 
+     *
+     * <p>In Java to replace all values for a key:</p>
+     * <pre>{@code
      * inputParameters.replaceValues("query", List.of("my new query"))
-     * }</pre></p>
+     * }</pre>
      *
      * A clone of this map can be made with {@link #getInputParametersCopy()}.
      * 
@@ -306,7 +304,7 @@ public class SearchQuestion {
     private final ListMultimap<String, String> inputParameters = MultimapBuilder.hashKeys().arrayListValues().build();
     
     /**
-     * <p>Returns a copy of the {@link #getInputParameters()} map</p>
+     * <p>Returns a copy of the {@link #inputParameters input parameters} map.</p>
      * 
      * <p>Be aware that the value type is <code>ListMultimap</code>, thus a single 
      * key can have multiple values also {@link ListMultimap#get(Object)} will never 

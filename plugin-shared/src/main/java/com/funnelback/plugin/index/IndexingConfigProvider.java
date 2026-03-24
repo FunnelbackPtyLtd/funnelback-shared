@@ -1,6 +1,15 @@
 package com.funnelback.plugin.index;
 
-import com.funnelback.plugin.index.consumers.*;
+import com.funnelback.plugin.index.consumers.AutoCompletionConsumer;
+import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
+import com.funnelback.plugin.index.consumers.GscopeByQueryConsumer;
+import com.funnelback.plugin.index.consumers.GscopeByRegexConsumer;
+import com.funnelback.plugin.index.consumers.KillByExactMatchConsumer;
+import com.funnelback.plugin.index.consumers.KillByPartialMatchConsumer;
+import com.funnelback.plugin.index.consumers.KillByQueryMatchConsumer;
+import com.funnelback.plugin.index.consumers.MetadataMappingConsumer;
+import com.funnelback.plugin.index.consumers.QieByQueryConsumer;
+import com.funnelback.plugin.index.consumers.QieByUrlConsumer;
 import com.funnelback.plugin.index.model.indexingconfig.XmlIndexingConfig;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataSourceType;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataType;
@@ -15,52 +24,52 @@ public interface IndexingConfigProvider {
 
     /**
      * Allows supplying external metadata.
-     * 
+     *
      * Example:
-     * <pre>{@code 
+     * <pre>{@code
      * // Apply metadata to documents with URLs starting with https://foo.com/documents/
      * consumer.addMetadataToPrefix("https://foo.com/documents/", ImmutableListMultimap.of(
      *     "type", "doc", 
      *     "notes", "informative",
      *     "notes", "boring"));
-     * 
+     *
      * // Apply metadata to documents with URLs starting with https://foo.com/videos/
      * ListMultimap<String, String> metadata = ArrayListMultimap.create();
      * metadata.put("type", "video");
      * metadata.put("notes", "sometimes informative");
      * consumer.addMetadataToPrefix("https://foo.com/videos/", metadata);
      * }</pre>
-     * 
-     * This would result in a URL such as https://foo.com/documents/apollo11owenermanual.pdf 
-     * as having the metadata: type=doc, notes=informative and notes=boring. The document 
+     *
+     * This would result in a URL such as <a href="https://foo.com/documents/apollo11owenermanual.pdf">...</a>
+     * as having the metadata: type=doc, notes=informative, and notes=boring. The document
      * would match the following queries:
      * <p><ul>
      * <li>type:doc
      * <li>notes:informative
      * <li>notes:boring
      * </ul><p>
-     * 
+     *
      * Each external metadata provided by plugins and from conf, do no interact with 
      * each other. This means if two plugins provided an entry for the same URL pattern
      * and the same metadata, both values would be applied. e.g.
      * Plugin 1 provides:
-     * <pre>{@code 
+     * <pre>{@code
      * consumer.addMetadataToPrefix("http://example.com/a", ImmutableListMultimap.of("foo", "bar"));
      * }</pre>
      * plugin 2 provides:
-     * <pre>{@code 
+     * <pre>{@code
      * consumer.addMetadataToPrefix("http://example.com/a", ImmutableListMultimap.of("foo", "foobar"));
      * }</pre>
-     * 
+     *
      * A document like:
-     * <pre>{@code 
+     * <pre>{@code
      * http://example.com/a
      * }</pre>
      * Would have both metadata values "bar" and "foobar" in the metadata class "foo".
-     * 
-     * 
+     *
+     *
      */
-    public default void externalMetadata(IndexConfigProviderContext context, ExternalMetadataConsumer consumer) {
+    default void externalMetadata(IndexConfigProviderContext context, ExternalMetadataConsumer consumer) {
     }
     
     /**
@@ -98,7 +107,7 @@ public interface IndexingConfigProvider {
      * Plugins always have a lower priority then what is set in a collection's configuration.
      * 
      */
-    public default void metadataMappings(IndexConfigProviderContext context, MetadataMappingConsumer consumer) {
+    default void metadataMappings(IndexConfigProviderContext context, MetadataMappingConsumer consumer) {
     }
     
     /**
@@ -130,7 +139,7 @@ public interface IndexingConfigProvider {
      * 
      * @return The XmlIndexingConfig to use.
      */
-    public default XmlIndexingConfig xmlIndexingConfig(IndexConfigProviderContext context) {
+    default XmlIndexingConfig xmlIndexingConfig(IndexConfigProviderContext context) {
         return new XmlIndexingConfig();
     }
     
@@ -150,7 +159,7 @@ public interface IndexingConfigProvider {
      * }</pre>
      * 
      */
-    public default void killByExactMatch(IndexConfigProviderContext context, KillByExactMatchConsumer consumer) {
+    default void killByExactMatch(IndexConfigProviderContext context, KillByExactMatchConsumer consumer) {
     }
     
     /**
@@ -167,7 +176,7 @@ public interface IndexingConfigProvider {
      * }</pre>
      * 
      */
-    public default void killByPartialMatch(IndexConfigProviderContext context, KillByPartialMatchConsumer consumer) {   
+    default void killByPartialMatch(IndexConfigProviderContext context, KillByPartialMatchConsumer consumer) {
     }
     
     /**
@@ -194,7 +203,7 @@ public interface IndexingConfigProvider {
      * 
      * @param consumer Accepts gscopes that will be set when the URL matches the regex.
      */
-    public default void supplyGscopesByRegex(IndexConfigProviderContext context, GscopeByRegexConsumer consumer) {
+    default void supplyGscopesByRegex(IndexConfigProviderContext context, GscopeByRegexConsumer consumer) {
         
     }
 
@@ -222,7 +231,7 @@ public interface IndexingConfigProvider {
      *
      * @param consumer Accepts only the first QIE weight that will be set when multiple QIE weights were set to the same URL.
      */
-    public default void supplyQieByURL(IndexConfigProviderContext context, QieByUrlConsumer consumer) {
+    default void supplyQieByURL(IndexConfigProviderContext context, QieByUrlConsumer consumer) {
 
     }
 

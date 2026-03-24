@@ -1,14 +1,23 @@
 package com.funnelback;
 
 import com.funnelback.plugin.PluginUtilsBase;
-import com.funnelback.plugin.details.model.*;
+import com.funnelback.plugin.details.model.PluginConfigFile;
+import com.funnelback.plugin.details.model.PluginConfigKey;
+import com.funnelback.plugin.details.model.PluginConfigKeyAllowedValue;
+import com.funnelback.plugin.details.model.PluginConfigKeyDetails;
+import com.funnelback.plugin.details.model.PluginConfigKeyEncrypted;
+import com.funnelback.plugin.details.model.PluginConfigKeyType;
+import com.funnelback.plugin.details.model.PluginTarget;
 import com.funnelback.plugin.docs.model.Audience;
 import com.funnelback.plugin.docs.model.MarketplaceSubtype;
 import com.funnelback.plugin.docs.model.ProductSubtopicCategory;
 import com.funnelback.plugin.docs.model.ProductTopic;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,14 +103,17 @@ public class AsciiDocGenerator {
 
             if (pluginUtils.getPluginTarget().contains(PluginTarget.DATA_SOURCE)) {
                 if ((StringUtils.isNotEmpty(pluginUtils.getFilterClass())) || (StringUtils.isNotEmpty(pluginUtils.getJsoupFilterClass()))) {
-                    content.append("\n=== Filter chain configuration\n" +
-                            "\n" +
-                            "This plugin uses filters which are used to apply transformations to the gathered content.\n" +
-                            "\n" +
-                            "The filters run in sequence and need be set in an order that makes sense. The plugin supplied filter(s) (as indicated in the listing) should be re-ordered to an appropriate point in the sequence.\n" +
-                            "\n" +
-                            "WARNING: Changes to the filter order affects the way the data source processes gathered documents. See: xref:build/data-sources/document-filtering/index.adoc[document filters documentation].\n" +
-                            "\n");
+                    content.append("""
+                            
+                            === Filter chain configuration
+                            
+                            This plugin uses filters which are used to apply transformations to the gathered content.
+                            
+                            The filters run in sequence and need be set in an order that makes sense. The plugin supplied filter(s) (as indicated in the listing) should be re-ordered to an appropriate point in the sequence.
+                            
+                            WARNING: Changes to the filter order affects the way the data source processes gathered documents. See: xref:build/data-sources/document-filtering/index.adoc[document filters documentation].
+                            
+                            """);
                     // Document filters
                     if (StringUtils.isNotEmpty(pluginUtils.getFilterClass())) {
                         addDocumentFilter();
@@ -150,68 +162,54 @@ public class AsciiDocGenerator {
 
     private void addDataSourceResultsPageConfigurations() {
         // Plugin supports both data sources and results pages
-        content.append(". Select menu:Plugins[] from the side navigation pane and click on the *" + pluginUtils.getPluginName() + "* tile.\n" +
-                       ". From the *Location* section, decide if you wish to enable this plugin on a *data source* or a *results page* and select the corresponding radio button.\n" +
-                       ". Select the data source or results page to which you would like to enable this plugin from the drop-down menu.\n" +
-                       "\n" +
-                       "NOTE: If enabled on a data source, the plugin will take effect as soon as the setup steps are completed, and an advanced > full update of the data source has completed. If enabled on a results page the plugin will take effect as soon as the setup steps are completed.\n" +
-                       "\n");
+        content.append(". Select menu:Plugins[] from the side navigation pane and click on the *").append(pluginUtils.getPluginName()).append("* tile.\n").append(". From the *Location* section, decide if you wish to enable this plugin on a *data source* or a *results page* and select the corresponding radio button.\n").append(". Select the data source or results page to which you would like to enable this plugin from the drop-down menu.\n").append("\n").append("NOTE: If enabled on a data source, the plugin will take effect as soon as the setup steps are completed, and an advanced > full update of the data source has completed. If enabled on a results page the plugin will take effect as soon as the setup steps are completed.\n").append("\n");
     }
 
     private void addDataSourceConfigurations() {
 
-        content.append(". Select menu:Plugins[] from the side navigation pane and click on the *" + pluginUtils.getPluginName() + "* tile.\n" +
-                       ". From the *Location* section, select the data source to which you would like to enable this plugin from the _Select a data source_ select list.\n" +
-                       "\n");
+        content.append(". Select menu:Plugins[] from the side navigation pane and click on the *").append(pluginUtils.getPluginName()).append("* tile.\n").append(". From the *Location* section, select the data source to which you would like to enable this plugin from the _Select a data source_ select list.\n").append("\n");
 
-        content.append("NOTE: The plugin will take effect after setup steps and an advanced > full update of the data source has completed.\n" +
-                       "\n");
+        content.append("""
+                NOTE: The plugin will take effect after setup steps and an advanced > full update of the data source has completed.
+                
+                """);
     }
 
     private void addResultsPageConfigurations() {
-        content.append(". Select menu:Plugins[] from the side navigation pane and click on the *" + pluginUtils.getPluginName() + "* tile.\n" +
-                ". From the *Location* section, select the results page to which you would like to enable this plugin from the _Select a results page_ select list.\n" +
-                "\n" +
-                "NOTE: The plugin will take effect as soon as you finish running through the plugin setup steps.\n" +
-                "\n");
+        content.append(". Select menu:Plugins[] from the side navigation pane and click on the *").append(pluginUtils.getPluginName()).append("* tile.\n").append(". From the *Location* section, select the results page to which you would like to enable this plugin from the _Select a results page_ select list.\n").append("\n").append("NOTE: The plugin will take effect as soon as you finish running through the plugin setup steps.\n").append("\n");
     }
 
     private void addDocumentFilter() {
         if (StringUtils.isNotEmpty(pluginUtils.getFilterClass())) {
             // Add note for append it to end of filter
-            content.append("==== Filter classes\n" +
-                            "\n" +
-                            "This plugin supplies a filter that runs in the main document filter chain: `+" + pluginUtils.getFilterClass() +"+`\n" +
-                            "\n" +
-                            "Drag the *+" + pluginUtils.getFilterClass() + "+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
-                            "\n");
+            content.append("""
+                    ==== Filter classes
+                    
+                    This plugin supplies a filter that runs in the main document filter chain: `+""").append(pluginUtils.getFilterClass()).append("+`\n").append("\n").append("Drag the *+").append(pluginUtils.getFilterClass()).append("+* plugin filter to where you wish it to run in the filter chain sequence.\n").append("\n");
         }
     }
 
     private void addJsoupFilter() {
         if (StringUtils.isNotEmpty(pluginUtils.getJsoupFilterClass())) {
-            content.append("==== Jsoup filter classes\n" +
-                           "\n" +
-                           "This plugin supplies a filter that needs to run in the HTML document (Jsoup) filter chain:`+" + pluginUtils.getJsoupFilterClass() + "+`\n" +
-                           "\n" +
-                           "Drag the *+" + pluginUtils.getJsoupFilterClass() + "+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
-                           "\n");
+            content.append("""
+                    ==== Jsoup filter classes
+                    
+                    This plugin supplies a filter that needs to run in the HTML document (Jsoup) filter chain:`+""").append(pluginUtils.getJsoupFilterClass()).append("+`\n").append("\n").append("Drag the *+").append(pluginUtils.getJsoupFilterClass()).append("+* plugin filter to where you wish it to run in the filter chain sequence.\n").append("\n");
         }
     }
 
     private void writePluginConfigKeysToResourceAdoc() {
         List<PluginConfigKeyDetails> configKeys = pluginUtils.getConfigKeys();
         if (!configKeys.isEmpty()) {
-            content.append("=== Configuration settings\n" +
-                           "\n" +
-                           "The *configuration settings* section is where you do most of the configuration for your plugin. The settings enable you to control how the plugin behaves.\n" +
-                           "\n" +
-                           "NOTE: The configuration key names below are only used if you are configuring this plugin manually. The configuration keys are set in the " + pluginTargets + " configuration to configure the plugin. When setting the keys manually you need to type in (or copy and paste) the key name and value.\n" +
-                           "\n");
+            content.append("""
+                    === Configuration settings
+                    
+                    The *configuration settings* section is where you do most of the configuration for your plugin. The settings enable you to control how the plugin behaves.
+                    
+                    NOTE: The configuration key names below are only used if you are configuring this plugin manually. The configuration keys are set in the\s""").append(pluginTargets).append(" configuration to configure the plugin. When setting the keys manually you need to type in (or copy and paste) the key name and value.\n").append("\n");
 
             for (PluginConfigKeyDetails<?> configKey : configKeys) {
-                if (configKey instanceof PluginConfigKey) {
-                    PluginConfigKey<?> key = (PluginConfigKey<?>) configKey;
+                if (configKey instanceof PluginConfigKey<?> key) {
                     PluginConfigKeyType keyType = key.getType();
                     String keyTypeText = (keyType.equals(PluginConfigKeyType.Format.ARRAY))
                             ? keyType.getSubtype().getType()
@@ -227,24 +225,19 @@ public class AsciiDocGenerator {
                     PluginConfigKeyAllowedValue<?> allowedValue = configKey.getAllowedValue();
 
                     // vertical bar replacements are to ensure the Asciidoc table formatting is not broken.
-                    content.append("==== " + key.getLabel() + "\n" +
-                                  "\n" +
-                                  "[%autowidth.spread]\n" +
-                                  "|===\n" +
-                                  "|Configuration key| `+" + key.getKey().replace("|","\\|") +"+`\n" +
-                                  "|Data type|" + keyTypeText +"\n");
+                    content.append("==== ").append(key.getLabel()).append("\n").append("\n").append("[%autowidth.spread]\n").append("|===\n").append("|Configuration key| `+").append(key.getKey().replace("|", "\\|")).append("+`\n").append("|Data type|").append(keyTypeText).append("\n");
                     if (defaultValue != null) {
-                        content.append("|Default value|`+" + defaultValue.toString().replace("|","\\|") + "+`\n");
+                        content.append("|Default value|`+").append(defaultValue.toString().replace("|", "\\|")).append("+`\n");
                     }
                     if (allowedValue != null) {
                         if (allowedValue.getValues() != null && !allowedValue.getValues().isEmpty()) {
-                            content.append("|Allowed values|" + allowedValue.getValues().stream().map(Object::toString).collect(Collectors.joining(",")) + "\n");
+                            content.append("|Allowed values|").append(allowedValue.getValues().stream().map(Object::toString).collect(Collectors.joining(","))).append("\n");
                         }
                         if (allowedValue.getRegex() != null) {
-                            content.append("|Value format|Allowed values must match the regular expression:\n" +
-                                    "\n" +
-
-                                    "`++" + allowedValue.getRegex().toString().replace("|","\\|") + "++`\n");
+                            content.append("""
+                                    |Value format|Allowed values must match the regular expression:
+                                    
+                                    `++""").append(allowedValue.getRegex().toString().replace("|", "\\|")).append("++`\n");
                         }
                     }
                     if (key.isRequired()) {
@@ -257,14 +250,8 @@ public class AsciiDocGenerator {
                     if (key.getLongDescription() != null) {
                         content.append(key.getLongDescription()).append("\n\n");
                     }
-                } else if (configKey instanceof PluginConfigKeyEncrypted) {
-                    PluginConfigKeyEncrypted encryptedKey = (PluginConfigKeyEncrypted) configKey;
-                    content.append("==== " + encryptedKey.getLabel() + "\n" +
-                                   "\n" +
-                                   "[%autowidth.spread]\n" +
-                                   "|===\n" +
-                                   "|Configuration key| `+" + encryptedKey.getKey().replace("|","\\|") + "+`\n" +
-                                   "|Data type|Encrypted string\n");
+                } else if (configKey instanceof PluginConfigKeyEncrypted encryptedKey) {
+                    content.append("==== ").append(encryptedKey.getLabel()).append("\n").append("\n").append("[%autowidth.spread]\n").append("|===\n").append("|Configuration key| `+").append(encryptedKey.getKey().replace("|", "\\|")).append("+`\n").append("|Data type|Encrypted string\n");
                     if (encryptedKey.isRequired()) {
                         content.append("|Required|This setting is required\n");
                     } else {
@@ -282,24 +269,19 @@ public class AsciiDocGenerator {
 
     private void addConfigFileDetails() {
         if (pluginUtils.getConfigFiles() != null && !pluginUtils.getConfigFiles().isEmpty()) {
-            content.append("=== Configuration files\n" +
-                    "\n" +
-                    "This plugin also uses the following configuration files to provide additional configuration.\n" +
-                    "\n");
+            content.append("""
+                    === Configuration files
+                    
+                    This plugin also uses the following configuration files to provide additional configuration.
+                    
+                    """);
             for (PluginConfigFile file: pluginUtils.getConfigFiles()) {
                 File configFileDetailsSource = new File(projectResourcePath + CONFIGFILE + file.getName() + ".adoc");
-                content.append("==== " + file.getName() + "\n" +
-                               "\n" +
-                               "[%autowidth.spread]\n" +
-                               "|===\n" +
-                               "|Description|" + file.getDescription() + "\n" +
-                               "|Configuration file format|" + file.getFormat() + "\n" +
-                               "|===\n" +
-                               "\n");
+                content.append("==== ").append(file.getName()).append("\n").append("\n").append("[%autowidth.spread]\n").append("|===\n").append("|Description|").append(file.getDescription()).append("\n").append("|Configuration file format|").append(file.getFormat()).append("\n").append("|===\n").append("\n");
                 if (configFileDetailsSource.exists()){
                     content.append(readAsciiFile(configFileDetailsSource.getPath())).append("\n\n");
                 } else {
-                    content.append("WARNING: Details for plugin configuration file `" + file.getName() + "` are not added. Please create the documentation in `/src/test/resources/ascii/sections/" + CONFIGFILE + file.getName() + ".adoc`\n\n");
+                    content.append("WARNING: Details for plugin configuration file `").append(file.getName()).append("` are not added. Please create the documentation in `/src/test/resources/ascii/sections/").append(CONFIGFILE).append(file.getName()).append(".adoc`\n\n");
                 }
             }
         }
@@ -326,12 +308,14 @@ public class AsciiDocGenerator {
         if (!new File(projectResourcePath + EXAMPLE).exists()) {
             throw new RuntimeException("File '/src/main/resources/ascii/sections/" + EXAMPLE + "' with plugin examples needs to exist for successful compilation of plugin.");
         }
-        String blankExample = "// ==========\n" +
-                              "// Examples showing how to use this plugin. All plugins should include a minimum of one example. More complex plugins\n" +
-                              "// will require a set of plugins.\n" +
-                              "//\n" +
-                              "// See: https://docs.squiz.net/funnelback/docs/latest/develop/plugins/documentation/index.html#examples more details and examples.\n" +
-                              "// ==========\n";
+        String blankExample = """
+                // ==========
+                // Examples showing how to use this plugin. All plugins should include a minimum of one example. More complex plugins
+                // will require a set of plugins.
+                //
+                // See: https://docs.squiz.net/funnelback/docs/latest/develop/plugins/documentation/index.html#examples more details and examples.
+                // ==========
+                """;
 
         String examples = readAsciiFile(projectResourcePath + EXAMPLE);
         content.append("\n").append("== Examples\n\n");

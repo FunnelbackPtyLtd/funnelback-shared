@@ -84,30 +84,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.12.0</version>
-                <configuration>
-                    <show>private</show>
-                    <sourceFileIncludes>
-                        <include>com/**/*.java</include>
-                    </sourceFileIncludes>
-                    <!-- It can be tempting to turn this to false, don't-->
-                    <failOnError>true</failOnError>
-                    <docfilessubdirs>true</docfilessubdirs>
-                    <failOnError>false</failOnError>
-                    <!-- https://stackoverflow.com/a/57284322 -->
-                    <bottom>
-                    <![CDATA[
-                        <script>
-                        if (typeof useModuleDirectories !== 'undefined') {
-                          useModuleDirectories = false;
-                        }
-                        </script>
-                    ]]>
-                    </bottom>
-                    <additionalOptions>--allow-script-in-comments</additionalOptions>
-                </configuration>
                 <executions>
                     <execution>
+                        <id>attach-javadocs</id>
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
@@ -168,6 +147,16 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

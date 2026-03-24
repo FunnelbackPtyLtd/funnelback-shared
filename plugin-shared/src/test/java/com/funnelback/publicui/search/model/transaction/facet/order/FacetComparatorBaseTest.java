@@ -1,7 +1,8 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -11,70 +12,70 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class FacetComparatorBaseTest {
+abstract class FacetComparatorBaseTest {
 
     protected abstract Comparator<CategoryValue> getComparator();
-    
+
     protected abstract CategoryValue getNonNullValue();
-    
+
     protected abstract Optional<CategoryValue> getNullValue();
-    
+
     protected abstract boolean getNullsLast();
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testSorting(List<CategoryValue> input, List<CategoryValue> sorted) {
+    void testSorting(List<CategoryValue> input, List<CategoryValue> sorted) {
         List<CategoryValue> toSort = new ArrayList<>(input);
         toSort.sort(getComparator());
-        Assertions.assertEquals(sorted, toSort);
+        assertThat(toSort).isEqualTo(sorted);
     }
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testNulls() {
+    void testNulls() {
         Assumptions.assumeTrue(getNullValue().isPresent());
-        Assertions.assertEquals(0, getComparator().compare(getNullValue().get(), getNullValue().get()));
+        assertThat(getComparator().compare(getNullValue().get(), getNullValue().get())).isZero();
     }
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testNullsOrder() {
+    void testNullsOrder() {
         Assumptions.assumeTrue(getNullValue().isPresent());
         int o1 = getComparator().compare(getNullValue().get(), getNonNullValue());
         int o2 = getComparator().compare(getNonNullValue(), getNullValue().get());
-        
-        if(getNullsLast()) {
-            Assertions.assertTrue(o1 > 0);
-            Assertions.assertTrue(o2 < 0);
+
+        if (getNullsLast()) {
+            assertThat(o1).isPositive();
+            assertThat(o2).isNegative();
         } else {
-            Assertions.assertTrue(o1 < 0);
-            Assertions.assertTrue(o2 > 0);
+            assertThat(o1).isNegative();
+            assertThat(o2).isPositive();
         }
     }
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testNullVsNonNull() {
+    void testNullVsNonNull() {
         Assumptions.assumeTrue(getNullValue().isPresent());
         int o1 = getComparator().compare(getNullValue().get(), getNonNullValue());
         int o2 = getComparator().compare(getNonNullValue(), getNullValue().get());
-        Assertions.assertNotEquals(0, o1);
-        Assertions.assertNotEquals(0, o2);
-        Assertions.assertEquals(o1, o2*-1);
-        Assertions.assertNotEquals(o1, o2);
+        assertThat(o1).isNotZero();
+        assertThat(o2).isNotZero();
+        assertThat(o1).isEqualTo(o2 * -1);
+        assertThat(o1).isNotEqualTo(o2);
     }
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testEquals(List<CategoryValue> input) {
+    void testEquals(List<CategoryValue> input) {
         for (CategoryValue cv : input) {
-            Assertions.assertEquals(0, getComparator().compare(cv, cv));
+            assertThat(getComparator().compare(cv, cv)).isZero();
         }
     }
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testReversible(List<CategoryValue> input) {
+    void testReversible(List<CategoryValue> input) {
         for (int i = 0; i < input.size(); i++) {
             CategoryValue cv1 = input.get(i);
             for (int j = 0; j < input.size(); j++) {
@@ -82,18 +83,27 @@ public abstract class FacetComparatorBaseTest {
                 int order1 = getComparator().compare(cv1, cv2);
                 int order2 = getComparator().compare(cv2, cv1);
 
-                Assertions.assertEquals(order1, order2 * -1, "Something is wrong in the way comparison is done! This test took:\n"
-                    + "CategoryValues " +
-                    i + ": " + cv1 + "\n" +
-                    j + ": " + cv2 + "\n" +
-                    "Comparing one way gave: " + order1 + " comparing the other way gave " + order2 + " multiplying by -1 should give the other!");
+                assertThat(order1)
+                    .as(
+                        """
+                            Something is wrong in the way comparison is done! This test took:
+                            CategoryValues %d: %s
+                            %d: %s
+                            Comparing one way gave: %d comparing the other way gave %d multiplying by -1 should give the other!""",
+                        i,
+                        cv1,
+                        j,
+                        cv2,
+                        order1,
+                        order2)
+                    .isEqualTo(order2 * -1);
             }
         }
     }
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testReversibleAgainstNulls(List<CategoryValue> input) {
+    void testReversibleAgainstNulls(List<CategoryValue> input) {
         Assumptions.assumeTrue(getNullValue().isPresent());
         for (int i = 0; i < input.size(); i++) {
             CategoryValue cv1 = input.get(i);
@@ -101,11 +111,18 @@ public abstract class FacetComparatorBaseTest {
             int order1 = getComparator().compare(cv1, cv2);
             int order2 = getComparator().compare(cv2, cv1);
 
-            Assertions.assertEquals(order1, order2 * -1, "Something is wrong in the way comparison is done! This test took:\n"
-                + "CategoryValues " +
-                i + ": " + cv1 + "\n" +
-                " vs a null value\n" +
-                "Comparing one way gave: " + order1 + " comparing the other way gave " + order2 + " multiplying by -1 should give the other!");
+            assertThat(order1)
+                .as(
+                    """
+                        Something is wrong in the way comparison is done! This test took:
+                        CategoryValues %d: %s
+                         vs a null value
+                        Comparing one way gave: %d comparing the other way gave %d multiplying by -1 should give the other!""",
+                    i,
+                    cv1,
+                    order1,
+                    order2)
+                .isEqualTo(order2 * -1);
         }
     }
 }

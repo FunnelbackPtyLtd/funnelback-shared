@@ -52,106 +52,86 @@
       
   <properties>
     <java.version>21</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- Aligns with spring-boot-dependencies; used for maven-compiler annotationProcessorPaths -->
+    <version.guava>33.5.0-jre</version.guava>
+    <version.jsoup>1.22.1</version.jsoup>
+    <!-- Matches org.springframework.boot:spring-boot-dependencies ${mockito.version} -->
+    <mockito.version>5.17.0</mockito.version>
+    <version.lombok>1.18.42</version.lombok>
+    <version.xstream>1.4.21</version.xstream>
+    <version.log4j2>2.25.3</version.log4j2>
+    <spring-boot.version>3.5.11</spring-boot.version>
+    <!-- Maven APIs / plugin tooling (plugin-config-builder, etc.) -->
+    <maven.version>3.9.9</maven.version>
+    <maven-plugin-annotations.version>3.15.2</maven-plugin-annotations.version>
+    <maven-plugin-plugin.version>3.15.1</maven-plugin-plugin.version>
+    <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
     <plugin.version.compiler>3.15.0</plugin.version.compiler>
     <plugin.version.surefire>3.5.4</plugin.version.surefire>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <!-- About to change the versions below? You need to sync your change -->
-    <!-- with the top-level pom.xml in java-parent!-->
-    <version.commons.lang>3.20.0</version.commons.lang>
-    <version.guava>33.5.0-jre</version.guava>
-    <version.jackson2>2.21</version.jackson2>
-    <version.jackson-databind>2.21.1</version.jackson-databind>
-    <version.jsoup>1.22.1</version.jsoup>
-    <version.junit>6.0.3</version.junit>
-    <version.log4j2>2.25.3</version.log4j2>
-    <version.lombok>1.18.42</version.lombok>
-    <version.mockito>5.21.0</version.mockito>
-    <version.xstream>1.4.21</version.xstream>
-    <version.jakarta.persistence>3.2.0</version.jakarta.persistence>
-    <version.jakarta.validation>3.1.1</version.jakarta.validation>
-    <version.jakarta.servlet>6.1.0</version.jakarta.servlet>
+    <plugin.version.javadoc>3.12.0</plugin.version.javadoc>
+    <plugin.version.mavenSource>3.4.0</plugin.version.mavenSource>
+    <plugin.version.mavenArchetype>3.4.1</plugin.version.mavenArchetype>
+    <plugin.version.mavenDependency>3.8.1</plugin.version.mavenDependency>
+    <plugin.version.mavenJar>3.4.2</plugin.version.mavenJar>
+    <plugin.version.mavenAntrun>3.1.0</plugin.version.mavenAntrun>
+    <plugin.version.write-properties-file>1.0.1</plugin.version.write-properties-file>
+    <plugin.version.mavenPluginTestingHarness>4.0.0-alpha-2</plugin.version.mavenPluginTestingHarness>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <!-- Spring Boot BOM: Spring Framework 6.2+, Hibernate 6.6+, Mockito 5.x, JUnit Jupiter 5.x, Jackson, Jakarta EE 10 stack -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- Not part of Spring Boot dependency management -->
       <dependency>
         <groupId>com.thoughtworks.xstream</groupId>
         <artifactId>xstream</artifactId>
         <version>${version.xstream}</version>
       </dependency>
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>${version.lombok}</version>
-      </dependency>
+      <!-- Not managed by spring-boot-dependencies -->
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${version.guava}</version>
       </dependency>
       <dependency>
-        <groupId>jakarta.validation</groupId>
-        <artifactId>jakarta.validation-api</artifactId>
-        <version>${version.jakarta.validation}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api</artifactId>
-        <version>${version.log4j2}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core</artifactId>
-        <version>${version.log4j2}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-annotations</artifactId>
-        <version>${version.jackson2}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${version.jackson-databind}</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.persistence</groupId>
-        <artifactId>jakarta.persistence-api</artifactId>
-        <version>${version.jakarta.persistence}</version>
-      </dependency>
-      <dependency>
         <groupId>org.jsoup</groupId>
         <artifactId>jsoup</artifactId>
         <version>${version.jsoup}</version>
       </dependency>
+      <!-- Maven plugin API stack (plugin-config-builder) -->
       <dependency>
-        <groupId>jakarta.servlet</groupId>
-        <artifactId>jakarta.servlet-api</artifactId>
-        <version>${version.jakarta.servlet}</version>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${maven.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter</artifactId>
-        <version>${version.junit}</version>
-        <scope>test</scope>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${maven.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-        <version>${version.junit}</version>
-        <scope>test</scope>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-compat</artifactId>
+        <version>${maven.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.junit.platform</groupId>
-        <artifactId>junit-platform-launcher</artifactId>
-        <version>6.0.3</version>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-annotations</artifactId>
+        <version>${maven-plugin-annotations.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${version.mockito}</version>
-        <scope>test</scope>
+        <groupId>org.apache.maven.plugin-testing</groupId>
+        <artifactId>maven-plugin-testing-harness</artifactId>
+        <version>${plugin.version.mavenPluginTestingHarness}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -167,7 +147,10 @@
               <include>**/*Tests.java</include>
               <include>**/*Test.java</include>
             </includes>
-            <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+            <argLine>
+              -Dfile.encoding=${project.build.sourceEncoding}
+              -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+            </argLine>
           </configuration>
         </plugin>
         <plugin>
@@ -178,7 +161,83 @@
             <release>${java.version}</release>
             <encoding>${project.build.sourceEncoding}</encoding>
             <forceJavacCompilerUse>true</forceJavacCompilerUse>
+            <proc>full</proc>
+            <annotationProcessorPaths>
+              <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${version.lombok}</version>
+              </path>
+            </annotationProcessorPaths>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${plugin.version.javadoc}</version>
+          <configuration>
+            <release>${java.version}</release>
+            <encoding>${project.build.sourceEncoding}</encoding>
+            <charset>${project.build.sourceEncoding}</charset>
+            <docencoding>${project.build.sourceEncoding}</docencoding>
+            <doclint>none</doclint>
+            <show>private</show>
+            <sourceFileIncludes>
+              <include>com/**/*.java</include>
+            </sourceFileIncludes>
+            <failOnError>false</failOnError>
+            <docfilessubdirs>true</docfilessubdirs>
+            <bottom>
+              <![CDATA[
+                        <script>
+                        if (typeof useModuleDirectories !== 'undefined') {
+                          useModuleDirectories = false;
+                        }
+                        </script>
+                    ]]>
+            </bottom>
+            <additionalOptions>--allow-script-in-comments</additionalOptions>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${plugin.version.mavenSource}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>${maven-plugin-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-archetype-plugin</artifactId>
+          <version>${plugin.version.mavenArchetype}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${plugin.version.mavenDependency}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${plugin.version.mavenJar}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>${plugin.version.mavenAntrun}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.internetitem</groupId>
+          <artifactId>write-properties-file-maven-plugin</artifactId>
+          <version>${plugin.version.write-properties-file}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -186,7 +245,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>3.3.1</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -194,30 +252,6 @@
               <goal>jar-no-fork</goal>
             </goals>
             <phase>package</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.12.0</version>
-        <configuration>
-          <source>${java.version}</source>
-          <!-- https://stackoverflow.com/a/60322437/797 -->
-        </configuration>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration>
-              <encoding>${project.build.sourceEncoding}</encoding>
-              <release>${java.version}</release>
-              <doclint>none</doclint>
-              <charset>${project.build.sourceEncoding}</charset>
-              <docencoding>${project.build.sourceEncoding}</docencoding>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -243,7 +277,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>3.2.7</version>
+            <version>3.2.8</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>

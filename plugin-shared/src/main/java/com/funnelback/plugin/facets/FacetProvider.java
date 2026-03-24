@@ -11,7 +11,7 @@ public interface FacetProvider {
      * <p>Supply additional faceted navigation configuration.</p>
      * 
      * <p>Additional faceted navigation is supplied as a JSON similar to the API
-     * <code>GET /faceted-navigation/v2/collections/{collection}/profiles/{profile}/facet/{id}/views/{view}<code></p>
+     * <code>GET /faceted-navigation/v2/collections/{collection}/profiles/{profile}/facet/{id}/views/{view}</code></p>
      * 
      * <p>This expects to return a list <code>[]</code> of Facets. The id,
      * lastModified and created fields do not need to be set.</p>

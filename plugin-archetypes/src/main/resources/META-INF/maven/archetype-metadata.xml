@@ -83,6 +83,28 @@
         </requiredProperty>
         <requiredProperty key="plugin-description" />
         <requiredProperty key="archetypeVersion"> </requiredProperty>
+        <!-- Keep defaultValue in sync with funnelback-shared-parent properties -->
+        <requiredProperty key="springBootVersion">
+            <defaultValue>3.5.11</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="versionLog4j2">
+            <defaultValue>2.25.3</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="pluginVersionCompiler">
+            <defaultValue>3.15.0</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="pluginVersionSurefire">
+            <defaultValue>3.5.4</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="pluginVersionMavenDependency">
+            <defaultValue>3.8.1</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="pluginVersionMavenJar">
+            <defaultValue>3.4.2</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="pluginVersionMavenAntrun">
+            <defaultValue>3.1.0</defaultValue>
+        </requiredProperty>
         <requiredProperty key="runs-on-datasource">
             <validationRegex><![CDATA[^(?i)(true|false)$]]></validationRegex>
         </requiredProperty>
