@@ -161,7 +161,11 @@
             <release>${java.version}</release>
             <encoding>${project.build.sourceEncoding}</encoding>
             <forceJavacCompilerUse>true</forceJavacCompilerUse>
-            <proc>full</proc>
+            <detail>true</detail>
+            <showWarnings>true</showWarnings>
+            <showDeprecation>true</showDeprecation>
+            <showCompilationChanges>true</showCompilationChanges>
+            <optimize>true</optimize>
             <annotationProcessorPaths>
               <path>
                 <groupId>org.projectlombok</groupId>
