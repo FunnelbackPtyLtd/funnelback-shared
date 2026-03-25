@@ -85,12 +85,18 @@ spotbugs-sast:
 
 # Release `funnelback-shared` to the GitLab package registry (development version)
 publish_to_gitlab:
+  image:
+    name: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker/centos7-jdk21:latest
+    entrypoint: [""]
   extends:
     - .template:funnelback:mvn-publish:push
 
 # Release `funnelback-shared` to the Maven central registry (production version)
 release:
   stage: release
+  image:
+    name: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker/centos7-jdk21:latest
+    entrypoint: [ "" ]
   extends:
     - .template:funnelback:mvn-central-publish:authenticate
   when: manual
