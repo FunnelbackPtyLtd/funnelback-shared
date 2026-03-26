@@ -90,6 +90,12 @@ publish_to_gitlab:
     entrypoint: [""]
   extends:
     - .template:funnelback:mvn-publish:push
+  # `.template:funnelback:mvn-publish:push` inherits `before_script` from `mvn-publish:authenticate`
+  # (chown bob, settings.xml, etc.); it does not define `before_script` itself. Reference authenticate
+  # so !reference resolves. Ensure `bob` exists before chown/sudo -u bob (JDK21 image may omit it).
+  before_script:
+    - getent passwd bob >/dev/null || useradd -r -m -U bob
+    - !reference ['.template:funnelback:mvn-publish:authenticate', before_script]
 
 # Release `funnelback-shared` to the Maven central registry (production version)
 release:
@@ -99,6 +105,9 @@ release:
     entrypoint: [ "" ]
   extends:
     - .template:funnelback:mvn-central-publish:authenticate
+  before_script:
+    - getent passwd bob >/dev/null || useradd -r -m -U bob
+    - !reference ['.template:funnelback:mvn-central-publish:authenticate', before_script]
   when: manual
   only:
     - /^release-.*$/
