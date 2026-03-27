@@ -5,6 +5,10 @@ include:
   - project: funnelback-rnd/gitlab-templates
     ref: main
     file: security.yml
+  # JDK21 Maven publish to GitLab Package Registry (settings.xml from gitlab-templates; see template file).
+  - project: funnelback-rnd/gitlab-templates
+    ref: main
+    file: publish_to_gitlab.yml
 
 default:
   image:
@@ -53,10 +57,7 @@ variables:
 # Compile `funnelback-shared` and execute unit tests
 build:
   stage: build
-  # Template-merged jobs may carry an explicit JDK11 image; pin build to JDK21.
-  image:
-    name: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker/centos7-jdk21:latest
-    entrypoint: [""]
+  # Uses default `image` (centos7-jdk21).
   script:
     - mvn $MAVEN_CLI_OPTS -fail-at-end clean install
     - rm -rf .m2/repository/com/funnelback/
@@ -82,20 +83,24 @@ spotbugs-sast:
   variables:
     SAST_ANALYZER_IMAGE_TAG: "6"
     SAST_JAVA_VERSION: "21"
+    # SpotBugs walks every pom.xml; these are templates/fixtures, not buildable projects.
+    # archetype-resources: Maven archetype POM with ${groupId} etc. — fails model interpolation.
+    # plugin-config-builder unit resources: minimal IT poms under src/test/resources.
+    SAST_SPOTBUGS_EXCLUDED_BUILD_PATHS: "plugin-archetypes/src/main/resources/archetype-resources/pom.xml,plugin-config-builder/src/test/resources/unit/p1/pom.xml,plugin-config-builder/src/test/resources/unit/p2/pom.xml"
 
-# Release `funnelback-shared` to the GitLab package registry (development version)
+# Release `funnelback-shared` to the GitLab package registry (development version).
+# Template `publish_to_gitlab.yml` is JDK21-only; authenticate clones gitlab-templates for settings.xml.
 publish_to_gitlab:
-  image:
-    name: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker/centos7-jdk21:latest
-    entrypoint: [""]
   extends:
-    - .template:funnelback:mvn-publish:push
-  # `.template:funnelback:mvn-publish:push` inherits `before_script` from `mvn-publish:authenticate`
-  # (chown bob, settings.xml, etc.); it does not define `before_script` itself. Reference authenticate
-  # so !reference resolves. Ensure `bob` exists before chown/sudo -u bob (JDK21 image may omit it).
+    - .template:funnelback:mvn-publish:push:gitlab
   before_script:
-    - getent passwd bob >/dev/null || useradd -r -m -U bob
-    - !reference ['.template:funnelback:mvn-publish:authenticate', before_script]
+    # Required for SSH git clone of gitlab-templates in `.template:funnelback:mvn-publish:authenticate:gitlab`.
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - ssh-keyscan -t rsa,ecdsa,ed25519 gitlab.squiz.net >> ~/.ssh/known_hosts
+    - !reference ['.template:funnelback:mvn-publish:authenticate:gitlab', before_script]
+  script:
+    # Align with repo-wide MAVEN_CLI_OPTS; template default is `mvn -B clean deploy`.
+    - mvn $MAVEN_CLI_OPTS clean deploy $MVN_DEPLOY_OPTIONS
 
 # Release `funnelback-shared` to the Maven central registry (production version)
 release:
@@ -107,6 +112,8 @@ release:
     - .template:funnelback:mvn-central-publish:authenticate
   before_script:
     - getent passwd bob >/dev/null || useradd -r -m -U bob
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - ssh-keyscan -t rsa,ecdsa,ed25519 gitlab.squiz.net >> ~/.ssh/known_hosts
     - !reference ['.template:funnelback:mvn-central-publish:authenticate', before_script]
   when: manual
   only:
@@ -122,4 +129,3 @@ release:
     - mvn $MAVEN_CLI_OPTS -P central-release clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
     - rm -rf .m2/repository/com/funnelback/
   <<: *artifacts
-
