@@ -34,6 +34,16 @@
         <url>http://github.com/FunnelbackPtyLtd/funnelback-shared/tree/master</url>
     </scm>
 
+    <properties>
+        <!--
+          This module has no unit tests under src/test/java; integration coverage is archetype-plugin IT only.
+          Archetype IT output lives under target/test-classes/projects/.../target/test-classes/. A second mvn install
+          (e.g. GitLab SAST building each Maven project) leaves those .class files on the test classpath; Surefire 3.x
+          then scans them and fails with LinkageError "wrong name" for com.example.test.*.
+        -->
+        <skipTests>true</skipTests>
+    </properties>
+
     <distributionManagement>
         <snapshotRepository>
             <id>gitlab-maven</id>
@@ -106,8 +116,7 @@
                             <skip>false</skip>
                             <encoding>${project.build.sourceEncoding}</encoding>
                             <testFailureIgnore>false</testFailureIgnore>
-                            <postBuildGoals>clean,test</postBuildGoals>
-                            <goals>clean,test</goals>
+                            <postBuildGoals>clean test</postBuildGoals>
                         </configuration>
                     </execution>
                 </executions>
