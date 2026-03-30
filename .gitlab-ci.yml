@@ -5,7 +5,8 @@ include:
   - project: funnelback-rnd/gitlab-templates
     ref: main
     file: security.yml
-  # JDK21 Maven publish to GitLab Package Registry (settings.xml from gitlab-templates; see template file).
+  # JDK21 Maven publish to GitLab Package Registry. Template clones gitlab-templates over HTTPS using
+  # CI/CD variable GITLAB_TEMPLATES_PROJECT_TOKEN (read_repository token on that project). See publish_to_gitlab.yml.
   - project: funnelback-rnd/gitlab-templates
     ref: main
     file: publish_to_gitlab.yml
@@ -89,15 +90,11 @@ spotbugs-sast:
     SAST_SPOTBUGS_EXCLUDED_BUILD_PATHS: "plugin-archetypes/src/main/resources/archetype-resources/pom.xml,plugin-config-builder/src/test/resources/unit/p1/pom.xml,plugin-config-builder/src/test/resources/unit/p2/pom.xml"
 
 # Release `funnelback-shared` to the GitLab package registry (development version).
-# Template `publish_to_gitlab.yml` is JDK21-only; authenticate clones gitlab-templates for settings.xml.
+# Requires CI/CD variables: GITLAB_TEMPLATES_PROJECT_TOKEN, FUN_GITLAB_MAVEN_TOKEN (see gitlab-templates publish_to_gitlab.yml).
+# Inherits before_script from the template (HTTPS clone of gitlab-templates for settings.xml).
 publish_to_gitlab:
   extends:
     - .template:funnelback:mvn-publish:push:gitlab
-  before_script:
-    # Required for SSH git clone of gitlab-templates in `.template:funnelback:mvn-publish:authenticate:gitlab`.
-    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-    - ssh-keyscan -t rsa,ecdsa,ed25519 gitlab.squiz.net >> ~/.ssh/known_hosts
-    - !reference ['.template:funnelback:mvn-publish:authenticate:gitlab', before_script]
   script:
     # Align with repo-wide MAVEN_CLI_OPTS; template default is `mvn -B clean deploy`.
     - mvn $MAVEN_CLI_OPTS clean deploy $MVN_DEPLOY_OPTIONS
