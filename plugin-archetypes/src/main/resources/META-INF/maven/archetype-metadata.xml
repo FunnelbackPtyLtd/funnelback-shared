@@ -87,6 +87,15 @@
         <requiredProperty key="springBootVersion">
             <defaultValue>3.5.11</defaultValue>
         </requiredProperty>
+        <requiredProperty key="versionJackson2">
+            <defaultValue>2.21.3</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="versionJackson2Annotations">
+            <defaultValue>2.21</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="versionCommonsLang">
+            <defaultValue>3.20.0</defaultValue>
+        </requiredProperty>
         <requiredProperty key="versionLog4j2">
             <defaultValue>2.25.3</defaultValue>
         </requiredProperty>

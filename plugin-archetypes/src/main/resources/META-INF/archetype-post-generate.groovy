@@ -5,7 +5,7 @@ import java.nio.file.Paths
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.BasicFileAttributes
-@Grab(group='org.apache.commons', module='commons-lang3', version='3.12.0')
+@Grab(group='org.apache.commons', module='commons-lang3', version='3.20.0')
 import org.apache.commons.lang3.StringUtils
 
 // the path where the project got generated

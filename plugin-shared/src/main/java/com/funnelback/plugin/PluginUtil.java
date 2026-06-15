@@ -1,14 +1,15 @@
 package com.funnelback.plugin;
 
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;
+
+import javax.xml.parsers.DocumentBuilder;
+
+import org.xml.sax.SAXException;
+
+import com.funnelback.common.utils.SharedXMLUtils;
 
 public class PluginUtil {
 
@@ -32,14 +33,13 @@ public class PluginUtil {
      */
     public static Optional<String> getCurrentProjectVersion() {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setIgnoringElementContentWhitespace(true);
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            // Use secure DocumentBuilder from SharedXMLUtils to prevent XXE attacks
+            DocumentBuilder builder = SharedXMLUtils.getDocumentBuilder();
             File file = new File("pom.xml");
             String version =
                     builder.parse(file).getDocumentElement().getElementsByTagName("version").item(0).getTextContent();
             return (version != null) ?  Optional.of(version) : Optional.empty();
-        } catch (ParserConfigurationException  | IOException | SAXException e) {
+        } catch (IOException | SAXException e) {
             e.printStackTrace();
             return Optional.empty();
         }

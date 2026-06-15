@@ -56,4 +56,37 @@ public class AnchorDescriptionTest {
         Assertions.assertEquals(0, a.getExternalLinkCount());
         Assertions.assertEquals(1, a.getInternalLinkCount());
     }
+    
+    @Test 
+    public void testSecurityPathTraversalBypassPrevention() {
+        // Security test to ensure that modification-after-validation vulnerability is fixed
+        // This test ensures that any string modifications happen BEFORE pattern validation
+        
+        // Test potential bypass attempt with nested patterns like '....//' -> '../'
+        String maliciousInput = "[k....//..]test"; 
+        AnchorDescription a = new AnchorDescription(maliciousInput);
+        
+        // The resulting anchor text should not contain any potential bypass patterns
+        // that could be created by string modification after pattern matching
+        Assertions.assertFalse(a.getAnchorText().contains("../"), 
+            "Anchor text should not contain path traversal patterns after processing");
+        Assertions.assertFalse(a.getLinkType().contains("../"), 
+            "Link type should not contain path traversal patterns after processing");
+        
+        // Additional test cases for comprehensive security coverage
+        String[] maliciousInputs = {
+            "[k....//]bypass",
+            "test..//test",
+            "[K]../../../etc/passwd",
+            "normal[k..].."
+        };
+        
+        for (String input : maliciousInputs) {
+            AnchorDescription desc = new AnchorDescription(input);
+            Assertions.assertFalse(desc.getAnchorText().contains("../"), 
+                "Input '" + input + "' should not result in path traversal patterns");
+            Assertions.assertFalse(desc.getLinkType().contains("../"), 
+                "Input '" + input + "' link type should not contain path traversal patterns");
+        }
+    }
 }
