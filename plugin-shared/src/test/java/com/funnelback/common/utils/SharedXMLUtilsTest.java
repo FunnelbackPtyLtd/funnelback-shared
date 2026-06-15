@@ -1,11 +1,11 @@
 package com.funnelback.common.utils;
 
+import java.io.File;
+import java.nio.file.Files;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
-
-import java.io.File;
-import java.nio.file.Files;
 
 public class SharedXMLUtilsTest {
 
@@ -39,8 +39,11 @@ public class SharedXMLUtilsTest {
                         "<!DOCTYPE svg [ <!ENTITY xxe SYSTEM \"file://" + password.getAbsolutePath() + "\">]>"
                         + "<xml><entry>First&xxe;</entry></xml>";
 
-        String res = SharedXMLUtils.toString(SharedXMLUtils.fromString(doc));
-        Assertions.assertFalse(res.contains("los secretos en sus ojos"));
+        // Security improvement: DOCTYPE declarations are now completely disabled
+        // This test should throw an exception instead of processing the malicious XML
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            SharedXMLUtils.fromString(doc);
+        }, "XXE attack attempts should be rejected by disallowing DOCTYPE declarations");
     }
     
     @Test
@@ -79,7 +82,22 @@ public class SharedXMLUtilsTest {
     @Test
     public void testSSRFProtection() throws Exception {
         String ssrfXML = "<?xml version=\"1.0\"?><!DOCTYPE root [<!ENTITY xxe SYSTEM \"http://169.254.169.254/latest/meta-data/\">]><root>&xxe;</root>";
-        String res = SharedXMLUtils.toString(SharedXMLUtils.fromString(ssrfXML));
-        Assertions.assertFalse(res.contains("169.254.169.254"));
+        
+        // Security improvement: DOCTYPE declarations are now completely disabled
+        // This test should throw an exception instead of processing the malicious XML
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            SharedXMLUtils.fromString(ssrfXML);
+        }, "SSRF attack attempts should be rejected by disallowing DOCTYPE declarations");
+    }
+    
+    @Test
+    public void testDoctypeDeclarationDisabled() throws Exception {
+        // Test case to ensure DOCTYPE declarations are properly disabled to prevent XXE
+        String doctypeXML = "<?xml version=\"1.0\"?><!DOCTYPE root [<!ELEMENT root ANY>]><root>test</root>";
+        
+        // This should throw an exception because DOCTYPE declarations should be disabled
+        Assertions.assertThrows(Exception.class, () -> {
+            SharedXMLUtils.fromString(doctypeXML);
+        }, "DOCTYPE declarations should be disabled to prevent XXE attacks");
     }
 }

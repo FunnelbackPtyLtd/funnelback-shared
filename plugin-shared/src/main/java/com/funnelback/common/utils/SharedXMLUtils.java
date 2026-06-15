@@ -26,11 +26,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import lombok.extern.log4j.Log4j2;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Shared XML Utilities that can help parse documents and transform them in a safe
@@ -45,7 +46,7 @@ public class SharedXMLUtils {
     /** XML file extension */
     public static final String XML = "xml";
 
-    private static final TransformerFactory tf = TransformerFactory.newInstance();
+    private static final TransformerFactory tf = getSecureTransformerFactory();
 
     /**
      * Get a transformer that can be used for transforming a Document back out into an output stream.
@@ -73,7 +74,7 @@ public class SharedXMLUtils {
     /**
      * Parse a Document from an inputSource.
      *
-     * Internally uses a custom documentBuilder instance with many security settings enabled.
+     * Internally uses a custom getDocumentBuilder instance with many security settings enabled.
      *
      * @param is - e.g. new InputSource(bufferedReader)
      * @return Document - for use with a transformer, or xpath evaluation.
@@ -83,7 +84,7 @@ public class SharedXMLUtils {
     public static Document fromInputSource(InputSource is)
             throws IllegalArgumentException, RuntimeException{
         try {
-            return documentBuilder().parse(is);
+            return getDocumentBuilder().parse(is);
         } catch (SAXException | IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -92,7 +93,7 @@ public class SharedXMLUtils {
     /**
      * Parse a Document from an inputStream.
      *
-     * Internally uses a custom documentBuilder instance with many security settings enabled.
+     * Internally uses a custom getDocumentBuilder instance with many security settings enabled.
      *
      * Example usage from the filter framework:
      * public FilterResult filterAsBytesDocument(BytesDocument document, FilterContext filterContext) {
@@ -111,7 +112,7 @@ public class SharedXMLUtils {
     public static Document fromInputStream(InputStream is)
             throws IllegalArgumentException, RuntimeException{
         try {
-            return documentBuilder().parse(is);
+            return getDocumentBuilder().parse(is);
         } catch (SAXException | IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -120,7 +121,7 @@ public class SharedXMLUtils {
     /**
      * Parse a Document from a given File path. Useful for testing.
      *
-     * Internally uses a custom documentBuilder instance with many security settings enabled.
+     * Internally uses a custom getDocumentBuilder instance with many security settings enabled.
      *
      * @param file to parse into a Document
      * @return Document after parsing.
@@ -185,7 +186,7 @@ public class SharedXMLUtils {
     /**
      * Parse a Document from a given String. Useful for testing.
      *
-     * Internally uses a custom documentBuilder instance with many security settings enabled.
+     * Internally uses a custom getDocumentBuilder instance with many security settings enabled.
      *
      * @param xmlString to parse into a Document
      * @return Document after parsing.
@@ -197,7 +198,7 @@ public class SharedXMLUtils {
     /**
      * Parse a Document from a given byte[]. Useful for testing.
      *
-     * Internally uses a custom documentBuilder instance with many security settings enabled.
+     * Internally uses a custom getDocumentBuilder instance with many security settings enabled.
      *
      * @param xml to parse into a Document
      * @return Document after parsing.
@@ -206,7 +207,7 @@ public class SharedXMLUtils {
         return fromInputSource(new InputSource(new ByteArrayInputStream(xml)));
     }
 
-    private static DocumentBuilder documentBuilder() {
+    public static DocumentBuilder getDocumentBuilder() {
         try {
             // Copied from:
             // https://github.com/mattsheppard/PfxWebDAVServer/blob/master/src/main/java/nl/ellipsis/webdav/server/util/XMLHelper.java
@@ -233,10 +234,9 @@ public class SharedXMLUtils {
 
             documentBuilderFactory.setXIncludeAware(false);
 
-            // If this is set true then documents that turn up with a <!DOCTYPE will be ones that we can not process
-            // I don't think that is acceptable, I think we need to still crawl and serve them,
-            // but we need to now load outside documents.
-            // documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            // Security fix: Disable DOCTYPE declarations to prevent XXE attacks
+            // This prevents processing of any DOCTYPE declarations which could be exploited for XXE
+            documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
             // https://owasp.trendmicro.com/main#!/codeBlocks/disableXmlExternalEntities has these
@@ -261,6 +261,23 @@ public class SharedXMLUtils {
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Creates a secure TransformerFactory with XXE protection enabled.
+     * Based on OWASP XML External Entity Prevention guidelines.
+     */
+    private static TransformerFactory getSecureTransformerFactory() {
+        TransformerFactory factory = TransformerFactory.newInstance();
+        try {
+            // Disable access to external DTDs, stylesheets, and entities
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        } catch (TransformerConfigurationException e) {
+            log.warn("Failed to configure secure TransformerFactory features", e);
+        }
+        return factory;
     }
 
     private static final NoOpEntityResolver NOOP_ENTITY_RESOLVER = new NoOpEntityResolver();

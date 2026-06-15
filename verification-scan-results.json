@@ -1,0 +1,3926 @@
+2026-05-29T19:00:53+10:00	INFO	[vuln] Vulnerability scanning is enabled
+2026-05-29T19:00:53+10:00	INFO	[secret] Secret scanning is enabled
+2026-05-29T19:00:53+10:00	INFO	[secret] If your scanning is slow, please try '--scanners vuln' to disable secret scanning
+2026-05-29T19:00:53+10:00	INFO	[secret] Please see https://trivy.dev/docs/v0.69/guide/scanner/secret#recommendation for faster secret detection
+2026-05-29T19:00:54+10:00	INFO	Number of language-specific files	num=10
+2026-05-29T19:00:54+10:00	INFO	[pom] Detecting vulnerabilities...
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.69.3"
+  },
+  "ReportID": "019e72f7-0d8a-7841-b314-c6e60dfe3ebd",
+  "CreatedAt": "2026-05-29T19:00:54.026542+10:00",
+  "ArtifactID": "sha256:e50b16af8aa4a55cca1727a5ad7b5d6bae2e729733e0577f8237f3741411fd47",
+  "ArtifactName": ".",
+  "ArtifactType": "repository",
+  "Metadata": {
+    "RepoURL": "git@gitlab.squiz.net:funnelback-rnd/funnelback-shared.git",
+    "Branch": "feature/SEARCH-1884-release-17.4.0.x-Vulnerabilities-Fixes",
+    "Commit": "608b43c4b9f596aa6521da39193fbf6638920bb1",
+    "CommitMsg": "verify: complete production behavior verification - READY FOR DEPLOYMENT\n\n- All production behavior checks PASSED\n- 0 vulnerabilities confirmed in final state\n- JDK 21 compatibility achieved\n- 356 tests passing across all modules\n- Maven plugin and archetype functionality verified\n- Performance acceptable, zero regression detected\n- Master branch comparison: significant security and compatibility improvements\n- RECOMMENDATION: APPROVE for production deployment",
+    "Author": "Nisarg Panchal \u003cnpanchal@squiz.net\u003e",
+    "Committer": "Nisarg Panchal \u003cnpanchal@squiz.net\u003e"
+  },
+  "Results": [
+    {
+      "Target": "integration-tests/pom.xml",
+      "Class": "lang-pkgs",
+      "Type": "pom",
+      "Packages": [
+        {
+          "ID": "com.funnelback:integration-tests:17.4.0-SNAPSHOT::fb5c79c9",
+          "Name": "com.funnelback:integration-tests",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/integration-tests@17.4.0-SNAPSHOT",
+            "UID": "a1b394eb939e9958"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "root",
+          "DependsOn": [
+            "com.funnelback:funnelback-shared-test:17.4.0-SNAPSHOT::b6e16e84",
+            "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::cb528ed6",
+            "com.funnelback:plugin-archetypes:17.4.0-SNAPSHOT::9016a435",
+            "com.funnelback:plugin-config-builder-maven-plugin:17.4.0-SNAPSHOT::a98e0260"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::cb528ed6",
+          "Name": "com.funnelback:funnelback-shared",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared@17.4.0-SNAPSHOT",
+            "UID": "ffe8c39d323ff2bd"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::5d4b7a2b",
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::ec906004",
+            "com.google.guava:guava:33.5.0-jre::bc01df50",
+            "com.thoughtworks.xstream:xstream:1.4.21::92107845",
+            "jakarta.persistence:jakarta.persistence-api:3.1.0::16acc939",
+            "jakarta.servlet:jakarta.servlet-api:6.0.0::373d1e1b",
+            "jakarta.validation:jakarta.validation-api:3.0.2::64ef278a",
+            "org.apache.logging.log4j:log4j-api:2.26.0::e86216ce",
+            "org.jsoup:jsoup:1.22.1::79d94362"
+          ],
+          "Locations": [
+            {
+              "StartLine": 16,
+              "EndLine": 20
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:funnelback-shared-test:17.4.0-SNAPSHOT::b6e16e84",
+          "Name": "com.funnelback:funnelback-shared-test",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared-test@17.4.0-SNAPSHOT",
+            "UID": "4213b6675fef98f7"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::cb528ed6",
+            "org.apache.commons:commons-lang3:3.20.0::5e838b42",
+            "org.junit.jupiter:junit-jupiter:5.12.2::4b091b13",
+            "org.junit.platform:junit-platform-launcher:1.12.2::b99f4318",
+            "org.mockito:mockito-core:5.17.0::f722caa4"
+          ],
+          "Locations": [
+            {
+              "StartLine": 21,
+              "EndLine": 25
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:plugin-archetypes:17.4.0-SNAPSHOT::9016a435",
+          "Name": "com.funnelback:plugin-archetypes",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/plugin-archetypes@17.4.0-SNAPSHOT",
+            "UID": "654a0d183cfff492"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "Locations": [
+            {
+              "StartLine": 36,
+              "EndLine": 40
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:plugin-config-builder-maven-plugin:17.4.0-SNAPSHOT::a98e0260",
+          "Name": "com.funnelback:plugin-config-builder-maven-plugin",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/plugin-config-builder-maven-plugin@17.4.0-SNAPSHOT",
+            "UID": "7b7e60179eeed659"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::ec906004",
+            "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::cb528ed6",
+            "org.apache.commons:commons-lang3:3.20.0::5e838b42"
+          ],
+          "Locations": [
+            {
+              "StartLine": 26,
+              "EndLine": 30
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-annotations:2.21::5d4b7a2b",
+          "Name": "com.fasterxml.jackson.core:jackson-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21",
+            "UID": "bcf7c2b0041605ae"
+          },
+          "Version": "2.21",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-core:2.21.3::d841d571",
+          "Name": "com.fasterxml.jackson.core:jackson-core",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.3",
+            "UID": "ef789bb0163a26e6"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-databind:2.21.3::ec906004",
+          "Name": "com.fasterxml.jackson.core:jackson-databind",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.3",
+            "UID": "581ccdb9c3893051"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::5d4b7a2b",
+            "com.fasterxml.jackson.core:jackson-core:2.21.3::d841d571"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.errorprone:error_prone_annotations:2.41.0::aacd593b",
+          "Name": "com.google.errorprone:error_prone_annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.errorprone/error_prone_annotations@2.41.0",
+            "UID": "f7dbe7b590685c78"
+          },
+          "Version": "2.41.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:failureaccess:1.0.3::74abae7a",
+          "Name": "com.google.guava:failureaccess",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/failureaccess@1.0.3",
+            "UID": "59d55f06b62dd8b8"
+          },
+          "Version": "1.0.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:guava:33.5.0-jre::bc01df50",
+          "Name": "com.google.guava:guava",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/guava@33.5.0-jre",
+            "UID": "63c8406d687b41fb"
+          },
+          "Version": "33.5.0-jre",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "com.google.errorprone:error_prone_annotations:2.41.0::aacd593b",
+            "com.google.guava:failureaccess:1.0.3::74abae7a",
+            "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::756281d8",
+            "com.google.j2objc:j2objc-annotations:3.1::edd7894b",
+            "org.jspecify:jspecify:1.0.0::c257d459"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::756281d8",
+          "Name": "com.google.guava:listenablefuture",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava",
+            "UID": "6bdd4fbf68101200"
+          },
+          "Version": "9999.0-empty-to-avoid-conflict-with-guava",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.j2objc:j2objc-annotations:3.1::edd7894b",
+          "Name": "com.google.j2objc:j2objc-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.j2objc/j2objc-annotations@3.1",
+            "UID": "e44c1af0dd977ac5"
+          },
+          "Version": "3.1",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.thoughtworks.xstream:xstream:1.4.21::92107845",
+          "Name": "com.thoughtworks.xstream:xstream",
+          "Identifier": {
+            "PURL": "pkg:maven/com.thoughtworks.xstream/xstream@1.4.21",
+            "UID": "9d69ee41f8d39d82"
+          },
+          "Version": "1.4.21",
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "io.github.x-stream:mxparser:1.2.2::57bb2a73"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "io.github.x-stream:mxparser:1.2.2::57bb2a73",
+          "Name": "io.github.x-stream:mxparser",
+          "Identifier": {
+            "PURL": "pkg:maven/io.github.x-stream/mxparser@1.2.2",
+            "UID": "17555889f77555df"
+          },
+          "Version": "1.2.2",
+          "Licenses": [
+            "Indiana University Extreme! Lab Software License"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "xmlpull:xmlpull:1.1.3.1::d4f09473"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.persistence:jakarta.persistence-api:3.1.0::16acc939",
+          "Name": "jakarta.persistence:jakarta.persistence-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.persistence/jakarta.persistence-api@3.1.0",
+            "UID": "389ff2fa873dd86b"
+          },
+          "Version": "3.1.0",
+          "Licenses": [
+            "EPL-2.0",
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.servlet:jakarta.servlet-api:6.0.0::373d1e1b",
+          "Name": "jakarta.servlet:jakarta.servlet-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.servlet/jakarta.servlet-api@6.0.0",
+            "UID": "9c81995679a81af1"
+          },
+          "Version": "6.0.0",
+          "Licenses": [
+            "EPL-2.0",
+            "GPL-2.0-with-classpath-exception"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.validation:jakarta.validation-api:3.0.2::64ef278a",
+          "Name": "jakarta.validation:jakarta.validation-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.validation/jakarta.validation-api@3.0.2",
+            "UID": "13a5ff58e4807ae4"
+          },
+          "Version": "3.0.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "net.bytebuddy:byte-buddy:1.17.8::4aa70234",
+          "Name": "net.bytebuddy:byte-buddy",
+          "Identifier": {
+            "PURL": "pkg:maven/net.bytebuddy/byte-buddy@1.17.8",
+            "UID": "3acd06a92edfcf23"
+          },
+          "Version": "1.17.8",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "net.bytebuddy:byte-buddy-agent:1.17.8::d4c8d709",
+          "Name": "net.bytebuddy:byte-buddy-agent",
+          "Identifier": {
+            "PURL": "pkg:maven/net.bytebuddy/byte-buddy-agent@1.17.8",
+            "UID": "17eb35087c72f4d9"
+          },
+          "Version": "1.17.8",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.commons:commons-lang3:3.20.0::5e838b42",
+          "Name": "org.apache.commons:commons-lang3",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.commons/commons-lang3@3.20.0",
+            "UID": "bfcf42e050d2cd39"
+          },
+          "Version": "3.20.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.logging.log4j:log4j-api:2.26.0::e86216ce",
+          "Name": "org.apache.logging.log4j:log4j-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.logging.log4j/log4j-api@2.26.0",
+            "UID": "2909695db7654342"
+          },
+          "Version": "2.26.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+          "Name": "org.apiguardian:apiguardian-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apiguardian/apiguardian-api@1.1.2",
+            "UID": "b04dac9e6baef9dc"
+          },
+          "Version": "1.1.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jsoup:jsoup:1.22.1::79d94362",
+          "Name": "org.jsoup:jsoup",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jsoup/jsoup@1.22.1",
+            "UID": "909a20cebbb91596"
+          },
+          "Version": "1.22.1",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jspecify:jspecify:1.0.0::c257d459",
+          "Name": "org.jspecify:jspecify",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jspecify/jspecify@1.0.0",
+            "UID": "97757d508f93183f"
+          },
+          "Version": "1.0.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter:5.12.2::4b091b13",
+          "Name": "org.junit.jupiter:junit-jupiter",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter@5.12.2",
+            "UID": "ee6354d209a69da8"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::bee1210b",
+            "org.junit.jupiter:junit-jupiter-engine:5.12.2::7f157c9e",
+            "org.junit.jupiter:junit-jupiter-params:5.12.2::376f1e0e"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-api:5.12.2::bee1210b",
+          "Name": "org.junit.jupiter:junit-jupiter-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-api@5.12.2",
+            "UID": "8f188b84d15ba6d8"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+            "org.junit.platform:junit-platform-commons:1.12.2::3017f7ae",
+            "org.opentest4j:opentest4j:1.3.0::55be17ef"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-engine:5.12.2::7f157c9e",
+          "Name": "org.junit.jupiter:junit-jupiter-engine",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-engine@5.12.2",
+            "UID": "f1b6ccc613027a"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::bee1210b",
+            "org.junit.platform:junit-platform-engine:1.12.2::f122b6bc"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-params:5.12.2::376f1e0e",
+          "Name": "org.junit.jupiter:junit-jupiter-params",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-params@5.12.2",
+            "UID": "7c527bd961504c6"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::bee1210b"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-commons:1.12.2::3017f7ae",
+          "Name": "org.junit.platform:junit-platform-commons",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-commons@1.12.2",
+            "UID": "d0236680f4e2864"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-engine:1.12.2::f122b6bc",
+          "Name": "org.junit.platform:junit-platform-engine",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-engine@1.12.2",
+            "UID": "e666b6f05eb01def"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+            "org.junit.platform:junit-platform-commons:1.12.2::3017f7ae",
+            "org.opentest4j:opentest4j:1.3.0::55be17ef"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-launcher:1.12.2::b99f4318",
+          "Name": "org.junit.platform:junit-platform-launcher",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-launcher@1.12.2",
+            "UID": "421730b63884fbd8"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+            "org.junit.platform:junit-platform-engine:1.12.2::f122b6bc"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.mockito:mockito-core:5.17.0::f722caa4",
+          "Name": "org.mockito:mockito-core",
+          "Identifier": {
+            "PURL": "pkg:maven/org.mockito/mockito-core@5.17.0",
+            "UID": "7ef1ad7712da4348"
+          },
+          "Version": "5.17.0",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "net.bytebuddy:byte-buddy-agent:1.17.8::d4c8d709",
+            "net.bytebuddy:byte-buddy:1.17.8::4aa70234",
+            "org.objenesis:objenesis:3.3::df9eba81"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.objenesis:objenesis:3.3::df9eba81",
+          "Name": "org.objenesis:objenesis",
+          "Identifier": {
+            "PURL": "pkg:maven/org.objenesis/objenesis@3.3",
+            "UID": "65128ef891847bf6"
+          },
+          "Version": "3.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.opentest4j:opentest4j:1.3.0::55be17ef",
+          "Name": "org.opentest4j:opentest4j",
+          "Identifier": {
+            "PURL": "pkg:maven/org.opentest4j/opentest4j@1.3.0",
+            "UID": "97abf0ca5a2c6088"
+          },
+          "Version": "1.3.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "xmlpull:xmlpull:1.1.3.1::d4f09473",
+          "Name": "xmlpull:xmlpull",
+          "Identifier": {
+            "PURL": "pkg:maven/xmlpull/xmlpull@1.1.3.1",
+            "UID": "aef92f991e8ee55d"
+          },
+          "Version": "1.1.3.1",
+          "Licenses": [
+            "Public Domain"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        }
+      ]
+    },
+    {
+      "Target": "plugin-archetypes/pom.xml",
+      "Class": "lang-pkgs",
+      "Type": "pom",
+      "Packages": [
+        {
+          "ID": "com.funnelback:plugin-archetypes:17.4.0-SNAPSHOT::98526789",
+          "Name": "com.funnelback:plugin-archetypes",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/plugin-archetypes@17.4.0-SNAPSHOT",
+            "UID": "a901eba9278656ba"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "root",
+          "AnalyzedBy": "pom"
+        }
+      ]
+    },
+    {
+      "Target": "plugin-config-builder/pom.xml",
+      "Class": "lang-pkgs",
+      "Type": "pom",
+      "Packages": [
+        {
+          "ID": "com.funnelback:plugin-config-builder-maven-plugin:17.4.0-SNAPSHOT::b18de4e6",
+          "Name": "com.funnelback:plugin-config-builder-maven-plugin",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/plugin-config-builder-maven-plugin@17.4.0-SNAPSHOT",
+            "UID": "cdce5eb0ecbb932e"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "root",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::9d97267f",
+            "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::3ed8bbf4",
+            "org.apache.commons:commons-lang3:3.20.0::d3e20e63"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-databind:2.21.3::9d97267f",
+          "Name": "com.fasterxml.jackson.core:jackson-databind",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.3",
+            "UID": "8e12fc7b1bd520da"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::491b8952",
+            "com.fasterxml.jackson.core:jackson-core:2.21.3::3c606edd"
+          ],
+          "Locations": [
+            {
+              "StartLine": 74,
+              "EndLine": 77
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::3ed8bbf4",
+          "Name": "com.funnelback:funnelback-shared",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared@17.4.0-SNAPSHOT",
+            "UID": "af441b370c1477e2"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::491b8952",
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::9d97267f",
+            "com.google.guava:guava:33.5.0-jre::1c96354b",
+            "com.thoughtworks.xstream:xstream:1.4.21::40d30efb",
+            "jakarta.persistence:jakarta.persistence-api:3.1.0::db1e6f3a",
+            "jakarta.servlet:jakarta.servlet-api:6.0.0::a6831095",
+            "jakarta.validation:jakarta.validation-api:3.0.2::4e964b83",
+            "org.apache.logging.log4j:log4j-api:2.26.0::7b8f3243",
+            "org.jsoup:jsoup:1.22.1::5c4c09ab"
+          ],
+          "Locations": [
+            {
+              "StartLine": 68,
+              "EndLine": 73
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.commons:commons-lang3:3.20.0::d3e20e63",
+          "Name": "org.apache.commons:commons-lang3",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.commons/commons-lang3@3.20.0",
+            "UID": "294597a2abd3c875"
+          },
+          "Version": "3.20.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "Locations": [
+            {
+              "StartLine": 78,
+              "EndLine": 81
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-annotations:2.21::491b8952",
+          "Name": "com.fasterxml.jackson.core:jackson-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21",
+            "UID": "c0f42fc3ba04d11a"
+          },
+          "Version": "2.21",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-core:2.21.3::3c606edd",
+          "Name": "com.fasterxml.jackson.core:jackson-core",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.3",
+            "UID": "f31d55b663bc0399"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.errorprone:error_prone_annotations:2.41.0::2c126a45",
+          "Name": "com.google.errorprone:error_prone_annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.errorprone/error_prone_annotations@2.41.0",
+            "UID": "cbd267a778b1c732"
+          },
+          "Version": "2.41.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:failureaccess:1.0.3::db8fafab",
+          "Name": "com.google.guava:failureaccess",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/failureaccess@1.0.3",
+            "UID": "2ce9b118b661aac0"
+          },
+          "Version": "1.0.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:guava:33.5.0-jre::1c96354b",
+          "Name": "com.google.guava:guava",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/guava@33.5.0-jre",
+            "UID": "b382e3380a8669c3"
+          },
+          "Version": "33.5.0-jre",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "com.google.errorprone:error_prone_annotations:2.41.0::2c126a45",
+            "com.google.guava:failureaccess:1.0.3::db8fafab",
+            "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::1f6a9790",
+            "com.google.j2objc:j2objc-annotations:3.1::8d6d1029",
+            "org.jspecify:jspecify:1.0.0::33a50be7"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::1f6a9790",
+          "Name": "com.google.guava:listenablefuture",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava",
+            "UID": "95125d1dbab0dbe0"
+          },
+          "Version": "9999.0-empty-to-avoid-conflict-with-guava",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.j2objc:j2objc-annotations:3.1::8d6d1029",
+          "Name": "com.google.j2objc:j2objc-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.j2objc/j2objc-annotations@3.1",
+            "UID": "670d350f178e210d"
+          },
+          "Version": "3.1",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.thoughtworks.xstream:xstream:1.4.21::40d30efb",
+          "Name": "com.thoughtworks.xstream:xstream",
+          "Identifier": {
+            "PURL": "pkg:maven/com.thoughtworks.xstream/xstream@1.4.21",
+            "UID": "ea20fca2694e72c2"
+          },
+          "Version": "1.4.21",
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "io.github.x-stream:mxparser:1.2.2::18512891"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "io.github.x-stream:mxparser:1.2.2::18512891",
+          "Name": "io.github.x-stream:mxparser",
+          "Identifier": {
+            "PURL": "pkg:maven/io.github.x-stream/mxparser@1.2.2",
+            "UID": "5397609a3c292805"
+          },
+          "Version": "1.2.2",
+          "Licenses": [
+            "Indiana University Extreme! Lab Software License"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "xmlpull:xmlpull:1.1.3.1::bd236ec6"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.persistence:jakarta.persistence-api:3.1.0::db1e6f3a",
+          "Name": "jakarta.persistence:jakarta.persistence-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.persistence/jakarta.persistence-api@3.1.0",
+            "UID": "f44500c2002750ac"
+          },
+          "Version": "3.1.0",
+          "Licenses": [
+            "EPL-2.0",
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.servlet:jakarta.servlet-api:6.0.0::a6831095",
+          "Name": "jakarta.servlet:jakarta.servlet-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.servlet/jakarta.servlet-api@6.0.0",
+            "UID": "a0ed7720aaf17cf1"
+          },
+          "Version": "6.0.0",
+          "Licenses": [
+            "EPL-2.0",
+            "GPL-2.0-with-classpath-exception"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.validation:jakarta.validation-api:3.0.2::4e964b83",
+          "Name": "jakarta.validation:jakarta.validation-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.validation/jakarta.validation-api@3.0.2",
+            "UID": "84a4917ec96492c0"
+          },
+          "Version": "3.0.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.logging.log4j:log4j-api:2.26.0::7b8f3243",
+          "Name": "org.apache.logging.log4j:log4j-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.logging.log4j/log4j-api@2.26.0",
+            "UID": "ad013a3681b37bb3"
+          },
+          "Version": "2.26.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jsoup:jsoup:1.22.1::5c4c09ab",
+          "Name": "org.jsoup:jsoup",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jsoup/jsoup@1.22.1",
+            "UID": "660049bf8a6a7032"
+          },
+          "Version": "1.22.1",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jspecify:jspecify:1.0.0::33a50be7",
+          "Name": "org.jspecify:jspecify",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jspecify/jspecify@1.0.0",
+            "UID": "c5084d803f79f33d"
+          },
+          "Version": "1.0.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "xmlpull:xmlpull:1.1.3.1::bd236ec6",
+          "Name": "xmlpull:xmlpull",
+          "Identifier": {
+            "PURL": "pkg:maven/xmlpull/xmlpull@1.1.3.1",
+            "UID": "4311face79576c2d"
+          },
+          "Version": "1.1.3.1",
+          "Licenses": [
+            "Public Domain"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        }
+      ]
+    },
+    {
+      "Target": "plugin-config-builder/src/test/resources/unit/p1/pom.xml",
+      "Class": "lang-pkgs",
+      "Type": "pom",
+      "Packages": [
+        {
+          "ID": "org.apache.maven.plugin.test.unit:test-p1:1.0-SNAPSHOT::e6a98c01",
+          "Name": "org.apache.maven.plugin.test.unit:test-p1",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.maven.plugin.test.unit/test-p1@1.0-SNAPSHOT",
+            "UID": "38d8d5f427358b"
+          },
+          "Version": "1.0-SNAPSHOT",
+          "Relationship": "root",
+          "AnalyzedBy": "pom"
+        }
+      ]
+    },
+    {
+      "Target": "plugin-config-builder/src/test/resources/unit/p2/pom.xml",
+      "Class": "lang-pkgs",
+      "Type": "pom",
+      "Packages": [
+        {
+          "ID": "org.apache.maven.plugin.test.unit:test-p2:1.0-SNAPSHOT::30aee0e5",
+          "Name": "org.apache.maven.plugin.test.unit:test-p2",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.maven.plugin.test.unit/test-p2@1.0-SNAPSHOT",
+            "UID": "dfe7d445c7cd7831"
+          },
+          "Version": "1.0-SNAPSHOT",
+          "Relationship": "root",
+          "AnalyzedBy": "pom"
+        }
+      ]
+    },
+    {
+      "Target": "plugin-config-builder/target/test-classes/unit/p1/pom.xml",
+      "Class": "lang-pkgs",
+      "Type": "pom",
+      "Packages": [
+        {
+          "ID": "org.apache.maven.plugin.test.unit:test-p1:1.0-SNAPSHOT::19b33f38",
+          "Name": "org.apache.maven.plugin.test.unit:test-p1",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.maven.plugin.test.unit/test-p1@1.0-SNAPSHOT",
+            "UID": "5f3946b5d4c84fd3"
+          },
+          "Version": "1.0-SNAPSHOT",
+          "Relationship": "root",
+          "AnalyzedBy": "pom"
+        }
+      ]
+    },
+    {
+      "Target": "plugin-config-builder/target/test-classes/unit/p2/pom.xml",
+      "Class": "lang-pkgs",
+      "Type": "pom",
+      "Packages": [
+        {
+          "ID": "org.apache.maven.plugin.test.unit:test-p2:1.0-SNAPSHOT::218c9835",
+          "Name": "org.apache.maven.plugin.test.unit:test-p2",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.maven.plugin.test.unit/test-p2@1.0-SNAPSHOT",
+            "UID": "450417d9b144bc5f"
+          },
+          "Version": "1.0-SNAPSHOT",
+          "Relationship": "root",
+          "AnalyzedBy": "pom"
+        }
+      ]
+    },
+    {
+      "Target": "plugin-shared-test/pom.xml",
+      "Class": "lang-pkgs",
+      "Type": "pom",
+      "Packages": [
+        {
+          "ID": "com.funnelback:funnelback-shared-test:17.4.0-SNAPSHOT::e695a198",
+          "Name": "com.funnelback:funnelback-shared-test",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared-test@17.4.0-SNAPSHOT",
+            "UID": "5c3d5924d7e901a3"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "root",
+          "DependsOn": [
+            "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::2450ba03",
+            "org.apache.commons:commons-lang3:3.20.0::e35ee80a",
+            "org.junit.jupiter:junit-jupiter:5.12.2::da36e72a",
+            "org.junit.platform:junit-platform-launcher:1.12.2::b0d235bd",
+            "org.mockito:mockito-core:5.17.0::4f3f93e8"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::2450ba03",
+          "Name": "com.funnelback:funnelback-shared",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared@17.4.0-SNAPSHOT",
+            "UID": "c533ae224c0843d9"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::38fc6d2b",
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::d69b7363",
+            "com.google.guava:guava:33.5.0-jre::a3dd7ae2",
+            "com.thoughtworks.xstream:xstream:1.4.21::58f0a5c2",
+            "jakarta.persistence:jakarta.persistence-api:3.1.0::1f0e29f2",
+            "jakarta.servlet:jakarta.servlet-api:6.0.0::4909accd",
+            "jakarta.validation:jakarta.validation-api:3.0.2::32e1da2c",
+            "org.apache.logging.log4j:log4j-api:2.26.0::4266e2d1",
+            "org.jsoup:jsoup:1.22.1::f64bf16a"
+          ],
+          "Locations": [
+            {
+              "StartLine": 73,
+              "EndLine": 77
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.commons:commons-lang3:3.20.0::e35ee80a",
+          "Name": "org.apache.commons:commons-lang3",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.commons/commons-lang3@3.20.0",
+            "UID": "dd4a76977236fb3b"
+          },
+          "Version": "3.20.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "Locations": [
+            {
+              "StartLine": 69,
+              "EndLine": 72
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter:5.12.2::da36e72a",
+          "Name": "org.junit.jupiter:junit-jupiter",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter@5.12.2",
+            "UID": "115098ca0b8d0ac8"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::3e34c89b",
+            "org.junit.jupiter:junit-jupiter-engine:5.12.2::8bf8d474",
+            "org.junit.jupiter:junit-jupiter-params:5.12.2::28a1b14d"
+          ],
+          "Locations": [
+            {
+              "StartLine": 98,
+              "EndLine": 102
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-launcher:1.12.2::b0d235bd",
+          "Name": "org.junit.platform:junit-platform-launcher",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-launcher@1.12.2",
+            "UID": "b3f536fabd06155e"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+            "org.junit.platform:junit-platform-engine:1.12.2::9c2e552d"
+          ],
+          "Locations": [
+            {
+              "StartLine": 103,
+              "EndLine": 106
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.mockito:mockito-core:5.17.0::4f3f93e8",
+          "Name": "org.mockito:mockito-core",
+          "Identifier": {
+            "PURL": "pkg:maven/org.mockito/mockito-core@5.17.0",
+            "UID": "a80efa31be70d0e5"
+          },
+          "Version": "5.17.0",
+          "Licenses": [
+            "MIT"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "net.bytebuddy:byte-buddy-agent:1.17.8::77507e82",
+            "net.bytebuddy:byte-buddy:1.17.8::a323baea",
+            "org.objenesis:objenesis:3.3::e65df758"
+          ],
+          "Locations": [
+            {
+              "StartLine": 107,
+              "EndLine": 110
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-annotations:2.21::38fc6d2b",
+          "Name": "com.fasterxml.jackson.core:jackson-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21",
+            "UID": "d259799128a98f51"
+          },
+          "Version": "2.21",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-core:2.21.3::b95ce4b4",
+          "Name": "com.fasterxml.jackson.core:jackson-core",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.3",
+            "UID": "4267a4ae6ac0f8d2"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-databind:2.21.3::d69b7363",
+          "Name": "com.fasterxml.jackson.core:jackson-databind",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.3",
+            "UID": "13277325970eb02d"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::38fc6d2b",
+            "com.fasterxml.jackson.core:jackson-core:2.21.3::b95ce4b4"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.errorprone:error_prone_annotations:2.41.0::d0e3854e",
+          "Name": "com.google.errorprone:error_prone_annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.errorprone/error_prone_annotations@2.41.0",
+            "UID": "adb5c88a1b911486"
+          },
+          "Version": "2.41.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:failureaccess:1.0.3::55bd4155",
+          "Name": "com.google.guava:failureaccess",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/failureaccess@1.0.3",
+            "UID": "38cab91b1685b508"
+          },
+          "Version": "1.0.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:guava:33.5.0-jre::a3dd7ae2",
+          "Name": "com.google.guava:guava",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/guava@33.5.0-jre",
+            "UID": "70c7fb3bc2ebfcbd"
+          },
+          "Version": "33.5.0-jre",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "com.google.errorprone:error_prone_annotations:2.41.0::d0e3854e",
+            "com.google.guava:failureaccess:1.0.3::55bd4155",
+            "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::81ef5254",
+            "com.google.j2objc:j2objc-annotations:3.1::6189f271",
+            "org.jspecify:jspecify:1.0.0::6da749ed"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::81ef5254",
+          "Name": "com.google.guava:listenablefuture",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava",
+            "UID": "c23c72df1cd6a89"
+          },
+          "Version": "9999.0-empty-to-avoid-conflict-with-guava",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.j2objc:j2objc-annotations:3.1::6189f271",
+          "Name": "com.google.j2objc:j2objc-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.j2objc/j2objc-annotations@3.1",
+            "UID": "8158cac8ca95df67"
+          },
+          "Version": "3.1",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.thoughtworks.xstream:xstream:1.4.21::58f0a5c2",
+          "Name": "com.thoughtworks.xstream:xstream",
+          "Identifier": {
+            "PURL": "pkg:maven/com.thoughtworks.xstream/xstream@1.4.21",
+            "UID": "412cdcb82c59a26"
+          },
+          "Version": "1.4.21",
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "io.github.x-stream:mxparser:1.2.2::f8660b08"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "io.github.x-stream:mxparser:1.2.2::f8660b08",
+          "Name": "io.github.x-stream:mxparser",
+          "Identifier": {
+            "PURL": "pkg:maven/io.github.x-stream/mxparser@1.2.2",
+            "UID": "2b873215b6b5df02"
+          },
+          "Version": "1.2.2",
+          "Licenses": [
+            "Indiana University Extreme! Lab Software License"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "xmlpull:xmlpull:1.1.3.1::14b1fe80"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.persistence:jakarta.persistence-api:3.1.0::1f0e29f2",
+          "Name": "jakarta.persistence:jakarta.persistence-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.persistence/jakarta.persistence-api@3.1.0",
+            "UID": "8f2fd3af99494b1f"
+          },
+          "Version": "3.1.0",
+          "Licenses": [
+            "EPL-2.0",
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.servlet:jakarta.servlet-api:6.0.0::4909accd",
+          "Name": "jakarta.servlet:jakarta.servlet-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.servlet/jakarta.servlet-api@6.0.0",
+            "UID": "75e8eb69c5b1e9dd"
+          },
+          "Version": "6.0.0",
+          "Licenses": [
+            "EPL-2.0",
+            "GPL-2.0-with-classpath-exception"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.validation:jakarta.validation-api:3.0.2::32e1da2c",
+          "Name": "jakarta.validation:jakarta.validation-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.validation/jakarta.validation-api@3.0.2",
+            "UID": "37b663f2acd0afa2"
+          },
+          "Version": "3.0.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "net.bytebuddy:byte-buddy:1.17.8::a323baea",
+          "Name": "net.bytebuddy:byte-buddy",
+          "Identifier": {
+            "PURL": "pkg:maven/net.bytebuddy/byte-buddy@1.17.8",
+            "UID": "dbbfb10b787d69d0"
+          },
+          "Version": "1.17.8",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "net.bytebuddy:byte-buddy-agent:1.17.8::77507e82",
+          "Name": "net.bytebuddy:byte-buddy-agent",
+          "Identifier": {
+            "PURL": "pkg:maven/net.bytebuddy/byte-buddy-agent@1.17.8",
+            "UID": "ee38fb6b4bd45267"
+          },
+          "Version": "1.17.8",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.logging.log4j:log4j-api:2.26.0::4266e2d1",
+          "Name": "org.apache.logging.log4j:log4j-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.logging.log4j/log4j-api@2.26.0",
+            "UID": "c007346b51ffb116"
+          },
+          "Version": "2.26.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+          "Name": "org.apiguardian:apiguardian-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apiguardian/apiguardian-api@1.1.2",
+            "UID": "7ffc16e8a1e74ae8"
+          },
+          "Version": "1.1.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jsoup:jsoup:1.22.1::f64bf16a",
+          "Name": "org.jsoup:jsoup",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jsoup/jsoup@1.22.1",
+            "UID": "1eaeaee41666aa3f"
+          },
+          "Version": "1.22.1",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jspecify:jspecify:1.0.0::6da749ed",
+          "Name": "org.jspecify:jspecify",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jspecify/jspecify@1.0.0",
+            "UID": "5ab8623c420533b3"
+          },
+          "Version": "1.0.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-api:5.12.2::3e34c89b",
+          "Name": "org.junit.jupiter:junit-jupiter-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-api@5.12.2",
+            "UID": "574a6ed0bfd96534"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+            "org.junit.platform:junit-platform-commons:1.12.2::9ea2acbd",
+            "org.opentest4j:opentest4j:1.3.0::edb0e73b"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-engine:5.12.2::8bf8d474",
+          "Name": "org.junit.jupiter:junit-jupiter-engine",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-engine@5.12.2",
+            "UID": "57e0dac057117b03"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::3e34c89b",
+            "org.junit.platform:junit-platform-engine:1.12.2::9c2e552d"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-params:5.12.2::28a1b14d",
+          "Name": "org.junit.jupiter:junit-jupiter-params",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-params@5.12.2",
+            "UID": "c32fc75d90b4a17f"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::3e34c89b"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-commons:1.12.2::9ea2acbd",
+          "Name": "org.junit.platform:junit-platform-commons",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-commons@1.12.2",
+            "UID": "daaf9588947452b8"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-engine:1.12.2::9c2e552d",
+          "Name": "org.junit.platform:junit-platform-engine",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-engine@1.12.2",
+            "UID": "c78eaf28cacfe6ea"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+            "org.junit.platform:junit-platform-commons:1.12.2::9ea2acbd",
+            "org.opentest4j:opentest4j:1.3.0::edb0e73b"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.objenesis:objenesis:3.3::e65df758",
+          "Name": "org.objenesis:objenesis",
+          "Identifier": {
+            "PURL": "pkg:maven/org.objenesis/objenesis@3.3",
+            "UID": "13d3633a2dc04308"
+          },
+          "Version": "3.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.opentest4j:opentest4j:1.3.0::edb0e73b",
+          "Name": "org.opentest4j:opentest4j",
+          "Identifier": {
+            "PURL": "pkg:maven/org.opentest4j/opentest4j@1.3.0",
+            "UID": "c25fc77f9a1387ac"
+          },
+          "Version": "1.3.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "xmlpull:xmlpull:1.1.3.1::14b1fe80",
+          "Name": "xmlpull:xmlpull",
+          "Identifier": {
+            "PURL": "pkg:maven/xmlpull/xmlpull@1.1.3.1",
+            "UID": "90a435098c16731"
+          },
+          "Version": "1.1.3.1",
+          "Licenses": [
+            "Public Domain"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        }
+      ]
+    },
+    {
+      "Target": "plugin-shared/pom.xml",
+      "Class": "lang-pkgs",
+      "Type": "pom",
+      "Packages": [
+        {
+          "ID": "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::e58246ba",
+          "Name": "com.funnelback:funnelback-shared",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared@17.4.0-SNAPSHOT",
+            "UID": "beff5b61567c14a2"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "root",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::a4e9b1ff",
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::94744064",
+            "com.google.guava:guava:33.5.0-jre::221b94a8",
+            "com.thoughtworks.xstream:xstream:1.4.21::76ffdd0b",
+            "jakarta.persistence:jakarta.persistence-api:3.1.0::50d11261",
+            "jakarta.servlet:jakarta.servlet-api:6.0.0::cb819362",
+            "jakarta.validation:jakarta.validation-api:3.0.2::6045d44f",
+            "org.apache.logging.log4j:log4j-api:2.26.0::c248136f",
+            "org.jsoup:jsoup:1.22.1::686a5a37"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-annotations:2.21::a4e9b1ff",
+          "Name": "com.fasterxml.jackson.core:jackson-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21",
+            "UID": "81a8171a5543864f"
+          },
+          "Version": "2.21",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "Locations": [
+            {
+              "StartLine": 126,
+              "EndLine": 129
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-databind:2.21.3::94744064",
+          "Name": "com.fasterxml.jackson.core:jackson-databind",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.3",
+            "UID": "21bf177553219a3e"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::a4e9b1ff",
+            "com.fasterxml.jackson.core:jackson-core:2.21.3::376d1a68"
+          ],
+          "Locations": [
+            {
+              "StartLine": 130,
+              "EndLine": 133
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:guava:33.5.0-jre::221b94a8",
+          "Name": "com.google.guava:guava",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/guava@33.5.0-jre",
+            "UID": "5f0c84b36dea97bb"
+          },
+          "Version": "33.5.0-jre",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.google.errorprone:error_prone_annotations:2.41.0::9e5bdeb4",
+            "com.google.guava:failureaccess:1.0.3::38478bbb",
+            "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::93f40c43",
+            "com.google.j2objc:j2objc-annotations:3.1::e91dec58",
+            "org.jspecify:jspecify:1.0.0::966983db"
+          ],
+          "Locations": [
+            {
+              "StartLine": 110,
+              "EndLine": 113
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.thoughtworks.xstream:xstream:1.4.21::76ffdd0b",
+          "Name": "com.thoughtworks.xstream:xstream",
+          "Identifier": {
+            "PURL": "pkg:maven/com.thoughtworks.xstream/xstream@1.4.21",
+            "UID": "e335689c22617ceb"
+          },
+          "Version": "1.4.21",
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "io.github.x-stream:mxparser:1.2.2::72d55739"
+          ],
+          "Locations": [
+            {
+              "StartLine": 101,
+              "EndLine": 104
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.persistence:jakarta.persistence-api:3.1.0::50d11261",
+          "Name": "jakarta.persistence:jakarta.persistence-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.persistence/jakarta.persistence-api@3.1.0",
+            "UID": "be4a5f267485a13a"
+          },
+          "Version": "3.1.0",
+          "Licenses": [
+            "EPL-2.0",
+            "BSD-3-Clause"
+          ],
+          "Relationship": "direct",
+          "Locations": [
+            {
+              "StartLine": 122,
+              "EndLine": 125
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.servlet:jakarta.servlet-api:6.0.0::cb819362",
+          "Name": "jakarta.servlet:jakarta.servlet-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.servlet/jakarta.servlet-api@6.0.0",
+            "UID": "17a3538738c383d7"
+          },
+          "Version": "6.0.0",
+          "Licenses": [
+            "EPL-2.0",
+            "GPL-2.0-with-classpath-exception"
+          ],
+          "Relationship": "direct",
+          "Locations": [
+            {
+              "StartLine": 138,
+              "EndLine": 141
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.validation:jakarta.validation-api:3.0.2::6045d44f",
+          "Name": "jakarta.validation:jakarta.validation-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.validation/jakarta.validation-api@3.0.2",
+            "UID": "51bb6d337868cd67"
+          },
+          "Version": "3.0.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "Locations": [
+            {
+              "StartLine": 114,
+              "EndLine": 117
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.logging.log4j:log4j-api:2.26.0::c248136f",
+          "Name": "org.apache.logging.log4j:log4j-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.logging.log4j/log4j-api@2.26.0",
+            "UID": "18ce0de128f94e13"
+          },
+          "Version": "2.26.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "Locations": [
+            {
+              "StartLine": 118,
+              "EndLine": 121
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jsoup:jsoup:1.22.1::686a5a37",
+          "Name": "org.jsoup:jsoup",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jsoup/jsoup@1.22.1",
+            "UID": "8592e66bda86be3b"
+          },
+          "Version": "1.22.1",
+          "Licenses": [
+            "MIT"
+          ],
+          "Relationship": "direct",
+          "Locations": [
+            {
+              "StartLine": 134,
+              "EndLine": 137
+            }
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-core:2.21.3::376d1a68",
+          "Name": "com.fasterxml.jackson.core:jackson-core",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.3",
+            "UID": "1583bb590f50ee2e"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.errorprone:error_prone_annotations:2.41.0::9e5bdeb4",
+          "Name": "com.google.errorprone:error_prone_annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.errorprone/error_prone_annotations@2.41.0",
+            "UID": "86fc3d2946d6d199"
+          },
+          "Version": "2.41.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:failureaccess:1.0.3::38478bbb",
+          "Name": "com.google.guava:failureaccess",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/failureaccess@1.0.3",
+            "UID": "8ceaa4f9e709385"
+          },
+          "Version": "1.0.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::93f40c43",
+          "Name": "com.google.guava:listenablefuture",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava",
+            "UID": "4d6c929f76079ba4"
+          },
+          "Version": "9999.0-empty-to-avoid-conflict-with-guava",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.j2objc:j2objc-annotations:3.1::e91dec58",
+          "Name": "com.google.j2objc:j2objc-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.j2objc/j2objc-annotations@3.1",
+            "UID": "f6b2332ea010fd04"
+          },
+          "Version": "3.1",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "io.github.x-stream:mxparser:1.2.2::72d55739",
+          "Name": "io.github.x-stream:mxparser",
+          "Identifier": {
+            "PURL": "pkg:maven/io.github.x-stream/mxparser@1.2.2",
+            "UID": "4e8aa60b0cd0379f"
+          },
+          "Version": "1.2.2",
+          "Licenses": [
+            "Indiana University Extreme! Lab Software License"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "xmlpull:xmlpull:1.1.3.1::6f280d34"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jspecify:jspecify:1.0.0::966983db",
+          "Name": "org.jspecify:jspecify",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jspecify/jspecify@1.0.0",
+            "UID": "83c6c5064ebca281"
+          },
+          "Version": "1.0.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "xmlpull:xmlpull:1.1.3.1::6f280d34",
+          "Name": "xmlpull:xmlpull",
+          "Identifier": {
+            "PURL": "pkg:maven/xmlpull/xmlpull@1.1.3.1",
+            "UID": "7a553c68899e2761"
+          },
+          "Version": "1.1.3.1",
+          "Licenses": [
+            "Public Domain"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        }
+      ]
+    },
+    {
+      "Target": "pom.xml",
+      "Class": "lang-pkgs",
+      "Type": "pom",
+      "Packages": [
+        {
+          "ID": "com.funnelback:funnelback-shared-parent:17.4.0-SNAPSHOT::67dda8f8",
+          "Name": "com.funnelback:funnelback-shared-parent",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared-parent@17.4.0-SNAPSHOT",
+            "UID": "fc8358ad10a0ca60"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "root",
+          "DependsOn": [
+            "com.funnelback:funnelback-shared-test:17.4.0-SNAPSHOT::e695a198",
+            "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::e58246ba",
+            "com.funnelback:integration-tests:17.4.0-SNAPSHOT::fb5c79c9",
+            "com.funnelback:plugin-archetypes:17.4.0-SNAPSHOT::98526789",
+            "com.funnelback:plugin-config-builder-maven-plugin:17.4.0-SNAPSHOT::b18de4e6"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::e58246ba",
+          "Name": "com.funnelback:funnelback-shared",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared@17.4.0-SNAPSHOT",
+            "UID": "2d88e57f7b5410ad"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "workspace",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::a4e9b1ff",
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::94744064",
+            "com.google.guava:guava:33.5.0-jre::221b94a8",
+            "com.thoughtworks.xstream:xstream:1.4.21::76ffdd0b",
+            "jakarta.persistence:jakarta.persistence-api:3.1.0::50d11261",
+            "jakarta.servlet:jakarta.servlet-api:6.0.0::cb819362",
+            "jakarta.validation:jakarta.validation-api:3.0.2::6045d44f",
+            "org.apache.logging.log4j:log4j-api:2.26.0::c248136f",
+            "org.jsoup:jsoup:1.22.1::686a5a37"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:funnelback-shared-test:17.4.0-SNAPSHOT::e695a198",
+          "Name": "com.funnelback:funnelback-shared-test",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared-test@17.4.0-SNAPSHOT",
+            "UID": "149b353241bcf551"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "workspace",
+          "DependsOn": [
+            "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::2450ba03",
+            "org.apache.commons:commons-lang3:3.20.0::e35ee80a",
+            "org.junit.jupiter:junit-jupiter:5.12.2::da36e72a",
+            "org.junit.platform:junit-platform-launcher:1.12.2::b0d235bd",
+            "org.mockito:mockito-core:5.17.0::4f3f93e8"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:integration-tests:17.4.0-SNAPSHOT::fb5c79c9",
+          "Name": "com.funnelback:integration-tests",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/integration-tests@17.4.0-SNAPSHOT",
+            "UID": "24bc7f249c256a49"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "workspace",
+          "DependsOn": [
+            "com.funnelback:funnelback-shared-test:17.4.0-SNAPSHOT::b6e16e84",
+            "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::cb528ed6",
+            "com.funnelback:plugin-archetypes:17.4.0-SNAPSHOT::9016a435",
+            "com.funnelback:plugin-config-builder-maven-plugin:17.4.0-SNAPSHOT::a98e0260"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:plugin-archetypes:17.4.0-SNAPSHOT::98526789",
+          "Name": "com.funnelback:plugin-archetypes",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/plugin-archetypes@17.4.0-SNAPSHOT",
+            "UID": "2e3277c0d24767b7"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "workspace",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:plugin-config-builder-maven-plugin:17.4.0-SNAPSHOT::b18de4e6",
+          "Name": "com.funnelback:plugin-config-builder-maven-plugin",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/plugin-config-builder-maven-plugin@17.4.0-SNAPSHOT",
+            "UID": "161edc9339e0adfe"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "workspace",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::9d97267f",
+            "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::3ed8bbf4",
+            "org.apache.commons:commons-lang3:3.20.0::d3e20e63"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-annotations:2.21::a4e9b1ff",
+          "Name": "com.fasterxml.jackson.core:jackson-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21",
+            "UID": "1194d9d8cdb7d0a7"
+          },
+          "Version": "2.21",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-databind:2.21.3::94744064",
+          "Name": "com.fasterxml.jackson.core:jackson-databind",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.3",
+            "UID": "eab8a38e3d33269d"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::a4e9b1ff",
+            "com.fasterxml.jackson.core:jackson-core:2.21.3::376d1a68"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-databind:2.21.3::9d97267f",
+          "Name": "com.fasterxml.jackson.core:jackson-databind",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.3",
+            "UID": "c249cd8e4423cbfd"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::491b8952",
+            "com.fasterxml.jackson.core:jackson-core:2.21.3::3c606edd"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::2450ba03",
+          "Name": "com.funnelback:funnelback-shared",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared@17.4.0-SNAPSHOT",
+            "UID": "4ec56f5252a54c64"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::38fc6d2b",
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::d69b7363",
+            "com.google.guava:guava:33.5.0-jre::a3dd7ae2",
+            "com.thoughtworks.xstream:xstream:1.4.21::58f0a5c2",
+            "jakarta.persistence:jakarta.persistence-api:3.1.0::1f0e29f2",
+            "jakarta.servlet:jakarta.servlet-api:6.0.0::4909accd",
+            "jakarta.validation:jakarta.validation-api:3.0.2::32e1da2c",
+            "org.apache.logging.log4j:log4j-api:2.26.0::4266e2d1",
+            "org.jsoup:jsoup:1.22.1::f64bf16a"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::3ed8bbf4",
+          "Name": "com.funnelback:funnelback-shared",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared@17.4.0-SNAPSHOT",
+            "UID": "7e83e35ec4f33843"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::491b8952",
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::9d97267f",
+            "com.google.guava:guava:33.5.0-jre::1c96354b",
+            "com.thoughtworks.xstream:xstream:1.4.21::40d30efb",
+            "jakarta.persistence:jakarta.persistence-api:3.1.0::db1e6f3a",
+            "jakarta.servlet:jakarta.servlet-api:6.0.0::a6831095",
+            "jakarta.validation:jakarta.validation-api:3.0.2::4e964b83",
+            "org.apache.logging.log4j:log4j-api:2.26.0::7b8f3243",
+            "org.jsoup:jsoup:1.22.1::5c4c09ab"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::cb528ed6",
+          "Name": "com.funnelback:funnelback-shared",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared@17.4.0-SNAPSHOT",
+            "UID": "1f4673e69ce87153"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::5d4b7a2b",
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::ec906004",
+            "com.google.guava:guava:33.5.0-jre::bc01df50",
+            "com.thoughtworks.xstream:xstream:1.4.21::92107845",
+            "jakarta.persistence:jakarta.persistence-api:3.1.0::16acc939",
+            "jakarta.servlet:jakarta.servlet-api:6.0.0::373d1e1b",
+            "jakarta.validation:jakarta.validation-api:3.0.2::64ef278a",
+            "org.apache.logging.log4j:log4j-api:2.26.0::e86216ce",
+            "org.jsoup:jsoup:1.22.1::79d94362"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:funnelback-shared-test:17.4.0-SNAPSHOT::b6e16e84",
+          "Name": "com.funnelback:funnelback-shared-test",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/funnelback-shared-test@17.4.0-SNAPSHOT",
+            "UID": "1e25b5a4d20c8abe"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::cb528ed6",
+            "org.apache.commons:commons-lang3:3.20.0::5e838b42",
+            "org.junit.jupiter:junit-jupiter:5.12.2::4b091b13",
+            "org.junit.platform:junit-platform-launcher:1.12.2::b99f4318",
+            "org.mockito:mockito-core:5.17.0::f722caa4"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:plugin-archetypes:17.4.0-SNAPSHOT::9016a435",
+          "Name": "com.funnelback:plugin-archetypes",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/plugin-archetypes@17.4.0-SNAPSHOT",
+            "UID": "bac9bc535ce57abe"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.funnelback:plugin-config-builder-maven-plugin:17.4.0-SNAPSHOT::a98e0260",
+          "Name": "com.funnelback:plugin-config-builder-maven-plugin",
+          "Identifier": {
+            "PURL": "pkg:maven/com.funnelback/plugin-config-builder-maven-plugin@17.4.0-SNAPSHOT",
+            "UID": "38e05e1fe5cd9043"
+          },
+          "Version": "17.4.0-SNAPSHOT",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-databind:2.21.3::ec906004",
+            "com.funnelback:funnelback-shared:17.4.0-SNAPSHOT::cb528ed6",
+            "org.apache.commons:commons-lang3:3.20.0::5e838b42"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:guava:33.5.0-jre::221b94a8",
+          "Name": "com.google.guava:guava",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/guava@33.5.0-jre",
+            "UID": "619209e6f8893593"
+          },
+          "Version": "33.5.0-jre",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "com.google.errorprone:error_prone_annotations:2.41.0::9e5bdeb4",
+            "com.google.guava:failureaccess:1.0.3::38478bbb",
+            "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::93f40c43",
+            "com.google.j2objc:j2objc-annotations:3.1::e91dec58",
+            "org.jspecify:jspecify:1.0.0::966983db"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.thoughtworks.xstream:xstream:1.4.21::76ffdd0b",
+          "Name": "com.thoughtworks.xstream:xstream",
+          "Identifier": {
+            "PURL": "pkg:maven/com.thoughtworks.xstream/xstream@1.4.21",
+            "UID": "b47e96026d65042d"
+          },
+          "Version": "1.4.21",
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "io.github.x-stream:mxparser:1.2.2::72d55739"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.persistence:jakarta.persistence-api:3.1.0::50d11261",
+          "Name": "jakarta.persistence:jakarta.persistence-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.persistence/jakarta.persistence-api@3.1.0",
+            "UID": "136a76b94ec5aa38"
+          },
+          "Version": "3.1.0",
+          "Licenses": [
+            "EPL-2.0",
+            "BSD-3-Clause"
+          ],
+          "Relationship": "direct",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.servlet:jakarta.servlet-api:6.0.0::cb819362",
+          "Name": "jakarta.servlet:jakarta.servlet-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.servlet/jakarta.servlet-api@6.0.0",
+            "UID": "92e5316da38f05fd"
+          },
+          "Version": "6.0.0",
+          "Licenses": [
+            "EPL-2.0",
+            "GPL-2.0-with-classpath-exception"
+          ],
+          "Relationship": "direct",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.validation:jakarta.validation-api:3.0.2::6045d44f",
+          "Name": "jakarta.validation:jakarta.validation-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.validation/jakarta.validation-api@3.0.2",
+            "UID": "c0780ff022b6b28e"
+          },
+          "Version": "3.0.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.commons:commons-lang3:3.20.0::d3e20e63",
+          "Name": "org.apache.commons:commons-lang3",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.commons/commons-lang3@3.20.0",
+            "UID": "c543130afcc1fb61"
+          },
+          "Version": "3.20.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.commons:commons-lang3:3.20.0::e35ee80a",
+          "Name": "org.apache.commons:commons-lang3",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.commons/commons-lang3@3.20.0",
+            "UID": "85416224ec36f8c6"
+          },
+          "Version": "3.20.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.logging.log4j:log4j-api:2.26.0::c248136f",
+          "Name": "org.apache.logging.log4j:log4j-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.logging.log4j/log4j-api@2.26.0",
+            "UID": "1ff7e39815f972ec"
+          },
+          "Version": "2.26.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jsoup:jsoup:1.22.1::686a5a37",
+          "Name": "org.jsoup:jsoup",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jsoup/jsoup@1.22.1",
+            "UID": "82f46a4a1c60ceeb"
+          },
+          "Version": "1.22.1",
+          "Licenses": [
+            "MIT"
+          ],
+          "Relationship": "direct",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter:5.12.2::da36e72a",
+          "Name": "org.junit.jupiter:junit-jupiter",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter@5.12.2",
+            "UID": "3fca30172055396c"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::3e34c89b",
+            "org.junit.jupiter:junit-jupiter-engine:5.12.2::8bf8d474",
+            "org.junit.jupiter:junit-jupiter-params:5.12.2::28a1b14d"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-launcher:1.12.2::b0d235bd",
+          "Name": "org.junit.platform:junit-platform-launcher",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-launcher@1.12.2",
+            "UID": "3e1653f1cab14964"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+            "org.junit.platform:junit-platform-engine:1.12.2::9c2e552d"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.mockito:mockito-core:5.17.0::4f3f93e8",
+          "Name": "org.mockito:mockito-core",
+          "Identifier": {
+            "PURL": "pkg:maven/org.mockito/mockito-core@5.17.0",
+            "UID": "7f683878017fefb8"
+          },
+          "Version": "5.17.0",
+          "Licenses": [
+            "MIT"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "net.bytebuddy:byte-buddy-agent:1.17.8::77507e82",
+            "net.bytebuddy:byte-buddy:1.17.8::a323baea",
+            "org.objenesis:objenesis:3.3::e65df758"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-annotations:2.21::38fc6d2b",
+          "Name": "com.fasterxml.jackson.core:jackson-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21",
+            "UID": "3388fcb09ee008e0"
+          },
+          "Version": "2.21",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-annotations:2.21::491b8952",
+          "Name": "com.fasterxml.jackson.core:jackson-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21",
+            "UID": "52f3ed3713588aad"
+          },
+          "Version": "2.21",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-annotations:2.21::5d4b7a2b",
+          "Name": "com.fasterxml.jackson.core:jackson-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21",
+            "UID": "6f43c4b4eb611849"
+          },
+          "Version": "2.21",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-core:2.21.3::376d1a68",
+          "Name": "com.fasterxml.jackson.core:jackson-core",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.3",
+            "UID": "fc1e4011594dc55c"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-core:2.21.3::3c606edd",
+          "Name": "com.fasterxml.jackson.core:jackson-core",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.3",
+            "UID": "8b5d6c8fa0aed3f6"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-core:2.21.3::b95ce4b4",
+          "Name": "com.fasterxml.jackson.core:jackson-core",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.3",
+            "UID": "1e677a6b3054144b"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-core:2.21.3::d841d571",
+          "Name": "com.fasterxml.jackson.core:jackson-core",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.3",
+            "UID": "a3245d8fae99d7c9"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-databind:2.21.3::d69b7363",
+          "Name": "com.fasterxml.jackson.core:jackson-databind",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.3",
+            "UID": "a0e267b58e91ce54"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::38fc6d2b",
+            "com.fasterxml.jackson.core:jackson-core:2.21.3::b95ce4b4"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.fasterxml.jackson.core:jackson-databind:2.21.3::ec906004",
+          "Name": "com.fasterxml.jackson.core:jackson-databind",
+          "Identifier": {
+            "PURL": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.3",
+            "UID": "5ad6bd90776a9bba"
+          },
+          "Version": "2.21.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.21::5d4b7a2b",
+            "com.fasterxml.jackson.core:jackson-core:2.21.3::d841d571"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.errorprone:error_prone_annotations:2.41.0::2c126a45",
+          "Name": "com.google.errorprone:error_prone_annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.errorprone/error_prone_annotations@2.41.0",
+            "UID": "459768d23f1e2ff1"
+          },
+          "Version": "2.41.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.errorprone:error_prone_annotations:2.41.0::9e5bdeb4",
+          "Name": "com.google.errorprone:error_prone_annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.errorprone/error_prone_annotations@2.41.0",
+            "UID": "a58ed06f4c315d17"
+          },
+          "Version": "2.41.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.errorprone:error_prone_annotations:2.41.0::aacd593b",
+          "Name": "com.google.errorprone:error_prone_annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.errorprone/error_prone_annotations@2.41.0",
+            "UID": "b0e080111ae02823"
+          },
+          "Version": "2.41.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.errorprone:error_prone_annotations:2.41.0::d0e3854e",
+          "Name": "com.google.errorprone:error_prone_annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.errorprone/error_prone_annotations@2.41.0",
+            "UID": "a0e090922ec1cb93"
+          },
+          "Version": "2.41.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:failureaccess:1.0.3::38478bbb",
+          "Name": "com.google.guava:failureaccess",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/failureaccess@1.0.3",
+            "UID": "d7fc9af1aac9f62b"
+          },
+          "Version": "1.0.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:failureaccess:1.0.3::55bd4155",
+          "Name": "com.google.guava:failureaccess",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/failureaccess@1.0.3",
+            "UID": "9a97cea127c729d9"
+          },
+          "Version": "1.0.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:failureaccess:1.0.3::74abae7a",
+          "Name": "com.google.guava:failureaccess",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/failureaccess@1.0.3",
+            "UID": "bd9ac2c698110883"
+          },
+          "Version": "1.0.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:failureaccess:1.0.3::db8fafab",
+          "Name": "com.google.guava:failureaccess",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/failureaccess@1.0.3",
+            "UID": "d3b0252d21b88f13"
+          },
+          "Version": "1.0.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:guava:33.5.0-jre::1c96354b",
+          "Name": "com.google.guava:guava",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/guava@33.5.0-jre",
+            "UID": "42fc40b2972a5b4"
+          },
+          "Version": "33.5.0-jre",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "com.google.errorprone:error_prone_annotations:2.41.0::2c126a45",
+            "com.google.guava:failureaccess:1.0.3::db8fafab",
+            "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::1f6a9790",
+            "com.google.j2objc:j2objc-annotations:3.1::8d6d1029",
+            "org.jspecify:jspecify:1.0.0::33a50be7"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:guava:33.5.0-jre::a3dd7ae2",
+          "Name": "com.google.guava:guava",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/guava@33.5.0-jre",
+            "UID": "a505fc19ac7c4270"
+          },
+          "Version": "33.5.0-jre",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "com.google.errorprone:error_prone_annotations:2.41.0::d0e3854e",
+            "com.google.guava:failureaccess:1.0.3::55bd4155",
+            "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::81ef5254",
+            "com.google.j2objc:j2objc-annotations:3.1::6189f271",
+            "org.jspecify:jspecify:1.0.0::6da749ed"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:guava:33.5.0-jre::bc01df50",
+          "Name": "com.google.guava:guava",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/guava@33.5.0-jre",
+            "UID": "ff8a4f983de4dba8"
+          },
+          "Version": "33.5.0-jre",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "com.google.errorprone:error_prone_annotations:2.41.0::aacd593b",
+            "com.google.guava:failureaccess:1.0.3::74abae7a",
+            "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::756281d8",
+            "com.google.j2objc:j2objc-annotations:3.1::edd7894b",
+            "org.jspecify:jspecify:1.0.0::c257d459"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::1f6a9790",
+          "Name": "com.google.guava:listenablefuture",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava",
+            "UID": "b1261114ea4b222b"
+          },
+          "Version": "9999.0-empty-to-avoid-conflict-with-guava",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::756281d8",
+          "Name": "com.google.guava:listenablefuture",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava",
+            "UID": "c6286dc54cbdf3ef"
+          },
+          "Version": "9999.0-empty-to-avoid-conflict-with-guava",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::81ef5254",
+          "Name": "com.google.guava:listenablefuture",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava",
+            "UID": "59f703b66c63f0e0"
+          },
+          "Version": "9999.0-empty-to-avoid-conflict-with-guava",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava::93f40c43",
+          "Name": "com.google.guava:listenablefuture",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava",
+            "UID": "e44e85b45a298956"
+          },
+          "Version": "9999.0-empty-to-avoid-conflict-with-guava",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.j2objc:j2objc-annotations:3.1::6189f271",
+          "Name": "com.google.j2objc:j2objc-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.j2objc/j2objc-annotations@3.1",
+            "UID": "227d87e1b87770be"
+          },
+          "Version": "3.1",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.j2objc:j2objc-annotations:3.1::8d6d1029",
+          "Name": "com.google.j2objc:j2objc-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.j2objc/j2objc-annotations@3.1",
+            "UID": "19e8a8038f716d42"
+          },
+          "Version": "3.1",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.j2objc:j2objc-annotations:3.1::e91dec58",
+          "Name": "com.google.j2objc:j2objc-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.j2objc/j2objc-annotations@3.1",
+            "UID": "eab67b01a63f99a"
+          },
+          "Version": "3.1",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.google.j2objc:j2objc-annotations:3.1::edd7894b",
+          "Name": "com.google.j2objc:j2objc-annotations",
+          "Identifier": {
+            "PURL": "pkg:maven/com.google.j2objc/j2objc-annotations@3.1",
+            "UID": "7a6ed80180303bda"
+          },
+          "Version": "3.1",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.thoughtworks.xstream:xstream:1.4.21::40d30efb",
+          "Name": "com.thoughtworks.xstream:xstream",
+          "Identifier": {
+            "PURL": "pkg:maven/com.thoughtworks.xstream/xstream@1.4.21",
+            "UID": "ee782486ebe76b05"
+          },
+          "Version": "1.4.21",
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "io.github.x-stream:mxparser:1.2.2::18512891"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.thoughtworks.xstream:xstream:1.4.21::58f0a5c2",
+          "Name": "com.thoughtworks.xstream:xstream",
+          "Identifier": {
+            "PURL": "pkg:maven/com.thoughtworks.xstream/xstream@1.4.21",
+            "UID": "52d289800cfb51f"
+          },
+          "Version": "1.4.21",
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "io.github.x-stream:mxparser:1.2.2::f8660b08"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "com.thoughtworks.xstream:xstream:1.4.21::92107845",
+          "Name": "com.thoughtworks.xstream:xstream",
+          "Identifier": {
+            "PURL": "pkg:maven/com.thoughtworks.xstream/xstream@1.4.21",
+            "UID": "80197d4389895df1"
+          },
+          "Version": "1.4.21",
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "io.github.x-stream:mxparser:1.2.2::57bb2a73"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "io.github.x-stream:mxparser:1.2.2::18512891",
+          "Name": "io.github.x-stream:mxparser",
+          "Identifier": {
+            "PURL": "pkg:maven/io.github.x-stream/mxparser@1.2.2",
+            "UID": "cd5a551841cfe622"
+          },
+          "Version": "1.2.2",
+          "Licenses": [
+            "Indiana University Extreme! Lab Software License"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "xmlpull:xmlpull:1.1.3.1::bd236ec6"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "io.github.x-stream:mxparser:1.2.2::57bb2a73",
+          "Name": "io.github.x-stream:mxparser",
+          "Identifier": {
+            "PURL": "pkg:maven/io.github.x-stream/mxparser@1.2.2",
+            "UID": "215076229f0b314"
+          },
+          "Version": "1.2.2",
+          "Licenses": [
+            "Indiana University Extreme! Lab Software License"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "xmlpull:xmlpull:1.1.3.1::d4f09473"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "io.github.x-stream:mxparser:1.2.2::72d55739",
+          "Name": "io.github.x-stream:mxparser",
+          "Identifier": {
+            "PURL": "pkg:maven/io.github.x-stream/mxparser@1.2.2",
+            "UID": "fdb5fe2be8e168f5"
+          },
+          "Version": "1.2.2",
+          "Licenses": [
+            "Indiana University Extreme! Lab Software License"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "xmlpull:xmlpull:1.1.3.1::6f280d34"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "io.github.x-stream:mxparser:1.2.2::f8660b08",
+          "Name": "io.github.x-stream:mxparser",
+          "Identifier": {
+            "PURL": "pkg:maven/io.github.x-stream/mxparser@1.2.2",
+            "UID": "5991fc8d478c060f"
+          },
+          "Version": "1.2.2",
+          "Licenses": [
+            "Indiana University Extreme! Lab Software License"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "xmlpull:xmlpull:1.1.3.1::14b1fe80"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.persistence:jakarta.persistence-api:3.1.0::16acc939",
+          "Name": "jakarta.persistence:jakarta.persistence-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.persistence/jakarta.persistence-api@3.1.0",
+            "UID": "187a1e7ef3b76df8"
+          },
+          "Version": "3.1.0",
+          "Licenses": [
+            "EPL-2.0",
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.persistence:jakarta.persistence-api:3.1.0::1f0e29f2",
+          "Name": "jakarta.persistence:jakarta.persistence-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.persistence/jakarta.persistence-api@3.1.0",
+            "UID": "d17904d77fe5c42"
+          },
+          "Version": "3.1.0",
+          "Licenses": [
+            "EPL-2.0",
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.persistence:jakarta.persistence-api:3.1.0::db1e6f3a",
+          "Name": "jakarta.persistence:jakarta.persistence-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.persistence/jakarta.persistence-api@3.1.0",
+            "UID": "4880b472441aebb7"
+          },
+          "Version": "3.1.0",
+          "Licenses": [
+            "EPL-2.0",
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.servlet:jakarta.servlet-api:6.0.0::373d1e1b",
+          "Name": "jakarta.servlet:jakarta.servlet-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.servlet/jakarta.servlet-api@6.0.0",
+            "UID": "4a40ebdbb0e5a9e"
+          },
+          "Version": "6.0.0",
+          "Licenses": [
+            "EPL-2.0",
+            "GPL-2.0-with-classpath-exception"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.servlet:jakarta.servlet-api:6.0.0::4909accd",
+          "Name": "jakarta.servlet:jakarta.servlet-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.servlet/jakarta.servlet-api@6.0.0",
+            "UID": "d5ac248613d65b68"
+          },
+          "Version": "6.0.0",
+          "Licenses": [
+            "EPL-2.0",
+            "GPL-2.0-with-classpath-exception"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.servlet:jakarta.servlet-api:6.0.0::a6831095",
+          "Name": "jakarta.servlet:jakarta.servlet-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.servlet/jakarta.servlet-api@6.0.0",
+            "UID": "c7d74d7428aa6426"
+          },
+          "Version": "6.0.0",
+          "Licenses": [
+            "EPL-2.0",
+            "GPL-2.0-with-classpath-exception"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.validation:jakarta.validation-api:3.0.2::32e1da2c",
+          "Name": "jakarta.validation:jakarta.validation-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.validation/jakarta.validation-api@3.0.2",
+            "UID": "79d5230f1d71656b"
+          },
+          "Version": "3.0.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.validation:jakarta.validation-api:3.0.2::4e964b83",
+          "Name": "jakarta.validation:jakarta.validation-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.validation/jakarta.validation-api@3.0.2",
+            "UID": "b2f887a0a8c0dd77"
+          },
+          "Version": "3.0.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "jakarta.validation:jakarta.validation-api:3.0.2::64ef278a",
+          "Name": "jakarta.validation:jakarta.validation-api",
+          "Identifier": {
+            "PURL": "pkg:maven/jakarta.validation/jakarta.validation-api@3.0.2",
+            "UID": "ceb7120f03e79cb3"
+          },
+          "Version": "3.0.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "net.bytebuddy:byte-buddy:1.17.8::4aa70234",
+          "Name": "net.bytebuddy:byte-buddy",
+          "Identifier": {
+            "PURL": "pkg:maven/net.bytebuddy/byte-buddy@1.17.8",
+            "UID": "c9a75927ddb781d0"
+          },
+          "Version": "1.17.8",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "net.bytebuddy:byte-buddy:1.17.8::a323baea",
+          "Name": "net.bytebuddy:byte-buddy",
+          "Identifier": {
+            "PURL": "pkg:maven/net.bytebuddy/byte-buddy@1.17.8",
+            "UID": "44f5c38547f45575"
+          },
+          "Version": "1.17.8",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "net.bytebuddy:byte-buddy-agent:1.17.8::77507e82",
+          "Name": "net.bytebuddy:byte-buddy-agent",
+          "Identifier": {
+            "PURL": "pkg:maven/net.bytebuddy/byte-buddy-agent@1.17.8",
+            "UID": "f4bcf4fc9db74e42"
+          },
+          "Version": "1.17.8",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "net.bytebuddy:byte-buddy-agent:1.17.8::d4c8d709",
+          "Name": "net.bytebuddy:byte-buddy-agent",
+          "Identifier": {
+            "PURL": "pkg:maven/net.bytebuddy/byte-buddy-agent@1.17.8",
+            "UID": "772776583d01bad2"
+          },
+          "Version": "1.17.8",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.commons:commons-lang3:3.20.0::5e838b42",
+          "Name": "org.apache.commons:commons-lang3",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.commons/commons-lang3@3.20.0",
+            "UID": "9d3e9044652cd3ba"
+          },
+          "Version": "3.20.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.logging.log4j:log4j-api:2.26.0::4266e2d1",
+          "Name": "org.apache.logging.log4j:log4j-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.logging.log4j/log4j-api@2.26.0",
+            "UID": "182e05495805f583"
+          },
+          "Version": "2.26.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.logging.log4j:log4j-api:2.26.0::7b8f3243",
+          "Name": "org.apache.logging.log4j:log4j-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.logging.log4j/log4j-api@2.26.0",
+            "UID": "80af230dc4821be4"
+          },
+          "Version": "2.26.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apache.logging.log4j:log4j-api:2.26.0::e86216ce",
+          "Name": "org.apache.logging.log4j:log4j-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apache.logging.log4j/log4j-api@2.26.0",
+            "UID": "38b588a2028324d1"
+          },
+          "Version": "2.26.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+          "Name": "org.apiguardian:apiguardian-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apiguardian/apiguardian-api@1.1.2",
+            "UID": "719a914aebc4f88b"
+          },
+          "Version": "1.1.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+          "Name": "org.apiguardian:apiguardian-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.apiguardian/apiguardian-api@1.1.2",
+            "UID": "7e91fb524b8dd939"
+          },
+          "Version": "1.1.2",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jsoup:jsoup:1.22.1::5c4c09ab",
+          "Name": "org.jsoup:jsoup",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jsoup/jsoup@1.22.1",
+            "UID": "ba09c22d7d466511"
+          },
+          "Version": "1.22.1",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jsoup:jsoup:1.22.1::79d94362",
+          "Name": "org.jsoup:jsoup",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jsoup/jsoup@1.22.1",
+            "UID": "52d25940e45754a9"
+          },
+          "Version": "1.22.1",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jsoup:jsoup:1.22.1::f64bf16a",
+          "Name": "org.jsoup:jsoup",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jsoup/jsoup@1.22.1",
+            "UID": "668b4aa15611c1aa"
+          },
+          "Version": "1.22.1",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jspecify:jspecify:1.0.0::33a50be7",
+          "Name": "org.jspecify:jspecify",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jspecify/jspecify@1.0.0",
+            "UID": "da2e035fde3ea0ae"
+          },
+          "Version": "1.0.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jspecify:jspecify:1.0.0::6da749ed",
+          "Name": "org.jspecify:jspecify",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jspecify/jspecify@1.0.0",
+            "UID": "2e716c7fa333cb12"
+          },
+          "Version": "1.0.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jspecify:jspecify:1.0.0::966983db",
+          "Name": "org.jspecify:jspecify",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jspecify/jspecify@1.0.0",
+            "UID": "e6dba9f9c6790adf"
+          },
+          "Version": "1.0.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.jspecify:jspecify:1.0.0::c257d459",
+          "Name": "org.jspecify:jspecify",
+          "Identifier": {
+            "PURL": "pkg:maven/org.jspecify/jspecify@1.0.0",
+            "UID": "2cae89125aec72f8"
+          },
+          "Version": "1.0.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter:5.12.2::4b091b13",
+          "Name": "org.junit.jupiter:junit-jupiter",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter@5.12.2",
+            "UID": "bc0149beb130c207"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::bee1210b",
+            "org.junit.jupiter:junit-jupiter-engine:5.12.2::7f157c9e",
+            "org.junit.jupiter:junit-jupiter-params:5.12.2::376f1e0e"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-api:5.12.2::3e34c89b",
+          "Name": "org.junit.jupiter:junit-jupiter-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-api@5.12.2",
+            "UID": "5732af32f57a6355"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+            "org.junit.platform:junit-platform-commons:1.12.2::9ea2acbd",
+            "org.opentest4j:opentest4j:1.3.0::edb0e73b"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-api:5.12.2::bee1210b",
+          "Name": "org.junit.jupiter:junit-jupiter-api",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-api@5.12.2",
+            "UID": "ce4a0f61f3a96c43"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+            "org.junit.platform:junit-platform-commons:1.12.2::3017f7ae",
+            "org.opentest4j:opentest4j:1.3.0::55be17ef"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-engine:5.12.2::7f157c9e",
+          "Name": "org.junit.jupiter:junit-jupiter-engine",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-engine@5.12.2",
+            "UID": "67b52248a04fd9c5"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::bee1210b",
+            "org.junit.platform:junit-platform-engine:1.12.2::f122b6bc"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-engine:5.12.2::8bf8d474",
+          "Name": "org.junit.jupiter:junit-jupiter-engine",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-engine@5.12.2",
+            "UID": "6f1e0de3f657b1e6"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::3e34c89b",
+            "org.junit.platform:junit-platform-engine:1.12.2::9c2e552d"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-params:5.12.2::28a1b14d",
+          "Name": "org.junit.jupiter:junit-jupiter-params",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-params@5.12.2",
+            "UID": "9205f2bcd2128572"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::3e34c89b"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.jupiter:junit-jupiter-params:5.12.2::376f1e0e",
+          "Name": "org.junit.jupiter:junit-jupiter-params",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.jupiter/junit-jupiter-params@5.12.2",
+            "UID": "2116b6c718c3f63d"
+          },
+          "Version": "5.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+            "org.junit.jupiter:junit-jupiter-api:5.12.2::bee1210b"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-commons:1.12.2::3017f7ae",
+          "Name": "org.junit.platform:junit-platform-commons",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-commons@1.12.2",
+            "UID": "c126c3603c41c5e7"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-commons:1.12.2::9ea2acbd",
+          "Name": "org.junit.platform:junit-platform-commons",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-commons@1.12.2",
+            "UID": "2682cb793932575d"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-engine:1.12.2::9c2e552d",
+          "Name": "org.junit.platform:junit-platform-engine",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-engine@1.12.2",
+            "UID": "b637b50714b65eb3"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::d1889b03",
+            "org.junit.platform:junit-platform-commons:1.12.2::9ea2acbd",
+            "org.opentest4j:opentest4j:1.3.0::edb0e73b"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-engine:1.12.2::f122b6bc",
+          "Name": "org.junit.platform:junit-platform-engine",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-engine@1.12.2",
+            "UID": "19a3a2e46a609130"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+            "org.junit.platform:junit-platform-commons:1.12.2::3017f7ae",
+            "org.opentest4j:opentest4j:1.3.0::55be17ef"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.junit.platform:junit-platform-launcher:1.12.2::b99f4318",
+          "Name": "org.junit.platform:junit-platform-launcher",
+          "Identifier": {
+            "PURL": "pkg:maven/org.junit.platform/junit-platform-launcher@1.12.2",
+            "UID": "125d9049f77c13f7"
+          },
+          "Version": "1.12.2",
+          "Licenses": [
+            "EPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "org.apiguardian:apiguardian-api:1.1.2::39e8b846",
+            "org.junit.platform:junit-platform-engine:1.12.2::f122b6bc"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.mockito:mockito-core:5.17.0::f722caa4",
+          "Name": "org.mockito:mockito-core",
+          "Identifier": {
+            "PURL": "pkg:maven/org.mockito/mockito-core@5.17.0",
+            "UID": "b1daaab7a2c6dc2b"
+          },
+          "Version": "5.17.0",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "net.bytebuddy:byte-buddy-agent:1.17.8::d4c8d709",
+            "net.bytebuddy:byte-buddy:1.17.8::4aa70234",
+            "org.objenesis:objenesis:3.3::df9eba81"
+          ],
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.objenesis:objenesis:3.3::df9eba81",
+          "Name": "org.objenesis:objenesis",
+          "Identifier": {
+            "PURL": "pkg:maven/org.objenesis/objenesis@3.3",
+            "UID": "b03a953d42a44c51"
+          },
+          "Version": "3.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.objenesis:objenesis:3.3::e65df758",
+          "Name": "org.objenesis:objenesis",
+          "Identifier": {
+            "PURL": "pkg:maven/org.objenesis/objenesis@3.3",
+            "UID": "f8c41ff84a11b355"
+          },
+          "Version": "3.3",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.opentest4j:opentest4j:1.3.0::55be17ef",
+          "Name": "org.opentest4j:opentest4j",
+          "Identifier": {
+            "PURL": "pkg:maven/org.opentest4j/opentest4j@1.3.0",
+            "UID": "9acd1ce298b2969b"
+          },
+          "Version": "1.3.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "org.opentest4j:opentest4j:1.3.0::edb0e73b",
+          "Name": "org.opentest4j:opentest4j",
+          "Identifier": {
+            "PURL": "pkg:maven/org.opentest4j/opentest4j@1.3.0",
+            "UID": "1db134e955f49f1d"
+          },
+          "Version": "1.3.0",
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "xmlpull:xmlpull:1.1.3.1::14b1fe80",
+          "Name": "xmlpull:xmlpull",
+          "Identifier": {
+            "PURL": "pkg:maven/xmlpull/xmlpull@1.1.3.1",
+            "UID": "bf50fce62c7aa80"
+          },
+          "Version": "1.1.3.1",
+          "Licenses": [
+            "Public Domain"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "xmlpull:xmlpull:1.1.3.1::6f280d34",
+          "Name": "xmlpull:xmlpull",
+          "Identifier": {
+            "PURL": "pkg:maven/xmlpull/xmlpull@1.1.3.1",
+            "UID": "96e9922f2e627e9f"
+          },
+          "Version": "1.1.3.1",
+          "Licenses": [
+            "Public Domain"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "xmlpull:xmlpull:1.1.3.1::bd236ec6",
+          "Name": "xmlpull:xmlpull",
+          "Identifier": {
+            "PURL": "pkg:maven/xmlpull/xmlpull@1.1.3.1",
+            "UID": "37a108ad3666175e"
+          },
+          "Version": "1.1.3.1",
+          "Licenses": [
+            "Public Domain"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        },
+        {
+          "ID": "xmlpull:xmlpull:1.1.3.1::d4f09473",
+          "Name": "xmlpull:xmlpull",
+          "Identifier": {
+            "PURL": "pkg:maven/xmlpull/xmlpull@1.1.3.1",
+            "UID": "19d7cdb779e74432"
+          },
+          "Version": "1.1.3.1",
+          "Licenses": [
+            "Public Domain"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pom"
+        }
+      ]
+    }
+  ]
+}
+
+📣 [34mNotices:[0m
+  - Version 0.70.0 of Trivy is now available, current version is 0.69.3
+
+To suppress version checks, run Trivy scans with the --skip-version-check flag
+

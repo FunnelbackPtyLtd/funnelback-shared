@@ -92,6 +92,9 @@
                                  -->
                                 <property><name>archetypeVersion</name><value>${project.version}</value></property>
                                 <property><name>springBootVersion</name><value>${spring-boot.version}</value></property>
+                                <property><name>versionJackson2</name><value>${version.jackson2}</value></property>
+                                <property><name>versionJackson2Annotations</name><value>${version.jackson2.annotations}</value></property>
+                                <property><name>versionCommonsLang</name><value>${version.commons.lang}</value></property>
                                 <property><name>versionLog4j2</name><value>${version.log4j2}</value></property>
                                 <property><name>pluginVersionCompiler</name><value>${plugin.version.compiler}</value></property>
                                 <property><name>pluginVersionSurefire</name><value>${plugin.version.surefire}</value></property>

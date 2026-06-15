@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>integration-tests</artifactId>
+    <packaging>jar</packaging>
+    <name>Vulnerability Fix Integration Tests</name>
+    <parent>
+        <groupId>com.funnelback</groupId>
+        <artifactId>funnelback-shared-parent</artifactId>
+        <version>17.4.0-SNAPSHOT</version>
+    </parent>
+
+    <description>Cross-module integration tests verifying vulnerability remediation with zero regression</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.funnelback</groupId>
+            <artifactId>funnelback-shared</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.funnelback</groupId>
+            <artifactId>funnelback-shared-test</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.funnelback</groupId>
+            <artifactId>plugin-config-builder-maven-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.funnelback</groupId>
+            <artifactId>plugin-archetypes</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

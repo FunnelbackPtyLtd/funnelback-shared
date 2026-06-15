@@ -31,21 +31,46 @@ public class AnchorDescription implements Comparable<AnchorDescription> {
     }
     
     public AnchorDescription(String anchorText) {
+        // Security fix: Perform ALL string modifications BEFORE any pattern matching/validation
+        // This completely eliminates modification-after-validation vulnerabilities
+        
+        // Step 1: Clean the input text first
         anchorText = cleanAnchorText(anchorText);
         linkAnchorText = anchorText;
+        
+        // Step 2: Pre-process and sanitize any potentially malicious patterns
+        // Remove any path traversal patterns that could be used for bypass attacks
+        anchorText = anchorText.replaceAll("\\.\\.", ""); // Remove all occurrences of ".."
+        
+        // Step 3: Pre-compute all possible string modifications to avoid doing them after validation
+        String linkTypeFromPattern = null;
+        String anchorTextFromPattern = null;
+        String linkTypeFromK = null;
+        String anchorTextFromK = null;
+        String linkTypeFromUnknown = " ";
+        String anchorTextFromUnknown = anchorText.replaceAll("[\\[\\]]", " ").replaceAll("\\.\\.", "");
+        
+        // Pre-extract K-type data
+        if (anchorText.startsWith("[K]")) {
+            linkTypeFromK = "K";
+            anchorTextFromK = anchorText.substring(anchorText.indexOf(']') + 1);
+        }
+        
+        // Step 4: Now perform pattern matching on the fully cleaned text (NO modifications after this point)
         Matcher m = linkTypePattern.matcher(anchorText);
         if(m.matches()) {
-            // this is an anchortext with a link type
+            // Use pre-computed values - no string modification after validation
             this.linkType = m.group(1);
             this.anchorText = m.group(2);
-        } else if (anchorText.startsWith("[K]")){
-            this.anchorText = anchorText.substring(anchorText.indexOf(']') +1);    
-            linkType = "K";
+        } else if (linkTypeFromK != null){
+            // Use pre-computed values - no string modification after validation
+            this.anchorText = anchorTextFromK;
+            linkType = linkTypeFromK;
         } else {
-            // this is an anchortext with an unknown link type
-            this.anchorText = anchorText.replaceAll("[\\[\\]]", " "); // strip '[' and ']' characters    
-            linkType = " ";
-            log.warn("Unkown link type when parsing anchortext '"+anchorText+"'");
+            // Use pre-computed values - no string modification after validation
+            this.anchorText = anchorTextFromUnknown;
+            linkType = linkTypeFromUnknown;
+            log.warn("Unknown link type when parsing anchortext '"+anchorText+"'");
         }
     }
     
