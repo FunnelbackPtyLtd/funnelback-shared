@@ -4,7 +4,9 @@ include:
     file: all.yml
   - project: funnelback-rnd/gitlab-templates
     ref: main
-    file: security.yml
+    file: security-rules.yml
+    inputs:
+      spotbugs-sast-jobs: build
 
 default:
   image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
@@ -38,23 +40,15 @@ variables:
     --no-transfer-progress
     --update-snapshots
 
-.artifacts: &artifacts
-  artifacts:
-    expire_in: 1 hr
-    paths:
-      - "**/target/*"
-    reports:
-      junit:
-        - "**/target/surefire-reports/TEST-*.xml"
-        - "**/target/failsafe-reports/TEST-*.xml"
 
 # Compile `funnelback-shared` and execute unit tests
 build:
   stage: build
+  extends:
+    - .artifacts_with_m2
   script:
     - mvn $MAVEN_CLI_OPTS -fail-at-end clean install
-    - rm -rf .m2/repository/com/funnelback/
-  <<: *artifacts
+
 
 # Verify if changes from `funnelback-shared` affect/break released plugins
 verify_plugins:
@@ -78,6 +72,7 @@ release:
   stage: release
   extends:
     - .template:funnelback:mvn-central-publish:authenticate
+    - .artifacts
   when: manual
   only:
     - /^release-.*$/
@@ -91,4 +86,3 @@ release:
     - if [[ $VERSION_TEST == *"SNAPSHOT" ]]; then echo "Failed to update version to release one"; exit 1; fi
     - mvn $MAVEN_CLI_OPTS -P central-release clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
     - rm -rf .m2/repository/com/funnelback/
-  <<: *artifacts
