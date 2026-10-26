@@ -6,7 +6,7 @@ include:
     ref: main
     file: security-rules.yml
     inputs:
-      spotbugs-sast-jobs: build
+      m2-repo-jobs: build
 
 default:
   image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
