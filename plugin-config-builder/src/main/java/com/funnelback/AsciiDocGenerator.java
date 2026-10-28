@@ -181,9 +181,9 @@ public class AsciiDocGenerator {
             // Add note for append it to end of filter
             content.append("==== Filter classes\n" +
                             "\n" +
-                            "This plugin supplies a filter that runs in the main document filter chain: `+" + pluginUtils.getFilterClass() +"+`\n" +
+                            "This plugin supplies a filter that runs in the main document filter chain: " + pluginUtils.getPluginName() + " (`+" + pluginUtils.getFilterClass() +"+`)\n" +
                             "\n" +
-                            "Drag the *+" + pluginUtils.getFilterClass() + "+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
+                            "Drag the *+" + pluginUtils.getPluginName() + "+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
                             "\n");
         }
     }
@@ -192,9 +192,9 @@ public class AsciiDocGenerator {
         if (StringUtils.isNotEmpty(pluginUtils.getJsoupFilterClass())) {
             content.append("==== Jsoup filter classes\n" +
                            "\n" +
-                           "This plugin supplies a filter that needs to run in the HTML document (Jsoup) filter chain:`+" + pluginUtils.getJsoupFilterClass() + "+`\n" +
+                           "This plugin supplies a filter that needs to run in the HTML document (Jsoup) filter chain: " + pluginUtils.getPluginName() + "(`+" + pluginUtils.getJsoupFilterClass() + "+`)\n" +
                            "\n" +
-                           "Drag the *+" + pluginUtils.getJsoupFilterClass() + "+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
+                           "Drag the *+" + pluginUtils.getPluginName() + "+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
                            "\n");
         }
     }
@@ -234,7 +234,7 @@ public class AsciiDocGenerator {
                                   "|Configuration key| `+" + key.getKey().replace("|","\\|") +"+`\n" +
                                   "|Data type|" + keyTypeText +"\n");
                     if (defaultValue != null) {
-                        content.append("|Default value|`+" + defaultValue.toString().replace("|","\\|") + "+`\n");
+                        content.append("|Default value|`++" + defaultValue.toString().replace("|","\\|") + "++`\n");
                     }
                     if (allowedValue != null) {
                         if (allowedValue.getValues() != null && !allowedValue.getValues().isEmpty()) {

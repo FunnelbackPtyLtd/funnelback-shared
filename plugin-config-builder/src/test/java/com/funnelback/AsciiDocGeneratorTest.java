@@ -151,7 +151,7 @@ public class AsciiDocGeneratorTest {
                 "|===\n" +
                 "|Configuration key| `+plugin.test.config.int.*+`\n" +
                 "|Data type|integer\n" +
-                "|Default value|`+2+`\n" +
+                "|Default value|`++2++`\n" +
                 "|Allowed values|1,2,3\n" +
                 "|Required|This setting is required\n" +
                 "|===\n" +
@@ -175,7 +175,7 @@ public class AsciiDocGeneratorTest {
                 "|===\n" +
                 "|Configuration key| `+plugin.test.config.int.*+`\n" +
                 "|Data type|string\n" +
-                "|Default value|`+2+`\n" +
+                "|Default value|`++2++`\n" +
                 "|Value format|Allowed values must match the regular expression:\n" +
                 "\n" +
                 "`++^[a-zA-Z0-9]+\\|NULL$++`\n" +
@@ -203,7 +203,7 @@ public class AsciiDocGeneratorTest {
                 "|===\n" +
                 "|Configuration key| `+plugin.test.config.list+`\n" +
                 "|Data type|array\n" +
-                "|Default value|`+an empty list+`\n" +
+                "|Default value|`++an empty list++`\n" +
                 "|Required|This setting is optional\n" +
                 "|===\n" +
                 "\n" +
@@ -227,15 +227,15 @@ public class AsciiDocGeneratorTest {
                 "\n" +
                 "==== Filter classes\n" +
                 "\n" +
-                "This plugin supplies a filter that runs in the main document filter chain: `+test-plugin-filter1:filter2+`\n" +
+                "This plugin supplies a filter that runs in the main document filter chain: test (`+test-plugin-filter1:filter2+`)\n" +
                 "\n" +
-                "Drag the *+test-plugin-filter1:filter2+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
+                "Drag the *+test+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
                 "\n" +
                 "==== Jsoup filter classes\n" +
                 "\n" +
-                "This plugin supplies a filter that needs to run in the HTML document (Jsoup) filter chain:`+test-plugin-jsoup-filter1+`\n" +
+                "This plugin supplies a filter that needs to run in the HTML document (Jsoup) filter chain: test(`+test-plugin-jsoup-filter1+`)\n" +
                 "\n" +
-                "Drag the *+test-plugin-jsoup-filter1+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
+                "Drag the *+test+* plugin filter to where you wish it to run in the filter chain sequence.\n" +
                 "\n" +
                 "=== Configuration files\n" +
                 "\n" +
