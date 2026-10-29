@@ -7,6 +7,11 @@ include:
     file: security-rules.yml
     inputs:
       m2-repo-jobs: build
+      spot-bugs-ignore-pom-paths:
+        - "*/plugin-archetypes/src/main/resources/archetype-resources"
+        - "*/plugin-archetypes/target/classes/archetype-resources"
+        - "*/plugin-config-builder/src/test/resources/unit/p*/"
+        - "*/plugin-config-builder/target/test-classes/unit/p*/"
 
 default:
   image: docker-hub.squiz.net/funnelback-rnd/gitlab-ci-docker:maven-central
@@ -40,15 +45,25 @@ variables:
     --no-transfer-progress
     --update-snapshots
 
+.artifacts: &artifacts
+  artifacts:
+    expire_in: 1 hr
+    paths:
+      - "**/target/*"
+    reports:
+      junit:
+        - "**/target/surefire-reports/TEST-*.xml"
+        - "**/target/failsafe-reports/TEST-*.xml"
 
 # Compile `funnelback-shared` and execute unit tests
 build:
   stage: build
   extends:
-    - .artifacts_with_m2
+    - .maven-cache_push
   script:
+    - rm -rf .m2/repository/com/funnelback/
     - mvn $MAVEN_CLI_OPTS -fail-at-end clean install
-
+  <<: *artifacts
 
 # Verify if changes from `funnelback-shared` affect/break released plugins
 verify_plugins:
@@ -61,6 +76,10 @@ verify_plugins:
     project: funnelback-rnd/funnelback-plugins-mono-repo
     branch: master
     strategy: depend
+  rules:
+    - if: $NO_VERIFY == 'true'
+      when: never
+    - when: on_success
 
 # Release `funnelback-shared` to the GitLab package registry (development version)
 publish_to_gitlab:
@@ -72,7 +91,6 @@ release:
   stage: release
   extends:
     - .template:funnelback:mvn-central-publish:authenticate
-    - .artifacts
   when: manual
   only:
     - /^release-.*$/
@@ -86,3 +104,4 @@ release:
     - if [[ $VERSION_TEST == *"SNAPSHOT" ]]; then echo "Failed to update version to release one"; exit 1; fi
     - mvn $MAVEN_CLI_OPTS -P central-release clean deploy -Dgpg.passphrase=$GPGPASSPHRASE
     - rm -rf .m2/repository/com/funnelback/
+  <<: *artifacts
