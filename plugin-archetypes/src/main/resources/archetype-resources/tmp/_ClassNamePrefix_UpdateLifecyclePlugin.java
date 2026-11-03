@@ -1,10 +1,10 @@
 package ${package};
 
+import com.funnelback.plugin.update.UpdateLifecycleContext;
+import com.funnelback.plugin.update.UpdateLifecyclePlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.funnelback.plugin.update.UpdateLifecycleContext;
-import com.funnelback.plugin.update.UpdateLifecyclePlugin;
 
 public class _ClassNamePrefix_UpdateLifecyclePlugin implements UpdateLifecyclePlugin {
 

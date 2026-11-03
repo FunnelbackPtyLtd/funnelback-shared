@@ -1,15 +1,15 @@
 package com.funnelback.common.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.jsoup.internal.StringUtil;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.jsoup.internal.StringUtil;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class URIHandlingUtils {

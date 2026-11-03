@@ -1,12 +1,8 @@
-import java.nio.file.FileVisitResult
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
-import java.nio.file.SimpleFileVisitor
-import java.nio.file.StandardCopyOption
-import java.nio.file.attribute.BasicFileAttributes
 @Grab(group='org.apache.commons', module='commons-lang3', version='3.20.0')
 import org.apache.commons.lang3.StringUtils
+
+import java.nio.file.*
+import java.nio.file.attribute.BasicFileAttributes
 
 // the path where the project got generated
 projectPath = Paths.get(request.outputDirectory, request.artifactId)

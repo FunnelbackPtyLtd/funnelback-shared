@@ -1,10 +1,10 @@
 package com.funnelback.publicui.search.model.transaction.contentoptimiser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class RankingFeatureCategory implements Comparable<RankingFeatureCategory> {

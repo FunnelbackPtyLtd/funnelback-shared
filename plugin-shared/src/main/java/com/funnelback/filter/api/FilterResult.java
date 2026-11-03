@@ -1,14 +1,13 @@
 package com.funnelback.filter.api;
 
+import com.funnelback.filter.api.documents.FilterableDocument;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import com.funnelback.filter.api.documents.FilterableDocument;
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
 /**
  * The result of filtering a document.

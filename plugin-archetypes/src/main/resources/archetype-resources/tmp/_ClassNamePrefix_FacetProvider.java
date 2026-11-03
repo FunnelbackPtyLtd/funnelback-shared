@@ -1,12 +1,12 @@
 package ${package};
 
+import com.funnelback.plugin.facets.FacetProvider;
+import com.funnelback.plugin.index.IndexConfigProviderContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.funnelback.plugin.facets.FacetProvider;
-import com.funnelback.plugin.index.IndexConfigProviderContext;
-
 import java.util.Optional;
+
 
 public class _ClassNamePrefix_FacetProvider implements FacetProvider {
 

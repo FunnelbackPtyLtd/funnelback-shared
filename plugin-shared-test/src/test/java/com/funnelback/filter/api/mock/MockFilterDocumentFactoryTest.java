@@ -1,16 +1,15 @@
 package com.funnelback.filter.api.mock;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import java.util.Optional;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.funnelback.filter.api.DocumentType;
 import com.funnelback.filter.api.documents.BytesDocument;
 import com.funnelback.filter.api.documents.FilterableDocument;
 import com.funnelback.filter.api.documents.StringDocument;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class MockFilterDocumentFactoryTest {
 

@@ -1,11 +1,11 @@
 package com.funnelback.publicui.utils;
 
+import com.google.common.collect.ListMultimap;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import com.google.common.collect.ListMultimap;
 
 /**
  * Filters the keys of a Map depending of a regex.

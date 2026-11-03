@@ -1,11 +1,11 @@
 package ${package};
 
+import com.funnelback.plugin.search.mock.MockSearchLifeCycleContext;
+import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.search.model.transaction.testutils.TestableSearchTransaction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.funnelback.publicui.search.model.padre.Result;
-import com.funnelback.publicui.search.model.transaction.testutils.TestableSearchTransaction;
-import com.funnelback.plugin.search.mock.MockSearchLifeCycleContext;
 
 public class _ClassNamePrefix_SearchLifeCyclePluginTest {
 

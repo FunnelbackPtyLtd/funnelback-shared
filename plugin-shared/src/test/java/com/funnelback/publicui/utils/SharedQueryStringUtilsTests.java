@@ -1,12 +1,11 @@
 package com.funnelback.publicui.utils;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.google.common.collect.ListMultimap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ListMultimap;
+import java.util.Arrays;
+import java.util.List;
 
 class SharedQueryStringUtilsTests {
     

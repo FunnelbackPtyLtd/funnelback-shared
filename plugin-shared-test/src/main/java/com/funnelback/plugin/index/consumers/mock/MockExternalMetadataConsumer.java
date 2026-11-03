@@ -1,16 +1,15 @@
 package com.funnelback.plugin.index.consumers.mock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.funnelback.plugin.index.IndexConfigProviderContext;
 import com.funnelback.plugin.index.IndexingConfigProvider;
 import com.funnelback.plugin.index.consumers.ExternalMetadataConsumer;
 import com.google.common.collect.ListMultimap;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A mock {@link ExternalMetadataConsumer} that may be used when testing {@link IndexingConfigProvider#externalMetadata(IndexConfigProviderContext, ExternalMetadataConsumer)}.

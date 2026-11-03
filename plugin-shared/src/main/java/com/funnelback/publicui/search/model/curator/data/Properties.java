@@ -1,17 +1,15 @@
 package com.funnelback.publicui.search.model.curator.data;
 
-import lombok.EqualsAndHashCode;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import com.funnelback.publicui.search.model.curator.Exhibit;
-
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>

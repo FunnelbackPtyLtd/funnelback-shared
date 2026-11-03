@@ -1,12 +1,11 @@
 package com.funnelback.publicui.search.model.transaction.testutils;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SearchQuestionTestHelperTest {
 

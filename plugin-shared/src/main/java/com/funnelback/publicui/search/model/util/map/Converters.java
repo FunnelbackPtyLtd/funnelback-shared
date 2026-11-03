@@ -1,8 +1,8 @@
 package com.funnelback.publicui.search.model.util.map;
 
-import java.util.Optional;
-
 import com.funnelback.publicui.search.model.util.map.AutoConvertingMap.Converter;
+
+import java.util.Optional;
 
 public class Converters {
 

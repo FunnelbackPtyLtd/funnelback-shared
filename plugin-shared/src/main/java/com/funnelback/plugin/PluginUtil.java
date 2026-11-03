@@ -1,13 +1,10 @@
 package com.funnelback.plugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.DocumentBuilder;
-
-import org.xml.sax.SAXException;
+import org.w3c.dom.Document;
 
 import com.funnelback.common.utils.SharedXMLUtils;
 
@@ -33,13 +30,11 @@ public class PluginUtil {
      */
     public static Optional<String> getCurrentProjectVersion() {
         try {
-            // Use secure DocumentBuilder from SharedXMLUtils to prevent XXE attacks
-            DocumentBuilder builder = SharedXMLUtils.getDocumentBuilder();
-            File file = new File("pom.xml");
+            Document doc = SharedXMLUtils.fromFile(new File("pom.xml"));
             String version =
-                    builder.parse(file).getDocumentElement().getElementsByTagName("version").item(0).getTextContent();
+                    doc.getDocumentElement().getElementsByTagName("version").item(0).getTextContent();
             return (version != null) ?  Optional.of(version) : Optional.empty();
-        } catch (IOException | SAXException e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
             return Optional.empty();
         }

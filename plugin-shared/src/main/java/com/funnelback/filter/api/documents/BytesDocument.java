@@ -1,16 +1,15 @@
 package com.funnelback.filter.api.documents;
 
-import java.util.Optional;
-
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.charset.Charset;
-
 import com.funnelback.filter.api.DocumentType;
 import com.funnelback.filter.api.DocumentTypeFactory;
 import com.funnelback.filter.api.FilterContext;
 import com.funnelback.filter.api.FilterDocumentFactory;
 import com.google.common.collect.ListMultimap;
+
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.Optional;
 
 /**
  * A raw byte document. 

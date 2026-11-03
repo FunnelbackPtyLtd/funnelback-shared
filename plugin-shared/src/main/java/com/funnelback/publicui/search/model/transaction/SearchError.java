@@ -1,12 +1,11 @@
 package com.funnelback.publicui.search.model.transaction;
 
+import com.funnelback.publicui.search.model.padre.Error;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import com.funnelback.publicui.search.model.padre.Error;
 
 /**
  * <p>Errors occurring during a {@link SearchTransaction}.</p>

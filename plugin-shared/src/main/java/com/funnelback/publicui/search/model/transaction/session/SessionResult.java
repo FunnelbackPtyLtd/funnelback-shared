@@ -1,19 +1,18 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.net.URI;
-
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Transient;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.net.URI;
 
 /**
  * Search result base class when used in a session context

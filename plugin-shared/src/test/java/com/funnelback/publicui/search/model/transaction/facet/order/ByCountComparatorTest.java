@@ -1,17 +1,16 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.funnelback.publicui.search.model.transaction.facet.order.FacetComparators.BY_COUNT_ASCENDING;
 import static com.funnelback.publicui.search.model.transaction.facet.order.FacetComparators.BY_COUNT_DESCENDING;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class ByCountComparatorTest {
 

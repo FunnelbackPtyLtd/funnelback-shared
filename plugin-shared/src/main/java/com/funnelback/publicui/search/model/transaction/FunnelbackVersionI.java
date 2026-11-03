@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.model.transaction;
 
-import lombok.Getter;
-
 public interface FunnelbackVersionI {
 
     int getMajor();

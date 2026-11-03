@@ -1,11 +1,11 @@
 package com.funnelback.publicui.utils;
 
-import java.util.Arrays;
-
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 class MapKeyFilterTests {
 

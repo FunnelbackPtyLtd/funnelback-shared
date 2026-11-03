@@ -1,10 +1,10 @@
 package com.funnelback.publicui.search.model.curator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A Curator will contain and additional information (exhibits) which has

@@ -1,15 +1,14 @@
 package com.funnelback.publicui.utils;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import com.google.common.collect.ListMultimap;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import java.net.URLDecoder;
-
-import com.google.common.collect.ListMultimap;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Utilities to compute a signature for a given URL

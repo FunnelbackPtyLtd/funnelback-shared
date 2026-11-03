@@ -1,16 +1,14 @@
 package com.funnelback.publicui.search.model.curator.data;
 
-import lombok.EqualsAndHashCode;
-
-import java.util.Map;
-
+import com.funnelback.publicui.search.model.curator.Exhibit;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import com.funnelback.publicui.search.model.curator.Exhibit;
+import java.util.Map;
 
 /**
  * Message represents a 'message' added by curator to be displayed within the

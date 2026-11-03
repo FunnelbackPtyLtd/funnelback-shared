@@ -1,9 +1,7 @@
 package curator
 
-import java.util.Map;
-
-import com.funnelback.publicui.search.model.curator.config.Action.Phase;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.curator.config.Action.Phase
+import com.funnelback.publicui.search.model.transaction.SearchTransaction
 
 public class TestAction implements com.funnelback.publicui.search.model.curator.action.GroovyActionInterface {
   def boolean runsInPhase(Phase phase, Map<String, Object> properties) {

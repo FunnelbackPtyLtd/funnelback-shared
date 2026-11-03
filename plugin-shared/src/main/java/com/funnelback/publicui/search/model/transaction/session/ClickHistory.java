@@ -1,25 +1,17 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import java.net.URI;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.PrePersist;
-
-import com.funnelback.publicui.search.model.padre.Result;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A single entry in the user's click history

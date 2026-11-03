@@ -2,12 +2,10 @@ package ${package};
 
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHook;
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHookContext;
-
 import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 
 public class _ClassNamePrefix_SearchServletFilterPlugin implements SearchServletFilterHook {
 

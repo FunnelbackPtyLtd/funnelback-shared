@@ -1,10 +1,10 @@
 package ${package};
 
+import com.funnelback.common.filter.jsoup.FilterContext;
+import com.funnelback.common.filter.jsoup.IJSoupFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.funnelback.common.filter.jsoup.FilterContext;
-import com.funnelback.common.filter.jsoup.IJSoupFilter;
 
 public class _ClassNamePrefix_JsoupFilter implements IJSoupFilter {
 

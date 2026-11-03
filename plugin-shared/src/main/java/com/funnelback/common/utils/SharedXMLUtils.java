@@ -1,18 +1,10 @@
 package com.funnelback.common.utils;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.List;
+import lombok.extern.log4j.Log4j2;
+import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -25,13 +17,19 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import lombok.extern.log4j.Log4j2;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Shared XML Utilities that can help parse documents and transform them in a safe
@@ -74,7 +72,7 @@ public class SharedXMLUtils {
     /**
      * Parse a Document from an inputSource.
      *
-     * Internally uses a custom getDocumentBuilder instance with many security settings enabled.
+     * Internally uses a custom documentBuilder instance with many security settings enabled.
      *
      * @param is - e.g. new InputSource(bufferedReader)
      * @return Document - for use with a transformer, or xpath evaluation.
@@ -84,7 +82,7 @@ public class SharedXMLUtils {
     public static Document fromInputSource(InputSource is)
             throws IllegalArgumentException, RuntimeException{
         try {
-            return getDocumentBuilder().parse(is);
+            return documentBuilder().parse(is);
         } catch (SAXException | IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -93,7 +91,7 @@ public class SharedXMLUtils {
     /**
      * Parse a Document from an inputStream.
      *
-     * Internally uses a custom getDocumentBuilder instance with many security settings enabled.
+     * Internally uses a custom documentBuilder instance with many security settings enabled.
      *
      * Example usage from the filter framework:
      * public FilterResult filterAsBytesDocument(BytesDocument document, FilterContext filterContext) {
@@ -112,7 +110,7 @@ public class SharedXMLUtils {
     public static Document fromInputStream(InputStream is)
             throws IllegalArgumentException, RuntimeException{
         try {
-            return getDocumentBuilder().parse(is);
+            return documentBuilder().parse(is);
         } catch (SAXException | IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -121,7 +119,7 @@ public class SharedXMLUtils {
     /**
      * Parse a Document from a given File path. Useful for testing.
      *
-     * Internally uses a custom getDocumentBuilder instance with many security settings enabled.
+     * Internally uses a custom documentBuilder instance with many security settings enabled.
      *
      * @param file to parse into a Document
      * @return Document after parsing.
@@ -129,7 +127,7 @@ public class SharedXMLUtils {
     public static Document fromFile(File file) {
         Document document;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
             InputSource is = new InputSource(br);
             document = fromInputSource(is);
             document.setXmlStandalone(true);
@@ -186,7 +184,7 @@ public class SharedXMLUtils {
     /**
      * Parse a Document from a given String. Useful for testing.
      *
-     * Internally uses a custom getDocumentBuilder instance with many security settings enabled.
+     * Internally uses a custom documentBuilder instance with many security settings enabled.
      *
      * @param xmlString to parse into a Document
      * @return Document after parsing.
@@ -198,7 +196,7 @@ public class SharedXMLUtils {
     /**
      * Parse a Document from a given byte[]. Useful for testing.
      *
-     * Internally uses a custom getDocumentBuilder instance with many security settings enabled.
+     * Internally uses a custom documentBuilder instance with many security settings enabled.
      *
      * @param xml to parse into a Document
      * @return Document after parsing.
@@ -207,7 +205,7 @@ public class SharedXMLUtils {
         return fromInputSource(new InputSource(new ByteArrayInputStream(xml)));
     }
 
-    public static DocumentBuilder getDocumentBuilder() {
+    private static DocumentBuilder documentBuilder() {
         try {
             // Copied from:
             // https://github.com/mattsheppard/PfxWebDAVServer/blob/master/src/main/java/nl/ellipsis/webdav/server/util/XMLHelper.java
@@ -234,10 +232,15 @@ public class SharedXMLUtils {
 
             documentBuilderFactory.setXIncludeAware(false);
 
-            // Security fix: Disable DOCTYPE declarations to prevent XXE attacks
-            // This prevents processing of any DOCTYPE declarations which could be exploited for XXE
-            documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            // If this is set true then documents that turn up with a <!DOCTYPE will be ones that we can not process
+            // I don't think that is acceptable, I think we need to still crawl and serve them,
+            // but we need to now load outside documents.
+            // documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+            // Allow DOCTYPE but disable external entity expansion (SAST/XXE mitigation without rejecting DOCTYPE).
+            documentBuilderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            documentBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 
             // https://owasp.trendmicro.com/main#!/codeBlocks/disableXmlExternalEntities has these
             // though set to false, but I think they're only possible to set if we have some additional
@@ -264,13 +267,11 @@ public class SharedXMLUtils {
     }
 
     /**
-     * Creates a secure TransformerFactory with XXE protection enabled.
-     * Based on OWASP XML External Entity Prevention guidelines.
+     * Harden TransformerFactory against external DTD/stylesheet resolution during DOM serialization.
      */
     private static TransformerFactory getSecureTransformerFactory() {
         TransformerFactory factory = TransformerFactory.newInstance();
         try {
-            // Disable access to external DTDs, stylesheets, and entities
             factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);

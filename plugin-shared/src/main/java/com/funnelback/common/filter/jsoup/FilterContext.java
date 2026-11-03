@@ -1,10 +1,9 @@
 package com.funnelback.common.filter.jsoup;
 
-import java.util.Map;
-
+import com.google.common.collect.Multimap;
 import org.jsoup.nodes.Document;
 
-import com.google.common.collect.Multimap;
+import java.util.Map;
 
 /**
  * A Jsoup filter context.

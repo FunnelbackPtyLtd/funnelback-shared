@@ -4,7 +4,14 @@ include:
     file: all.yml
   - project: funnelback-rnd/gitlab-templates
     ref: main
-    file: security.yml
+    file: security-rules.yml
+    inputs:
+      m2-repo-jobs: build
+      spot-bugs-ignore-pom-paths:
+        - "*/plugin-archetypes/src/main/resources/archetype-resources"
+        - "*/plugin-archetypes/target/classes/archetype-resources"
+        - "*/plugin-config-builder/src/test/resources/unit/p*/"
+        - "*/plugin-config-builder/target/test-classes/unit/p*/"
   # JDK21 Maven publish to GitLab Package Registry. Template clones gitlab-templates over HTTPS using
   # CI/CD variable GITLAB_TEMPLATES_PROJECT_TOKEN (read_repository token on that project). See publish_to_gitlab.yml.
   - project: funnelback-rnd/gitlab-templates
@@ -58,36 +65,29 @@ variables:
 # Compile `funnelback-shared` and execute unit tests
 build:
   stage: build
-  # Uses default `image` (centos7-jdk21).
+  extends:
+    - .maven-cache_push
   script:
-    - mvn $MAVEN_CLI_OPTS -fail-at-end clean install
     - rm -rf .m2/repository/com/funnelback/
+    - mvn $MAVEN_CLI_OPTS -fail-at-end clean install
   <<: *artifacts
 
 # Verify if changes from `funnelback-shared` affect/break released plugins
-#verify_plugins:
-#  stage: integration
-#  variables:
-#    FUNNELBACK_SHARED_BRANCH: $CI_COMMIT_BRANCH
-#  needs:
-#    - build
-#  trigger:
-#    project: funnelback-rnd/funnelback-plugins-mono-repo
-#    branch: master
-#    strategy: depend
-
-# GitLab SpotBugs analyzer v4/v5 runs on older JDKs and fails for release 21 projects.
-# Pinning to v6 enables JDK 21 support for SpotBugs SAST scans.
-spotbugs-sast:
-  image:
-    name: registry.gitlab.com/security-products/spotbugs:6
+verify_plugins:
+  stage: integration
   variables:
-    SAST_ANALYZER_IMAGE_TAG: "6"
-    SAST_JAVA_VERSION: "21"
-    # SpotBugs walks every pom.xml; these are templates/fixtures, not buildable projects.
-    # archetype-resources: Maven archetype POM with ${groupId} etc. — fails model interpolation.
-    # plugin-config-builder unit resources: minimal IT poms under src/test/resources.
-    SAST_SPOTBUGS_EXCLUDED_BUILD_PATHS: "plugin-archetypes/src/main/resources/archetype-resources/pom.xml,plugin-config-builder/src/test/resources/unit/p1/pom.xml,plugin-config-builder/src/test/resources/unit/p2/pom.xml"
+    FUNNELBACK_SHARED_BRANCH: $CI_COMMIT_BRANCH
+  needs:
+    - build
+  trigger:
+    project: funnelback-rnd/funnelback-plugins-mono-repo
+    # TODO(SEARCH-2245): revert to default branch after funnelback-plugins-mono-repo 17.4.0 release
+    branch: awaiting_release_17.4.0
+    strategy: depend
+  rules:
+    - if: $NO_VERIFY == 'true'
+      when: never
+    - when: on_success
 
 # Release `funnelback-shared` to the GitLab package registry (development version).
 # Requires CI/CD variables: GITLAB_TEMPLATES_PROJECT_TOKEN, FUN_GITLAB_MAVEN_TOKEN (see gitlab-templates publish_to_gitlab.yml).

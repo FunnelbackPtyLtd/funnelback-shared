@@ -1,16 +1,16 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ByDateComparatorTest {
 

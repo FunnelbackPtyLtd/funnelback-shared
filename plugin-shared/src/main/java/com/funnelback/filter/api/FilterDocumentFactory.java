@@ -1,10 +1,10 @@
 package com.funnelback.filter.api;
 
-import java.util.Optional;
-
 import com.funnelback.filter.api.documents.BytesDocument;
 import com.funnelback.filter.api.documents.FilterableDocument;
 import com.funnelback.filter.api.documents.StringDocument;
+
+import java.util.Optional;
 
 public interface FilterDocumentFactory {
 

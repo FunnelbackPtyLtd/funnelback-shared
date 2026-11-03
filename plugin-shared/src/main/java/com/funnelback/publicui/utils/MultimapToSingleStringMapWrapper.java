@@ -1,5 +1,7 @@
 package com.funnelback.publicui.utils;
 
+import com.google.common.collect.ListMultimap;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.google.common.collect.ListMultimap;
 
 public class MultimapToSingleStringMapWrapper implements Map<String, String> {
 

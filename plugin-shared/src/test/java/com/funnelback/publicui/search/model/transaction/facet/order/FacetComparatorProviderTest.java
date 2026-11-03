@@ -1,5 +1,14 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
+import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import static com.funnelback.common.facetednavigation.models.FacetValuesOrder.COUNT_ASCENDING;
 import static com.funnelback.common.facetednavigation.models.FacetValuesOrder.COUNT_DESCENDING;
 import static com.funnelback.common.facetednavigation.models.FacetValuesOrder.LABEL_ASCENDING;
@@ -8,15 +17,6 @@ import static com.funnelback.common.facetednavigation.models.FacetValuesOrder.SE
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class FacetComparatorProviderTest {
     

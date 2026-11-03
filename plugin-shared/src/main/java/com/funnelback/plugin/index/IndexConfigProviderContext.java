@@ -3,9 +3,8 @@ package com.funnelback.plugin.index;
 import com.funnelback.plugin.PluginBaseConfigContext;
 import com.funnelback.plugin.PluginBaseContext;
 
-import java.util.Optional;
-
 import java.io.IOException;
+import java.util.Optional;
 
 public interface IndexConfigProviderContext extends PluginBaseContext, PluginBaseConfigContext {
     

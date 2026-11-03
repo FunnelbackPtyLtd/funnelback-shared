@@ -1,12 +1,12 @@
 package com.funnelback.publicui.utils;
 
+import lombok.NoArgsConstructor;
+
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class SingleValueMapWrapper implements Map<String, String>{

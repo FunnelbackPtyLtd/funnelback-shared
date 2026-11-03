@@ -1,14 +1,13 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
+import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-
-import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 
 public class RNDSUPPORT3067Test {
 

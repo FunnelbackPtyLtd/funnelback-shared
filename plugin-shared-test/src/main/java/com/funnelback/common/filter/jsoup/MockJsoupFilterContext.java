@@ -1,16 +1,14 @@
 package com.funnelback.common.filter.jsoup;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A mock FilterContext to be used when testing Jsoup fiters.

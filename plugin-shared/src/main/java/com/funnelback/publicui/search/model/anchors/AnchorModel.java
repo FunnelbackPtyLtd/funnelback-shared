@@ -1,9 +1,9 @@
 package com.funnelback.publicui.search.model.anchors;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 public class AnchorModel {
     @Getter @Setter private String distilledFileName; 

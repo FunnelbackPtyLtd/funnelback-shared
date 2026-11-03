@@ -1,20 +1,19 @@
 package com.funnelback.publicui.search.model.padre;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.funnelback.publicui.search.model.util.map.AutoConvertingMap;
 import com.funnelback.publicui.search.model.util.map.Converters;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A PADRE result packet, containing search results.

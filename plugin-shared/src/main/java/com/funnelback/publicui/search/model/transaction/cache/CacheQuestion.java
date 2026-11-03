@@ -1,14 +1,13 @@
 package com.funnelback.publicui.search.model.transaction.cache;
 
-import java.util.Collection;
-
 import com.funnelback.publicui.search.model.collection.SearchPackageConfig;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+
+import java.util.Collection;
 
 /**
  * This class contains all the input parameters for a cache request

@@ -1,17 +1,15 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.util.Date;
-
+import com.funnelback.publicui.utils.URLSignature;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 
-import com.funnelback.publicui.utils.URLSignature;
+import java.util.Date;
 
 /**
  * A single entry in the {@link SearchUser} search history

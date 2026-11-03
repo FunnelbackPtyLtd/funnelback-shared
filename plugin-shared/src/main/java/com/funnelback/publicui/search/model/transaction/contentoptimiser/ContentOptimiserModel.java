@@ -1,14 +1,13 @@
 package com.funnelback.publicui.search.model.transaction.contentoptimiser;
 
+import com.funnelback.publicui.search.model.padre.Result;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.funnelback.publicui.search.model.padre.Result;
-
-import lombok.Getter;
-import lombok.Setter;
 
 public class ContentOptimiserModel {
     

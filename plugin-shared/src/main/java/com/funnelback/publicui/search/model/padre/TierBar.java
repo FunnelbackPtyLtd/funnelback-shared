@@ -1,11 +1,11 @@
 package com.funnelback.publicui.search.model.padre;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 /**
  * <p>A tier bar</p>

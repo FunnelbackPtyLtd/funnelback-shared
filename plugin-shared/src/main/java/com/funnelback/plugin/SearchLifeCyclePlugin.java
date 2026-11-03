@@ -1,6 +1,5 @@
 package com.funnelback.plugin;
 
-import com.funnelback.plugin.DeprecatedSearchLifeCyclePlugin;
 import com.funnelback.plugin.search.SearchLifeCycleContext;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;

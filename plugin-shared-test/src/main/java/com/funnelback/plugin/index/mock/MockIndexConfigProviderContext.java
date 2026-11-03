@@ -1,19 +1,17 @@
 package com.funnelback.plugin.index.mock;
 
-import java.util.Optional;
-
-import java.io.File;
-
 import com.funnelback.mock.helpers.MapBackedConfig;
 import com.funnelback.mock.helpers.MapBackedPluginConfigurationFiles;
 import com.funnelback.mock.helpers.PluginConfigurationFileSettingMock;
 import com.funnelback.plugin.index.IndexConfigProviderContext;
 import com.funnelback.plugin.index.IndexingConfigProvider;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Delegate;
+
+import java.io.File;
+import java.util.Optional;
 
 /**
  * A mock {@link IndexConfigProviderContext} that may be used when testig the {@link IndexingConfigProvider}.
