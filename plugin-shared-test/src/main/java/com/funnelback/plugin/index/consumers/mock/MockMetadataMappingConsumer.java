@@ -1,18 +1,17 @@
 package com.funnelback.plugin.index.consumers.mock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.funnelback.plugin.index.IndexConfigProviderContext;
 import com.funnelback.plugin.index.IndexingConfigProvider;
 import com.funnelback.plugin.index.consumers.KillByPartialMatchConsumer;
 import com.funnelback.plugin.index.consumers.MetadataMappingConsumer;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataSourceType;
 import com.funnelback.plugin.index.model.metadatamapping.MetadataType;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A mock {@link KillByPartialMatchConsumer} that may be used when testing {@link IndexingConfigProvider#metadataMappings(IndexConfigProviderContext, MetadataMappingConsumer)}.

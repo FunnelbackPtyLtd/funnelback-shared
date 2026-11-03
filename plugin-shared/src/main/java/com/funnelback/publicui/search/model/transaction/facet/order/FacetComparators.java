@@ -1,8 +1,8 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
-import java.util.Comparator;
-
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+
+import java.util.Comparator;
 
 public class FacetComparators {
 

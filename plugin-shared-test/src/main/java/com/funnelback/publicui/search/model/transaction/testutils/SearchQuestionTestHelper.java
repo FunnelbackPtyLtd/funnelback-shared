@@ -1,17 +1,16 @@
 package com.funnelback.publicui.search.model.transaction.testutils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import com.funnelback.mock.helpers.MapBackedConfig;
 import com.funnelback.publicui.search.model.collection.ServiceConfig;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.Delegate;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class SearchQuestionTestHelper {
 

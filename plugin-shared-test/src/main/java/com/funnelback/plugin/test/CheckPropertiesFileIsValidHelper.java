@@ -1,12 +1,5 @@
 package com.funnelback.plugin.test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-
 import com.funnelback.plugin.SearchLifeCyclePlugin;
 import com.funnelback.plugin.servlet.filter.SearchServletFilterHook;
 import org.junit.jupiter.api.Assertions;
@@ -14,6 +7,12 @@ import org.junit.jupiter.api.Assertions;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 
 public class CheckPropertiesFileIsValidHelper {
 

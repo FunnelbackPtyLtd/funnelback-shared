@@ -1,12 +1,11 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
+import com.google.common.collect.ImmutableSet;
+
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-
-import java.math.BigDecimal;
-
-import com.google.common.collect.ImmutableSet;
 
 
 public class ByStringAsNumberComparator implements Comparator<String> {

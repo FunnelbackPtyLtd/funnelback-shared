@@ -1,15 +1,14 @@
 package ${package};
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.funnelback.filter.api.DocumentType;
-import com.funnelback.filter.api.FilterContext;
 import com.funnelback.filter.api.FilterResult;
 import com.funnelback.filter.api.documents.StringDocument;
 import com.funnelback.filter.api.filters.PreFilterCheck;
 import com.funnelback.filter.api.mock.MockDocuments;
 import com.funnelback.filter.api.mock.MockFilterContext;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 
 public class _ClassNamePrefix_StringFilterTest {
 

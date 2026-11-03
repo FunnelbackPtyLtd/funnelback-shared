@@ -1,11 +1,11 @@
 package ${package};
 
+import com.funnelback.plugin.gatherer.mock.MockFileScanner;
+import com.funnelback.plugin.gatherer.mock.MockPluginGatherContext;
+import com.funnelback.plugin.gatherer.mock.MockPluginStore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.funnelback.plugin.gatherer.mock.MockPluginGatherContext;
-import com.funnelback.plugin.gatherer.mock.MockPluginStore;
-import com.funnelback.plugin.gatherer.mock.MockFileScanner;
 
 public class _ClassNamePrefix_PluginGathererTest {
 

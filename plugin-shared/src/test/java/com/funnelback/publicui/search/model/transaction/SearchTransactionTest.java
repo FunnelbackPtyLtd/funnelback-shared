@@ -1,10 +1,10 @@
 package com.funnelback.publicui.search.model.transaction;
 
-import java.util.Optional;
-
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
 
 public class SearchTransactionTest {
 

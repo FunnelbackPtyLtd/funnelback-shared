@@ -4,3 +4,8 @@ target/
 !.gitlab-ci.yml
 *.iml
 *.versionsBackup
+
+# Local security scan outputs (generated during verification; do not commit)
+current-trivy-scan.json
+verification-scan-results.json
+dependency-scan-report.json

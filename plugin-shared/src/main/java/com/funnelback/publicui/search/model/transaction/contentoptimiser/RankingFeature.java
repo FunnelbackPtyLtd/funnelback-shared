@@ -1,11 +1,11 @@
 package com.funnelback.publicui.search.model.transaction.contentoptimiser;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import lombok.Getter;
 
 
 public abstract class RankingFeature implements Comparable<RankingFeature> {

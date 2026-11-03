@@ -1,5 +1,23 @@
 package com.funnelback.publicui.search.model.transaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.funnelback.publicui.search.model.collection.SearchPackageConfig;
+import com.funnelback.publicui.search.model.collection.ServiceConfig;
+import com.funnelback.publicui.search.model.geolocation.Location;
+import com.funnelback.publicui.utils.SharedQueryStringUtils;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,26 +29,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-
-import java.security.Principal;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.funnelback.publicui.search.model.collection.SearchPackageConfig;
-import com.funnelback.publicui.search.model.collection.ServiceConfig;
-import com.funnelback.publicui.search.model.geolocation.Location;
-import com.funnelback.publicui.utils.SharedQueryStringUtils;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * <p>This class contains all the input data related to a search.</p>

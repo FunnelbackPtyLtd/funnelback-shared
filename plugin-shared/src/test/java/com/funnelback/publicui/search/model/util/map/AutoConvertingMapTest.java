@@ -1,10 +1,10 @@
 package com.funnelback.publicui.search.model.util.map;
 
-import java.util.HashMap;
-
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class AutoConvertingMapTest {

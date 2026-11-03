@@ -1,11 +1,11 @@
 package com.funnelback.publicui.search.model.geolocation;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+
+import java.util.List;
 
 /**
  * <p>This class represents a location along with a range of 'names' which apply to

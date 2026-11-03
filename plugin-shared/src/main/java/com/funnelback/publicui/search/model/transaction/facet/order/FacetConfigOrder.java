@@ -1,10 +1,9 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
-import java.util.Comparator;
-
 import com.funnelback.publicui.search.model.transaction.Facet;
-
 import lombok.RequiredArgsConstructor;
+
+import java.util.Comparator;
 
 /**
  * Leaves the order of categories as they are, which should be the order 

@@ -1,8 +1,5 @@
 package ${package};
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.funnelback.plugin.index.consumers.mock.MockAutoCompletionConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockExternalMetadataConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockGscopeByQueryConsumer;
@@ -11,11 +8,14 @@ import com.funnelback.plugin.index.consumers.mock.MockKillByExactMatchConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockKillByPartialMatchConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockKillByQueryMatchConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockMetadataMappingConsumer;
-import com.funnelback.plugin.index.consumers.mock.MockQieByUrlConsumer;
 import com.funnelback.plugin.index.consumers.mock.MockQieByQueryConsumer;
+import com.funnelback.plugin.index.consumers.mock.MockQieByUrlConsumer;
 import com.funnelback.plugin.index.mock.MockIndexConfigProviderContext;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
 
 public class _ClassNamePrefix_IndexingConfigProviderTest {
 

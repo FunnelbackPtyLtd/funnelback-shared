@@ -1,14 +1,14 @@
 package com.funnelback.publicui.search.model.padre;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>A contextual navigation cluster (belongs to a {@link Category}).</p>

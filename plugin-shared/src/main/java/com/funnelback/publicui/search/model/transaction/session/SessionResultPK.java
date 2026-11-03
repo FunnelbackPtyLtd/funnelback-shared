@@ -1,10 +1,10 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.io.Serializable;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * Internal Primary Key class for {@link SessionResult}

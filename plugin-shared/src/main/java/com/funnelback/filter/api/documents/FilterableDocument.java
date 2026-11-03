@@ -1,9 +1,9 @@
 package com.funnelback.filter.api.documents;
 
-import java.net.URI;
-
 import com.funnelback.filter.api.DocumentType;
 import com.google.common.collect.ListMultimap;
+
+import java.net.URI;
 
 
 /**

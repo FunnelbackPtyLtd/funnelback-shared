@@ -1,10 +1,10 @@
 package com.funnelback.publicui.search.model.padre;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 /**
  * Search explain plan used in the Content Optimiser.

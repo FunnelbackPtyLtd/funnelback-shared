@@ -1,18 +1,17 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.provider.Arguments;
-
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BySelectedFirstTest extends FacetComparatorBaseTest {
     

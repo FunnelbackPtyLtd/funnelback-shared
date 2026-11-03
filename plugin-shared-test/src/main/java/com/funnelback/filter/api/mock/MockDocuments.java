@@ -1,16 +1,15 @@
 package com.funnelback.filter.api.mock;
 
-import java.util.Optional;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-
 import com.funnelback.filter.api.DocumentType;
 import com.funnelback.filter.api.documents.BytesDocument;
 import com.funnelback.filter.api.documents.StringDocument;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.util.Optional;
 
 /**
  * Use the static methods in this class to get mock document for testing.

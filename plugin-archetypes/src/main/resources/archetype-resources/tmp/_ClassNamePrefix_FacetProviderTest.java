@@ -1,8 +1,8 @@
 package ${package};
 
+import com.funnelback.plugin.index.mock.MockIndexConfigProviderContext;
 import org.junit.jupiter.api.Test;
 
-import com.funnelback.plugin.index.mock.MockIndexConfigProviderContext;
 
 public class _ClassNamePrefix_FacetProviderTest {
 

@@ -1,10 +1,10 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 
 /**
  * Compare {@link CategoryValue} containing date-based facet values

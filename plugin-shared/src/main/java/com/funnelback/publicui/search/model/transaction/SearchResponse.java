@@ -1,21 +1,20 @@
 package com.funnelback.publicui.search.model.transaction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.curator.Curator;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.model.transaction.padrecmd.PadreSwCmd;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>This class contains all the output data related to a search.</p>

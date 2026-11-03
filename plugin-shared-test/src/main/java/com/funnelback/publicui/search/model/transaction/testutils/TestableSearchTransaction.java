@@ -1,19 +1,18 @@
 package com.funnelback.publicui.search.model.transaction.testutils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import org.junit.jupiter.api.Assertions;
-
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import org.junit.jupiter.api.Assertions;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * A search transaction that makes testing easier.

@@ -1,8 +1,8 @@
 package com.funnelback.plugin.gatherer;
 
-import java.net.URI;
-
 import com.google.common.collect.ListMultimap;
+
+import java.net.URI;
 
 public interface PluginStore {
 

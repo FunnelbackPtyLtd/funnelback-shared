@@ -1,11 +1,11 @@
 package com.funnelback.publicui.search.model.util.map;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @AllArgsConstructor
 public class DelegateMap<K,V> implements Map<K, V> {

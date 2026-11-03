@@ -1,12 +1,12 @@
 package com.funnelback.publicui.search.model.padre;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.Date;
 
 /**
  * <p>Details (header) of a PADRE result packet</p>

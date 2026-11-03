@@ -1,12 +1,12 @@
 package com.funnelback.publicui.search.model.padre;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Holds the count of each indexed term for a metadata class 'metadataClass'.</p>

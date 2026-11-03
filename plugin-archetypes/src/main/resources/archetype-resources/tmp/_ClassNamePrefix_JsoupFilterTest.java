@@ -1,9 +1,9 @@
 package ${package};
 
+import com.funnelback.common.filter.jsoup.MockJsoupFilterContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.funnelback.common.filter.jsoup.MockJsoupFilterContext;
 
 public class _ClassNamePrefix_JsoupFilterTest {
 

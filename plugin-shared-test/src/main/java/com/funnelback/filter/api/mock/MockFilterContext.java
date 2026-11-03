@@ -1,7 +1,5 @@
 package com.funnelback.filter.api.mock;
 
-import java.util.Optional;
-
 import com.funnelback.filter.api.DocumentTypeFactory;
 import com.funnelback.filter.api.FilterContext;
 import com.funnelback.filter.api.FilterDocumentFactory;
@@ -9,13 +7,14 @@ import com.funnelback.mock.helpers.MapBackedConfig;
 import com.funnelback.mock.helpers.MapBackedFilterConfigurationFiles;
 import com.funnelback.mock.helpers.MapBackedPluginConfigurationFiles;
 import com.funnelback.mock.helpers.PluginConfigurationFileSettingMock;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.With;
 import lombok.experimental.Delegate;
+
+import java.util.Optional;
 
 /**
  * A Filter context suitable for testing.

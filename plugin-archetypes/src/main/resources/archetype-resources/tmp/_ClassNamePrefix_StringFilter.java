@@ -1,14 +1,14 @@
 package ${package};
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.funnelback.filter.api.FilterContext;
 import com.funnelback.filter.api.FilterResult;
 import com.funnelback.filter.api.documents.NoContentDocument;
 import com.funnelback.filter.api.documents.StringDocument;
 import com.funnelback.filter.api.filters.PreFilterCheck;
 import com.funnelback.filter.api.filters.StringDocumentFilter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class _ClassNamePrefix_StringFilter implements StringDocumentFilter {
 

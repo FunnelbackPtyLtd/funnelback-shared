@@ -1,14 +1,14 @@
 
 package com.funnelback.common.filter.jsoup;
 
-import java.io.File;
 import com.funnelback.mock.helpers.MapBackedConfig;
 import com.funnelback.mock.helpers.MapBackedPluginConfigurationFiles;
 import com.funnelback.mock.helpers.PluginConfigurationFileSettingMock;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Delegate;
+
+import java.io.File;
 
 /**
  * This can be used when testing Jsoup filters that need a {@link SetupContext}.

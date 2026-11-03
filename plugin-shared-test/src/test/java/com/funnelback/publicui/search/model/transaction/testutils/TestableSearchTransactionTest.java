@@ -1,17 +1,16 @@
 package com.funnelback.publicui.search.model.transaction.testutils;
 
-import java.util.Collections;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.funnelback.publicui.search.model.collection.ServiceConfig;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.Facet;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+import java.util.Optional;
 
 public class TestableSearchTransactionTest {
 

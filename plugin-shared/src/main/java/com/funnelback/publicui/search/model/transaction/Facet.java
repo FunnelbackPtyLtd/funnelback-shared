@@ -1,13 +1,4 @@
 package com.funnelback.publicui.search.model.transaction;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
@@ -18,7 +9,7 @@ import com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType;
 import com.funnelback.publicui.xml.FacetConverter;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +17,15 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * <p>Facets, generated from the result data (Metadata counts,
  * GScope counts, URL counts).</p>

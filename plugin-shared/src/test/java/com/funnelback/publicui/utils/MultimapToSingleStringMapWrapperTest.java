@@ -1,11 +1,10 @@
 package com.funnelback.publicui.utils;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class MultimapToSingleStringMapWrapperTest {
 

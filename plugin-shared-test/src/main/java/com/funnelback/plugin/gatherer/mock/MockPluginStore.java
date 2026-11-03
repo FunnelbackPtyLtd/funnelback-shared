@@ -1,16 +1,14 @@
 package com.funnelback.plugin.gatherer.mock;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.net.URI;
-
 import com.funnelback.plugin.gatherer.PluginStore;
 import com.google.common.collect.ListMultimap;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A mock PluginStore that may be used when testing the PluginGatherer.

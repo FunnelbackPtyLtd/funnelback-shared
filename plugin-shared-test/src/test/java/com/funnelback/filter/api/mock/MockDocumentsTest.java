@@ -1,20 +1,5 @@
 package com.funnelback.filter.api.mock;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Matcher;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-
 import com.funnelback.filter.api.DocumentType;
 import com.funnelback.filter.api.FilterContext;
 import com.funnelback.filter.api.FilterResult;
@@ -27,6 +12,19 @@ import com.funnelback.filter.api.filters.PreFilterCheck;
 import com.funnelback.filter.api.filters.StringDocumentFilter;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Matcher;
 
 public class MockDocumentsTest {
     

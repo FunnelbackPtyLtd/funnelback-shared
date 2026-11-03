@@ -1,8 +1,8 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.io.Serializable;
-
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * Internal Primary Key class for {@link SearchHistory}

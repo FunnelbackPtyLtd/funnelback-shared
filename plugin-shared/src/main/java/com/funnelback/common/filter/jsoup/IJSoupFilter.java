@@ -1,9 +1,8 @@
 package com.funnelback.common.filter.jsoup;
 
-import java.util.function.Consumer;
-
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 /**
  * Interface for filtering steps applied by JSoupProcessingFilterProvider.

@@ -85,25 +85,25 @@
         <requiredProperty key="archetypeVersion"> </requiredProperty>
         <!-- Keep defaultValue in sync with funnelback-shared-parent properties -->
         <requiredProperty key="springBootVersion">
-            <defaultValue>3.5.11</defaultValue>
+            <defaultValue>3.5.16</defaultValue>
         </requiredProperty>
         <requiredProperty key="versionJackson2">
-            <defaultValue>2.21.3</defaultValue>
+            <defaultValue>2.22.4</defaultValue>
         </requiredProperty>
         <requiredProperty key="versionJackson2Annotations">
-            <defaultValue>2.21</defaultValue>
+            <defaultValue>2.22</defaultValue>
         </requiredProperty>
         <requiredProperty key="versionCommonsLang">
             <defaultValue>3.20.0</defaultValue>
         </requiredProperty>
         <requiredProperty key="versionLog4j2">
-            <defaultValue>2.25.3</defaultValue>
+            <defaultValue>2.26.1</defaultValue>
         </requiredProperty>
         <requiredProperty key="pluginVersionCompiler">
             <defaultValue>3.15.0</defaultValue>
         </requiredProperty>
         <requiredProperty key="pluginVersionSurefire">
-            <defaultValue>3.5.4</defaultValue>
+            <defaultValue>3.5.5</defaultValue>
         </requiredProperty>
         <requiredProperty key="pluginVersionMavenDependency">
             <defaultValue>3.8.1</defaultValue>

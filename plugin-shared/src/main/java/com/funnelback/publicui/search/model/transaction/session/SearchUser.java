@@ -1,14 +1,13 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.io.Serializable;
-
 import jakarta.persistence.Id;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.io.Serializable;
 
 /**
  * User performing the search.

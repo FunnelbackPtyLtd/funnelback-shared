@@ -1,17 +1,16 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
+import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
+import com.funnelback.publicui.search.model.transaction.Facet;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.google.common.collect.ImmutableMap;
+import lombok.AllArgsConstructor;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
-import com.funnelback.publicui.search.model.transaction.Facet;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import com.google.common.collect.ImmutableMap;
-
-import lombok.AllArgsConstructor;
 
 public class FacetComparatorProvider {
 

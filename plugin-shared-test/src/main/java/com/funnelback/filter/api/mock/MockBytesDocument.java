@@ -1,22 +1,20 @@
 package com.funnelback.filter.api.mock;
 
-import java.util.Optional;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.charset.Charset;
-
 import com.funnelback.filter.api.DocumentType;
 import com.funnelback.filter.api.documents.BytesDocument;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.Optional;
 
 /**
  * A BytesDocument for testing.

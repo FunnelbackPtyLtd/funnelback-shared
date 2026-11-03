@@ -1,11 +1,5 @@
 package com.funnelback.filter.api.mock;
 
-import java.util.Optional;
-
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
 import com.funnelback.filter.api.DocumentType;
 import com.funnelback.filter.api.documents.FilterableDocument;
 import com.funnelback.filter.api.documents.StringDocument;
@@ -13,12 +7,16 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 /**
  * A String document for testing.

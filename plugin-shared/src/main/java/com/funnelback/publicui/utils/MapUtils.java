@@ -1,13 +1,13 @@
 package com.funnelback.publicui.utils;
 
+import com.google.common.collect.ListMultimap;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-
-import com.google.common.collect.ListMultimap;
 
 public class MapUtils {
 

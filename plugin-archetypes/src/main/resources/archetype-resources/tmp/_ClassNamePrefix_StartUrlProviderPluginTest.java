@@ -1,12 +1,12 @@
 package ${package};
 
+import com.funnelback.plugin.starturls.mock.MockStartUrlProviderContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.funnelback.plugin.starturls.mock.MockStartUrlProviderContext;
-
 import java.net.URL;
 import java.util.List;
+
 
 public class _ClassNamePrefix_StartUrlProviderPluginTest {
 

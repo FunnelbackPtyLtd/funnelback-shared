@@ -1,11 +1,11 @@
 package com.funnelback.publicui.search.model.transaction.contentoptimiser;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import lombok.Getter;
-import lombok.Setter;
 
 public class DocumentContentModel {
     @Getter @Setter private int totalWords;

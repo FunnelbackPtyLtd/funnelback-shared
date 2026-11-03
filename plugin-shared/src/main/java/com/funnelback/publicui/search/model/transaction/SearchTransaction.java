@@ -1,23 +1,22 @@
 package com.funnelback.publicui.search.model.transaction;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.extrasearch.ExtraSearchFuture;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * <p>Represents a full search transaction consisting of 

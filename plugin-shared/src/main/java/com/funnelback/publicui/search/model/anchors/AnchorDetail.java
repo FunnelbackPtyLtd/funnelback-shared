@@ -1,10 +1,10 @@
 package com.funnelback.publicui.search.model.anchors;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AnchorDetail {
 

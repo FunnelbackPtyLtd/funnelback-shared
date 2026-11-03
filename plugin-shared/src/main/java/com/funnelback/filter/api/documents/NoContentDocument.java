@@ -1,12 +1,12 @@
 package com.funnelback.filter.api.documents;
 
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.util.Optional;
-
 import com.funnelback.filter.api.DocumentType;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
+
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.Optional;
 
 /**
  * A document which may have its non-content parts inspected.

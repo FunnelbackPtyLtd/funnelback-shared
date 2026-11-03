@@ -1,12 +1,12 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
-import static com.funnelback.publicui.search.model.transaction.facet.order.FacetComparators.BY_LABEL_ASCENDING;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static com.funnelback.publicui.search.model.transaction.facet.order.FacetComparators.BY_LABEL_ASCENDING;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ByLabelComparatorTest {
 

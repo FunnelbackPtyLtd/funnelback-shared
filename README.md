@@ -8,6 +8,15 @@ publicly available.
 The code within this repository is licensed under the Apache 2.0 license and deployed into maven central so that it
 can easily be accessed by prospective plugin developers.
 
+## Version 17.4.0 (JDK 21)
+
+This release requires **JDK 21** to compile plugin code against `funnelback-shared`.
+
+Consumer-facing API changes plugin authors should plan for:
+
+- `javax.servlet`, `javax.persistence`, and `javax.validation` types are replaced by their Jakarta equivalents.
+- `FilterTestRunner.runTests` returns JUnit Platform `TestExecutionSummary` instead of JUnit 4 `Result`.
+
 ## Development
 
 Whenever changes are done and merged into the default branch, GitLab CI/CD job is triggered to deploy a compiled library into 

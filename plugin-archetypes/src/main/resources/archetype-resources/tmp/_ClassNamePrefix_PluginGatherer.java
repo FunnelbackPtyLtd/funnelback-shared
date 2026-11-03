@@ -1,12 +1,12 @@
 package ${package};
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.funnelback.plugin.gatherer.FileScanner;
 import com.funnelback.plugin.gatherer.PluginGatherContext;
 import com.funnelback.plugin.gatherer.PluginGatherer;
 import com.funnelback.plugin.gatherer.PluginStore;
-import com.funnelback.plugin.gatherer.FileScanner;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class _ClassNamePrefix_PluginGatherer implements PluginGatherer {
 

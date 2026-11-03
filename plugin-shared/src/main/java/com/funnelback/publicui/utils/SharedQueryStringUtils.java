@@ -1,13 +1,12 @@
 package com.funnelback.publicui.utils;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import java.util.Map;
-
-import java.net.URLDecoder;
-
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
+
+import java.net.URLDecoder;
+import java.util.Map;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Utilities for manipulating query strings.

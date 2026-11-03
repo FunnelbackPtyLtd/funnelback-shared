@@ -1,11 +1,11 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * A Cart result presented to the user.

@@ -1,15 +1,15 @@
 package ${package};
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.funnelback.plugin.starturl.StartUrlProvider;
 import com.funnelback.plugin.starturl.StartUrlProviderContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 
 public class _ClassNamePrefix_StartUrlProviderPlugin implements StartUrlProvider {
 

@@ -1,5 +1,11 @@
 package com.funnelback.publicui.search.model.transaction.facet;
 
+import com.funnelback.common.facetednavigation.models.FacetValues;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.stream.Stream;
+
 import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin.AND;
 import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin.OR;
 import static com.funnelback.common.facetednavigation.models.FacetSelectionType.MULTIPLE;
@@ -14,13 +20,6 @@ import static com.funnelback.publicui.search.model.transaction.facet.FacetDispla
 import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.SINGLE_DRILL_DOWN;
 import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.TAB;
 import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.getType;
-
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import com.funnelback.common.facetednavigation.models.FacetValues;
 
 public class FacetDisplayTypeTest {
 

@@ -1,12 +1,11 @@
 package com.funnelback.publicui.search.model.util.map;
 
-import java.util.Map;
-import java.util.Optional;
-
 import com.funnelback.publicui.xml.AutoConvertingMapXStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-
 import lombok.extern.log4j.Log4j2;
+
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>A map that can auto convert the key from one type to the expected type.</p>

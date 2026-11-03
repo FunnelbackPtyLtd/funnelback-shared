@@ -1,16 +1,14 @@
 package com.funnelback.filter.api.documents;
 
-import java.util.Optional;
-
-import java.nio.charset.Charset;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.funnelback.filter.api.DocumentType;
 import com.funnelback.filter.api.DocumentTypeFactory;
 import com.funnelback.filter.api.FilterContext;
 import com.google.common.collect.ListMultimap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.Charset;
+import java.util.Optional;
 
 /**
  * A filterable String Document

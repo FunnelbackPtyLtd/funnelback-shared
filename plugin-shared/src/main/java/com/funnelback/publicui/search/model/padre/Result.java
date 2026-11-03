@@ -1,24 +1,23 @@
 package com.funnelback.publicui.search.model.padre;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.funnelback.publicui.search.model.related.RelatedDocument;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder.ListMultimapBuilder;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A single search result.

@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.model.transaction.facet.order;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 abstract class FacetComparatorBaseTest {
 

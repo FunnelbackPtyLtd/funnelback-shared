@@ -1,8 +1,8 @@
 package com.funnelback.filter.api.filters;
 
-import java.net.URI;
-
 import com.funnelback.filter.api.documents.FilterableDocument;
+
+import java.net.URI;
 
 /**
  * Thrown when an error occurs during filtering of a document and filtering of that document should not proceed.

@@ -1,18 +1,14 @@
 package ${package};
 
+import com.funnelback.plugin.servlet.filter.SearchServletFilterHookContext;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.funnelback.plugin.servlet.filter.SearchServletFilterHook;
-import com.funnelback.plugin.servlet.filter.SearchServletFilterHookContext;
-
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 
 public class _ClassNamePrefix_SearchServletFilterPluginTest {
 
